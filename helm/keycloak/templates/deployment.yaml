@@ -77,11 +77,11 @@ spec:
           - name: X509_CA_BUNDLE
             value: {{ .Values.tls.path }}
           {{- end }}
-          {{- if .Values.dnsPing.enabled }}
+          {{- if .Values.pingService.enabled }}
           - name: OPENSHIFT_DNS_PING_SERVICE_NAME
-            value: {{ .Values.dnsPing.serviceName }}
+            value: {{ include "..fullname" . }}-ping
           - name: OPENSHIFT_DNS_PING_SERVICE_PORT
-            value: {{ .Values.dnsPing.servicePort | quote }}
+            value: {{ .Values.pingService.port | quote }}
           {{- end }}
           # Other environments
           - name: DB_JNDI

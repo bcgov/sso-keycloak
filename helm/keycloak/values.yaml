@@ -15,6 +15,12 @@ service:
   type: ClusterIP
   port: 8080
 
+# see https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/7.0/html-single/red_hat_jboss_enterprise_application_platform_for_openshift/index#configuring_dns_ping
+pingService:
+  enabled: true
+  type: ClusterIP
+  port: 8888
+
 postgres:
   host: sso-pgsql-master
   port: 5432
@@ -42,12 +48,6 @@ additionalServerOptions: "-Dkeycloak.profile.feature.authorization=enabled -Djbo
 tls:
   enabled: false
   path: "/var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt"
-
-# see https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/7.0/html-single/red_hat_jboss_enterprise_application_platform_for_openshift/index#configuring_dns_ping
-dnsPing:
-  enabled: false
-  serviceName: sso-keycloak-ping
-  servicePort: 8888
 
 resources:
   limits:
