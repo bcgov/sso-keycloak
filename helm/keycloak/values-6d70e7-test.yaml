@@ -1,0 +1,19 @@
+replicaCount: 5
+
+postgres:
+  host: sso-pgsql-master-test
+  credentials:
+    secret: sso-pgsql-test
+  admin:
+    secret: sso-admin-test
+
+jgroupCluster:
+  secret: sso-jgroups-test
+
+resources:
+  limits:
+    cpu: 2
+    memory: 4Gi
+  requests:
+    cpu: 1250m
+    memory: 4Gi

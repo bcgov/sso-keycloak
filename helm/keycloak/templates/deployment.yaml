@@ -1,0 +1,112 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "..fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "..name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "..chart" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "..name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "..name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command:
+          - /bin/sh
+          - /opt/eap/bin/openshift-launch.sh
+        env:
+          # Postgres Service Endpoint
+          - name: DB_POSTGRESQL_SERVICE_HOST
+            value: {{ .Values.postgres.host }}
+          - name: DB_POSTGRESQL_SERVICE_PORT
+            value: {{ .Values.postgres.port | quote }}
+          # DB Credentials
+          - name: DB_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.postgres.credentials.secret }}
+                key: {{ .Values.postgres.credentials.usernameKey }}
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.postgres.credentials.secret }}
+                key: {{ .Values.postgres.credentials.passwordKey }}
+          - name: DB_DATABASE
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.postgres.credentials.secret }}
+                key: {{ .Values.postgres.credentials.dbNameKey }}
+          # DB Admin Credentials
+          - name: SSO_ADMIN_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.postgres.admin.secret }}
+                key: {{ .Values.postgres.admin.usernameKey }}
+          - name: SSO_ADMIN_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.postgres.admin.secret }}
+                key: {{ .Values.postgres.admin.passwordKey }}
+          # DB POOL SIZES
+          - name: DB_MIN_POOL_SIZE
+            value: {{ .Values.postgres.poolSize.min | quote }}
+          - name: DB_MAX_POOL_SIZE
+            value: {{ .Values.postgres.poolSize.max | quote }}
+          # JGroups Cluster
+          - name: JGROUPS_CLUSTER_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.jgroupCluster.secret }}
+                key: {{ .Values.jgroupCluster.passwordKey }}
+          # Additional server startup options (extension of JAVA_OPTS)
+          - name: JAVA_OPTS_APPEND
+            value: {{ .Values.additionalServerOptions }}
+          {{- if .Values.tls.enabled }}
+          - name: X509_CA_BUNDLE
+            value: {{ .Values.tls.path }}
+          {{- end }}
+          {{- if .Values.dnsPing.enabled }}
+          - name: OPENSHIFT_DNS_PING_SERVICE_NAME
+            value: {{ .Values.dnsPing.serviceName }}
+          - name: OPENSHIFT_DNS_PING_SERVICE_PORT
+            value: {{ .Values.dnsPing.servicePort | quote }}
+          {{- end }}
+          # Other environments
+          - name: DB_JNDI
+            value: java:jboss/datasources/KeycloakDS
+          - name: DB_SERVICE_PREFIX_MAPPING
+            value: db-postgresql=DB
+          - name: TX_DATABASE_PREFIX_MAPPING
+            value: db-postgresql=DB
+          - name: JGROUPS_PING_PROTOCOL
+            value: dns.DNS_PING
+
+        ports:
+          - containerPort: 8778
+            name: jolokia
+            protocol: TCP
+          - containerPort: 8080
+            name: http
+            protocol: TCP
+          - containerPort: 8443
+            name: https
+            protocol: TCP
+          - containerPort: 8888
+            name: ping
+            protocol: TCP
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

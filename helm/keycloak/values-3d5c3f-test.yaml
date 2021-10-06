@@ -1,0 +1,11 @@
+replicaCount: 1
+
+postgres:
+  host: sso-pgsql-master-test
+  credentials:
+    secret: sso-pgsql-test
+  admin:
+    secret: sso-admin-test
+
+jgroupCluster:
+  secret: sso-jgroups-test

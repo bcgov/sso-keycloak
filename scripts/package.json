@@ -1,0 +1,16 @@
+{
+  "name": "scripts",
+  "version": "0.1.0",
+  "description": "Javascript scripts for minor updates and aggregations.",
+  "author": "SSO Team",
+  "license": "Apache-2.0",
+  "dependencies": {},
+  "devDependencies": {
+    "axios": "^0.21.4",
+    "dotenv": "^10.0.0",
+    "keycloak-admin": "^1.14.22",
+    "lodash": "^4.17.21",
+    "prompt-confirm": "^2.0.4",
+    "yargs": "^17.2.1"
+  }
+}

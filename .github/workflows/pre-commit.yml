@@ -1,0 +1,35 @@
+name: Check code/commit conventions
+
+on: push
+
+jobs:
+  pre-commit:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install asdf
+        uses: asdf-vm/actions/setup@v1
+      - name: Cache tools
+        uses: actions/cache@v2
+        with:
+          path: |
+            /home/runner/.asdf
+          key: ${{ runner.os }}-${{ hashFiles('**/.tool-versions') }}
+      - name: Install required tools
+        run: |
+          cat .tool-versions | cut -f 1 -d ' ' | xargs -n 1 asdf plugin-add || true
+          asdf plugin-update --all
+          asdf install
+          asdf reshim
+      - name: Rerun Pre-Commit Hooks on CI
+        run: |
+          pip install -r requirements.txt
+          asdf reshim
+          pre-commit run --color=always --show-diff-on-failure --all-files
+  commitlint:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: wagoid/commitlint-github-action@v2

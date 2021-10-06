@@ -1,0 +1,3 @@
+helm/**/charts
+node_modules
+*.secret.yaml

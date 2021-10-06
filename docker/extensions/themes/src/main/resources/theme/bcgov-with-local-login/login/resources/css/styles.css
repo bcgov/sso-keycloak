@@ -1,0 +1,113 @@
+.login-pf body {
+  background: none;
+  background-color: #036;
+  font-family: 'BCSans', 'Noto Sans', Verdana, Arial, sans-serif;
+  color: #036;
+}
+
+.hidden {
+  /* Hide keycloak local account login */
+  display: none;
+}
+
+#kc-form-wrapper {
+  width: 100%;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #b3b1b3;
+  border-right: none;
+  padding: 10px 20px;
+}
+
+#kc-header-wrapper {
+  text-align: center;
+  color: white;
+  padding: 62px 10px 20px;
+}
+
+.login-pf-accounts, .card-pf  {
+  max-width: 450px;
+  padding: 10px 20px;
+}
+
+.login-pf-header {
+  padding-top: 20px;
+  margin-bottom: 10px;
+  text-align: center;
+  position: relative;
+}
+
+header.login-pf-header::before {
+  content: url('../img/logo.svg');
+  display: block;
+  padding-bottom: 20px;
+}
+
+#kc-page-title {
+  font-size: 2em;
+  font-weight: 400;
+  border-bottom: 1px solid #b3b1b3;
+  color: #036;
+  padding-bottom: 5px;
+}
+
+#kc-info {
+  text-align: center;
+}
+
+#kc-social-providers {
+  border: none;
+  width: 100%;
+  padding: 0;
+}
+
+/* local login button, github, IDIR, BCeID, etc. */
+a.zocial, #kc-login, a.zocial.keycloak-oidc, .btn-primary {
+  background-image: none;
+  background-color: #003366;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  display: block;
+  font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer;
+  max-width: 150px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.zocial:hover, #kc-login:hover {
+  background: #ededed !important;
+  background-image: none !important;
+  text-decoration: underline !important;
+  opacity: 0.80 !important;
+  color: #036 !important;
+}
+
+#kc-error-message {
+  padding: 7px 10px 0 10px;
+  margin: 5px;
+  text-align: center;
+  border: 2px solid red;
+  border-radius: 5px;
+}
+
+@media (max-width: 768px) {
+  .login-pf-accounts, .card-pf  {
+    margin: 10px !important;
+  }
+
+  #kc-page-title {
+    font-size: 5vw;
+  }
+
+  #kc-header-wrapper {
+    font-size: 6vw;
+  }
+}
+.subtitle{
+    margin-top: 0px;
+    float: right;
+}

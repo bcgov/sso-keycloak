@@ -1,0 +1,11 @@
+replicaCount: 1
+
+postgres:
+  host: sso-pgsql-master-prod
+  credentials:
+    secret: sso-pgsql-prod
+  admin:
+    secret: sso-admin-prod
+
+jgroupCluster:
+  secret: sso-jgroups-prod

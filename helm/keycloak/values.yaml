@@ -1,0 +1,64 @@
+replicaCount: 1
+
+image:
+  repository: ghcr.io/bcgov/sso-keycloak
+  tag: dev
+  pullPolicy: Always
+
+imagePullSecrets:
+  - name: gh-registry-config
+
+nameOverride: sso-keycloak
+fullnameOverride: sso-keycloak
+
+service:
+  type: ClusterIP
+  port: 8080
+
+postgres:
+  host: sso-pgsql-master
+  port: 5432
+  credentials:
+    secret: sso-pgsql
+    usernameKey: app-db-username
+    passwordKey: app-db-password
+    dbNameKey: app-db-name
+  admin:
+    secret: sso-admin
+    usernameKey: username
+    passwordKey: password
+  poolSize:
+    min: 5
+    max: 20
+
+jgroupCluster:
+  secret: sso-jgroups
+  passwordKey: password
+
+# see https://github.com/keycloak/keycloak-containers/blob/master/server/README.md#start-a-keycloak-instance-with-custom-command-line-options
+additionalServerOptions: "-Dkeycloak.profile.feature.authorization=enabled -Djboss.persistent.log.dir=/var/log/eap"
+
+# see https://github.com/keycloak/keycloak-containers/blob/master/server/README.md#setting-up-tlsssl
+tls:
+  enabled: false
+  path: "/var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt"
+
+# see https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/7.0/html-single/red_hat_jboss_enterprise_application_platform_for_openshift/index#configuring_dns_ping
+dnsPing:
+  enabled: false
+  serviceName: sso-keycloak-ping
+  servicePort: 8888
+
+resources:
+  limits:
+    cpu: 2
+    memory: 2Gi
+  requests:
+    cpu: 1250m
+    memory: 1Gi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

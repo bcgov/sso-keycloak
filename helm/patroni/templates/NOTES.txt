@@ -1,0 +1,10 @@
+Patroni can be accessed via port 5432 on the following DNS name from within your cluster:
+{{ template "patroni.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+
+To get your password for superuser run:
+
+    # superuser password
+    PGPASSWORD_SUPERUSER=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "patroni.fullname" . }} -o jsonpath="{.data.password-superuser}" | base64 --decode)
+
+    # admin password
+    PGPASSWORD_ADMIN=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "patroni.fullname" . }} -o jsonpath="{.data.password-admin}" | base64 --decode)

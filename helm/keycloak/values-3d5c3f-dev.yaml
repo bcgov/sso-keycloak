@@ -1,0 +1,11 @@
+replicaCount: 1
+
+postgres:
+  host: sso-pgsql-master-dev
+  credentials:
+    secret: sso-pgsql-dev
+  admin:
+    secret: sso-admin-dev
+
+jgroupCluster:
+  secret: sso-jgroups-dev
