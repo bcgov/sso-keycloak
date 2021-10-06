@@ -1,0 +1,14 @@
+{{- if .Values.pingService.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "..fullname" . }}-logs
+  annotations:
+    volume.beta.kubernetes.io/storage-class: {{ .Values.persistentLog.storageClassName }}
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+{{- end }}
