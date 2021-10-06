@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: ghcr.io/bcgov/sso-keycloak
+  repository: ghcr.io/bcgov/sso
   tag: dev
   pullPolicy: Always
 
@@ -48,6 +48,13 @@ additionalServerOptions: "-Dkeycloak.profile.feature.authorization=enabled -Djbo
 tls:
   enabled: false
   path: "/var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt"
+  httpsSecret: sso-x509-https-secret
+  jgroupsSecret: sso-x509-jgroups-secret
+
+persistentLog:
+  enabled: true
+  storageClassName: netapp-file-standard
+  path: /var/log/eap
 
 resources:
   limits:
