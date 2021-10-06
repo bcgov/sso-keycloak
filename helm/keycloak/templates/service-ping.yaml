@@ -1,0 +1,23 @@
+{{- if .Values.pingService.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "..fullname" . }}-ping
+  labels:
+    app.kubernetes.io/name: {{ include "..name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "..chart" . }}
+  annotations:
+    service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
+spec:
+  type: {{ .Values.pingService.type }}
+  ports:
+    - port: {{ .Values.pingService.port }}
+      name: ping
+      targetPort: ping
+      protocol: TCP
+  selector:
+    app.kubernetes.io/name: {{ include "..name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}

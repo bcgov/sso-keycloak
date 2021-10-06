@@ -1,7 +1,5 @@
 SHELL := /usr/bin/env bash
-SLUG=3d5c3f
-ENV=dev
-NAMESPACE="${SLUG}-${ENV}"
+NAMESPACE="3d5c3f-dev"
 
 .PHONY: install
 install:
