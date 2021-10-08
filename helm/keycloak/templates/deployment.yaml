@@ -100,10 +100,8 @@ spec:
             # Additional server startup options (extension of JAVA_OPTS)
             - name: JAVA_OPTS_APPEND
               value: {{ .Values.additionalServerOptions }}
-            {{- if .Values.tls.enabled }}
             - name: X509_CA_BUNDLE
-              value: {{ .Values.tls.path }}
-            {{- end }}
+              value: /var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt
             {{- if .Values.pingService.enabled }}
             - name: OPENSHIFT_DNS_PING_SERVICE_NAME
               value: {{ include "..fullname" . }}-ping

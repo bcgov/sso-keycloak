@@ -18,7 +18,6 @@ service:
 # see https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/7.0/html-single/red_hat_jboss_enterprise_application_platform_for_openshift/index#configuring_dns_ping
 pingService:
   enabled: true
-  type: ClusterIP
   port: 8888
 
 postgres:
@@ -47,7 +46,6 @@ additionalServerOptions: "-Dkeycloak.profile.feature.authorization=enabled -Djbo
 # see https://github.com/keycloak/keycloak-containers/blob/master/server/README.md#setting-up-tlsssl
 tls:
   enabled: false
-  path: "/var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt"
   httpsSecret: sso-x509-https-secret
   jgroupsSecret: sso-x509-jgroups-secret
 
