@@ -10,8 +10,11 @@ metadata:
     helm.sh/chart: {{ include "..chart" . }}
   annotations:
     service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
+    {{- if .Values.tls.enabled }}
+    service.alpha.openshift.io/serving-cert-secret-name: {{ .Values.tls.jgroupsSecret }}
+    {{- end }}
 spec:
-  type: {{ .Values.pingService.type }}
+  clusterIP: None
   ports:
     - port: {{ .Values.pingService.port }}
       name: ping

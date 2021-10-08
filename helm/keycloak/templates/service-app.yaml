@@ -7,13 +7,22 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     helm.sh/chart: {{ include "..chart" . }}
+  annotations:
+    {{- if .Values.tls.enabled }}
+    service.alpha.openshift.io/serving-cert-secret-name: {{ .Values.tls.httpsSecret }}
+    {{- end }}
 spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
+      protocol: TCP
+      {{ if .Values.tls.enabled }}
+      name: https
+      targetPort: https
+      {{ else }}
       name: http
       targetPort: http
-      protocol: TCP
+      {{ end }}
   selector:
     app.kubernetes.io/name: {{ include "..name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}

@@ -7,10 +7,17 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     helm.sh/chart: {{ include "..chart" . }}
+  annotations:
+    haproxy.router.openshift.io/balance: roundrobin
+    haproxy.router.openshift.io/disable_cookies: 'true'
 spec:
   tls:
     insecureEdgeTerminationPolicy: Redirect
+    {{ if .Values.tls.enabled }}
+    termination: reencrypt
+    {{ else }}
     termination: edge
+    {{ end }}
   to:
     kind: Service
     name: {{ include "..fullname" . }}
