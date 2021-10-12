@@ -1,15 +1,29 @@
 # Keycloak Helm Chart
 
+The helm chart installs `Secret` k8s objects with the release name `sso-keycloak`.
+
 ## Installing the Chart
 
-To install the chart with the release name `sso-keycloak`:
+To install the chart on a specific namespace.
 
 ```bash
-$ helm install sso-keycloak . -n <namespace> -f ./values.yaml
+$ make install NAMESPACE=<namespace>
 ```
 
-To uninstall the chart
+To upgrade the chart on a specific namespace.
 
 ```bash
-$ helm uninstall sso-keycloak -n <namespace>
+$ make upgrade NAMESPACE=<namespace>
+```
+
+To uninstall the chart on a specific namespace.
+
+```bash
+$ make uninstall NAMESPACE=<namespace>
+```
+
+To lint the chart on a specific namespace.
+
+```bash
+$ make lint NAMESPACE=<namespace>
 ```

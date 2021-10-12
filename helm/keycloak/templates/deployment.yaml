@@ -26,20 +26,42 @@ spec:
           command:
             - /bin/sh
             - /opt/eap/bin/openshift-launch.sh
+          # see https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/7.3/html/getting_started_with_jboss_eap_for_openshift_container_platform/migration-applications-72-73_default
+          # ideally, it should work with the configurations below, yet as it takes too long to be ready, let's replace it with `tcpSocket` options.
+          # livenessProbe:
+          #   exec:
+          #     command:
+          #     - /bin/bash
+          #     - -c
+          #     - timeout 60 /opt/eap/bin/livenessProbe.sh
+          #   initialDelaySeconds: 300
+          #   periodSeconds: 20
+          #   successThreshold: 1
+          #   failureThreshold: 5
+          # readinessProbe:
+          #   exec:
+          #     command:
+          #     - /bin/bash
+          #     - -c
+          #     - timeout 60 /opt/eap/bin/readinessProbe.sh
+          #   initialDelaySeconds: 200
+          #   periodSeconds: 20
+          #   successThreshold: 1
+          #   failureThreshold: 5
           livenessProbe:
-            exec:
-              command:
-              - /bin/bash
-              - -c
-              - /opt/eap/bin/livenessProbe.sh
-            initialDelaySeconds: 180
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 300
+            periodSeconds: 20
+            successThreshold: 1
+            failureThreshold: 5
           readinessProbe:
-            exec:
-              command:
-              - /bin/bash
-              - -c
-              - /opt/eap/bin/readinessProbe.sh
-            initialDelaySeconds: 120
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 200
+            periodSeconds: 20
+            successThreshold: 1
+            failureThreshold: 5
           ports:
             - containerPort: 8778
               name: jolokia
@@ -117,6 +139,8 @@ spec:
               value: db-postgresql=DB
             - name: JGROUPS_PING_PROTOCOL
               value: dns.DNS_PING
+            - name: TZ
+              value: America/Vancouver
           volumeMounts:
             {{- if .Values.tls.enabled }}
             - mountPath: /etc/x509/https

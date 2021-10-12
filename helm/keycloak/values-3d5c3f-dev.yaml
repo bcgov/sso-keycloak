@@ -16,3 +16,11 @@ jgroupCluster:
 
 tls:
   enabled: true
+
+resources:
+  limits:
+    cpu: 2
+    memory: 2Gi
+  requests:
+    cpu: 1250m
+    memory: 2Gi
