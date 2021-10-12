@@ -8,13 +8,10 @@ on:
 jobs:
   build-and-push-helm:
     runs-on: ubuntu-18.04
-    env:
-      KEYCLOAK_URL: http://localhost:8080
     steps:
       - uses: actions/checkout@v2
 
-      - name: Store Cypress artifacts
-        if: github.ref == 'refs/heads/master'
+      - name: Build Package to publish GH Pages
         env:
           KEYCLOAK_HELM_CHART: /helm/keycloak
         run: |
