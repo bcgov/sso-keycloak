@@ -1,4 +1,8 @@
-replicaCount: 1
+replicaCount: 2
+
+service:
+  type: ClusterIP
+  port: 8443
 
 postgres:
   host: sso-pgsql-master-test
@@ -9,3 +13,14 @@ postgres:
 
 jgroupCluster:
   secret: sso-jgroups-test
+
+tls:
+  enabled: true
+
+resources:
+  limits:
+    cpu: 2
+    memory: 2Gi
+  requests:
+    cpu: 1250m
+    memory: 2Gi

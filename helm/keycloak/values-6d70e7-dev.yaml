@@ -1,5 +1,9 @@
 replicaCount: 5
 
+service:
+  type: ClusterIP
+  port: 8443
+
 postgres:
   host: sso-pgsql-master-dev
   credentials:
@@ -9,6 +13,9 @@ postgres:
 
 jgroupCluster:
   secret: sso-jgroups-dev
+
+tls:
+  enabled: true
 
 resources:
   limits:
