@@ -9,20 +9,24 @@ jobs:
   build-and-push-helm:
     runs-on: ubuntu-18.04
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
-      - name: Build Package to publish GH Pages
+      - name: Configure Git
         run: |
-          rm -rf .git
-          cd helm/keycloak
-          helm package . -d output
-          helm repo index output --url https://bcgov.github.io/sso-keycloak/
-          git init
-          git config user.name $GITHUB_ACTOR"
+          git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
-          git config commit.gpgsign false
-          git add .
-          git commit -m "initial commit"
-          git branch -M helm/keycloak
-          git remote add origin "https://$GITHUB_ACTOR:${{ secrets.GITHUB_TOKEN }}@github.com/bcgov/sso-keycloak.git"
-          git push -uf origin helm/keycloak
+
+      - name: Install Helm
+        uses: azure/setup-helm@v1
+        with:
+          version: v3.4.0
+
+      - name: Run chart-releaser
+        uses: helm/chart-releaser-action@v1.2.1
+        with:
+          charts_dir: helm
+        env:
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
