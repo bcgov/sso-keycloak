@@ -1,0 +1,23 @@
+apiVersion: v1
+entries:
+  secrets:
+  - apiVersion: v1
+    created: "2021-10-12T22:53:12.207821795Z"
+    description: Helm chart for Secrets
+    digest: 2a6e8be3918a0e3963ac49ae120d86461f0d79aec13be17beb7e450840b90a90
+    name: secrets
+    urls:
+    - https://github.com/bcgov/sso-keycloak/releases/download/secrets-0.1.0/secrets-0.1.0.tgz
+    version: 0.1.0
+  sso-keycloak:
+  - apiVersion: v1
+    appVersion: 0.1.0
+    created: "2021-10-12T22:53:12.436562237Z"
+    description: Open Source Identity and Access Management For Modern Applications
+      and Services
+    digest: e5aaa3e9e749be04abde3c17cd26d043ae5739acc6255a5c51fc4c993383f4cd
+    name: sso-keycloak
+    urls:
+    - https://github.com/bcgov/sso-keycloak/releases/download/sso-keycloak-0.1.0/sso-keycloak-0.1.0.tgz
+    version: 0.1.0
+generated: "2021-10-12T22:53:12.436567337Z"
