@@ -1,5 +1,12 @@
 replicaCount: 7
 
+image:
+  tag: 7.4-37
+
+service:
+  type: ClusterIP
+  port: 8443
+
 postgres:
   host: sso-pgsql-master-prod
   credentials:
@@ -9,6 +16,9 @@ postgres:
 
 jgroupCluster:
   secret: sso-jgroups-prod
+
+tls:
+  enabled: true
 
 resources:
   limits:

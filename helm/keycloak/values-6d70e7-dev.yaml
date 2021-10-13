@@ -1,5 +1,8 @@
 replicaCount: 5
 
+image:
+  tag: 7.4-37
+
 service:
   type: ClusterIP
   port: 8443

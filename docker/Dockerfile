@@ -4,7 +4,7 @@ WORKDIR /tmp/
 RUN mvn package
 
 # see https://catalog.redhat.com/software/containers/rh-sso-7/sso74-openshift-rhel8/5e7e033d5a1346687697bbd3
-FROM registry.redhat.io/rh-sso-7/sso74-openshift-rhel8:7.4
+FROM registry.redhat.io/rh-sso-7/sso74-openshift-rhel8:7.4-37
 
 ENV CONFIGURATION /opt/eap/standalone/configuration/
 
