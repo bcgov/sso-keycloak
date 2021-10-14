@@ -1,0 +1,37 @@
+[
+  {
+    "name": "bceid_userid",
+    "identityProviderAlias": "bceid",
+    "identityProviderMapper": "oidc-user-attribute-idp-mapper",
+    "config": {
+      "claim": "bceid_userid",
+      "user.attribute": "bceid_userid"
+    }
+  },
+  {
+    "name": "displayName",
+    "identityProviderAlias": "bceid",
+    "identityProviderMapper": "oidc-user-attribute-idp-mapper",
+    "config": {
+      "claim": "displayName",
+      "user.attribute": "displayName"
+    }
+  },
+  {
+    "name": "email",
+    "identityProviderAlias": "bceid",
+    "identityProviderMapper": "oidc-user-attribute-idp-mapper",
+    "config": {
+      "claim": "email",
+      "user.attribute": "email"
+    }
+  },
+  {
+    "name": "username",
+    "identityProviderAlias": "bceid",
+    "identityProviderMapper": "oidc-username-idp-mapper",
+    "config": {
+      "template": "${CLAIM.preferred_username}@${ALIAS}"
+    }
+  }
+]

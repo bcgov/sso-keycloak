@@ -1,0 +1,8 @@
+[
+  { "alias": "idir", "displayName": "IDIR", "realm": "idir" },
+  { "alias": "bceid", "displayName": "BCeID", "realm": "_bceid" },
+  { "alias": "bceid-basic", "displayName": "Basic BCeID", "realm": "_bceidbasic" },
+  { "alias": "bceid-business", "displayName": "Business BCeID", "realm": "_bceidbusiness" },
+  { "alias": "bceid-basic-and-business", "displayName": "BCeID", "realm": "_bceidbasicbusiness" },
+  { "alias": "github", "displayName": "GitHub", "realm": "_github" }
+]
