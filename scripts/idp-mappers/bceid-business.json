@@ -1,0 +1,29 @@
+[
+  {
+    "config": {
+      "attribute.name": "email",
+      "user.attribute": "email"
+    },
+    "identityProviderAlias": "_bceidbusiness",
+    "identityProviderMapper": "saml-user-attribute-idp-mapper",
+    "name": "email"
+  },
+  {
+    "config": {
+      "attribute.name": "displayname",
+      "user.attribute": "displayName"
+    },
+    "identityProviderAlias": "_bceidbusiness",
+    "identityProviderMapper": "saml-user-attribute-idp-mapper",
+    "name": "displayName"
+  },
+  {
+    "config": {
+      "attribute.name": "useridentifier",
+      "user.attribute": "_bceidbusiness_userid"
+    },
+    "identityProviderAlias": "_bceidbusiness",
+    "identityProviderMapper": "saml-user-attribute-idp-mapper",
+    "name": "_bceidbusiness_userid"
+  }
+]

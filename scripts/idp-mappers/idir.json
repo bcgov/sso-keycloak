@@ -1,0 +1,64 @@
+[
+  {
+    "name": "email",
+    "identityProviderAlias": "idir",
+    "identityProviderMapper": "oidc-user-attribute-idp-mapper",
+    "config": {
+      "claim": "email",
+      "user.attribute": "email"
+    }
+  },
+  {
+    "name": "username",
+    "identityProviderAlias": "idir",
+    "identityProviderMapper": "oidc-username-idp-mapper",
+    "config": {
+      "template": "${CLAIM.preferred_username}@${ALIAS}"
+    }
+  },
+  {
+    "name": "idir_userid",
+    "identityProviderAlias": "idir",
+    "identityProviderMapper": "oidc-user-attribute-idp-mapper",
+    "config": {
+      "claim": "idir_userid",
+      "user.attribute": "idir_userid"
+    }
+  },
+  {
+    "name": "firstName",
+    "identityProviderAlias": "idir",
+    "identityProviderMapper": "oidc-user-attribute-idp-mapper",
+    "config": {
+      "claim": "firstName",
+      "user.attribute": "firstName"
+    }
+  },
+  {
+    "name": "displayName",
+    "identityProviderAlias": "idir",
+    "identityProviderMapper": "oidc-user-attribute-idp-mapper",
+    "config": {
+      "claim": "displayName",
+      "user.attribute": "displayName"
+    }
+  },
+  {
+    "name": "idir_guid",
+    "identityProviderAlias": "idir",
+    "identityProviderMapper": "oidc-user-attribute-idp-mapper",
+    "config": {
+      "claim": "idir_userid",
+      "user.attribute": "idir_user_guid"
+    }
+  },
+  {
+    "name": "lastName",
+    "identityProviderAlias": "idir",
+    "identityProviderMapper": "oidc-user-attribute-idp-mapper",
+    "config": {
+      "claim": "lastName",
+      "user.attribute": "lastName"
+    }
+  }
+]

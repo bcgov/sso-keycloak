@@ -18,16 +18,16 @@ async function main() {
     const kcAdminClient = await getAdminClient(env, { totp });
     if (!kcAdminClient) return;
 
-    const prompt = new Confirm(`Are you sure to delete a realm ${realm}`);
+    const prompt = new Confirm(`Are you sure to delete a realm ${realm} in ${env} environment?`);
     const answer = await prompt.run();
 
     if (!answer) return;
 
-    // Find all IDPs associated with this realm
+    // 1. Find all IDPs associated with this realm
     let idps = await kcAdminClient.identityProviders.find({ realm });
     idps = idps.filter((idp) => idp.providerId === 'keycloak-oidc');
 
-    // Delete the IDP clients
+    // 2. Delete the IDP clients
     for (let x = 0; x < idps.length; x++) {
       const idp = idps[x];
       const { tokenUrl, clientId } = idp.config;
@@ -40,7 +40,7 @@ async function main() {
       }
     }
 
-    // Delete the realm
+    // 3. Delete the realm
     await kcAdminClient.realms.del({ realm });
 
     console.log(`the realm ${realm} has been removed with the associated IDP clients.`);

@@ -1,0 +1,65 @@
+[
+  {
+    "name": "email",
+    "identityProviderAlias": "bceid-basic-and-business",
+    "identityProviderMapper": "oidc-user-attribute-idp-mapper",
+    "config": {
+      "claim": "email",
+      "user.attribute": "email"
+    }
+  },
+  {
+    "name": "username",
+    "identityProviderAlias": "bceid-basic-and-business",
+    "identityProviderMapper": "oidc-username-idp-mapper",
+    "config": {
+      "template": "${CLAIM.preferred_username}@bceid"
+    }
+  },
+  {
+    "name": "displayName",
+    "identityProviderAlias": "bceid-basic-and-business",
+    "identityProviderMapper": "oidc-user-attribute-idp-mapper",
+    "config": {
+      "claim": "displayName",
+      "user.attribute": "displayName"
+    }
+  },
+  {
+    "name": "smgov_businessguid",
+    "identityProviderAlias": "bceid-basic-and-business",
+    "identityProviderMapper": "oidc-user-attribute-idp-mapper",
+    "config": {
+      "claims": "[]",
+      "claim": "smgov_businessguid",
+      "user.attribute": "smgov_businessguid"
+    }
+  },
+  {
+    "name": "smgov_businesslegalname",
+    "identityProviderAlias": "bceid-basic-and-business",
+    "identityProviderMapper": "oidc-user-attribute-idp-mapper",
+    "config": {
+      "claim": "smgov_businesslegalname",
+      "user.attribute": "smgov_businesslegalname"
+    }
+  },
+  {
+    "name": "guid",
+    "identityProviderAlias": "bceid-basic-and-business",
+    "identityProviderMapper": "oidc-user-attribute-idp-mapper",
+    "config": {
+      "user.attribute": "guid",
+      "claim": "bceid_userid"
+    }
+  },
+  {
+    "name": "company",
+    "identityProviderAlias": "bceid-basic-and-business",
+    "identityProviderMapper": "oidc-user-attribute-idp-mapper",
+    "config": {
+      "claim": "company",
+      "user.attribute": "company"
+    }
+  }
+]

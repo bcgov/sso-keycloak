@@ -1,0 +1,46 @@
+[
+  {
+    "name": "displayName",
+    "identityProviderAlias": "{{ idp_realm_alias }}",
+    "identityProviderMapper": "oidc-user-attribute-idp-mapper",
+    "config": {
+      "claim": "displayName",
+      "user.attribute": "displayName"
+    }
+  },
+  {
+    "name": "username",
+    "identityProviderAlias": "{{ idp_realm_alias }}",
+    "identityProviderMapper": "oidc-username-idp-mapper",
+    "config": {
+      "template": "${CLAIM.preferred_username}@${ALIAS}"
+    }
+  },
+  {
+    "name": "email",
+    "identityProviderAlias": "{{ idp_realm_alias }}",
+    "identityProviderMapper": "oidc-user-attribute-idp-mapper",
+    "config": {
+      "claim": "email",
+      "user.attribute": "email"
+    }
+  },
+  {
+    "name": "firstName",
+    "identityProviderAlias": "{{ idp_realm_alias }}",
+    "identityProviderMapper": "oidc-user-attribute-idp-mapper",
+    "config": {
+      "claim": "firstName",
+      "user.attribute": "firstName"
+    }
+  },
+  {
+    "name": "lastName",
+    "identityProviderAlias": "{{ idp_realm_alias }}",
+    "identityProviderMapper": "oidc-user-attribute-idp-mapper",
+    "config": {
+      "claim": "lastName",
+      "user.attribute": "firstName"
+    }
+  }
+]

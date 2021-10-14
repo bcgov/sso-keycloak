@@ -1,0 +1,28 @@
+[
+  {
+    "name": "displayName",
+    "identityProviderAlias": "bceid-basic",
+    "identityProviderMapper": "oidc-user-attribute-idp-mapper",
+    "config": {
+      "claim": "displayName",
+      "user.attribute": "displayName"
+    }
+  },
+  {
+    "name": "username",
+    "identityProviderAlias": "bceid-basic",
+    "identityProviderMapper": "oidc-username-idp-mapper",
+    "config": {
+      "template": "${CLAIM.preferred_username}@${ALIAS}"
+    }
+  },
+  {
+    "name": "email",
+    "identityProviderAlias": "bceid-basic",
+    "identityProviderMapper": "oidc-user-attribute-idp-mapper",
+    "config": {
+      "claim": "email",
+      "user.attribute": "email"
+    }
+  }
+]

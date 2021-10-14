@@ -62,7 +62,7 @@
             </handlers>
             <logger log-boot="true" log-read-only="false" enabled="false">
                 <handlers>
-                    <!-- <handler name="file" /> -->
+                    <handler name="file" />
                 </handlers>
             </logger>
         </audit-log>
@@ -106,7 +106,7 @@
             <logger category="org.keycloak.events" use-parent-handlers="false">
                 <level name="DEBUG" />
                 <handlers>
-                    <!-- <handler name="AUDIT" /> -->
+                    <handler name="AUDIT" />
                     <handler name="CONSOLE" />
                 </handlers>
             </logger>
