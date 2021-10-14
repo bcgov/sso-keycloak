@@ -7,6 +7,9 @@ on:
       - dev
     tags:
       - "*"
+    paths:
+      - "docker/**"
+      - ".github/workflows/**"
 
 env:
   GITHUB_REGISTRY: ghcr.io

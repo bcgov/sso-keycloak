@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - dev
+    paths:
+      - "helm/**"
+      - ".github/workflows/**"
 
 jobs:
   build-and-push-helm:
