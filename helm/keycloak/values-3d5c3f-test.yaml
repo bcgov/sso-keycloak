@@ -1,7 +1,7 @@
 replicaCount: 2
 
 image:
-  tag: 7.4-37-rc.1
+  tag: 7.4-37-rc.2
 
 service:
   type: ClusterIP

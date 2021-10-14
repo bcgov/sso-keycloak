@@ -1,7 +1,16 @@
 [
   {
+    "name": "bceid_userid",
+    "identityProviderAlias": "bceid",
+    "identityProviderMapper": "oidc-user-attribute-idp-mapper",
+    "config": {
+      "claim": "bceid_userid",
+      "user.attribute": "bceid_userid"
+    }
+  },
+  {
     "name": "displayName",
-    "identityProviderAlias": "{{ idp_realm_alias }}",
+    "identityProviderAlias": "bceid",
     "identityProviderMapper": "oidc-user-attribute-idp-mapper",
     "config": {
       "claim": "displayName",
@@ -9,20 +18,20 @@
     }
   },
   {
-    "name": "username",
-    "identityProviderAlias": "{{ idp_realm_alias }}",
-    "identityProviderMapper": "oidc-username-idp-mapper",
-    "config": {
-      "template": "${CLAIM.preferred_username}@${ALIAS}"
-    }
-  },
-  {
     "name": "email",
-    "identityProviderAlias": "{{ idp_realm_alias }}",
+    "identityProviderAlias": "bceid",
     "identityProviderMapper": "oidc-user-attribute-idp-mapper",
     "config": {
       "claim": "email",
       "user.attribute": "email"
+    }
+  },
+  {
+    "name": "username",
+    "identityProviderAlias": "bceid",
+    "identityProviderMapper": "oidc-username-idp-mapper",
+    "config": {
+      "template": "${CLAIM.preferred_username}@${ALIAS}"
     }
   }
 ]

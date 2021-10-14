@@ -14,17 +14,30 @@
     }
   },
   {
-    "name": "username",
+    "name": "displayName",
     "protocol": "openid-connect",
-    "protocolMapper": "oidc-usermodel-property-mapper",
-    "consentRequired": true,
-    "consentText": "${username}",
+    "protocolMapper": "oidc-usermodel-attribute-mapper",
+    "consentRequired": false,
     "config": {
       "userinfo.token.claim": "true",
-      "user.attribute": "username",
+      "user.attribute": "displayName",
       "id.token.claim": "true",
       "access.token.claim": "true",
-      "claim.name": "preferred_username",
+      "claim.name": "displayName",
+      "jsonType.label": "String"
+    }
+  },
+  {
+    "name": "email",
+    "protocol": "openid-connect",
+    "protocolMapper": "oidc-usermodel-property-mapper",
+    "consentRequired": false,
+    "config": {
+      "userinfo.token.claim": "true",
+      "user.attribute": "email",
+      "id.token.claim": "true",
+      "access.token.claim": "true",
+      "claim.name": "email",
       "jsonType.label": "String"
     }
   },
@@ -43,31 +56,16 @@
     }
   },
   {
-    "name": "displayName",
+    "name": "username",
     "protocol": "openid-connect",
-    "protocolMapper": "oidc-usermodel-attribute-mapper",
+    "protocolMapper": "oidc-usermodel-property-mapper",
     "consentRequired": false,
     "config": {
       "userinfo.token.claim": "true",
-      "user.attribute": "displayName",
+      "user.attribute": "username",
       "id.token.claim": "true",
       "access.token.claim": "true",
-      "claim.name": "displayName",
-      "jsonType.label": "String"
-    }
-  },
-  {
-    "name": "email",
-    "protocol": "openid-connect",
-    "protocolMapper": "oidc-usermodel-property-mapper",
-    "consentRequired": true,
-    "consentText": "${email}",
-    "config": {
-      "userinfo.token.claim": "true",
-      "user.attribute": "email",
-      "id.token.claim": "true",
-      "access.token.claim": "true",
-      "claim.name": "email",
+      "claim.name": "preferred_username",
       "jsonType.label": "String"
     }
   }

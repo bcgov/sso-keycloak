@@ -1,4 +1,3 @@
-const crypto = require('crypto');
 const _ = require('lodash');
 const axios = require('axios');
 const dotenv = require('dotenv');
@@ -89,13 +88,4 @@ async function getAdminClient(env = 'dev', { totp = '' } = {}) {
   }
 }
 
-async function generateSecret(length = 48) {
-  return new Promise((resolve, reject) => {
-    crypto.randomBytes(length, (err, buffer) => {
-      if (err) reject(err);
-      else resolve(buffer.toString('hex'));
-    });
-  });
-}
-
-module.exports = { getAdminClient, getRealmUrl, getOidcConfiguration, generateSecret };
+module.exports = { getAdminClient, getRealmUrl, getOidcConfiguration };

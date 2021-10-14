@@ -1,0 +1,29 @@
+{
+  "realm": "<override_me>",
+  "alias": "<override_me>",
+  "displayName": "<override_me>",
+  "providerId": "keycloak-oidc",
+  "enabled": true,
+  "trustEmail": false,
+  "storeToken": false,
+  "addReadTokenRoleOnCreate": false,
+  "authenticateByDefault": false,
+  "linkOnly": false,
+  "firstBrokerLoginFlowAlias": "first broker login",
+  "config": {
+    "issuer": "<override_me>",
+    "authorizationUrl": "<override_me>",
+    "tokenUrl": "<override_me>",
+    "logoutUrl": "<override_me>",
+    "userInfoUrl": "<override_me>",
+    "jwksUrl": "<override_me>",
+    "syncMode": "IMPORT",
+    "clientAuthMethod": "client_secret_post",
+    "clientId": "<override_me>",
+    "clientSecret": "<override_me>",
+    "backchannelSupported": "true",
+    "useJwksUrl": "true",
+    "loginHint": "false",
+    "validateSignature": "true"
+  }
+}

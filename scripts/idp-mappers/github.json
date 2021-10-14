@@ -1,7 +1,7 @@
 [
   {
     "name": "displayName",
-    "identityProviderAlias": "{{ idp_realm_alias }}",
+    "identityProviderAlias": "github",
     "identityProviderMapper": "oidc-user-attribute-idp-mapper",
     "config": {
       "claim": "displayName",
@@ -9,16 +9,8 @@
     }
   },
   {
-    "name": "username",
-    "identityProviderAlias": "{{ idp_realm_alias }}",
-    "identityProviderMapper": "oidc-username-idp-mapper",
-    "config": {
-      "template": "${CLAIM.preferred_username}@${ALIAS}"
-    }
-  },
-  {
     "name": "email",
-    "identityProviderAlias": "{{ idp_realm_alias }}",
+    "identityProviderAlias": "github",
     "identityProviderMapper": "oidc-user-attribute-idp-mapper",
     "config": {
       "claim": "email",
@@ -27,7 +19,7 @@
   },
   {
     "name": "firstName",
-    "identityProviderAlias": "{{ idp_realm_alias }}",
+    "identityProviderAlias": "github",
     "identityProviderMapper": "oidc-user-attribute-idp-mapper",
     "config": {
       "claim": "firstName",
@@ -36,11 +28,19 @@
   },
   {
     "name": "lastName",
-    "identityProviderAlias": "{{ idp_realm_alias }}",
+    "identityProviderAlias": "github",
     "identityProviderMapper": "oidc-user-attribute-idp-mapper",
     "config": {
       "claim": "lastName",
       "user.attribute": "firstName"
+    }
+  },
+  {
+    "name": "username",
+    "identityProviderAlias": "github",
+    "identityProviderMapper": "oidc-username-idp-mapper",
+    "config": {
+      "template": "${CLAIM.preferred_username}@${ALIAS}"
     }
   }
 ]

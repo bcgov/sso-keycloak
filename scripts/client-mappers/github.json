@@ -1,16 +1,26 @@
 [
   {
-    "name": "username",
+    "name": "displayName",
     "protocol": "openid-connect",
-    "protocolMapper": "oidc-usermodel-property-mapper",
-    "consentRequired": true,
-    "consentText": "${username}",
+    "protocolMapper": "oidc-full-name-mapper",
+    "consentRequired": false,
     "config": {
-      "userinfo.token.claim": "true",
-      "user.attribute": "username",
       "id.token.claim": "true",
       "access.token.claim": "true",
-      "claim.name": "preferred_username",
+      "userinfo.token.claim": "true"
+    }
+  },
+  {
+    "name": "email",
+    "protocol": "openid-connect",
+    "protocolMapper": "oidc-usermodel-property-mapper",
+    "consentRequired": false,
+    "config": {
+      "userinfo.token.claim": "true",
+      "user.attribute": "email",
+      "id.token.claim": "true",
+      "access.token.claim": "true",
+      "claim.name": "email",
       "jsonType.label": "String"
     }
   },
@@ -43,28 +53,16 @@
     }
   },
   {
-    "name": "displayName",
-    "protocol": "openid-connect",
-    "protocolMapper": "oidc-full-name-mapper",
-    "consentRequired": false,
-    "config": {
-      "id.token.claim": "true",
-      "access.token.claim": "true",
-      "userinfo.token.claim": "true"
-    }
-  },
-  {
-    "name": "email",
+    "name": "username",
     "protocol": "openid-connect",
     "protocolMapper": "oidc-usermodel-property-mapper",
-    "consentRequired": true,
-    "consentText": "${email}",
+    "consentRequired": false,
     "config": {
       "userinfo.token.claim": "true",
-      "user.attribute": "email",
+      "user.attribute": "username",
       "id.token.claim": "true",
       "access.token.claim": "true",
-      "claim.name": "email",
+      "claim.name": "preferred_username",
       "jsonType.label": "String"
     }
   }
