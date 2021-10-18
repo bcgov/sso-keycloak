@@ -1,5 +1,8 @@
 replicaCount: 3
 
+nameOverride: kc-cron-patroni
+fullnameOverride: kc-cron-patroni
+
 image:
   # Image was built from
   # https://github.com/zalando/spilo/tree/master/postgres-appliance
@@ -11,6 +14,7 @@ image:
 # https://github.com/zalando/patroni/blob/master/docs/SETTINGS.rst#postgresql
 # https://github.com/zalando/spilo/blob/master/ENVIRONMENT.rst
 credentials:
+  random: true
   superuser: tea
   admin: cola
   standby: pinacolada
