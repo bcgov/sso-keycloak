@@ -12,5 +12,30 @@ spec:
   ports:
   - name: postgresql
     port: 5432
-    targetPort: postgresql
+    targetPort: 5432
     protocol: TCP
+  selector:
+    app: {{ template "patroni.fullname" . }}
+    release: {{ .Release.Name }}
+    spilo-role: master
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "patroni.fullname" . }}-readonly
+  labels:
+    app: {{ template "patroni.fullname" . }}
+    chart: {{ template "patroni.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: ClusterIP
+  ports:
+  - name: postgresql
+    port: 5432
+    targetPort: 5432
+    protocol: TCP
+  selector:
+    app: {{ template "patroni.fullname" . }}
+    release: {{ .Release.Name }}
+    spilo-role: replica

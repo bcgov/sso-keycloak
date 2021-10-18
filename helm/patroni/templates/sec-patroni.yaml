@@ -7,8 +7,17 @@ metadata:
     chart: {{ template "patroni.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+  annotations:
+    "helm.sh/hook": "pre-install"
+    "helm.sh/hook-delete-policy": "before-hook-creation"
 type: Opaque
 data:
+  {{- if .Values.credentials.random }}
+  password-superuser: {{ randAlphaNum 32 | b64enc | quote }}
+  password-admin: {{ randAlphaNum 32 | b64enc | quote }}
+  password-standby: {{ randAlphaNum 32 | b64enc | quote }}
+  {{- else }}
   password-superuser: {{ .Values.credentials.superuser | b64enc }}
   password-admin: {{ .Values.credentials.admin | b64enc }}
   password-standby: {{ .Values.credentials.standby | b64enc }}
+  {{- end }}
