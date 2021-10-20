@@ -5,6 +5,9 @@ image:
   pullPolicy: Always
   tag: "0.2.1"
 
+nameOverride: kc-cron-patroni
+fullnameOverride: kc-cron-patroni
+
 resources: {}
 persistentVolume:
   storageClass: netapp-block-standard

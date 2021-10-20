@@ -1,0 +1,18 @@
+image:
+  repository: ghcr.io/junminahn/testteste
+  tag: example
+  pullPolicy: Always
+
+imagePullSecrets:
+  - name: gh-registry-config
+
+nameOverride: kc-cron-job
+fullnameOverride: kc-cron-job
+
+resources:
+  limits:
+    cpu: 0.5
+    memory: 512M
+  requests:
+    cpu: 0.25
+    memory: 256M
