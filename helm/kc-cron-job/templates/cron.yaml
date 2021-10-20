@@ -8,10 +8,11 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     helm.sh/chart: {{ include "..chart" . }}
 spec:
-  # see https://crontab.guru/#0_19_*_*_*
-  schedule: "0 19 * * *"
+  # see https://crontab.guru/#00_21_*_*_*
+  schedule: "00 21 * * *"
   jobTemplate:
     spec:
+      backoffLimit: 1
       template:
         metadata:
           labels:
@@ -26,8 +27,8 @@ spec:
                 - |
                   echo starting;
                   set -euo pipefail;
+                  echo "select 'create database $PGDATABASE_NAME' where NOT exists (select from pg_database where datname = '$PGDATABASE_NAME')\gexec" | psql -d postgres
                   psql -d $PGDATABASE_NAME -qtA --set ON_ERROR_STOP=1 <<EOF
-                    select 'create database $PGDATABASE_NAME' where not exists (select from pg_database where datname = '$PGDATABASE_NAME');
                     create table if not exists public.active_sessions (
                         id serial not null,
                         keycloak_url varchar(1000),
@@ -71,6 +72,11 @@ spec:
                       key: password-superuser
                 - name: PGDATABASE
                   value: kccron
+                - name: KEYCLOAK_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: kc-cron-service-account
+                      key: keycloak-url
                 - name: KEYCLOAK_CLIENT_ID
                   valueFrom:
                     secretKeyRef:

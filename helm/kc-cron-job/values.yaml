@@ -1,6 +1,6 @@
 image:
-  repository: ghcr.io/junminahn/testteste
-  tag: example
+  repository:  ghcr.io/bcgov/kc-cron-job
+  tag: dev
   pullPolicy: Always
 
 imagePullSecrets:
