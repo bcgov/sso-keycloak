@@ -1,0 +1,33 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kc-job
+spec:
+  backoffLimit: 1
+  template:
+    spec:
+      containers:
+        - name: initdb
+          image: postgres:11.6-alpine
+          command: ["bash", "-c"]
+          args:
+            - |
+              echo starting;
+              set -euo pipefail;
+              psql -d $PGDATABASE_NAME -qtA --set ON_ERROR_STOP=1 <<EOF
+              EOF
+          env:
+            - name: PGHOST
+              value: kc-cron-patroni
+            - name: PGPORT
+              value: "5432"
+            - name: PGUSER
+              value: postgres
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: kc-cron-patroni
+                  key: password-superuser
+            - name: PGDATABASE_NAME
+              value: kccron
+      restartPolicy: Never

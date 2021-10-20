@@ -3,7 +3,7 @@ const { Client } = require('pg');
 const format = require('pg-format');
 const KcAdminClient = require('keycloak-admin').default;
 
-const KEYCLOAK_URL = 'https://dev.oidc.gov.bc.ca';
+const KEYCLOAK_URL = process.env.KEYCLOAK_URL || 'https://dev.oidc.gov.bc.ca';
 const KEYCLOAK_CLIENT_ID = process.env.KEYCLOAK_CLIENT_ID || 'script-cli';
 const KEYCLOAK_CLIENT_SECRET = process.env.KEYCLOAK_CLIENT_SECRET;
 const PGHOST = process.env.PGHOST;
