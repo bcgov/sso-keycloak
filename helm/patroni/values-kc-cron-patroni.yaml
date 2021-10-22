@@ -11,7 +11,7 @@ fullnameOverride: kc-cron-patroni
 resources: {}
 persistentVolume:
   storageClass: netapp-block-standard
-  size: 1Gi
+  size: 30Gi
 # As per https://patroni.readthedocs.io/en/latest/kubernetes.html#use-configmaps
 # "in some cases, for instance, when running on OpenShift, there is no alternative to using ConfigMaps."
 kubernetes:

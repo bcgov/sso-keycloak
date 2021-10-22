@@ -51,7 +51,7 @@ spec:
                       name: kc-cron-patroni
                       key: password-superuser
                 - name: PGDATABASE_NAME
-                  value: kccron
+                  value: rhsso
           containers:
             - name: {{ .Chart.Name }}
               image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -71,7 +71,7 @@ spec:
                       name: kc-cron-patroni
                       key: password-superuser
                 - name: PGDATABASE
-                  value: kccron
+                  value: rhsso
                 - name: KEYCLOAK_URL
                   valueFrom:
                     secretKeyRef:
