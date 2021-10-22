@@ -1,7 +1,7 @@
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: {{ include "..fullname" . }}
+  name: {{ include "..fullname" . }}-active-sessions
   labels:
     app.kubernetes.io/name: {{ include "..name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
@@ -56,6 +56,9 @@ spec:
             - name: {{ .Chart.Name }}
               image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
               imagePullPolicy: {{ .Values.image.pullPolicy }}
+              command:
+                - node
+                - active-sessions.js
               env:
                 - name: RELEASE_REVISION
                   value: "{{ .Release.Revision }}"
