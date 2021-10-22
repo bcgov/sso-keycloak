@@ -8,8 +8,8 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     helm.sh/chart: {{ include "..chart" . }}
 spec:
-  # see https://crontab.guru/#00_21_*_*_*
-  schedule: "00 21 * * *"
+  # see https://crontab.guru/#0_17_*_*_*
+  schedule: "0 17 * * *"
   jobTemplate:
     spec:
       backoffLimit: 1
@@ -51,7 +51,7 @@ spec:
                       name: kc-cron-patroni
                       key: password-superuser
                 - name: PGDATABASE_NAME
-                  value: kccron
+                  value: rhsso
           containers:
             - name: {{ .Chart.Name }}
               image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -71,7 +71,7 @@ spec:
                       name: kc-cron-patroni
                       key: password-superuser
                 - name: PGDATABASE
-                  value: kccron
+                  value: rhsso
                 - name: KEYCLOAK_URL
                   valueFrom:
                     secretKeyRef:
