@@ -71,9 +71,9 @@ async function main() {
 
     // const fileName = getFilename(5);
     const fileName = `2021-10-18.tar.gz`
-    await exec(`mkdir ./tmp & tar -xvzf /logs/${fileName} -C ./tmp`);
-    const data = await reduceDataFromFiles('./tmp/', formatLogs);
-    await exec(`rm -rf ./tmp`);
+    await exec(`mkdir /logs/tmp & tar -xvzf /logs/${fileName} -C /logs/tmp`);
+    const data = await reduceDataFromFiles('/logs/tmp/', formatLogs);
+    await exec(`rm -rf /logs/tmp`);
     await client.connect();
 
     for (dataset of data) {
