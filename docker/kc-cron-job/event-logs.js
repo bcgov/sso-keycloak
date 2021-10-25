@@ -65,6 +65,7 @@ async function main() {
       user: PGUSER,
       password: PGPASSWORD,
       database: PGDATABASE,
+      ssl: { rejectUnauthorized: false },
     });
 
     // TODO: run previous day's log files and upload to the db
