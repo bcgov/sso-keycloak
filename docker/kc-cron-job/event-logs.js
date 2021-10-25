@@ -70,8 +70,7 @@ async function main() {
 
     // TODO: run previous day's log files and upload to the db
 
-    // const fileName = getFilename(5);
-    const fileName = `2021-10-18.tar.gz`
+    const fileName = getFilename(2);
     await exec(`mkdir /logs/tmp & tar -xvzf /logs/${fileName} -C /logs/tmp`);
     const data = await reduceDataFromFiles('/logs/tmp/', formatLogs);
     await exec(`rm -rf /logs/tmp`);
