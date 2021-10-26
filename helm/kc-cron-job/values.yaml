@@ -1,5 +1,5 @@
 image:
-  repository:  ghcr.io/bcgov/kc-cron-job
+  repository: ghcr.io/bcgov/kc-cron-job
   tag: dev
   pullPolicy: Always
 
@@ -8,6 +8,12 @@ imagePullSecrets:
 
 nameOverride: kc-cron-job
 fullnameOverride: kc-cron-job
+
+namespace:
+  eventLogs: "3d5c3f-dev"
+  activeSessions: "3d5c3f-tools"
+
+pgHost: kc-cron-patroni.3d5c3f-tools.svc.cluster.local
 
 resources:
   limits:

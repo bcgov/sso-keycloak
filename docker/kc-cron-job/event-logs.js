@@ -3,13 +3,17 @@ const { Client } = require('pg');
 const format = require('pg-format');
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
-const fs = require('fs').promises;
+const fsPromises = require('fs').promises;
+const fs = require('fs');
+const readline = require('readline');
 
 const PGHOST = process.env.PGHOST || 'localhost';
 const PGPORT = process.env.PGPORT || '5432';
 const PGUSER = process.env.PGUSER || 'postgres';
 const PGPASSWORD = process.env.PGPASSWORD || 'postgres';
 const PGDATABASE = process.env.PGDATABASE || 'postgres';
+const LOG_BATCH_SIZE = process.env.LOG_BATCH_SIZE || 1000;
+const RETENTION_PERIOD_DAYS = process.env.RETENTION_PERIOD_DAYS || 30;
 
 const getFilename = (daysAgo) => {
   const yesterday = new Date();
@@ -17,13 +21,71 @@ const getFilename = (daysAgo) => {
   return `${yesterday.toISOString().split('T')[0]}.tar.gz`;
 };
 
-const reduceDataFromFiles = async (dirname, transformFileContents) => {
+const getQuery = (logs) => {
+  const query = format(
+    `INSERT INTO sso_logs (
+        sequence,
+        logger_class_name,
+        logger_name,
+        level,
+        message,
+        thread_name,
+        thread_id,
+        mdc,
+        ndc,
+        host_name,
+        process_name,
+        process_id,
+        timestamp,
+        version
+      ) VALUES %L`,
+    logs,
+  );
+  return query;
+};
+
+const saveLogsForFile = async (lineReader, client) => {
+  let i = 0;
+  let logs = [];
+  lineReader.on('line', async function (line) {
+    i++;
+    const formattedLog = formatLog(JSON.parse(line));
+    logs.push(formattedLog);
+    if (i === LOG_BATCH_SIZE) {
+      i = 0;
+      const queryLogs = [...logs];
+      logs = [];
+      await client.query(getQuery(queryLogs));
+    }
+  });
+
+  return new Promise((resolve, reject) => {
+    lineReader.on('close', async () => {
+      await client.query(getQuery(logs));
+      resolve();
+    });
+  });
+};
+
+const reduceDataFromFiles = async (dirname) => {
+  const promises = [];
+  let client;
+
   try {
-    const files = await fs.readdir(dirname);
-    const contents = await Promise.all(files.map((file) => fs.readFile(dirname + file, 'utf-8')));
-    return contents.map(transformFileContents);
+    client = getClient();
+    await client.connect();
+    const files = await fsPromises.readdir(dirname);
+    for (const filename of files) {
+      const lineReader = readline.createInterface({
+        input: fs.createReadStream(`${dirname}/${filename}`),
+      });
+      promises.push(saveLogsForFile(lineReader, client));
+    }
+    await Promise.all(promises);
   } catch (e) {
     console.error('error reading files:', e);
+  } finally {
+    await client.end();
   }
 };
 
@@ -40,63 +102,46 @@ const formatLog = (log) => {
       const [key, val] = field.split(/=(.+)/);
       json[key] = val;
     }
-    return { ...log, message: json };
+    return Object.values({ ...log, message: json });
   } catch (e) {
     console.log('failed', message);
-    return {};
+    return [];
   }
 };
 
-const formatLogs = (logFile) => {
-  return logFile
-    .split('\n')
-    .filter((str) => str !== '')
-    .map(JSON.parse)
-    .map(formatLog)
-    .map(Object.values);
-};
+const getClient = () => {
+  const client = new Client({
+    host: PGHOST,
+    port: parseInt(PGPORT),
+    user: PGUSER,
+    password: PGPASSWORD,
+    database: PGDATABASE,
+    // ssl: { rejectUnauthorized: false },
+  });
+  return client;
+}
+
+const clearOldLogs = async (retentionPeriodDays) => {
+  let client;
+  try {
+    client = getClient()
+    await client.connect();
+    const query = `DELETE from sso_logs where timestamp < NOW() - INTERVAL '${retentionPeriodDays} DAYS'`;
+    await client.query(query);
+  } catch (e) {
+    console.error(e);
+  } finally {
+    await client.end();
+  }
+}
 
 async function main() {
   try {
-    // see https://node-postgres.com/api/client#new-clientconfig-object
-    const client = new Client({
-      host: PGHOST,
-      port: parseInt(PGPORT),
-      user: PGUSER,
-      password: PGPASSWORD,
-      database: PGDATABASE,
-      ssl: { rejectUnauthorized: false },
-    });
-
-    // TODO: run previous day's log files and upload to the db
-
-    // const fileName = getFilename(5);
-    const fileName = `2021-10-18.tar.gz`
-    await exec(`mkdir /logs/tmp & tar -xvzf /logs/${fileName} -C /logs/tmp`);
-    const data = await reduceDataFromFiles('/logs/tmp/', formatLogs);
-    await exec(`rm -rf /logs/tmp`);
-    await client.connect();
-
-    for (dataset of data) {
-      const query = format(`INSERT INTO sso_logs (
-        sequence,
-        logger_class_name,
-        logger_name,
-        level,
-        message,
-        thread_name,
-        thread_id,
-        mdc,
-        ndc,
-        host_name,
-        process_name,
-        process_id,
-        timestamp,
-        version
-      ) VALUES %L`, dataset);
-      await client.query(query);
-    }
-    await client.end();
+    const fileName = getFilename(8);
+    await clearOldLogs(RETENTION_PERIOD_DAYS);
+    await exec(`mkdir ./tmp & tar -xvzf ./${fileName} -C ./tmp`);
+    await reduceDataFromFiles('./tmp/');
+    await exec(`rm -rf ./tmp`);
   } catch (err) {
     console.log(err);
   }
