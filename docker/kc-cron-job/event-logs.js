@@ -116,7 +116,7 @@ const getClient = () => {
     user: PGUSER,
     password: PGPASSWORD,
     database: PGDATABASE,
-    // ssl: { rejectUnauthorized: false },
+    ssl: { rejectUnauthorized: false },
   });
   return client;
 }
@@ -139,9 +139,9 @@ async function main() {
   try {
     const fileName = getFilename(8);
     await clearOldLogs(RETENTION_PERIOD_DAYS);
-    await exec(`mkdir ./tmp & tar -xvzf ./${fileName} -C ./tmp`);
-    await reduceDataFromFiles('./tmp/');
-    await exec(`rm -rf ./tmp`);
+    await exec(`mkdir /logs/tmp & tar -xvzf /logs/${fileName} -C /logs/tmp`);
+    await reduceDataFromFiles('/logs/tmp/');
+    await exec(`rm -rf /logs/tmp`);
   } catch (err) {
     console.log(err);
   }
