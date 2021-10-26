@@ -53,7 +53,7 @@ const saveLogsForFile = async (lineReader, client) => {
     logs.push(formattedLog);
     if (i === LOG_BATCH_SIZE) {
       i = 0;
-      const queryLogs = [...logs]
+      const queryLogs = [...logs];
       logs = [];
       await client.query(getQuery(queryLogs));
     }
@@ -69,17 +69,11 @@ const saveLogsForFile = async (lineReader, client) => {
 
 const reduceDataFromFiles = async (dirname) => {
   const promises = [];
-  const client = new Client({
-    host: PGHOST,
-    port: parseInt(PGPORT),
-    user: PGUSER,
-    password: PGPASSWORD,
-    database: PGDATABASE,
-    ssl: { rejectUnauthorized: false },
-  });
-  await client.connect();
+  let client;
 
   try {
+    client = getClient();
+    await client.connect();
     const files = await fsPromises.readdir(dirname);
     for (const filename of files) {
       const lineReader = readline.createInterface({
@@ -88,9 +82,10 @@ const reduceDataFromFiles = async (dirname) => {
       promises.push(saveLogsForFile(lineReader, client));
     }
     await Promise.all(promises);
-    await client.end();
   } catch (e) {
     console.error('error reading files:', e);
+  } finally {
+    await client.end();
   }
 };
 
@@ -114,28 +109,39 @@ const formatLog = (log) => {
   }
 };
 
-const clearOldLogs = async (retentionPeriodDays) => {
+const getClient = () => {
   const client = new Client({
     host: PGHOST,
     port: parseInt(PGPORT),
     user: PGUSER,
     password: PGPASSWORD,
     database: PGDATABASE,
-    ssl: { rejectUnauthorized: false },
+    // ssl: { rejectUnauthorized: false },
   });
-  await client.connect();
-  const query = `DELETE from sso_logs where timestamp < NOW() - INTERVAL '${retentionPeriodDays} DAYS'`;
-  await client.query(query);
-  await client.end();
+  return client;
+}
+
+const clearOldLogs = async (retentionPeriodDays) => {
+  let client;
+  try {
+    client = getClient()
+    await client.connect();
+    const query = `DELETE from sso_logs where timestamp < NOW() - INTERVAL '${retentionPeriodDays} DAYS'`;
+    await client.query(query);
+  } catch (e) {
+    console.error(e);
+  } finally {
+    await client.end();
+  }
 }
 
 async function main() {
   try {
-    const fileName = getFilename(2);
+    const fileName = getFilename(8);
     await clearOldLogs(RETENTION_PERIOD_DAYS);
-    await exec(`mkdir /logs/tmp & tar -xvzf /logs/${fileName} -C /logs/tmp`);
-    await reduceDataFromFiles('/logs/tmp/');
-    await exec(`rm -rf /logs/tmp`);
+    await exec(`mkdir ./tmp & tar -xvzf ./${fileName} -C ./tmp`);
+    await reduceDataFromFiles('./tmp/');
+    await exec(`rm -rf ./tmp`);
   } catch (err) {
     console.log(err);
   }
