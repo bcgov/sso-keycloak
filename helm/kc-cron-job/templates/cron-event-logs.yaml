@@ -2,7 +2,7 @@ apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: {{ include "..fullname" . }}-event-logs
-  namespace: {{ .Values.namespace }}
+  namespace: {{ .Values.namespace.eventLogs }}
   labels:
     app.kubernetes.io/name: {{ include "..name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
@@ -10,7 +10,8 @@ metadata:
     helm.sh/chart: {{ include "..chart" . }}
 spec:
   # see https://crontab.guru/#0_9_*_*_*
-  schedule: "0 9 * * *"
+  schedule: "0 18 * * *"
+  concurrencyPolicy: Forbid
   jobTemplate:
     spec:
       backoffLimit: 1
@@ -50,7 +51,7 @@ spec:
                   EOF
               env:
                 - name: PGHOST
-                  value: kc-cron-patroni.6d70e7-tools.svc.cluster.local
+                  value: {{ .Values.pgHost }}
                 - name: PGPORT
                   value: "5432"
                 - name: PGUSER
@@ -66,21 +67,16 @@ spec:
             - name: {{ .Chart.Name }}
               image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
               imagePullPolicy: {{ .Values.image.pullPolicy }}
-              resources:
-              limits:
-                memory: {{ .Values.resources.limits.memory }}
-              requests:
-                memory: {{ .Values.resources.requests.memory }}
               command:
                 - node
                 - event-logs.js
               env:
                 - name: RELEASE_REVISION
                   value: "{{ .Release.Revision }}"
-                - name: NODE_OPTIONS
-                  value: "--max-old-space-size=1024"
+                - name: RETENTION_PERIOD_DAYS
+                  value: '30'
                 - name: PGHOST
-                  value: kc-cron-patroni.6d70e7-tools.svc.cluster.local
+                  value: {{ .Values.pgHost }}
                 - name: PGPORT
                   value: "5432"
                 - name: PGUSER
@@ -99,4 +95,4 @@ spec:
             - name: logs-volume
               persistentVolumeClaim:
                 claimName: sso-keycloak-logs
-              restartPolicy: Never
+          restartPolicy: Never

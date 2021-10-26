@@ -51,13 +51,6 @@ spec:
       containers:
         - name: eventlogs
           image: "ghcr.io/bcgov/kc-cron-job:dev"
-          resources:
-            limits:
-              cpu: "1"
-              memory: 1Gi
-            requests:
-              cpu: "0.5"
-              memory: 1Gi
           imagePullPolicy: Always
           command:
             - node
@@ -71,8 +64,8 @@ spec:
               value: "5432"
             - name: PGUSER
               value: postgres
-            - name: NODE_OPTIONS
-              value: "--max-old-space-size=1024"
+            - name: RETENTION_PERIOD_DAYS
+              value: '0'
             - name: PGPASSWORD
               valueFrom:
                 secretKeyRef:

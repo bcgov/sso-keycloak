@@ -2,6 +2,7 @@ apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: {{ include "..fullname" . }}-active-sessions
+  namespace: {{ .Values.namespace.activeSessions }}
   labels:
     app.kubernetes.io/name: {{ include "..name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
