@@ -55,14 +55,14 @@ async function main() {
     }
 
     const realmUrl = getRealmUrl(env, realm);
-    const redirectUri = `${realmUrl}/broker/${idpRealm}/endpoint*`;
+    const redirectUri = `${realmUrl}/broker/${idpAlias}/endpoint*`;
 
     // 2. Create a confidential client in the idp realm to use for the target realm's IDP connection
     const clientSecret = await generateSecret();
 
     await kcAdminClient.clients.create(
       getConfidentialClient({
-        realm: idp,
+        realm: idpRealm,
         clientId: realmUrl,
         secret: clientSecret,
         redirectUris: [redirectUri],
@@ -77,7 +77,7 @@ async function main() {
     await kcAdminClient.identityProviders.create(
       getKeycloakOidcIDP({
         realm,
-        alias: idp,
+        alias: idpAlias,
         displayName: idpName,
         config: {
           issuer,
