@@ -12,6 +12,11 @@ module.exports = {
     sso_token_grant_type: process.env.SSO_TOKEN_GRANT_TYPE || 'authorization_code',
     jwt_secret: process.env.JWT_SECRET || 'verysecuresecret',
     jwt_token_expiry: process.env.JWT_TOKEN_EXPIRY || '1h',
+    pg_host: process.env.PGHOST || 'localhost',
+    pg_port: process.env.PGPORT || '5432',
+    pg_user: process.env.PGUSER,
+    pg_password: process.env.PGPASSWORD,
+    pg_database: process.env.PGDATABASE || 'realm_profile',
   },
   publicRuntimeConfig: {},
 };

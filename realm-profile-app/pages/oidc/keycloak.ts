@@ -4,16 +4,27 @@ import getConfig from 'next/config';
 import jwt from 'jsonwebtoken';
 import store2 from 'store2';
 import { getAccessToken } from 'utils/oidc';
-import { verifyJWT } from 'utils/jwt';
+import { verifyToken } from 'utils/jwt';
 const { serverRuntimeConfig = {} } = getConfig() || {};
 const { jwt_secret, jwt_token_expiry } = serverRuntimeConfig;
 
-export default function OauthCallback({ appToken, name, preferred_username, email }: any) {
+interface Sesssion {
+  preferred_username: string;
+  given_name: string;
+  family_name: string;
+  email: string;
+  client_roles: string;
+}
+interface Props {
+  appToken: string;
+  session: Sesssion;
+}
+export default function OauthCallback({ appToken, session }: Props) {
   store2('app-token', appToken);
-  store2('app-session', { name, preferred_username, email });
+  store2('app-session', session);
 
   useEffect(() => {
-    window.location = '/';
+    window.location.href = '/';
   }, []);
 
   return null;
@@ -23,15 +34,22 @@ export async function getServerSideProps({ req, res, query }: GetServerSideProps
   try {
     const { code } = query;
 
-    const tokens = await getAccessToken({ code });
+    const tokens = await getAccessToken({ code: String(code) });
     const { access_token = '' } = tokens;
-    const { name, preferred_username, email } = (await verifyJWT(access_token)) as any;
-    const appToken = jwt.sign({ access_token }, jwt_secret, {
-      expiresIn: jwt_token_expiry,
-    });
+    const {
+      preferred_username = '',
+      given_name = '',
+      family_name = '',
+      email = '',
+      client_roles = [],
+    } = (await verifyToken(access_token)) as any;
+    const session = { preferred_username, given_name, family_name, email, client_roles };
+    const appToken = jwt.sign({ access_token, ...session }, jwt_secret, { expiresIn: jwt_token_expiry });
+
+    console.log(appToken, session);
 
     return {
-      props: { appToken, name, preferred_username, email },
+      props: { appToken, session },
     };
   } catch (err) {
     console.error(err);

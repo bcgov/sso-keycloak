@@ -1,0 +1,55 @@
+replicaCount: 1
+
+image:
+  repository: ghcr.io/bcgov/realm-profile-app
+  tag: dev
+  pullPolicy: Always
+
+imagePullSecrets:
+  - name: gh-registry-config
+
+nameOverride: realm-profile-app
+fullnameOverride: realm-profile-app
+
+service:
+  type: ClusterIP
+  port: 3000
+
+sso:
+  url: http://localhost:8080
+  clientId: realm-profile-app-760
+  clientSecret:
+    secret: realm-profile-sso-service-account
+    key: client-secret
+  redirectUri: http://localhost:3000
+  logoutRedirectUri: http://localhost:3000
+  authorizationResponseType: code
+  authorizationScope: openid
+  tokenGrantType: authorization_code
+
+postgres:
+  host: realm-profile-patroni
+  port: 5432
+  user: postgres
+  password:
+    secret: realm-profile-patroni
+    key: password-superuser
+  database: realm-profile
+
+jwt:
+  secret: verysecuresecret
+  tokenExpiry: 1h
+
+resources:
+  limits:
+    cpu: 1
+    memory: 1Gi
+  requests:
+    cpu: 1250m
+    memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

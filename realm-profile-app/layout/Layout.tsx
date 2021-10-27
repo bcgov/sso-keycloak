@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import { startCase } from 'lodash';
 import BCSans from './BCSans';
 import Navigation from './Navigation';
+import BottomAlertProvider from './BottomAlert';
 
 const headerPlusFooterHeight = '152px';
 
@@ -100,10 +101,8 @@ interface Route {
 const routes: Route[] = [
   { path: '/', label: 'Home', roles: ['guest', 'user', 'sso-admin'] },
   { path: '/terms-conditions', label: 'Terms and Conditions', roles: ['guest'] },
-  { path: '/my-requests', label: 'My Dashboard', roles: ['user', 'sso-admin'] },
-  { path: '/admin-dashboard', label: 'SSO Dashboard', roles: ['sso-admin'] },
-  { path: '/request', label: 'New Request', roles: ['user', 'sso-admin'], hide: true },
-  { path: '/edit-request', label: 'Edit Request', roles: ['sso-admin'], hide: true },
+  { path: '/my-realms', label: 'My Realms', roles: ['user', 'sso-admin'] },
+  { path: '/realm', label: 'Realm Profile', roles: ['user'], hide: true },
 ];
 
 const LeftMenuItems = ({ currentUser, currentPath }: { currentUser: any; currentPath: string }) => {
@@ -152,19 +151,15 @@ const RightMenuItems = () => (
     </HoverItem>
   </>
 );
-
+// identity_provider, idir_userid, client_roles, family_name, given_name
 function Layout({ children, currentUser, onLoginClick, onLogoutClick }: any) {
   const router = useRouter();
   const pathname = router.pathname;
 
   const rightSide = currentUser ? (
     <LoggedUser>
-      <div className="welcome">
-        Welcome {`${currentUser.given_name} ${currentUser.family_name}`}&nbsp;
-        {currentUser?.client_roles && <span className="small">({startCase(currentUser?.client_roles[0])})</span>}
-      </div>
+      <div className="welcome">Welcome {`${currentUser.given_name} ${currentUser.family_name}`}</div>
       &nbsp;&nbsp;
-      {/* <FontAwesomeIcon style={{ paddingLeft: '5px', height: '25px' }} icon={faUserCircle} /> */}
       <Button variant="secondary-inverse" size="medium" onClick={onLogoutClick}>
         Log out
       </Button>
@@ -229,9 +224,7 @@ function Layout({ children, currentUser, onLoginClick, onLogoutClick }: any) {
           </SubRightMenu>
         </SubMenu>
       </Navigation>
-      <MainContent>
-      {children}
-      </MainContent>
+      <MainContent><BottomAlertProvider>{children}</BottomAlertProvider></MainContent>
       <Footer>
         <FooterMenu>
           <ul>

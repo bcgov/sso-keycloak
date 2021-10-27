@@ -64,6 +64,7 @@ const getHorizontalMarginStyle = (
 const Container = styled.div<{ rules: MediaRule[] }>`
   display: block;
   max-width: 100% !important;
+  overflow-x: auto;
 
   ${(props) =>
     props.rules.map((rule: MediaRule, index: number) => {
