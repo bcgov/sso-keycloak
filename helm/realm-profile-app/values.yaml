@@ -13,7 +13,7 @@ fullnameOverride: realm-profile-app
 
 service:
   type: ClusterIP
-  port: 3000
+  port: 8080
 
 sso:
   url: http://localhost:8080
@@ -27,6 +27,13 @@ sso:
   authorizationScope: openid
   tokenGrantType: authorization_code
 
+kc:
+  url: https://dev.oidc.gov.bc.ca
+  client_id: 'script-cli'
+  client_secret:
+    secret: keycloak-cli-service-account
+    key: client-secret
+
 postgres:
   host: realm-profile-patroni
   port: 5432
@@ -37,7 +44,7 @@ postgres:
   database: realm-profile
 
 jwt:
-  secret: verysecuresecret
+  secret:
   tokenExpiry: 1h
 
 resources:
@@ -45,7 +52,7 @@ resources:
     cpu: 1
     memory: 1Gi
   requests:
-    cpu: 1250m
+    cpu: 250m
     memory: 128Mi
 
 nodeSelector: {}

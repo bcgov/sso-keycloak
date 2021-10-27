@@ -34,7 +34,7 @@ let _oidConfiguration: OID_PROVIDER_CONFIGURATION = emptyProviderConfiguration;
 // https://github.com/vercel/next.js/discussions/15341
 // https://flaviocopes.com/nextjs-cache-data-globally/
 export const fetchIssuerConfiguration = async () => {
-  if (_oidConfiguration) return _oidConfiguration;
+  if (_oidConfiguration?.issuer) return _oidConfiguration;
 
   const { issuer, jwks_uri, authorization_endpoint, token_endpoint, userinfo_endpoint, end_session_endpoint } =
     await axios.get(ISSUER_URL).then(

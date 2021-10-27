@@ -5,8 +5,8 @@ on:
     branches:
       - dev
     paths:
-      - "helm/**"
-      - ".github/workflows/**"
+      - "helm/**/Chart.yaml"
+      - ".github/workflows/publish-helm-chart.yml"
 
 jobs:
   build-and-push-helm:

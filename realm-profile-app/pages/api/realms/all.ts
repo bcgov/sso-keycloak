@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { runQuery } from 'utils/db';
 import { validateRequest } from 'utils/jwt';
+import { getAdminClient } from 'utils/keycloak-core';
 
 interface ErrorData {
   success: boolean;
@@ -20,6 +21,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       'SELECT * from roster WHERE LOWER(technical_contact_idir_userid)=LOWER($1) OR LOWER(product_owner_idir_userid)=LOWER($1)',
       [idirId],
     );
+
     return res.send(result?.rows);
   } catch (err: any) {
     console.error(err);

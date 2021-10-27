@@ -9,7 +9,7 @@ on:
       - "*"
     paths:
       - "docker/kc-cron-job/**"
-      - ".github/workflows/**"
+      - ".github/workflows/publish-image-kc-cron-job.yml"
 
 env:
   GITHUB_REGISTRY: ghcr.io
