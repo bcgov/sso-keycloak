@@ -12,7 +12,6 @@ psql -d $db -qtA --set ON_ERROR_STOP=1 <<EOF
 create table if not exists public.roster (
     id serial not null,
     realm varchar(1000),
-    description varchar(1000),
     product_name varchar(1000),
     openshift_namespace varchar(1000),
     product_owner_email varchar(1000),

@@ -101,7 +101,7 @@ interface Route {
 const routes: Route[] = [
   { path: '/', label: 'Home', roles: ['guest', 'user', 'sso-admin'] },
   { path: '/terms-conditions', label: 'Terms and Conditions', roles: ['guest'] },
-  { path: '/my-realms', label: 'My Realms', roles: ['user', 'sso-admin'] },
+  { path: '/my-dashboard', label: 'My Dashboard', roles: ['user', 'sso-admin'] },
   { path: '/realm', label: 'Realm Profile', roles: ['user'], hide: true },
 ];
 
@@ -208,7 +208,7 @@ function Layout({ children, currentUser, onLoginClick, onLogoutClick }: any) {
       <Navigation
         title={() => (
           <HeaderTitle>
-            SSO Keycloak Realm Profile<Beta>Beta</Beta>
+            My Keycloak Custom Realm App<Beta>Beta</Beta>
           </HeaderTitle>
         )}
         rightSide={rightSide}

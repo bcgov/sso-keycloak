@@ -9,7 +9,7 @@ async function main() {
   if (!env) {
     console.info(`
     Usages:
-      node keycloak-find-client.js --env <env> [--realm <realm>] [--totp <totp>]
+      node keycloak-create-role-viewer.js --env <env> [--realm <realm>] [--totp <totp>]
     `);
 
     return;
@@ -43,7 +43,7 @@ async function main() {
       clients.map(async (client) => {
         const roles = await kcAdminClient.clients.listRoles({ realm, id: client.id });
         _.each(roles, (role) => {
-          if (role.name === 'view-realm') {
+          if (['view-realm', 'view-users'].includes(role.name)) {
             targetRoles.push(role);
           }
         });

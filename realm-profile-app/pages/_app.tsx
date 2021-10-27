@@ -27,7 +27,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     <Layout currentUser={currentUser} onLoginClick={handleLogin} onLogoutClick={handleLogout}>
       <Head>
         <html lang="en" />
-        <title>SSO Keycloak Realm Profile</title>
+        <title>My Keycloak Custom Realm App</title>
       </Head>
       <Component {...pageProps} currentUser={currentUser} onLoginClick={handleLogin} onLogoutClick={handleLogout} />
     </Layout>

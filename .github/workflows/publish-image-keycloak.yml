@@ -9,7 +9,7 @@ on:
       - "*"
     paths:
       - "docker/keycloak/**"
-      - ".github/workflows/**"
+      - ".github/workflows/publish-image-keycloak.yml"
 
 env:
   GITHUB_REGISTRY: ghcr.io

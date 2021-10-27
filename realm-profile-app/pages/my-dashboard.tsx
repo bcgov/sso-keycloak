@@ -25,7 +25,7 @@ const mediaRules: MediaRule[] = [
   },
 ];
 
-function Realms() {
+function MyDashboard() {
   const router = useRouter();
   const [realms, setRealms] = useState<RealmProfile[]>([]);
 
@@ -82,4 +82,4 @@ function Realms() {
   );
 }
 
-export default Realms;
+export default MyDashboard;
