@@ -1,4 +1,4 @@
-nodejs 12.22.7
+nodejs 12.18.3
 python 3.8.6
 kubectl 1.18.0
 helm 3.2.4
