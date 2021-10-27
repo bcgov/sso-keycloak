@@ -1,8 +1,8 @@
 kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
 metadata:
-  name: Allow Cron Job
-  namespace: 6d70e7-tools
+  name: allow-cron-job
+  namespace: {{ .Values.networkPolicy.licensePlate }}-tools
 spec:
   podSelector:
     matchLabels:
