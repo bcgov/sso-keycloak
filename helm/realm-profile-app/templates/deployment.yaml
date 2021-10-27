@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "..fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "..name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "..chart" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "..name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "..name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          ports:
+            - containerPort: 3000
+              name: http
+              protocol: TCP
+          env:
+            - name: SSO_URL
+              value: {{ .Values.sso.url }}
+            - name: SSO_CLIENT_ID
+              value: {{ .Values.sso.clientId }}
+            - name: SSO_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.clientSecret.secret }}
+                  key: {{ .Values.clientSecret.key }}
+            - name: SSO_REDIRECT_URI
+              value: {{ .Values.sso.redirectUri }}
+            - name: SSO_LOGOUT_REDIRECT_URI
+              value: {{ .Values.sso.logoutRedirectUri }}
+            - name: SSO_AUTHORIZATION_RESPONSE_TYPE
+              value: {{ .Values.sso.authorizationResponseType }}
+            - name: SSO_AUTHORIZATION_SCOPE
+              value: {{ .Values.sso.authorizationScope }}
+            - name: SSO_TOKEN_GRANT_TYPE
+              value: {{ .Values.sso.tokenGrantType }}
+            - name: JWT_SECRET
+              value: {{ .Values.jwt.secret }}
+            - name: JWT_TOKEN_EXPIRY
+              value: {{ .Values.jwt.tokenExpiry }}
+            - name: PGHOST
+              value: {{ .Values.postgres.host }}
+            - name: PGPORT
+              value: {{ .Values.postgres.port }}
+            - name: PGUSER
+              value: {{ .Values.postgres.user }}
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgres.secret }}
+                  key: {{ .Values.postgres.key }}
+            - name: PGDATABASE
+              value: {{ .Values.postgres.database }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

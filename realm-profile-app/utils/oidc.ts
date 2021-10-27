@@ -1,28 +1,7 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import qs from 'qs';
 import getConfig from 'next/config';
-
-interface JWK {
-  kid: string;
-  kty: string;
-  alg: string;
-  use: string;
-  n: string;
-  e: string;
-  x5c: any;
-  x5t: string;
-  'x5t#S256': string;
-}
-
-interface OID_CONFIGURATION {
-  issuer: string;
-  jwks_uri: string;
-  authorization_endpoint: string;
-  token_endpoint: string;
-  userinfo_endpoint: string;
-  end_session_endpoint: string;
-  jwks: JWK[];
-}
+import { fetchIssuerConfiguration } from './oidc-issuer';
 
 interface TOKEN_RESPONSE {
   id_token?: string;
@@ -43,40 +22,13 @@ const {
   sso_token_grant_type,
 } = serverRuntimeConfig;
 
-const ISSUER_URL = `${sso_url}/.well-known/openid-configuration`;
 const confidential = !!sso_client_secret;
-let _oidConfiguration: OID_CONFIGURATION | null = null;
 
 const btoa = (str: string) => Buffer.from(str).toString('base64');
 
-export const fetchIssuerConfiguration = async () => {
-  console.log('fetchIssuerConfiguration', _oidConfiguration);
-  if (_oidConfiguration) return _oidConfiguration;
-
-  const { issuer, jwks_uri, authorization_endpoint, token_endpoint, userinfo_endpoint, end_session_endpoint } =
-    await axios.get(ISSUER_URL).then(
-      (res: { data: any }) => res.data,
-      () => null,
-    );
-
-  const jwks = await axios.get(jwks_uri).then((res: any) => res.data?.keys, console.error);
-
-  _oidConfiguration = {
-    issuer,
-    jwks_uri,
-    authorization_endpoint,
-    token_endpoint,
-    userinfo_endpoint,
-    end_session_endpoint,
-    jwks,
-  };
-
-  return _oidConfiguration;
-};
-
 // see https://datatracker.ietf.org/doc/html/rfc6749#section-4.1.1
 export const getAuthorizationUrl = async (extraParams = {}) => {
-  console.log('getAuthorizationUrl', _oidConfiguration);
+  const providerConfig = await fetchIssuerConfiguration();
   const params = {
     client_id: sso_client_id,
     response_type: sso_authorization_response_type,
@@ -89,14 +41,13 @@ export const getAuthorizationUrl = async (extraParams = {}) => {
   if (!confidential) {
   }
 
-  return `${_oidConfiguration?.authorization_endpoint}?${qs.stringify(params, { encode: false })}`;
+  return `${providerConfig?.authorization_endpoint}?${qs.stringify(params, { encode: false })}`;
 };
 
 // see https://datatracker.ietf.org/doc/html/rfc6749#section-4.1.3
 // see https://aws.amazon.com/blogs/mobile/understanding-amazon-cognito-user-pool-oauth-2-0-grants/
 export const getAccessToken = async ({ code }: { code: string }) => {
-  await fetchIssuerConfiguration();
-  console.log('getAccessToken', _oidConfiguration);
+  const providerConfig = await fetchIssuerConfiguration();
   const params = {
     grant_type: sso_token_grant_type,
     client_id: sso_client_id,
@@ -119,7 +70,7 @@ export const getAccessToken = async ({ code }: { code: string }) => {
   //   token_type: "Bearer",
   // };
   const config: AxiosRequestConfig = {
-    url: _oidConfiguration?.token_endpoint,
+    url: providerConfig?.token_endpoint,
     method: 'post',
     data: qs.stringify(params),
   };
@@ -133,8 +84,10 @@ export const getAccessToken = async ({ code }: { code: string }) => {
 };
 
 export const getUserInfo = async ({ accessToken }: { accessToken: string }) => {
+  const providerConfig = await fetchIssuerConfiguration();
+
   const config: AxiosRequestConfig = {
-    url: _oidConfiguration?.userinfo_endpoint,
+    url: providerConfig?.userinfo_endpoint,
     method: 'get',
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -146,6 +99,8 @@ export const getUserInfo = async ({ accessToken }: { accessToken: string }) => {
 };
 
 export const refreshSession = async ({ refreshToken }: { refreshToken: string }) => {
+  const providerConfig = await fetchIssuerConfiguration();
+
   const params = {
     grant_type: 'refresh_token',
     client_id: sso_client_id,
@@ -153,7 +108,7 @@ export const refreshSession = async ({ refreshToken }: { refreshToken: string })
   };
 
   const config: AxiosRequestConfig = {
-    url: _oidConfiguration?.token_endpoint,
+    url: providerConfig?.token_endpoint,
     method: 'post',
     data: qs.stringify(params),
   };
@@ -162,4 +117,4 @@ export const refreshSession = async ({ refreshToken }: { refreshToken: string })
   return data as any;
 };
 
-export default { fetchIssuerConfiguration, getAuthorizationUrl, getAccessToken, getUserInfo, refreshSession };
+export default { getAuthorizationUrl, getAccessToken, getUserInfo, refreshSession };
