@@ -56,8 +56,6 @@ spec:
             - node
             - event-logs.js
           env:
-            # - name: RELEASE_REVISION
-            #   value: "{{ .Release.Revision }}"
             - name: PGHOST
               value: kc-cron-patroni.3d5c3f-tools.svc.cluster.local
             - name: PGPORT
@@ -65,7 +63,9 @@ spec:
             - name: PGUSER
               value: postgres
             - name: RETENTION_PERIOD_DAYS
-              value: '0'
+              value: '30'
+            - name: FILENAME_DAYS_AGO
+              value: '2'
             - name: PGPASSWORD
               valueFrom:
                 secretKeyRef:

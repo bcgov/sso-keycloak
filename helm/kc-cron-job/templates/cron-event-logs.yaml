@@ -10,7 +10,7 @@ metadata:
     helm.sh/chart: {{ include "..chart" . }}
 spec:
   # see https://crontab.guru/#0_9_*_*_*
-  schedule: "0 18 * * *"
+  schedule: "0 6 * * *"
   concurrencyPolicy: Forbid
   jobTemplate:
     spec:
@@ -94,5 +94,5 @@ spec:
           volumes:
             - name: logs-volume
               persistentVolumeClaim:
-                claimName: sso-keycloak-logs
+                claimName: {{ .Values.pvc.name }}
           restartPolicy: Never

@@ -14,6 +14,8 @@ const PGPASSWORD = process.env.PGPASSWORD || 'postgres';
 const PGDATABASE = process.env.PGDATABASE || 'postgres';
 const LOG_BATCH_SIZE = process.env.LOG_BATCH_SIZE || 1000;
 const RETENTION_PERIOD_DAYS = process.env.RETENTION_PERIOD_DAYS || 30;
+// The most recently zipped files will be from 2 days ago. Override to grab logs from further back
+const FILENAME_DAYS_AGO = process.env.FILENAME_DAYS_AGO || 2;
 
 const getFilename = (daysAgo) => {
   const yesterday = new Date();
@@ -137,7 +139,7 @@ const clearOldLogs = async (retentionPeriodDays) => {
 
 async function main() {
   try {
-    const fileName = getFilename(8);
+    const fileName = getFilename(FILENAME_DAYS_AGO);
     await clearOldLogs(RETENTION_PERIOD_DAYS);
     await exec(`mkdir /logs/tmp & tar -xvzf /logs/${fileName} -C /logs/tmp`);
     await reduceDataFromFiles('/logs/tmp/');

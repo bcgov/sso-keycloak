@@ -13,6 +13,13 @@ namespace:
   eventLogs: "6d70e7-prod"
   activeSessions: "6d70e7-tools"
 
+pvc:
+  name: sso-logs-prod
+
+networkPolicy:
+  environment: tools
+  licensePlate: 6d70e7
+
 pgHost: kc-cron-patroni.6d70e7-tools.svc.cluster.local
 
 resources:
