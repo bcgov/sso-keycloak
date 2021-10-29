@@ -1,5 +1,5 @@
 import { instance } from './axios';
-import { RealmProfile } from 'types/realm-profile';
+import { RealmProfile, ModalData } from 'types/realm-profile';
 
 export const getRealmProfiles = async (): Promise<[RealmProfile[], null] | [null, any]> => {
   try {

@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { runQuery } from 'utils/db';
 import { validateRequest } from 'utils/jwt';
-import { getAdminClient, getIdirUser } from 'utils/keycloak-core';
+import { getAdminClient, getIdirUserName, getRealm } from 'utils/keycloak-core';
 
 interface ErrorData {
   success: boolean;
@@ -13,43 +13,80 @@ type Data = ErrorData | string;
 export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
   try {
     const { id } = req.query;
-    const { description, product_name, openshift_namespace, product_owner_email, technical_contact_email } = req.body;
 
     const session = await validateRequest(req, res);
     if (!session) return res.status(401).json({ success: false, error: 'jwt expired' });
-    const idirId = session?.preferred_username.split('@')[0];
 
     if (req.method === 'GET') {
       const result: any = await runQuery(
-        'SELECT * from roster WHERE id=$1 AND (LOWER(technical_contact_idir_userid)=LOWER($2) OR LOWER(product_owner_idir_userid)=LOWER($2))',
-        [id, idirId],
+        'SELECT * from rosters WHERE id=$1 AND (LOWER(technical_contact_idir_userid)=LOWER($2) OR LOWER(product_owner_idir_userid)=LOWER($2))',
+        [id, session?.idir_userid],
       );
 
       const realm = result?.rows.length > 0 ? result?.rows[0] : null;
       if (realm) {
-        const kcAdminClient = await getAdminClient();
-        if (kcAdminClient) {
-          const poUser = await getIdirUser(realm.product_owner_idir_userid);
-          console.log(poUser);
-        }
+        const [realmData, poName, techName] = await Promise.all([
+          getRealm(realm.realm),
+          getIdirUserName(realm.product_owner_idir_userid),
+          getIdirUserName(realm.technical_contact_idir_userid),
+        ]);
+
+        realm.product_owner_name = poName;
+        realm.technical_contact_name = techName;
+        realm.displayName = realmData?.displayName || '';
+        realm.idps = realmData?.identityProviders?.map((v) => v.displayName || v.alias) || [];
       }
 
       return res.send(realm);
     } else if (req.method === 'PUT') {
-      const result: any = await runQuery(
-        `
-        UPDATE roster
-        SET
-          description=$3,
-          product_name=$4,
-          openshift_namespace=$5,
-          product_owner_email=$6,
-          technical_contact_email=$7,
-          updated_at=now()
-        WHERE id=$1 AND (LOWER(technical_contact_idir_userid)=LOWER($2) OR LOWER(product_owner_idir_userid)=LOWER($2))
-        RETURNING *`,
-        [id, idirId, description, product_name, openshift_namespace, product_owner_email, technical_contact_email],
-      );
+      const {
+        product_name,
+        openshift_namespace,
+        technical_contact_email,
+        product_owner_email,
+        technical_contact_idir_userid,
+        product_owner_idir_userid,
+      } = req.body;
+      const isPO = session?.idir_userid === product_owner_idir_userid;
+
+      let result: any;
+      if (isPO) {
+        result = await runQuery(
+          `
+            UPDATE rosters
+            SET
+              product_name=$3,
+              openshift_namespace=$4,
+              technical_contact_email=$5,
+              product_owner_email=$6,
+              technical_contact_idir_userid=$7,
+              updated_at=now()
+            WHERE id=$1 AND LOWER(product_owner_idir_userid)=LOWER($2)
+            RETURNING *`,
+          [
+            id,
+            session?.idir_userid,
+            product_name,
+            openshift_namespace,
+            technical_contact_email,
+            product_owner_email,
+            technical_contact_idir_userid,
+          ],
+        );
+      } else {
+        result = await runQuery(
+          `
+          UPDATE rosters
+          SET
+            product_name=$3,
+            openshift_namespace=$4,
+            technical_contact_email=$5,
+            updated_at=now()
+          WHERE id=$1 AND LOWER(technical_contact_idir_userid)=LOWER($2)
+          RETURNING *`,
+          [id, session?.idir_userid, product_name, openshift_namespace, technical_contact_email],
+        );
+      }
 
       const realm = result?.rows.length > 0 ? result?.rows[0] : null;
       return res.send(realm);

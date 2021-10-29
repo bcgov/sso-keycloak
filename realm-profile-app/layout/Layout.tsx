@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCommentDots, faEnvelope, faFileAlt } from '@fortawesome/free-solid-svg-icons';
 import Button from '@button-inc/bcgov-theme/Button';
 import Footer from '@button-inc/bcgov-theme/Footer';
+import StyledLink from '@button-inc/bcgov-theme/Link';
 import styled from 'styled-components';
 import { startCase } from 'lodash';
 import BCSans from './BCSans';
@@ -23,6 +24,7 @@ const LoggedUser = styled.span`
 `;
 
 const MainContent = styled.div`
+  position: relative;
   padding: 1rem 0;
   min-height: calc(100vh - ${headerPlusFooterHeight});
 `;
@@ -100,7 +102,6 @@ interface Route {
 
 const routes: Route[] = [
   { path: '/', label: 'Home', roles: ['guest', 'user', 'sso-admin'] },
-  { path: '/terms-conditions', label: 'Terms and Conditions', roles: ['guest'] },
   { path: '/my-dashboard', label: 'My Dashboard', roles: ['user', 'sso-admin'] },
   { path: '/realm', label: 'Realm Profile', roles: ['user'], hide: true },
 ];
@@ -224,7 +225,11 @@ function Layout({ children, currentUser, onLoginClick, onLogoutClick }: any) {
           </SubRightMenu>
         </SubMenu>
       </Navigation>
-      <MainContent><BottomAlertProvider>{children}</BottomAlertProvider></MainContent>
+      <MainContent>
+        <BottomAlertProvider>
+          {children}
+        </BottomAlertProvider>
+      </MainContent>
       <Footer>
         <FooterMenu>
           <ul>

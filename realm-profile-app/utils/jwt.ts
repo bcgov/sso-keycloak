@@ -32,7 +32,7 @@ export const verifyToken = async (token: string) => {
       ignoreExpiration: true,
     });
   } catch (err) {
-    console.log(err);
+    console.error(err);
     return false;
   }
 };

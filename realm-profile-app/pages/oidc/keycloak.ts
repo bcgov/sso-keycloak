@@ -43,10 +43,16 @@ export async function getServerSideProps({ req, res, query }: GetServerSideProps
       email = '',
       client_roles = [],
     } = (await verifyToken(access_token)) as any;
-    const session = { preferred_username, given_name, family_name, email, client_roles };
-    const appToken = jwt.sign({ access_token, ...session }, jwt_secret, { expiresIn: jwt_token_expiry });
 
-    console.log(appToken, session);
+    const session = {
+      preferred_username,
+      given_name,
+      family_name,
+      email,
+      client_roles,
+      idir_userid: preferred_username?.split('@idir')[0],
+    };
+    const appToken = jwt.sign({ access_token, ...session }, jwt_secret, { expiresIn: jwt_token_expiry });
 
     return {
       props: { appToken, session },
