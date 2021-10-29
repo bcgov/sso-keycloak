@@ -28,6 +28,8 @@ function MyApp({ Component, pageProps }: AppProps) {
       <Head>
         <html lang="en" />
         <title>My Keycloak Custom Realm App</title>
+        <meta name="description" content="My Keycloak Custom Realm App" />
+        <link rel="icon" href="/bcid-favicon-32x32.png" />
       </Head>
       <Component {...pageProps} currentUser={currentUser} onLoginClick={handleLogin} onLogoutClick={handleLogout} />
     </Layout>

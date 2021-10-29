@@ -69,7 +69,7 @@ spec:
             - name: PGDATABASE_NAME
               value: {{ .Values.postgres.database }}
             - name: PGSSL
-              value: {{ .Values.postgres.ssl }}
+              value: {{ .Values.postgres.ssl | quote }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
