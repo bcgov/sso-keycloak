@@ -43,7 +43,7 @@ async function main() {
       clients.map(async (client) => {
         const roles = await kcAdminClient.clients.listRoles({ realm, id: client.id });
         _.each(roles, (role) => {
-          if (['view-realm', 'view-users'].includes(role.name)) {
+          if (['view-realm', 'view-users', 'view-identity-providers'].includes(role.name)) {
             targetRoles.push(role);
           }
         });
