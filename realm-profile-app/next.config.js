@@ -17,6 +17,7 @@ module.exports = {
     pg_user: process.env.PGUSER,
     pg_password: process.env.PGPASSWORD,
     pg_database: process.env.PGDATABASE || 'realm_profile',
+    pg_ssl: process.env.PGSSL || 'true',
     kc_url: process.env.KC_URL || 'https://dev.oidc.gov.bc.ca',
     kc_client_id: process.env.KC_CLIENT_ID || 'script-cli',
     kc_client_secret: process.env.KC_CLIENT_SECRET,
