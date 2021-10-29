@@ -2,3 +2,10 @@ sso:
   url: https://dev.oidc.gov.bc.ca/auth/realms/onestopauth
   redirectUri: http://realm-profile-app-b861c7-dev.apps.silver.devops.gov.bc.ca/oidc/keycloak
   logoutRedirectUri: http://realm-profile-app-b861c7-dev.apps.silver.devops.gov.bc.ca
+
+kc:
+  url: https://dev.oidc.gov.bc.ca
+  clientId: 'script-cli'
+  clientSecret:
+    secret: keycloak-cli-service-account
+    key: client-secret

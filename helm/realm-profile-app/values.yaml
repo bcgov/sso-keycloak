@@ -29,8 +29,8 @@ sso:
 
 kc:
   url: https://dev.oidc.gov.bc.ca
-  client_id: 'script-cli'
-  client_secret:
+  clientId: 'script-cli'
+  clientSecret:
     secret: keycloak-cli-service-account
     key: client-secret
 
@@ -41,7 +41,8 @@ postgres:
   password:
     secret: realm-profile-patroni
     key: password-superuser
-  database: realm-profile
+  database: realm_profile
+  ssl: 'true'
 
 jwt:
   secret:

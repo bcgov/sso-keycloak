@@ -53,6 +53,8 @@ spec:
                 );
               EOF
           env:
+            - name: RELEASE_REVISION
+              value: "{{ .Release.Revision }}"
             - name: PGHOST
               value: {{ .Values.postgres.host }}
             - name: PGPORT
@@ -66,6 +68,8 @@ spec:
                   key: {{ .Values.postgres.password.key }}
             - name: PGDATABASE_NAME
               value: {{ .Values.postgres.database }}
+            - name: PGSSL
+              value: {{ .Values.postgres.ssl }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -96,6 +100,17 @@ spec:
               value: {{ .Values.sso.authorizationScope }}
             - name: SSO_TOKEN_GRANT_TYPE
               value: {{ .Values.sso.tokenGrantType }}
+
+            - name: KC_URL
+              value: {{ .Values.kc.url }}
+            - name: KC_CLIENT_ID
+              value: {{ .Values.kc.clientId }}
+            - name: KC_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.kc.clientSecret.secret }}
+                  key: {{ .Values.kc.clientSecret.key }}
+
             - name: JWT_SECRET
               {{- if .Values.jwt.secret }}
               value: {{ .Values.jwt.secret }}
@@ -104,6 +119,7 @@ spec:
               {{- end }}
             - name: JWT_TOKEN_EXPIRY
               value: {{ .Values.jwt.tokenExpiry }}
+
             - name: PGHOST
               value: {{ .Values.postgres.host }}
             - name: PGPORT
