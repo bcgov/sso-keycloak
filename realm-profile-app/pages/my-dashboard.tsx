@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import Head from 'next/head';
 import Loader from 'react-loader-spinner';
 import styled from 'styled-components';
 import Button from '@button-inc/bcgov-theme/Button';
@@ -103,6 +104,9 @@ function MyDashboard({ currentUser }: Props) {
 
   return (
     <>
+      <Head>
+        <title>My Dashboard</title>
+      </Head>
       {!answered && (
         <TopAlertWrapper>
           <Alert variant="warning" closable={true}>

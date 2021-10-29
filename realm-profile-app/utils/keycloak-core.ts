@@ -4,11 +4,8 @@ import KcAdminClient from 'keycloak-admin';
 const { serverRuntimeConfig = {} } = getConfig() || {};
 const { kc_url, kc_client_id, kc_client_secret } = serverRuntimeConfig;
 
-let _kcAdminClient: any = null;
 export async function getAdminClient() {
   try {
-    if (_kcAdminClient) return _kcAdminClient as KcAdminClient;
-
     const kcAdminClient = new KcAdminClient({
       baseUrl: `${kc_url}/auth`,
       realmName: 'master',
@@ -24,7 +21,6 @@ export async function getAdminClient() {
       clientSecret: kc_client_secret,
     });
 
-    _kcAdminClient = kcAdminClient;
     return kcAdminClient as KcAdminClient;
   } catch (err) {
     console.error(err);

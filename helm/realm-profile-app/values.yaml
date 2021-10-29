@@ -42,7 +42,7 @@ postgres:
     secret: realm-profile-patroni
     key: password-superuser
   database: realm_profile
-  ssl: 'true'
+  ssl: true
 
 jwt:
   secret:

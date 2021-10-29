@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
+import Head from 'next/head';
 import styled from 'styled-components';
 import Grid from '@button-inc/bcgov-theme/Grid';
 import Button from '@button-inc/bcgov-theme/Button';
@@ -50,36 +51,41 @@ const Home = ({ currentUser }: Props) => {
   };
 
   return (
-    <ResponsiveContainer rules={mediaRules}>
-      <Grid cols={10} gutter={[5, 2]} style={{ overflowX: 'hidden' }}>
-        <Grid.Row collapse="800">
-          <Grid.Col span={3}>
-            <JumbotronH1>My Keycloak Custom Realm App</JumbotronH1>
-            <JumbotronP>
-              Use this self-service tool to
-              <br />
-              view, and edit some,
-              <br />
-              information about your
-              <br />
-              Custom realm.
-            </JumbotronP>
-            {currentUser ? (
-              <Button size="medium" onClick={handleDashboard}>
-                My Dashboard
-              </Button>
-            ) : (
-              <Button size="medium" onClick={handleLogin}>
-                Login
-              </Button>
-            )}
-          </Grid.Col>
-          <Grid.Col span={7}>
-            <Image src={hero} alt="Hero image" />
-          </Grid.Col>
-        </Grid.Row>
-      </Grid>
-    </ResponsiveContainer>
+    <>
+      <Head>
+        <title>Home</title>
+      </Head>
+      <ResponsiveContainer rules={mediaRules}>
+        <Grid cols={10} gutter={[5, 2]} style={{ overflowX: 'hidden' }}>
+          <Grid.Row collapse="800">
+            <Grid.Col span={3}>
+              <JumbotronH1>My Keycloak Custom Realm App</JumbotronH1>
+              <JumbotronP>
+                Use this self-service tool to
+                <br />
+                view, and edit some,
+                <br />
+                information about your
+                <br />
+                Custom realm.
+              </JumbotronP>
+              {currentUser ? (
+                <Button size="medium" onClick={handleDashboard}>
+                  My Dashboard
+                </Button>
+              ) : (
+                <Button size="medium" onClick={handleLogin}>
+                  Login
+                </Button>
+              )}
+            </Grid.Col>
+            <Grid.Col span={7}>
+              <Image src={hero} alt="Hero image" />
+            </Grid.Col>
+          </Grid.Row>
+        </Grid>
+      </ResponsiveContainer>
+    </>
   );
 };
 
