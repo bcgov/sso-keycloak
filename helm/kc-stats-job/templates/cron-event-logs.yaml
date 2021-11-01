@@ -1,0 +1,36 @@
+apiVersion: batch/v1beta1
+kind: Job
+metadata:
+  name: {{ include "..fullname" . }}-create-trigger
+  namespace: {{ .Values.namespace }}
+  labels:
+    app.kubernetes.io/name: {{ include "..name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "..chart" . }}
+spec:
+  backoffLimit: 1
+  template:
+    spec:
+      containers:
+        - name: create-trigger
+          image: "ghcr.io/bcgov/kc-cron-job:dev"
+          imagePullPolicy: Always
+          command:
+            - node
+            - create-trigger.js
+          env:
+            - name: PGHOST
+              value: {{ .Values.pgHost }}
+            - name: PGPORT
+              value: "5432"
+            - name: PGUSER
+              value: postgres
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: kc-cron-patroni
+                  key: password-superuser
+            - name: PGDATABASE
+              value: rhsso
+      restartPolicy: Never

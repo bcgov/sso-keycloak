@@ -10,7 +10,7 @@ metadata:
     helm.sh/chart: {{ include "..chart" . }}
 spec:
   # see https://crontab.guru/#0_9_*_*_*
-  schedule: "0 6 * * *"
+  schedule: "0 13 * * *"
   concurrencyPolicy: Forbid
   jobTemplate:
     spec:

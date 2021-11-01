@@ -1,0 +1,4 @@
+apiVersion: v1
+name: kc-create-trigger
+description: "Helm chart for Job to create trigger to aggregate stats"
+version: 0.1.0
