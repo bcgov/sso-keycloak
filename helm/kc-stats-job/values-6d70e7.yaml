@@ -9,7 +9,6 @@ imagePullSecrets:
 nameOverride: kc-cron-job
 fullnameOverride: kc-cron-job
 
-namespace: "6d70e7-tools"
+namespace: '6d70e7-tools'
 
 pgHost: kc-cron-patroni.6d70e7-tools.svc.cluster.local
-
