@@ -10,7 +10,7 @@ metadata:
     helm.sh/chart: {{ include "..chart" . }}
 spec:
   # see https://crontab.guru/#0_9_*_*_*
-  schedule: "0 6 * * *"
+  schedule: "0 13 * * *"
   concurrencyPolicy: Forbid
   jobTemplate:
     spec:
@@ -30,25 +30,11 @@ spec:
                   echo starting;
                   set -euo pipefail;
                   echo "select 'create database $PGDATABASE_NAME' where NOT exists (select from pg_database where datname = '$PGDATABASE_NAME')\gexec" | psql -d postgres
-                  psql -d $PGDATABASE_NAME -qtA --set ON_ERROR_STOP=1 <<EOF
-                    create table if not exists public.sso_logs (
-                      id serial not null,
-                      timestamp timestamp,
-                      sequence int,
-                      logger_class_name varchar(1000),
-                      logger_name varchar(1000),
-                      level varchar(1000),
-                      message jsonb,
-                      thread_name varchar(1000),
-                      thread_id int,
-                      mdc jsonb,
-                      ndc varchar(1000),
-                      host_name varchar(1000),
-                      process_name varchar(1000),
-                      process_id int,
-                      version varchar(1000)
-                    );
+                  psql -d $PGDATABASE_NAME -qtA --set ON_ERROR_STOP=1 << 'EOF'
+                  {{ .Files.Get "migration.sql" | nindent 20 -}}
+                  ;
                   EOF
+
               env:
                 - name: PGHOST
                   value: {{ .Values.pgHost }}
