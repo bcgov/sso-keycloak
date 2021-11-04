@@ -25,9 +25,9 @@ const emptyProviderConfiguration = {
 };
 
 const { serverRuntimeConfig = {} } = getConfig() || {};
-const { sso_url } = serverRuntimeConfig;
+const { sso_configuration_url, sso_url } = serverRuntimeConfig;
 
-const ISSUER_URL = `${sso_url}/.well-known/openid-configuration`;
+const PROVIDER_CONFIGURATION_URL = sso_configuration_url || `${sso_url}/.well-known/openid-configuration`;
 let _oidConfiguration: OID_PROVIDER_CONFIGURATION = emptyProviderConfiguration;
 
 // TODO: there is a known issue to run code and cache data in backend server on startup
@@ -37,7 +37,7 @@ export const fetchIssuerConfiguration = async () => {
   if (_oidConfiguration?.issuer) return _oidConfiguration;
 
   const { issuer, jwks_uri, authorization_endpoint, token_endpoint, userinfo_endpoint, end_session_endpoint } =
-    await axios.get(ISSUER_URL).then(
+    await axios.get(PROVIDER_CONFIGURATION_URL).then(
       (res: { data: any }) => res.data,
       () => null,
     );

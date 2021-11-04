@@ -68,8 +68,6 @@ spec:
                   key: {{ .Values.postgres.password.key }}
             - name: PGDATABASE_NAME
               value: {{ .Values.postgres.database }}
-            - name: PGSSL
-              value: {{ .Values.postgres.ssl | quote }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -133,6 +131,8 @@ spec:
                   key: {{ .Values.postgres.password.key }}
             - name: PGDATABASE
               value: {{ .Values.postgres.database }}
+            - name: PGSSL
+              value: {{ .Values.postgres.ssl | quote }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}

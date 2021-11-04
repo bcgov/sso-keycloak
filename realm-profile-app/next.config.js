@@ -2,6 +2,7 @@
 module.exports = {
   reactStrictMode: true,
   serverRuntimeConfig: {
+    sso_configuration_url: process.env.SSO_CONFIGURATION_URL,
     sso_url: process.env.SSO_URL || 'http://localhost:8080',
     sso_client_id: process.env.SSO_CLIENT_ID || '',
     sso_client_secret: process.env.SSO_CLIENT_SECRET || '',
