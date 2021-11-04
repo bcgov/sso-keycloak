@@ -9,8 +9,8 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     helm.sh/chart: {{ include "..chart" . }}
 spec:
-  # see https://crontab.guru/#0_17_*_*_*
-  schedule: "0 17 * * *"
+  # see https://crontab.guru/every-2-hours
+  schedule: "0 */2 * * *"
   jobTemplate:
     spec:
       backoffLimit: 1
