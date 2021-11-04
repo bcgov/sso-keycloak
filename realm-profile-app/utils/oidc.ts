@@ -26,6 +26,8 @@ const confidential = !!sso_client_secret;
 
 const btoa = (str: string) => Buffer.from(str).toString('base64');
 
+const getUrlQuerySeparator = (url: string) => (url.includes('?') ? '&' : '?');
+
 // see https://datatracker.ietf.org/doc/html/rfc6749#section-4.1.1
 export const getAuthorizationUrl = async (extraParams = {}) => {
   const providerConfig = await fetchIssuerConfiguration();
@@ -41,7 +43,8 @@ export const getAuthorizationUrl = async (extraParams = {}) => {
   if (!confidential) {
   }
 
-  return `${providerConfig?.authorization_endpoint}?${qs.stringify(params, { encode: false })}`;
+  const separator = getUrlQuerySeparator(providerConfig?.authorization_endpoint);
+  return `${providerConfig?.authorization_endpoint}${separator}${qs.stringify(params, { encode: false })}`;
 };
 
 // see https://datatracker.ietf.org/doc/html/rfc6749#section-4.1.3
