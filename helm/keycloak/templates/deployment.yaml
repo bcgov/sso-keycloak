@@ -51,14 +51,16 @@ spec:
           #   successThreshold: 1
           #   failureThreshold: 5
           livenessProbe:
-            tcpSocket:
+            httpGet:
+              path: /auth/realms/master/.well-known/openid-configuration
               port: 8080
             initialDelaySeconds: 300
             periodSeconds: 20
             successThreshold: 1
             failureThreshold: 5
           readinessProbe:
-            tcpSocket:
+            httpGet:
+              path: /auth/realms/master/.well-known/openid-configuration
               port: 8080
             initialDelaySeconds: 200
             periodSeconds: 20
