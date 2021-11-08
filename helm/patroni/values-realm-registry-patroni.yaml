@@ -5,8 +5,8 @@ image:
   pullPolicy: Always
   tag: "0.2.1"
 
-nameOverride: realm-profile-patroni
-fullnameOverride: realm-profile-patroni
+nameOverride: realm-registry-patroni
+fullnameOverride: realm-registry-patroni
 
 resources: {}
 persistentVolume:
