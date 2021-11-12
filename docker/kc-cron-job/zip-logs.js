@@ -1,14 +1,9 @@
-const _ = require('lodash');
-const { Client } = require('pg');
-const format = require('pg-format');
-const util = require('util');
-const exec = util.promisify(require('child_process').exec);
 const fsPromises = require('fs').promises;
 const fs = require('fs');
-const readline = require('readline');
 const archiver = require('archiver');
+const { saveFilesToDatabase } = require('./event-logs');
 
-const { DIRECTORY = '/var/log/eap', EXPIRY_LENGTH_DAYS = 10 } = process.env;
+const { DIRECTORY = '/var/log/eap', EXPIRY_LENGTH_DAYS = 30, TEMP_DIRECTORY = './tmp' } = process.env;
 const endsWithDateRegex = /\d{4}-\d{2}-\d{2}$/;
 const endsWithDateZippedRegex = /\d{4}-\d{2}-\d{2}.zip$/;
 
@@ -78,19 +73,19 @@ const deleteOldZipFiles = async (dirname, expiryLengthDays) => {
 
 async function main(dirname) {
   try {
-    const tempDirectory = './tmp';
     const [datedFileNames, uniqueDates] = await getDatedLogFiles(dirname, endsWithDateRegex);
-    await createDateDirectories(tempDirectory, uniqueDates);
-    await copyFilesToDateFolder(dirname, tempDirectory, datedFileNames);
-    await zipFolders(tempDirectory, dirname);
+    await createDateDirectories(TEMP_DIRECTORY, uniqueDates);
+    await copyFilesToDateFolder(dirname, TEMP_DIRECTORY, datedFileNames);
+    await saveFilesToDatabase(TEMP_DIRECTORY)
+    await zipFolders(TEMP_DIRECTORY, dirname);
     await deleteFiles(dirname, datedFileNames);
     await deleteOldZipFiles(dirname, EXPIRY_LENGTH_DAYS);
   } catch (err) {
     console.log(err);
   } finally {
-    await fsPromises.rmdir('./tmp', { recursive: true, force: true });
+    await fsPromises.rmdir(TEMP_DIRECTORY, { recursive: true, force: true });
     console.log('Done');
   }
 }
 
-main('./test-data');
+main(DIRECTORY);
