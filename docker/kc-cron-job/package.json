@@ -8,6 +8,7 @@
     "start": "node server.js"
   },
   "dependencies": {
+    "archiver": "^5.3.0",
     "keycloak-admin": "^1.14.22",
     "lodash": "^4.17.21",
     "pg": "^8.7.1",

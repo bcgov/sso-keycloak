@@ -1,8 +1,6 @@
 const _ = require('lodash');
 const { Client } = require('pg');
 const format = require('pg-format');
-const util = require('util');
-const exec = util.promisify(require('child_process').exec);
 const fsPromises = require('fs').promises;
 const fs = require('fs');
 const readline = require('readline');
@@ -14,14 +12,7 @@ const PGPASSWORD = process.env.PGPASSWORD || 'postgres';
 const PGDATABASE = process.env.PGDATABASE || 'postgres';
 const LOG_BATCH_SIZE = process.env.LOG_BATCH_SIZE || 1000;
 const RETENTION_PERIOD_DAYS = process.env.RETENTION_PERIOD_DAYS || 30;
-// The most recently zipped files will be from 2 days ago. Override to grab logs from further back
-const FILENAME_DAYS_AGO = process.env.FILENAME_DAYS_AGO || 2;
 
-const getFilename = (daysAgo) => {
-  const yesterday = new Date();
-  yesterday.setDate(yesterday.getDate() - daysAgo);
-  return `${yesterday.toISOString().split('T')[0]}.tar.gz`;
-};
 
 const getQuery = (logs) => {
   const query = format(
@@ -121,12 +112,12 @@ const getClient = () => {
     ssl: { rejectUnauthorized: false },
   });
   return client;
-}
+};
 
 const clearOldLogs = async (retentionPeriodDays) => {
   let client;
   try {
-    client = getClient()
+    client = getClient();
     await client.connect();
     const query = `DELETE from sso_logs where timestamp < NOW() - INTERVAL '${retentionPeriodDays} DAYS'`;
     await client.query(query);
@@ -135,18 +126,23 @@ const clearOldLogs = async (retentionPeriodDays) => {
   } finally {
     await client.end();
   }
+};
+
+const getYesterday = () => {
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 3);
+  return yesterday.toISOString().split('T')[0];
 }
 
-async function main() {
+async function saveFilesToDatabase(dirname) {
   try {
-    const fileName = getFilename(FILENAME_DAYS_AGO);
+    const yesterday = getYesterday();
+    const previousDayLogsFolder = `${dirname}/${yesterday}`;
     await clearOldLogs(RETENTION_PERIOD_DAYS);
-    await exec(`mkdir /logs/tmp & tar -xvzf /logs/${fileName} -C /logs/tmp`);
-    await reduceDataFromFiles('/logs/tmp/');
-    await exec(`rm -rf /logs/tmp`);
+    await reduceDataFromFiles(previousDayLogsFolder);
   } catch (err) {
     console.log(err);
   }
 }
 
-main();
+module.exports = { saveFilesToDatabase };
