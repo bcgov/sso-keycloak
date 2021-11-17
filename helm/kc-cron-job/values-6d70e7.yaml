@@ -14,7 +14,7 @@ namespace:
   activeSessions: "6d70e7-tools"
 
 pvc:
-  name: sso-logs-prod
+  name: sso-keycloak-logs
 
 networkPolicy:
   environment: tools
