@@ -4,12 +4,12 @@ import { sleep, check } from 'k6';
 export const options = {
   stages: [
     {
-      target: 2,
-      duration: '5s',
+      target: 300,
+      duration: '10s',
     },
     {
-      target: 1,
-      duration: '1s',
+      target: 10,
+      duration: '10s',
     },
   ],
   thresholds: {
@@ -39,15 +39,10 @@ export default function (data) {
   check(res, {
     'is status 200': (r) => r.status === 200,
   });
-  // Data received from setup function
-  console.log(data);
   sleep(1);
 }
 
-export function teardown(data) {
+export function teardown() {
   // Run any code to teardown after the test here
   console.log('tearing down...');
-
-  // Data received from setup function
-  console.log(data);
 }
