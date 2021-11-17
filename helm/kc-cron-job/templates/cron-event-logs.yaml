@@ -55,12 +55,16 @@ spec:
               imagePullPolicy: {{ .Values.image.pullPolicy }}
               command:
                 - node
-                - event-logs.js
+                - zip-logs.js
               env:
                 - name: RELEASE_REVISION
                   value: "{{ .Release.Revision }}"
                 - name: RETENTION_PERIOD_DAYS
-                  value: '30'
+                  value: '7'
+                - name: DIRECTORY
+                  value: /logs
+                - name: TEMP_DIRECTORY
+                  value: /tmp/kc-logs
                 - name: PGHOST
                   value: {{ .Values.pgHost }}
                 - name: PGPORT

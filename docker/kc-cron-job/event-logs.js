@@ -12,7 +12,7 @@ const PGPASSWORD = process.env.PGPASSWORD || 'postgres';
 const PGDATABASE = process.env.PGDATABASE || 'postgres';
 const LOG_BATCH_SIZE = process.env.LOG_BATCH_SIZE || 1000;
 const RETENTION_PERIOD_DAYS = process.env.RETENTION_PERIOD_DAYS || 30;
-
+const SAVE_LOGS_N_DAYS_AGO = process.env.SAVE_LOGS_N_DAYS_AGO || 2;
 
 const getQuery = (logs) => {
   const query = format(
@@ -128,16 +128,17 @@ const clearOldLogs = async (retentionPeriodDays) => {
   }
 };
 
-const getYesterday = () => {
+const getDate = (daysAgo) => {
   const yesterday = new Date();
-  yesterday.setDate(yesterday.getDate() - 3);
+  yesterday.setDate(yesterday.getDate() - daysAgo);
   return yesterday.toISOString().split('T')[0];
 }
 
 async function saveFilesToDatabase(dirname) {
+  console.info('Saving Logs to database...')
   try {
-    const yesterday = getYesterday();
-    const previousDayLogsFolder = `${dirname}/${yesterday}`;
+    const dateToSave = getDate(SAVE_LOGS_N_DAYS_AGO);
+    const previousDayLogsFolder = `${dirname}/${dateToSave}`;
     await clearOldLogs(RETENTION_PERIOD_DAYS);
     await reduceDataFromFiles(previousDayLogsFolder);
   } catch (err) {
