@@ -23,13 +23,14 @@ const getDatedLogFiles = async (dirname, regex) => {
 
 
 const createDateDirectories = async (baseDir, newDirNames) => {
-  console.info('Creating new Directories...')
+  console.info(`Creating new Directories in ...${baseDir}, e.g ${newDirNames[0]}`)
   fs.mkdirSync(baseDir);
   const promises = newDirNames.map((newDirName) => fsPromises.mkdir(`${baseDir}/${newDirName}`));
   return Promise.all(promises);
 };
 
 const copyFilesToDateFolder = async (srcDir, destDir, fileNames) => {
+  console.info(`Copying files from ${srcDir} to ${destDir}, e.g ${fileNames[0]}`)
   return fileNames.map((filename) => {
     const fileNameDate = getFileDate(filename);
     return fsPromises.copyFile(`${srcDir}/${filename}`, `${destDir}/${fileNameDate}/${filename}`);

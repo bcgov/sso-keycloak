@@ -76,7 +76,7 @@ const reduceDataFromFiles = async (dirname) => {
     }
     await Promise.all(promises);
   } catch (e) {
-    console.error('error reading files:', e);
+    console.error('error while reducing file data', e);
   } finally {
     await client.end();
   }
@@ -115,11 +115,13 @@ const getClient = () => {
 };
 
 const clearOldLogs = async (retentionPeriodDays) => {
+  console.info('Removing old logs from database...')
   let client;
   try {
     client = getClient();
     await client.connect();
-    const query = `DELETE from sso_logs where timestamp < NOW() - INTERVAL '${retentionPeriodDays} DAYS'`;
+    const query = `DELETE from sso_logs where timestamp < NOW() - INTERVAL '${retentionPeriodDays} DAYS';`;
+    console.info(`Running delete query: ${query}`)
     await client.query(query);
   } catch (e) {
     console.error(e);
@@ -127,6 +129,22 @@ const clearOldLogs = async (retentionPeriodDays) => {
     await client.end();
   }
 };
+
+const parseLogStats = async () => {
+  console.info('Collecting log stats...')
+  let client;
+  try {
+    client = getClient();
+    await client.connect();
+    console.info('running save_log_types function...')
+    const saveStatsQuery = `SELECT save_log_types();`
+    await client.query(saveStatsQuery);
+  } catch (e) {
+    console.error(e);
+  } finally {
+    await client.end();
+  }
+}
 
 const getDate = (daysAgo) => {
   const yesterday = new Date();
@@ -141,6 +159,7 @@ async function saveFilesToDatabase(dirname) {
     const previousDayLogsFolder = `${dirname}/${dateToSave}`;
     await clearOldLogs(RETENTION_PERIOD_DAYS);
     await reduceDataFromFiles(previousDayLogsFolder);
+    await parseLogStats();
   } catch (err) {
     console.log(err);
   }
