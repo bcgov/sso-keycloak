@@ -23,12 +23,14 @@ const getDatedLogFiles = async (dirname, regex) => {
 
 
 const createDateDirectories = async (baseDir, newDirNames) => {
+  console.info(`Creating new Directories in ...${baseDir}, e.g ${newDirNames[0]}`)
   fs.mkdirSync(baseDir);
   const promises = newDirNames.map((newDirName) => fsPromises.mkdir(`${baseDir}/${newDirName}`));
   return Promise.all(promises);
 };
 
 const copyFilesToDateFolder = async (srcDir, destDir, fileNames) => {
+  console.info(`Copying files from ${srcDir} to ${destDir}, e.g ${fileNames[0]}`)
   return fileNames.map((filename) => {
     const fileNameDate = getFileDate(filename);
     return fsPromises.copyFile(`${srcDir}/${filename}`, `${destDir}/${fileNameDate}/${filename}`);
@@ -36,6 +38,7 @@ const copyFilesToDateFolder = async (srcDir, destDir, fileNames) => {
 };
 
 const zipFolders = async (srcDir, destDir) => {
+  console.info('Zipping logs...')
   const foldersToZip = await fsPromises.readdir(srcDir);
 
   return Promise.all(
@@ -58,6 +61,7 @@ const deleteFiles = async (dirname, filenames) =>
   Promise.all(filenames.map((filename) => fsPromises.rm(`${dirname}/${filename}`)));
 
 const deleteOldZipFiles = async (dirname, expiryLengthDays) => {
+  console.info('Deleting old files...')
   const [allZippedFiles] = await getDatedLogFiles(dirname, endsWithDateZippedRegex);
   const zippedFileDates = allZippedFiles.map(filename => filename.split('.zip')[0]);
 
@@ -76,7 +80,7 @@ async function main(dirname) {
     const [datedFileNames, uniqueDates] = await getDatedLogFiles(dirname, endsWithDateRegex);
     await createDateDirectories(TEMP_DIRECTORY, uniqueDates);
     await copyFilesToDateFolder(dirname, TEMP_DIRECTORY, datedFileNames);
-    await saveFilesToDatabase(TEMP_DIRECTORY)
+    await saveFilesToDatabase(TEMP_DIRECTORY);
     await zipFolders(TEMP_DIRECTORY, dirname);
     await deleteFiles(dirname, datedFileNames);
     await deleteOldZipFiles(dirname, EXPIRY_LENGTH_DAYS);

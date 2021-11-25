@@ -12,7 +12,7 @@ const PGPASSWORD = process.env.PGPASSWORD || 'postgres';
 const PGDATABASE = process.env.PGDATABASE || 'postgres';
 const LOG_BATCH_SIZE = process.env.LOG_BATCH_SIZE || 1000;
 const RETENTION_PERIOD_DAYS = process.env.RETENTION_PERIOD_DAYS || 30;
-
+const SAVE_LOGS_N_DAYS_AGO = process.env.SAVE_LOGS_N_DAYS_AGO || 2;
 
 const getQuery = (logs) => {
   const query = format(
@@ -76,7 +76,7 @@ const reduceDataFromFiles = async (dirname) => {
     }
     await Promise.all(promises);
   } catch (e) {
-    console.error('error reading files:', e);
+    console.error('error while reducing file data', e);
   } finally {
     await client.end();
   }
@@ -115,11 +115,13 @@ const getClient = () => {
 };
 
 const clearOldLogs = async (retentionPeriodDays) => {
+  console.info('Removing old logs from database...')
   let client;
   try {
     client = getClient();
     await client.connect();
-    const query = `DELETE from sso_logs where timestamp < NOW() - INTERVAL '${retentionPeriodDays} DAYS'`;
+    const query = `DELETE from sso_logs where timestamp < NOW() - INTERVAL '${retentionPeriodDays} DAYS';`;
+    console.info(`Running delete query: ${query}`)
     await client.query(query);
   } catch (e) {
     console.error(e);
@@ -128,18 +130,36 @@ const clearOldLogs = async (retentionPeriodDays) => {
   }
 };
 
-const getYesterday = () => {
+const parseLogStats = async () => {
+  console.info('Collecting log stats...')
+  let client;
+  try {
+    client = getClient();
+    await client.connect();
+    console.info('running save_log_types function...')
+    const saveStatsQuery = `SELECT save_log_types();`
+    await client.query(saveStatsQuery);
+  } catch (e) {
+    console.error(e);
+  } finally {
+    await client.end();
+  }
+}
+
+const getDate = (daysAgo) => {
   const yesterday = new Date();
-  yesterday.setDate(yesterday.getDate() - 3);
+  yesterday.setDate(yesterday.getDate() - daysAgo);
   return yesterday.toISOString().split('T')[0];
 }
 
 async function saveFilesToDatabase(dirname) {
+  console.info('Saving Logs to database...')
   try {
-    const yesterday = getYesterday();
-    const previousDayLogsFolder = `${dirname}/${yesterday}`;
+    const dateToSave = getDate(SAVE_LOGS_N_DAYS_AGO);
+    const previousDayLogsFolder = `${dirname}/${dateToSave}`;
     await clearOldLogs(RETENTION_PERIOD_DAYS);
     await reduceDataFromFiles(previousDayLogsFolder);
+    await parseLogStats();
   } catch (err) {
     console.log(err);
   }

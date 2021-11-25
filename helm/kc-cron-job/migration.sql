@@ -30,8 +30,11 @@ CREATE TABLE IF NOT EXISTS sso_stats (
   UNIQUE (realm_id, date)
 );
 
+DROP TRIGGER IF EXISTS update_stats ON public.sso_logs;
+DROP FUNCTION IF EXISTS save_log_types();
+
 CREATE OR REPLACE FUNCTION save_log_types ()
-  RETURNS TRIGGER
+  RETURNS VOID
   AS $BODY$
 DECLARE
   event_types text[];
@@ -58,13 +61,6 @@ BEGIN
       ON CONFLICT (date, realm_id) DO UPDATE set %s = excluded.%s;
    ', event_type, 'realmId', 'type', event_type, 'type', event_type, 'realmId', 'type', event_type, event_type);
   END LOOP;
-  RETURN NULL;
 END;
 $BODY$
 LANGUAGE 'plpgsql';
-
-DROP TRIGGER IF EXISTS update_stats ON public.sso_logs;
-
-CREATE TRIGGER update_stats
-  AFTER INSERT ON sso_logs
-  EXECUTE PROCEDURE save_log_types ();
