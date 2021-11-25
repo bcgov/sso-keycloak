@@ -64,7 +64,7 @@ spec:
                 - name: DIRECTORY
                   value: /logs
                 - name: TEMP_DIRECTORY
-                  value: /tmp/kc-logs
+                  value: /logs/kc-logs-tmp
                 - name: PGHOST
                   value: {{ .Values.pgHost }}
                 - name: PGPORT
