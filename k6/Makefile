@@ -1,3 +1,3 @@
-.PHONY: test
-test:
-	k6 run script.js
+.PHONY: single-realm-active-sessions
+single-realm-active-sessions:
+	k6 run singleRealmActiveSessions.js
