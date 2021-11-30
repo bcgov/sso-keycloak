@@ -104,7 +104,7 @@
                 <level name="DEBUG" />
             </logger>
             <logger category="org.keycloak.events" use-parent-handlers="false">
-                <level name="DEBUG" />
+                <level name="TRACE" />
                 <handlers>
                     <handler name="AUDIT" />
                     <handler name="CONSOLE" />
