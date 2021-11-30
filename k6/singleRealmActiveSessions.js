@@ -3,7 +3,7 @@ import { createRealm, deleteRealm, createUser, deleteUser, getAccessToken, clear
 import { user, realm } from './constants.js';
 import {username, password, clientId} from './env.js';
 
-const TEST_DURATION = '1s';
+const TEST_DURATION_SECONDS = '1';
 const TOTAL_ACTIVE_SESSIONS = 1;
 const REALM_NAME = realm.realm;
 
@@ -11,20 +11,22 @@ export const options = {
   stages: [
     {
       target: TOTAL_ACTIVE_SESSIONS,
-      duration: TEST_DURATION,
+      duration: `${TEST_DURATION_SECONDS}s`,
     },
   ],
 };
 
 export function setup() {
   const accessToken = getAccessToken(username, password, clientId);
-  createRealm(realm, accessToken);
-  createUser(user, REALM_NAME, accessToken);
+  const res = createRealm(realm, accessToken);
+  // console.log(JSON.stringify(res, null , 2))
+
+  // createUser(user, REALM_NAME, accessToken);
 }
 
 export default function () {
   getAccessToken(user.username, user.credentials[0].value, clientId, REALM_NAME);
-  sleep(TEST_DURATION);
+  sleep(TEST_DURATION_SECONDS);
 }
 
 export function teardown() {
