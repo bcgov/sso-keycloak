@@ -1,36 +1,55 @@
 import { sleep, check } from 'k6';
-import { createRealm, deleteRealm, createUser, deleteUser, getAccessToken, clearRealmSessions } from './helpers.js';
+import { createRealm, deleteRealm, createUser, generateRealms, getAccessToken, clearRealmSessions } from './helpers.js';
 import { user, realm } from './constants.js';
-import {username, password, clientId} from './env.js';
+import { username, password, clientId } from './env.js';
 
-const TEST_DURATION_SECONDS = '1';
-const TOTAL_ACTIVE_SESSIONS = 1;
-const REALM_NAME = realm.realm;
+const TOTAL_ACTIVE_SESSIONS = 3000;
+const TOTAL_REALMS = 30;
+const MAX_ALLOWED_FAILURE_RATE = '0.01';
+
+const RAMP_UP_TIME_SECONDS = 60;
+const HOLD_TIME_SECONDS = 45;
 
 export const options = {
   stages: [
     {
       target: TOTAL_ACTIVE_SESSIONS,
-      duration: `${TEST_DURATION_SECONDS}s`,
+      duration: `${RAMP_UP_TIME_SECONDS}s`,
+    },
+    {
+      target: TOTAL_ACTIVE_SESSIONS,
+      duration: `${HOLD_TIME_SECONDS}s`,
     },
   ],
+  thresholds: {
+    http_req_failed: [
+      {
+        threshold: `rate<${MAX_ALLOWED_FAILURE_RATE}`,
+        // abortOnFail: true,
+      },
+    ],
+  },
 };
 
 export function setup() {
   const accessToken = getAccessToken(username, password, clientId);
-  const res = createRealm(realm, accessToken);
-  // console.log(JSON.stringify(res, null , 2))
-
-  // createUser(user, REALM_NAME, accessToken);
+  const emptyRealms = generateRealms(TOTAL_REALMS);
+  emptyRealms.forEach((realm, i) => {
+    createRealm(realm, accessToken);
+    if (i === 0) createUser(user, realm.realm, accessToken);
+  });
+  return emptyRealms;
 }
 
-export default function () {
-  getAccessToken(user.username, user.credentials[0].value, clientId, REALM_NAME);
-  sleep(TEST_DURATION_SECONDS);
+export default function (realms) {
+  getAccessToken(user.username, user.credentials[0].value, clientId, realms[0].realm);
+  sleep(RAMP_UP_TIME_SECONDS + HOLD_TIME_SECONDS);
+  return realms;
 }
 
-export function teardown() {
+export function teardown(realms) {
   const accessToken = getAccessToken(username, password, clientId);
-  clearRealmSessions(REALM_NAME, accessToken);
-  deleteRealm(REALM_NAME, accessToken);
+  realms.forEach((realm, i) => {
+    deleteRealm(realm.realm, accessToken);
+  });
 }

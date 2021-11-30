@@ -1,45 +1,59 @@
 import { sleep, check } from 'k6';
 import { createRealm, deleteRealm, createUser, generateRealms, getAccessToken, clearRealmSessions } from './helpers.js';
 import { user, realm } from './constants.js';
-import {username, password, clientId} from './env.js';
+import { username, password, clientId } from './env.js';
 
-const TEST_DURATION_SECONDS = '20';
 const TOTAL_ACTIVE_SESSIONS = 3000;
-const TOTAL_REALMS = 25;
+const TOTAL_REALMS = 30;
 
-const USERS_PER_REALM = Math.floor(TOTAL_ACTIVE_SESSIONS / TOTAL_REALMS);
+const RAMP_UP_TIME_SECONDS = 60;
+const HOLD_TIME_SECONDS = 45;
+const MAX_ALLOWED_FAILURE_RATE = '0.01';
+
+const userPerRealm = Math.floor(TOTAL_ACTIVE_SESSIONS / TOTAL_REALMS);
 
 export const options = {
   stages: [
     {
-      target: USERS_PER_REALM,
-      duration: `${TEST_DURATION_SECONDS}s`,
+      target: userPerRealm,
+      duration: `${RAMP_UP_TIME_SECONDS}s`,
+    },
+    {
+      target: userPerRealm,
+      duration: `${HOLD_TIME_SECONDS}s`,
     },
   ],
+  thresholds: {
+    http_req_failed: [
+      {
+        threshold: `rate<${MAX_ALLOWED_FAILURE_RATE}`,
+        // abortOnFail: true,
+      },
+    ],
+  },
 };
 
 export function setup() {
   const accessToken = getAccessToken(username, password, clientId);
   const realms = generateRealms(TOTAL_REALMS);
-  realms.forEach(realm => {
+  realms.forEach((realm) => {
     createRealm(realm, accessToken);
-    createUser(user, realm.realm, accessToken)
+    createUser(user, realm.realm, accessToken);
   });
   return realms;
 }
 
 export default function (realms) {
-  getAccessToken(user.username, user.credentials[0].value, clientId, realms[0].realm);
-  realms.forEach(realm => {
+  realms.forEach((realm) => {
     getAccessToken(user.username, user.credentials[0].value, clientId, realm.realm);
-  })
-  sleep(TEST_DURATION_SECONDS);
-  return realms
+  });
+  sleep(RAMP_UP_TIME_SECONDS + HOLD_TIME_SECONDS);
+  return realms;
 }
 
 export function teardown(realms) {
   const accessToken = getAccessToken(username, password, clientId);
-  realms.forEach(realm => {
+  realms.forEach((realm) => {
     deleteRealm(realm.realm, accessToken);
   });
 }
