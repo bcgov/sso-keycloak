@@ -1,16 +1,17 @@
-
 # Patroni Helm Chart
 
 This directory contains a Kubernetes chart to deploy a [Patroni](https://github.com/zalando/patroni/) cluster using a [Spilo](https://github.com/zalando/spilo) and a StatefulSet.
 
 ## Prerequisites Details
-* Kubernetes 1.9+
-* PV support on the underlying infrastructure
+
+- Kubernetes 1.9+
+- PV support on the underlying infrastructure
 
 ## Chart Details
+
 This chart will do the following:
 
-* Implement a HA scalable PostgreSQL 10 cluster using a Kubernetes StatefulSet.
+- Implement a HA scalable PostgreSQL 10 cluster using a Kubernetes StatefulSet.
 
 ## Installing the Chart
 
@@ -37,53 +38,53 @@ $ helm install patroni . \
 
 The following table lists the configurable parameters of the patroni chart and their default values.
 
-|       Parameter                   |           Description                       |                         Default                     |
-|-----------------------------------|---------------------------------------------|-----------------------------------------------------|
-| `nameOverride`                    | Override the name of the chart              | `nil`                                               |
-| `fullnameOverride`                | Override the fullname of the chart          | `nil`                                               |
-| `replicaCount`                    | Amount of pods to spawn                     | `5`                                                 |
-| `image.repository`                | The image to pull                           | `registry.opensource.zalan.do/acid/spilo-10`        |
-| `image.tag`                       | The version of the image to pull            | `1.5-p5`                                            |
-| `image.pullPolicy`                | The pull policy                             | `IfNotPresent`                                      |
-| `credentials.superuser`           | Password of the superuser                   | `tea`                                               |
-| `credentials.admin`               | Password of the admin                       | `cola`                                              |
-| `credentials.standby`             | Password of the replication user            | `pinacolada`                                        |
-| `kubernetes.dcs.enable`           | Using Kubernetes as DCS                     | `true`                                              |
-| `kubernetes.configmaps.enable`    | Using Kubernetes configmaps instead of endpoints | `false`                                        |
-| `etcd.enable`                     | Using etcd as DCS                           | `false`                                             |
-| `etcd.deployChart`                | Deploy etcd chart                           | `false`                                             |
-| `etcd.host`                       | Host name of etcd cluster                   | `nil`                                               |
-| `etcd.discovery`                  | Domain name of etcd cluster                 | `nil`                                               |
-| `zookeeper.enable`                | Using ZooKeeper as DCS                      | `false`                                             |
-| `zookeeper.deployChart`           | Deploy ZooKeeper chart                      | `false`                                             |
-| `zookeeper.hosts`                 | List of ZooKeeper cluster members           | `host1:port1,host2:port,etc...`                     |
-| `consul.enable`                   | Using Consul as DCS                         | `false`                                             |
-| `consul.deployChart`              | Deploy Consul chart                         | `false`                                             |
-| `consul.host`                     | Host name of consul cluster                 | `nil`                                               |
-| `env`                             | Extra custom environment variables          | `{}`                                                |
-| `walE.enable`                     | Use of Wal-E tool for base backup/restore   | `false`                                             |
-| `walE.scheduleCronJob`            | Schedule of Wal-E backups                   | `00 01 * * *`                                       |
-| `walE.retainBackups`              | Number of base backups to retain            | `2`                                                 |
-| `walE.s3Bucket:`                  | Amazon S3 bucket used for wal-e backups     | `nil`                                               |
-| `walE.gcsBucket`                  | GCS storage used for Wal-E backups          | `nil`                                               |
-| `walE.kubernetesSecret`           | K8s secret name for provider bucket         | `nil`                                               |
-| `walE.backupThresholdMegabytes`   | Maximum size of the WAL segments accumulated after the base backup to consider WAL-E restore instead of pg_basebackup | `1024` |
-| `walE.backupThresholdPercentage`  | Maximum ratio (in percents) of the accumulated WAL files to the base backup to consider WAL-E restore instead of pg_basebackup | `30` |
-| `resources`                       | Any resources you wish to assign to the pod | `{}`                                                |
-| `nodeSelector`                    | Node label to use for scheduling            | `{}`                                                |
-| `tolerations`                     | List of node taints to tolerate             | `[]`                                                |
-| `affinityTemplate`                | A template string to use to generate the affinity settings | Anti-affinity preferred on hostname  |
-| `affinity`                        | Affinity settings. Overrides `affinityTemplate` if set. | `{}`                                    |
-| `schedulerName`                   | Alternate scheduler name                    | `nil`                                               |
-| `persistentVolume.accessModes`    | Persistent Volume access modes              | `[ReadWriteOnce]`                                   |
-| `persistentVolume.annotations`    | Annotations for Persistent Volume Claim`    | `{}`                                                |
-| `persistentVolume.mountPath`      | Persistent Volume mount root path           | `/home/postgres/pgdata`                             |
-| `persistentVolume.size`           | Persistent Volume size                      | `2Gi`                                               |
-| `persistentVolume.storageClass`   | Persistent Volume Storage Class             | `volume.alpha.kubernetes.io/storage-class: default` |
-| `persistentVolume.subPath`        | Subdirectory of Persistent Volume to mount  | `""`                                                |
-| `rbac.create`                     | Create required role and rolebindings       | `true`                                              |
-| `serviceAccount.create`           | If true, create a new service account	      | `true`                                              |
-| `serviceAccount.name`             | Service account to be used. If not set and `serviceAccount.create` is `true`, a name is generated using the fullname template | `nil` |
+| Parameter                        | Description                                                                                                                    | Default                                             |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------- |
+| `nameOverride`                   | Override the name of the chart                                                                                                 | `nil`                                               |
+| `fullnameOverride`               | Override the fullname of the chart                                                                                             | `nil`                                               |
+| `replicaCount`                   | Amount of pods to spawn                                                                                                        | `5`                                                 |
+| `image.repository`               | The image to pull                                                                                                              | `registry.opensource.zalan.do/acid/spilo-10`        |
+| `image.tag`                      | The version of the image to pull                                                                                               | `1.5-p5`                                            |
+| `image.pullPolicy`               | The pull policy                                                                                                                | `IfNotPresent`                                      |
+| `credentials.superuser`          | Password of the superuser                                                                                                      | `tea`                                               |
+| `credentials.admin`              | Password of the admin                                                                                                          | `cola`                                              |
+| `credentials.standby`            | Password of the replication user                                                                                               | `pinacolada`                                        |
+| `kubernetes.dcs.enable`          | Using Kubernetes as DCS                                                                                                        | `true`                                              |
+| `kubernetes.configmaps.enable`   | Using Kubernetes configmaps instead of endpoints                                                                               | `false`                                             |
+| `etcd.enable`                    | Using etcd as DCS                                                                                                              | `false`                                             |
+| `etcd.deployChart`               | Deploy etcd chart                                                                                                              | `false`                                             |
+| `etcd.host`                      | Host name of etcd cluster                                                                                                      | `nil`                                               |
+| `etcd.discovery`                 | Domain name of etcd cluster                                                                                                    | `nil`                                               |
+| `zookeeper.enable`               | Using ZooKeeper as DCS                                                                                                         | `false`                                             |
+| `zookeeper.deployChart`          | Deploy ZooKeeper chart                                                                                                         | `false`                                             |
+| `zookeeper.hosts`                | List of ZooKeeper cluster members                                                                                              | `host1:port1,host2:port,etc...`                     |
+| `consul.enable`                  | Using Consul as DCS                                                                                                            | `false`                                             |
+| `consul.deployChart`             | Deploy Consul chart                                                                                                            | `false`                                             |
+| `consul.host`                    | Host name of consul cluster                                                                                                    | `nil`                                               |
+| `env`                            | Extra custom environment variables                                                                                             | `{}`                                                |
+| `walE.enable`                    | Use of Wal-E tool for base backup/restore                                                                                      | `false`                                             |
+| `walE.scheduleCronJob`           | Schedule of Wal-E backups                                                                                                      | `00 01 * * *`                                       |
+| `walE.retainBackups`             | Number of base backups to retain                                                                                               | `2`                                                 |
+| `walE.s3Bucket:`                 | Amazon S3 bucket used for wal-e backups                                                                                        | `nil`                                               |
+| `walE.gcsBucket`                 | GCS storage used for Wal-E backups                                                                                             | `nil`                                               |
+| `walE.kubernetesSecret`          | K8s secret name for provider bucket                                                                                            | `nil`                                               |
+| `walE.backupThresholdMegabytes`  | Maximum size of the WAL segments accumulated after the base backup to consider WAL-E restore instead of pg_basebackup          | `1024`                                              |
+| `walE.backupThresholdPercentage` | Maximum ratio (in percents) of the accumulated WAL files to the base backup to consider WAL-E restore instead of pg_basebackup | `30`                                                |
+| `resources`                      | Any resources you wish to assign to the pod                                                                                    | `{}`                                                |
+| `nodeSelector`                   | Node label to use for scheduling                                                                                               | `{}`                                                |
+| `tolerations`                    | List of node taints to tolerate                                                                                                | `[]`                                                |
+| `affinityTemplate`               | A template string to use to generate the affinity settings                                                                     | Anti-affinity preferred on hostname                 |
+| `affinity`                       | Affinity settings. Overrides `affinityTemplate` if set.                                                                        | `{}`                                                |
+| `schedulerName`                  | Alternate scheduler name                                                                                                       | `nil`                                               |
+| `persistentVolume.accessModes`   | Persistent Volume access modes                                                                                                 | `[ReadWriteOnce]`                                   |
+| `persistentVolume.annotations`   | Annotations for Persistent Volume Claim`                                                                                       | `{}`                                                |
+| `persistentVolume.mountPath`     | Persistent Volume mount root path                                                                                              | `/home/postgres/pgdata`                             |
+| `persistentVolume.size`          | Persistent Volume size                                                                                                         | `2Gi`                                               |
+| `persistentVolume.storageClass`  | Persistent Volume Storage Class                                                                                                | `volume.alpha.kubernetes.io/storage-class: default` |
+| `persistentVolume.subPath`       | Subdirectory of Persistent Volume to mount                                                                                     | `""`                                                |
+| `rbac.create`                    | Create required role and rolebindings                                                                                          | `true`                                              |
+| `serviceAccount.create`          | If true, create a new service account                                                                                          | `true`                                              |
+| `serviceAccount.name`            | Service account to be used. If not set and `serviceAccount.create` is `true`, a name is generated using the fullname template  | `nil`                                               |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 

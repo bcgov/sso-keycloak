@@ -6,10 +6,10 @@ on:
       - main
       - dev
     tags:
-      - "*"
+      - '*'
     paths:
-      - "docker/kc-cron-job/**"
-      - ".github/workflows/publish-image-kc-cron-job.yml"
+      - 'docker/kc-cron-job/**'
+      - '.github/workflows/publish-image-kc-cron-job.yml'
 
 env:
   GITHUB_REGISTRY: ghcr.io

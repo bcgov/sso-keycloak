@@ -5,8 +5,8 @@ on:
     branches:
       - dev
     paths:
-      - "helm/**/Chart.yaml"
-      - ".github/workflows/publish-helm-chart.yml"
+      - 'helm/**/Chart.yaml'
+      - '.github/workflows/publish-helm-chart.yml'
 
 jobs:
   build-and-push-helm:
@@ -36,4 +36,4 @@ jobs:
         with:
           charts_dir: helm
         env:
-          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          CR_TOKEN: '${{ secrets.GITHUB_TOKEN }}'

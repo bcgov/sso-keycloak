@@ -115,13 +115,13 @@ const getClient = () => {
 };
 
 const clearOldLogs = async (retentionPeriodDays) => {
-  console.info('Removing old logs from database...')
+  console.info('Removing old logs from database...');
   let client;
   try {
     client = getClient();
     await client.connect();
     const query = `DELETE from sso_logs where timestamp < NOW() - INTERVAL '${retentionPeriodDays} DAYS';`;
-    console.info(`Running delete query: ${query}`)
+    console.info(`Running delete query: ${query}`);
     await client.query(query);
   } catch (e) {
     console.error(e);
@@ -131,29 +131,29 @@ const clearOldLogs = async (retentionPeriodDays) => {
 };
 
 const parseLogStats = async () => {
-  console.info('Collecting log stats...')
+  console.info('Collecting log stats...');
   let client;
   try {
     client = getClient();
     await client.connect();
-    console.info('running save_log_types function...')
-    const saveStatsQuery = `SELECT save_log_types();`
+    console.info('running save_log_types function...');
+    const saveStatsQuery = `SELECT save_log_types();`;
     await client.query(saveStatsQuery);
   } catch (e) {
     console.error(e);
   } finally {
     await client.end();
   }
-}
+};
 
 const getDate = (daysAgo) => {
   const yesterday = new Date();
   yesterday.setDate(yesterday.getDate() - daysAgo);
   return yesterday.toISOString().split('T')[0];
-}
+};
 
 async function saveFilesToDatabase(dirname) {
-  console.info('Saving Logs to database...')
+  console.info('Saving Logs to database...');
   try {
     const dateToSave = getDate(SAVE_LOGS_N_DAYS_AGO);
     const previousDayLogsFolder = `${dirname}/${dateToSave}`;
