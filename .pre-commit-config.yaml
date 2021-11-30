@@ -12,6 +12,17 @@ repos:
         exclude: ^helm/
       - id: end-of-file-fixer
       - id: trailing-whitespace
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v2.3.1
+    hooks:
+      - id: prettier
+  - repo: git://github.com/antonbabenko/pre-commit-terraform
+    rev: v1.50.0
+    hooks:
+      - id: terraform_fmt
+      - id: terraform_validate
+      - id: terraform_docs
+      - id: terraform_tflint
   - repo: git://github.com/pre-commit/pre-commit-hooks
     rev: v3.4.0
     hooks:
