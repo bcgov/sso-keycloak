@@ -1,6 +1,6 @@
 apiVersion: v1
 name: patroni
-description: 'Highly available elephant herd: HA PostgreSQL cluster.'
+description: "Highly available elephant herd: HA PostgreSQL cluster."
 version: 0.16.3
 appVersion: 1.5-p5
 home: https://github.com/zalando/patroni

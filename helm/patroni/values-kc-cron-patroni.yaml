@@ -3,7 +3,7 @@ replicaCount: 3
 image:
   repository: gcr.io/ggl-cas-storage/cas-postgres
   pullPolicy: Always
-  tag: '0.2.1'
+  tag: "0.2.1"
 
 nameOverride: kc-cron-patroni
 fullnameOverride: kc-cron-patroni

@@ -1,4 +1,4 @@
 apiVersion: v1
 name: kc-cron-job
-description: 'Helm chart for CronJob to collect Keycloak active sessions'
+description: "Helm chart for CronJob to collect Keycloak active sessions"
 version: 0.1.0

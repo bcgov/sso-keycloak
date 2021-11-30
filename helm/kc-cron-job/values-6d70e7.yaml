@@ -10,8 +10,8 @@ nameOverride: kc-cron-job
 fullnameOverride: kc-cron-job
 
 namespace:
-  eventLogs: '6d70e7-prod'
-  activeSessions: '6d70e7-tools'
+  eventLogs: "6d70e7-prod"
+  activeSessions: "6d70e7-tools"
 
 pvc:
   name: sso-keycloak-logs

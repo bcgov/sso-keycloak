@@ -79,8 +79,8 @@ persistentVolume:
   ##   GKE, AWS & OpenStack)
   ##
   # storageClass: "-"
-  subPath: ''
-  mountPath: '/home/postgres/pgdata'
+  subPath: ""
+  mountPath: "/home/postgres/pgdata"
   annotations: {}
   accessModes:
     - ReadWriteOnce

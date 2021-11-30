@@ -41,7 +41,7 @@ jgroupCluster:
   passwordKey: password
 
 # see https://github.com/keycloak/keycloak-containers/blob/master/server/README.md#start-a-keycloak-instance-with-custom-command-line-options
-additionalServerOptions: '-Dkeycloak.profile.feature.authorization=enabled -Djboss.persistent.log.dir=/var/log/eap'
+additionalServerOptions: "-Dkeycloak.profile.feature.authorization=enabled -Djboss.persistent.log.dir=/var/log/eap"
 
 # see https://github.com/keycloak/keycloak-containers/blob/master/server/README.md#setting-up-tlsssl
 tls:

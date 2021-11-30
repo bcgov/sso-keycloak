@@ -6,10 +6,10 @@ on:
       - main
       - dev
     tags:
-      - '*'
+      - "*"
     paths:
-      - 'docker/keycloak/**'
-      - '.github/workflows/publish-image-keycloak.yml'
+      - "docker/keycloak/**"
+      - ".github/workflows/publish-image-keycloak.yml"
 
 env:
   GITHUB_REGISTRY: ghcr.io

@@ -5,6 +5,5 @@ helm 3.2.4
 yarn 1.22.4
 k6 0.34.1
 terraform 1.0.7
-docker-compose 1.28.6
 terraform-docs 0.12.1
 tflint 0.28.1
