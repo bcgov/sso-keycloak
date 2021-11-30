@@ -1,10 +1,10 @@
-document.addEventListener("DOMContentLoaded", function(event) {
-    // use gov icon for tab:
-    updateFavIcon();
-    // extent the login message:
-    const errorMsg = document.getElementById('kc-error-message');
-    const titleContent = errorMsg ? 'Login Error:' : 'Authenticate with:'
-    document.getElementById('kc-page-title').innerHTML = titleContent;
+document.addEventListener('DOMContentLoaded', function (event) {
+  // use gov icon for tab:
+  updateFavIcon();
+  // extent the login message:
+  const errorMsg = document.getElementById('kc-error-message');
+  const titleContent = errorMsg ? 'Login Error:' : 'Authenticate with:';
+  document.getElementById('kc-page-title').innerHTML = titleContent;
 });
 
 function updateFavIcon() {
@@ -13,4 +13,4 @@ function updateFavIcon() {
   link.rel = 'shortcut icon';
   link.href = 'https://portal.nrs.gov.bc.ca/nrs-portal-theme/images/favicon.ico';
   document.getElementsByTagName('head')[0].appendChild(link);
-};
+}

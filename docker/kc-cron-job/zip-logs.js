@@ -21,16 +21,15 @@ const getDatedLogFiles = async (dirname, regex) => {
   return Promise.all([datedFileNames, uniqueDates]);
 };
 
-
 const createDateDirectories = async (baseDir, newDirNames) => {
-  console.info(`Creating new Directories in ...${baseDir}, e.g ${newDirNames[0]}`)
+  console.info(`Creating new Directories in ...${baseDir}, e.g ${newDirNames[0]}`);
   fs.mkdirSync(baseDir);
   const promises = newDirNames.map((newDirName) => fsPromises.mkdir(`${baseDir}/${newDirName}`));
   return Promise.all(promises);
 };
 
 const copyFilesToDateFolder = async (srcDir, destDir, fileNames) => {
-  console.info(`Copying files from ${srcDir} to ${destDir}, e.g ${fileNames[0]}`)
+  console.info(`Copying files from ${srcDir} to ${destDir}, e.g ${fileNames[0]}`);
   return fileNames.map((filename) => {
     const fileNameDate = getFileDate(filename);
     return fsPromises.copyFile(`${srcDir}/${filename}`, `${destDir}/${fileNameDate}/${filename}`);
@@ -38,7 +37,7 @@ const copyFilesToDateFolder = async (srcDir, destDir, fileNames) => {
 };
 
 const zipFolders = async (srcDir, destDir) => {
-  console.info('Zipping logs...')
+  console.info('Zipping logs...');
   const foldersToZip = await fsPromises.readdir(srcDir);
 
   return Promise.all(
@@ -61,16 +60,16 @@ const deleteFiles = async (dirname, filenames) =>
   Promise.all(filenames.map((filename) => fsPromises.rm(`${dirname}/${filename}`)));
 
 const deleteOldZipFiles = async (dirname, expiryLengthDays) => {
-  console.info('Deleting old files...')
+  console.info('Deleting old files...');
   const [allZippedFiles] = await getDatedLogFiles(dirname, endsWithDateZippedRegex);
-  const zippedFileDates = allZippedFiles.map(filename => filename.split('.zip')[0]);
+  const zippedFileDates = allZippedFiles.map((filename) => filename.split('.zip')[0]);
 
   const now = new Date();
   const oldestAllowedDate = new Date().setDate(now.getDate() - expiryLengthDays);
 
   const filesToDelete = zippedFileDates
-    .filter(stringDate => new Date(stringDate) < oldestAllowedDate)
-    .map(stringDate => `${stringDate}.zip`);
+    .filter((stringDate) => new Date(stringDate) < oldestAllowedDate)
+    .map((stringDate) => `${stringDate}.zip`);
 
   return deleteFiles(dirname, filesToDelete);
 };

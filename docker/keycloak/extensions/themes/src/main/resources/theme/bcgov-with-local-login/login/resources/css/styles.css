@@ -24,7 +24,8 @@
   padding: 62px 10px 20px;
 }
 
-.login-pf-accounts, .card-pf  {
+.login-pf-accounts,
+.card-pf {
   max-width: 450px;
   padding: 10px 20px;
 }
@@ -61,7 +62,10 @@ header.login-pf-header::before {
 }
 
 /* local login button, github, IDIR, BCeID, etc. */
-a.zocial, #kc-login, a.zocial.keycloak-oidc, .btn-primary {
+a.zocial,
+#kc-login,
+a.zocial.keycloak-oidc,
+.btn-primary {
   background-image: none;
   background-color: #003366;
   border: none;
@@ -78,11 +82,12 @@ a.zocial, #kc-login, a.zocial.keycloak-oidc, .btn-primary {
   margin-right: auto;
 }
 
-.zocial:hover, #kc-login:hover {
+.zocial:hover,
+#kc-login:hover {
   background: #ededed !important;
   background-image: none !important;
   text-decoration: underline !important;
-  opacity: 0.80 !important;
+  opacity: 0.8 !important;
   color: #036 !important;
 }
 
@@ -95,7 +100,8 @@ a.zocial, #kc-login, a.zocial.keycloak-oidc, .btn-primary {
 }
 
 @media (max-width: 768px) {
-  .login-pf-accounts, .card-pf  {
+  .login-pf-accounts,
+  .card-pf {
     margin: 10px !important;
   }
 
@@ -107,7 +113,7 @@ a.zocial, #kc-login, a.zocial.keycloak-oidc, .btn-primary {
     font-size: 6vw;
   }
 }
-.subtitle{
-    margin-top: 0px;
-    float: right;
+.subtitle {
+  margin-top: 0px;
+  float: right;
 }
