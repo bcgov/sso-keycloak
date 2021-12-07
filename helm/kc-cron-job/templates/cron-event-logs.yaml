@@ -65,6 +65,8 @@ spec:
                   value: /logs
                 - name: TEMP_DIRECTORY
                   value: /logs/kc-logs-tmp
+                - name: SAVE_LOGS_N_DAYS_AGO
+                  value: '1'
                 - name: PGHOST
                   value: {{ .Values.pgHost }}
                 - name: PGPORT

@@ -1,0 +1,20 @@
+[
+  {
+    "name": "idir_guid",
+    "identityProviderAlias": "idir",
+    "identityProviderMapper": "oidc-user-attribute-idp-mapper",
+    "config": {
+      "claim": "idir_userid",
+      "user.attribute": "idir_user_guid"
+    }
+  },
+  {
+    "name": "idir_userid",
+    "identityProviderAlias": "idir",
+    "identityProviderMapper": "oidc-user-attribute-idp-mapper",
+    "config": {
+      "claim": "idir_userid",
+      "user.attribute": "idir_userid"
+    }
+  }
+]
