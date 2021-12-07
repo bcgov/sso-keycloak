@@ -1,16 +1,16 @@
 [
   {
     "name": "idir_guid",
-    "identityProviderAlias": "idir",
+    "identityProviderAlias": "azure-idir",
     "identityProviderMapper": "oidc-user-attribute-idp-mapper",
     "config": {
-      "claim": "idir_userid",
-      "user.attribute": "idir_user_guid"
+      "claim": "idir_guid",
+      "user.attribute": "idir_guid"
     }
   },
   {
     "name": "idir_userid",
-    "identityProviderAlias": "idir",
+    "identityProviderAlias": "azure-idir",
     "identityProviderMapper": "oidc-user-attribute-idp-mapper",
     "config": {
       "claim": "idir_userid",
