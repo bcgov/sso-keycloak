@@ -1,5 +1,7 @@
-variable "override_authentication_flow" {
-  description = "Whether to override the default authentication flow"
-  type        = bool
-  default     = false
+variable "idir_client_id" {
+  default = ""
+}
+
+variable "idir_client_secret" {
+  default = ""
 }

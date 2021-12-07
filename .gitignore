@@ -44,3 +44,5 @@ override.tf.json
 # Ignore CLI configuration files
 .terraformrc
 terraform.rc
+
+docker/keycloak/extensions/services/target
