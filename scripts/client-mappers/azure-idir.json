@@ -1,0 +1,30 @@
+[
+  {
+    "name": "idir_userid",
+    "protocol": "openid-connect",
+    "protocolMapper": "oidc-usermodel-attribute-mapper",
+    "consentRequired": false,
+    "config": {
+      "userinfo.token.claim": "true",
+      "user.attribute": "idir_userid",
+      "id.token.claim": "true",
+      "access.token.claim": "true",
+      "claim.name": "idir_userid",
+      "jsonType.label": "String"
+    }
+  },
+  {
+    "name": "idir_guid",
+    "protocol": "openid-connect",
+    "protocolMapper": "oidc-usermodel-attribute-mapper",
+    "consentRequired": false,
+    "config": {
+      "userinfo.token.claim": "true",
+      "user.attribute": "idir_guid",
+      "id.token.claim": "true",
+      "access.token.claim": "true",
+      "claim.name": "idir_guid",
+      "jsonType.label": "String"
+    }
+  }
+]

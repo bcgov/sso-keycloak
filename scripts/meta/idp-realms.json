@@ -4,5 +4,6 @@
   { "alias": "bceid-basic", "displayName": "Basic BCeID", "realm": "_bceidbasic" },
   { "alias": "bceid-business", "displayName": "Business BCeID", "realm": "_bceidbusiness" },
   { "alias": "bceid-basic-and-business", "displayName": "BCeID", "realm": "_bceidbasicbusiness" },
-  { "alias": "github", "displayName": "GitHub", "realm": "_github" }
+  { "alias": "github", "displayName": "GitHub", "realm": "_github" },
+  { "alias": "_azureid", "displayName": "Azure AD IDIR", "realm": "_azureid" }
 ]
