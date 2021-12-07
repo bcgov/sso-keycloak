@@ -1,2 +1,4 @@
 com.github.bcgov.keycloak.authenticators.RequireRoleByClientFactory
+com.github.bcgov.keycloak.authenticators.IdentityProviderStopAuthenticatorFactory
+com.github.bcgov.keycloak.authenticators.IdentityProviderStopFormFactory
 com.github.bcgov.keycloak.IdpCreateUserIfUniqueAuthenticatorFactory
