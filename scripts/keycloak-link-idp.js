@@ -99,7 +99,8 @@ async function main() {
       ),
     );
   } catch (err) {
-    console.error(err.response.data && err.response.data.error);
+    if (err.response.data && err.response.data.error) console.error(err.response.data && err.response.data.error);
+    else console.error(err);
   }
 }
 
