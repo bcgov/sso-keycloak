@@ -1,80 +1,75 @@
 package com.github.bcgov.keycloak.authenticators;
 
+import java.util.List;
+import java.util.Map;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
 import org.jboss.resteasy.specimpl.MultivaluedMapImpl;
 import org.keycloak.authentication.AuthenticationFlowContext;
 import org.keycloak.authentication.authenticators.browser.AbstractUsernameFormAuthenticator;
 import org.keycloak.forms.login.LoginFormsProvider;
+import org.keycloak.models.ClientScopeModel;
+import org.keycloak.models.IdentityProviderModel;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.UserModel;
-import org.keycloak.models.ClientScopeModel;
-import org.keycloak.models.IdentityProviderModel;
 import org.keycloak.services.ServicesLogger;
 import org.keycloak.services.managers.AuthenticationManager;
 
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
-import java.util.Map;
-import java.util.List;
-
-/**
- * @author <a href="mailto:junmin@button.is">Junmin Ahn</a>
- */
+/** @author <a href="mailto:junmin@button.is">Junmin Ahn</a> */
 public class IdentityProviderStopForm extends AbstractUsernameFormAuthenticator {
-    protected static ServicesLogger log = ServicesLogger.LOGGER;
+  protected static ServicesLogger log = ServicesLogger.LOGGER;
 
-    @Override
-    public void action(AuthenticationFlowContext context) {
-        context.attempted();
+  @Override
+  public void action(AuthenticationFlowContext context) {
+    context.attempted();
+  }
+
+  @Override
+  public void authenticate(AuthenticationFlowContext context) {
+    List<IdentityProviderModel> realmIdps = context.getRealm().getIdentityProviders();
+    Map<String, ClientScopeModel> scopes =
+        context.getAuthenticationSession().getClient().getClientScopes(true, true);
+    String idpkeys = "";
+
+    for (IdentityProviderModel ridp : realmIdps) {
+      if (ridp.isEnabled() && scopes.containsKey(ridp.getAlias())) {
+        idpkeys += "##" + ridp.getAlias() + "##";
+      }
     }
 
-    @Override
-    public void authenticate(AuthenticationFlowContext context) {
-        List<IdentityProviderModel> realmIdps = context.getRealm().getIdentityProviders();
-        Map<String, ClientScopeModel> scopes = context.getAuthenticationSession().getClient().getClientScopes(true, true);
-        String idpkeys = "";
+    MultivaluedMap<String, String> formData = new MultivaluedMapImpl<>();
+    formData.add(AuthenticationManager.FORM_USERNAME, idpkeys);
+    log.tracef("allowed idps: %s", idpkeys);
+    Response challengeResponse = challenge(context, formData);
+    context.challenge(challengeResponse);
+  }
 
-        for (IdentityProviderModel ridp : realmIdps)
-        {
-            if (ridp.isEnabled() && scopes.containsKey(ridp.getAlias())) {
-                idpkeys += "##" + ridp.getAlias() + "##";
-            }
-        }
+  @Override
+  public boolean requiresUser() {
+    return false;
+  }
 
-        MultivaluedMap<String, String> formData = new MultivaluedMapImpl<>();
-        formData.add(AuthenticationManager.FORM_USERNAME, idpkeys);
-        log.tracef("allowed idps: %s", idpkeys);
-        Response challengeResponse = challenge(context, formData);
-        context.challenge(challengeResponse);
-    }
+  protected Response challenge(
+      AuthenticationFlowContext context, MultivaluedMap<String, String> formData) {
+    LoginFormsProvider forms = context.form();
 
-    @Override
-    public boolean requiresUser() {
-        return false;
-    }
+    if (formData.size() > 0) forms.setFormData(formData);
 
-    protected Response challenge(AuthenticationFlowContext context, MultivaluedMap<String, String> formData) {
-        LoginFormsProvider forms = context.form();
+    return forms.createLoginUsernamePassword();
+  }
 
-        if (formData.size() > 0) forms.setFormData(formData);
+  @Override
+  public boolean configuredFor(KeycloakSession session, RealmModel realm, UserModel user) {
+    // never called
+    return true;
+  }
 
-        return forms.createLoginUsernamePassword();
-    }
+  @Override
+  public void setRequiredActions(KeycloakSession session, RealmModel realm, UserModel user) {
+    // never called
+  }
 
-
-    @Override
-    public boolean configuredFor(KeycloakSession session, RealmModel realm, UserModel user) {
-        // never called
-        return true;
-    }
-
-    @Override
-    public void setRequiredActions(KeycloakSession session, RealmModel realm, UserModel user) {
-        // never called
-    }
-
-    @Override
-    public void close() {
-
-    }
+  @Override
+  public void close() {}
 }

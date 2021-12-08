@@ -8,3 +8,4 @@ terraform 1.0.7
 terraform-docs 0.12.1
 tflint 0.28.1
 java openjdk-14.0.1
+gradle 7.3.1
