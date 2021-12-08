@@ -17,6 +17,8 @@
 
 package com.github.bcgov.keycloak;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.keycloak.Config;
 import org.keycloak.authentication.Authenticator;
 import org.keycloak.authentication.AuthenticatorFactory;
@@ -25,88 +27,77 @@ import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.KeycloakSessionFactory;
 import org.keycloak.provider.ProviderConfigProperty;
 
-import java.util.ArrayList;
-import java.util.List;
-
-/**
- * @author <a href="mailto:mposolda@redhat.com">Marek Posolda</a>
- */
+/** @author <a href="mailto:mposolda@redhat.com">Marek Posolda</a> */
 public class IdpCreateUserIfUniqueAuthenticatorFactory implements AuthenticatorFactory {
 
-    public static final String PROVIDER_ID = "bcgov-idp-create-user-if-unique";
-    static IdpCreateUserIfUniqueAuthenticator SINGLETON = new IdpCreateUserIfUniqueAuthenticator();
+  public static final String PROVIDER_ID = "bcgov-idp-create-user-if-unique";
+  static IdpCreateUserIfUniqueAuthenticator SINGLETON = new IdpCreateUserIfUniqueAuthenticator();
 
+  @Override
+  public Authenticator create(KeycloakSession session) {
+    return SINGLETON;
+  }
 
-    @Override
-    public Authenticator create(KeycloakSession session) {
-        return SINGLETON;
-    }
+  @Override
+  public void init(Config.Scope config) {}
 
-    @Override
-    public void init(Config.Scope config) {
+  @Override
+  public void postInit(KeycloakSessionFactory factory) {}
 
-    }
+  @Override
+  public void close() {}
 
-    @Override
-    public void postInit(KeycloakSessionFactory factory) {
+  @Override
+  public String getId() {
+    return PROVIDER_ID;
+  }
 
-    }
+  @Override
+  public String getReferenceCategory() {
+    return "createUserIfUnique";
+  }
 
-    @Override
-    public void close() {
+  @Override
+  public boolean isConfigurable() {
+    return false;
+  }
 
-    }
+  public static final AuthenticationExecutionModel.Requirement[] REQUIREMENT_CHOICES = {
+    AuthenticationExecutionModel.Requirement.ALTERNATIVE,
+    AuthenticationExecutionModel.Requirement.REQUIRED,
+    AuthenticationExecutionModel.Requirement.DISABLED
+  };
 
-    @Override
-    public String getId() {
-        return PROVIDER_ID;
-    }
+  @Override
+  public AuthenticationExecutionModel.Requirement[] getRequirementChoices() {
+    return REQUIREMENT_CHOICES;
+  }
 
-    @Override
-    public String getReferenceCategory() {
-        return "createUserIfUnique";
-    }
+  @Override
+  public String getDisplayType() {
+    return "Create User If Unique (BCGOV)";
+  }
 
-    @Override
-    public boolean isConfigurable() {
-        return false;
-    }
+  @Override
+  public String getHelpText() {
+    return "Detect if there is existing Keycloak account with same email like identity provider. If no, create new user";
+  }
 
-    public static final AuthenticationExecutionModel.Requirement[] REQUIREMENT_CHOICES = {
-            AuthenticationExecutionModel.Requirement.ALTERNATIVE,
-            AuthenticationExecutionModel.Requirement.REQUIRED,
-            AuthenticationExecutionModel.Requirement.DISABLED};
+  @Override
+  public boolean isUserSetupAllowed() {
+    return false;
+  }
 
-    @Override
-    public AuthenticationExecutionModel.Requirement[] getRequirementChoices() {
-        return REQUIREMENT_CHOICES;
-    }
+  private static final List<ProviderConfigProperty> configProperties =
+      new ArrayList<ProviderConfigProperty>();
 
-    @Override
-    public String getDisplayType() {
-        return "Create User If Unique (BCGOV)";
-    }
+  static {
+    // ProviderConfigProperty property;
+    // configProperties.add(property);
+  }
 
-    @Override
-    public String getHelpText() {
-        return "Detect if there is existing Keycloak account with same email like identity provider. If no, create new user";
-    }
-
-    @Override
-    public boolean isUserSetupAllowed() {
-        return false;
-    }
-
-    private static final List<ProviderConfigProperty> configProperties = new ArrayList<ProviderConfigProperty>();
-
-    static {
-        //ProviderConfigProperty property;
-        //configProperties.add(property);
-    }
-
-
-    @Override
-    public List<ProviderConfigProperty> getConfigProperties() {
-        return configProperties;
-    }
+  @Override
+  public List<ProviderConfigProperty> getConfigProperties() {
+    return configProperties;
+  }
 }
