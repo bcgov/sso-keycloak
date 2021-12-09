@@ -97,21 +97,15 @@ spec:
                   name: {{ .Values.postgres.credentials.secret }}
                   key: {{ .Values.postgres.credentials.passwordKey }}
             - name: DB_DATABASE
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.postgres.credentials.secret }}
-                  key: {{ .Values.postgres.credentials.dbNameKey }}
+              value: {{ .Values.postgres.dbName }}
             # DB Admin Credentials
             - name: SSO_ADMIN_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.postgres.admin.secret }}
-                  key: {{ .Values.postgres.admin.usernameKey }}
+              value: {{ .Values.credentials.adminUsername }}
             - name: SSO_ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.postgres.admin.secret }}
-                  key: {{ .Values.postgres.admin.passwordKey }}
+                  name: {{ template "fullname" . }}
+                  key: {{ .Values.credentials.adminPasswordKey }}
             # DB POOL SIZES
             - name: DB_MIN_POOL_SIZE
               value: {{ .Values.postgres.poolSize.min | quote }}

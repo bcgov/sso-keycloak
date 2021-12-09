@@ -3,19 +3,30 @@ replicaCount: 2
 image:
   tag: 7.4-37-rc.2
 
+nameOverride: keycloak-test-jon
+fullnameOverride: keycloak-test-jon
+
 service:
   type: ClusterIP
   port: 8443
 
 postgres:
-  host: sso-pgsql-master-test
+  host: jon-patroni-test
+  dbName: rhsso
   credentials:
-    secret: sso-pgsql-test
+    secret: jon-patroni-test
+    usernameKey: password-admin
   admin:
-    secret: sso-admin-test
+    secret: jon-patroni-test
+    usernameKey: admin
 
 jgroupCluster:
   secret: sso-jgroups-test
+
+credentials:
+  random: true
+  adminUsername: admin
+  adminPasswordKey: admin
 
 tls:
   enabled: true
