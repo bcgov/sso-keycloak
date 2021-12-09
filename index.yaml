@@ -12,6 +12,32 @@ entries:
   patroni:
   - apiVersion: v1
     appVersion: 1.5-p5
+    created: "2021-12-09T21:41:37.112831626Z"
+    dependencies:
+    - condition: etcd.deployChart
+      name: etcd
+      repository: https://charts.helm.sh/incubator
+      version: 0.6.2
+    - condition: zookeeper.deployChart
+      name: zookeeper
+      repository: https://charts.helm.sh/incubator
+      version: 1.0.0
+    - condition: consul.deployChart
+      name: consul
+      repository: https://charts.helm.sh/stable
+      version: 3.6.1
+    description: 'Highly available elephant herd: HA PostgreSQL cluster.'
+    digest: bcd4a3b92783487de449c6e41d3c4deea1a4e6ba10df38a5f701d94df546a870
+    home: https://github.com/zalando/patroni
+    name: patroni
+    sources:
+    - https://github.com/zalando/patroni
+    - https://github.com/zalando/spilo
+    urls:
+    - https://github.com/bcgov/sso-keycloak/releases/download/patroni-0.16.7/patroni-0.16.7.tgz
+    version: 0.16.7
+  - apiVersion: v1
+    appVersion: 1.5-p5
     created: "2021-12-09T21:01:37.824002848Z"
     dependencies:
     - condition: etcd.deployChart
@@ -100,4 +126,4 @@ entries:
     urls:
     - https://github.com/bcgov/sso-keycloak/releases/download/sso-keycloak-0.1.0/sso-keycloak-0.1.0.tgz
     version: 0.1.0
-generated: "2021-12-09T21:01:37.824015348Z"
+generated: "2021-12-09T21:41:37.112858226Z"
