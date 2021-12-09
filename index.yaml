@@ -108,6 +108,16 @@ entries:
   sso-keycloak:
   - apiVersion: v1
     appVersion: 0.1.0
+    created: "2021-12-09T23:26:01.7868421Z"
+    description: Open Source Identity and Access Management For Modern Applications
+      and Services
+    digest: 08de47ec2651bfbc922135ddea6127d5810caa06e9f0d5746ded2180bcbd2c3e
+    name: sso-keycloak
+    urls:
+    - https://github.com/bcgov/sso-keycloak/releases/download/sso-keycloak-0.1.2/sso-keycloak-0.1.2.tgz
+    version: 0.1.2
+  - apiVersion: v1
+    appVersion: 0.1.0
     created: "2021-12-09T18:26:56.856176371Z"
     description: Open Source Identity and Access Management For Modern Applications
       and Services
@@ -126,4 +136,4 @@ entries:
     urls:
     - https://github.com/bcgov/sso-keycloak/releases/download/sso-keycloak-0.1.0/sso-keycloak-0.1.0.tgz
     version: 0.1.0
-generated: "2021-12-09T21:41:37.112858226Z"
+generated: "2021-12-09T23:26:01.7868612Z"
