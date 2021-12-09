@@ -33,7 +33,9 @@ jobs:
 
       - name: Add Helm Dependencies
         run: |
-          helm repo add incubator https://charts.helm.sh/incubator
+          helm repo add etcd https://charts.helm.sh/incubator
+          helm repo add zookeeper https://charts.helm.sh/incubator
+          helm repo add consul https://charts.helm.sh/stable
 
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.2.1
