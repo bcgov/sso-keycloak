@@ -1,6 +1,23 @@
 apiVersion: v1
 entries:
+  kc-cron-job:
+  - apiVersion: v1
+    created: "2021-12-09T18:26:56.522850977Z"
+    description: Helm chart for CronJob to collect Keycloak active sessions
+    digest: 49c5c7d4bd9ab9dabbd49c8ba36bf04c8df6e254d869e1e005fb3261cdea7558
+    name: kc-cron-job
+    urls:
+    - https://github.com/bcgov/sso-keycloak/releases/download/kc-cron-job-0.1.1/kc-cron-job-0.1.1.tgz
+    version: 0.1.1
   secrets:
+  - apiVersion: v1
+    created: "2021-12-09T18:26:56.680139351Z"
+    description: Helm chart for Secrets
+    digest: d91b025a1ffddd688144e14448045f9d06106ed7681538a16b8d9f72375d2396
+    name: secrets
+    urls:
+    - https://github.com/bcgov/sso-keycloak/releases/download/secrets-0.1.1/secrets-0.1.1.tgz
+    version: 0.1.1
   - apiVersion: v1
     created: "2021-10-12T22:53:12.207821795Z"
     description: Helm chart for Secrets
@@ -12,6 +29,16 @@ entries:
   sso-keycloak:
   - apiVersion: v1
     appVersion: 0.1.0
+    created: "2021-12-09T18:26:56.856176371Z"
+    description: Open Source Identity and Access Management For Modern Applications
+      and Services
+    digest: b0b6e6e74443b8466d48a06c166b3fc2250dd15a0485436dfb124ad2543d285e
+    name: sso-keycloak
+    urls:
+    - https://github.com/bcgov/sso-keycloak/releases/download/sso-keycloak-0.1.1/sso-keycloak-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v1
+    appVersion: 0.1.0
     created: "2021-10-12T22:53:12.436562237Z"
     description: Open Source Identity and Access Management For Modern Applications
       and Services
@@ -20,4 +47,4 @@ entries:
     urls:
     - https://github.com/bcgov/sso-keycloak/releases/download/sso-keycloak-0.1.0/sso-keycloak-0.1.0.tgz
     version: 0.1.0
-generated: "2021-10-12T22:53:12.436567337Z"
+generated: "2021-12-09T18:26:56.856185573Z"
