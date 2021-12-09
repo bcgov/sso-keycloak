@@ -100,12 +100,12 @@ spec:
               value: {{ .Values.postgres.dbName }}
             # DB Admin Credentials
             - name: SSO_ADMIN_USERNAME
-              value: {{ .Values.credentials.adminUsername }}
+              value: {{ .Values.postgres.credentials.adminUsername }}
             - name: SSO_ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ template "fullname" . }}
-                  key: {{ .Values.credentials.adminPasswordKey }}
+                 key: {{ .Values.postgres.credentials.passwordKey }}
             # DB POOL SIZES
             - name: DB_MIN_POOL_SIZE
               value: {{ .Values.postgres.poolSize.min | quote }}
