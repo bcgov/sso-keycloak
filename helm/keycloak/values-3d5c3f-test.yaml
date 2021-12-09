@@ -15,18 +15,14 @@ postgres:
   dbName: rhsso
   credentials:
     secret: jon-patroni-test
-    usernameKey: password-admin
+    adminUsername: admin
+    passwordKey: password-admin
   admin:
     secret: jon-patroni-test
     usernameKey: admin
 
 jgroupCluster:
   secret: sso-jgroups-test
-
-credentials:
-  random: true
-  adminUsername: admin
-  adminPasswordKey: admin
 
 tls:
   enabled: true
