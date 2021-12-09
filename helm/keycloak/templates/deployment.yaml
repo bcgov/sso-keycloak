@@ -104,8 +104,8 @@ spec:
             - name: SSO_ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "fullname" . }}
-                 key: {{ .Values.postgres.credentials.passwordKey }}
+                  name: {{ .Values.postgres.credentials.secret }}
+                  key: {{ .Values.postgres.credentials.passwordKey }}
             # DB POOL SIZES
             - name: DB_MIN_POOL_SIZE
               value: {{ .Values.postgres.poolSize.min | quote }}
