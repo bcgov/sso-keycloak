@@ -87,10 +87,7 @@ spec:
               value: {{ .Values.postgres.port | quote }}
             # DB Credentials
             - name: DB_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.postgres.credentials.secret }}
-                  key: {{ .Values.postgres.credentials.usernameKey }}
+              value: {{ .Values.postgres.credentials.adminUsername }}
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:

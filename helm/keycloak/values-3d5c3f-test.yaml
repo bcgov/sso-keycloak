@@ -21,6 +21,11 @@ postgres:
     secret: jon-patroni-test
     usernameKey: admin
 
+credentials:
+  random: true
+  adminUsername: admin
+  adminPasswordKey: password-admin
+
 jgroupCluster:
   secret: sso-jgroups-test
 
