@@ -22,16 +22,12 @@ pingService:
 
 postgres:
   host: sso-pgsql-master
+  dbName: rhsso
   port: 5432
   credentials:
     secret: sso-pgsql
-    usernameKey: app-db-username
-    passwordKey: app-db-password
-    dbNameKey: app-db-name
-  admin:
-    secret: sso-admin
-    usernameKey: username
-    passwordKey: password
+    adminUsername: postgres
+    passwordKey: password-superuser
   poolSize:
     min: 5
     max: 20
@@ -39,11 +35,6 @@ postgres:
 jgroupCluster:
   secret: sso-jgroups
   passwordKey: password
-
-credentials:
-  random: true
-  adminUsername: admin
-  adminPasswordKey: password-admin
 
 # see https://github.com/keycloak/keycloak-containers/blob/master/server/README.md#start-a-keycloak-instance-with-custom-command-line-options
 additionalServerOptions: "-Dkeycloak.profile.feature.authorization=enabled -Djboss.persistent.log.dir=/var/log/eap"

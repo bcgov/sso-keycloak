@@ -100,14 +100,17 @@ $ helm install --name my-release -f values.yaml incubator/patroni
 
 To remove the spawned pods you can run a simple `helm delete <release-name>`.
 
-Helm will however preserve created persistent volume claims,
+Helm will however preserve created persistent volume claims and configmaps,
 to also remove them execute the commands below.
 
 ```console
 $ release=<release-name>
 $ helm delete $release
 $ kubectl delete pvc -l release=$release
+$ kubectl delete configmaps -l release=$release
 ```
+
+
 
 ## Internals
 
