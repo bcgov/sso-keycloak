@@ -97,7 +97,7 @@ spec:
               value: {{ .Values.postgres.dbName }}
             # DB Admin Credentials
             - name: SSO_ADMIN_USERNAME
-              value: {{ .Values.postgres.credentials.adminUsername }}
+              value: {{ .Values.credentials.adminUsername }}
             - name: SSO_ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:

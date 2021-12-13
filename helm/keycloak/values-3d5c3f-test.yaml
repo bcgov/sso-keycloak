@@ -10,21 +10,20 @@ service:
   type: ClusterIP
   port: 8443
 
+credentials:
+  random: true
+  adminUsername: admin
+  adminPasswordKey: password-admin
+
 postgres:
   host: jon-patroni-test
   dbName: rhsso
   credentials:
     secret: jon-patroni-test
-    adminUsername: admin
-    passwordKey: password-admin
-  admin:
-    secret: jon-patroni-test
-    usernameKey: admin
+    adminUsername: postgres
+    passwordKey: password-superuser
 
-credentials:
-  random: true
-  adminUsername: admin
-  adminPasswordKey: password-admin
+
 
 jgroupCluster:
   secret: sso-jgroups-test
