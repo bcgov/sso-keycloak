@@ -1,0 +1,4 @@
+To get your password for admin run:
+
+    # admin password
+    ADMIN_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ include "..fullname" . }}-admin-secret -o jsonpath="{.data.password-admin}" | base64 --decode)
