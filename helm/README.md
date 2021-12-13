@@ -40,7 +40,6 @@ postgres.dbName | The name of the database to create for keycloak
 postgres.credentials.secret | The name of the secret containing postgres login credentials
 postgres.credentials.adminUserName | The username of an admin account for the database
 postgres.credentials.passwordKey | The key for the password in the secret
-postgres.credentials.passwordKey | The key for the password in the secret
 credentials.random | Set to true to randomly generate password
 credentials.adminUsername | The username of the admin account
 credentials.adminPasswordKey | The key for the password in the secret
