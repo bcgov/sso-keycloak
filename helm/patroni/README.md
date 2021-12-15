@@ -13,25 +13,35 @@ This chart will do the following:
 
 - Implement a HA scalable PostgreSQL 10 cluster using a Kubernetes StatefulSet.
 
-## Installing the Chart
+## Usages
 
-To add dependencies:
+### Add this chart repository
 
 ```console
-helm dependency build
+$ helm repo add sso-keycloak https://bcgov.github.io/sso-keycloak
+$ helm dependency update
 ```
 
-To install the chart with the release name `patroni`:
+### Install this chart repository
 
 ```console
-$ helm install patroni . -n <namespace>
-```
+$ helm install <release-name> sso-keycloak/patroni [--namespace <my-namespace>] [--version <x.y.z>] [--values ./custom-values.yaml]
 
-To install the chart with randomly generated passwords:
-
-```console
+# To install the chart with randomly generated passwords:
 $ helm install patroni . \
   --set credentials.superuser="$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c32)",credentials.admin="$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c32)",credentials.standby="$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c32)"
+```
+
+### Upgrade this chart repository
+
+```console
+$ helm upgrade <release-name> sso-keycloak/patroni [--namespace <my-namespace>] [--version <x.y.z>] [--values ./custom-values.yaml]
+```
+
+### Uninstall this chart repository
+
+```console
+$ helm uninstall <release-name> [--namespace <my-namespace>]
 ```
 
 ## Configuration
@@ -46,6 +56,7 @@ The following table lists the configurable parameters of the patroni chart and t
 | `image.repository`               | The image to pull                                                                                                              | `registry.opensource.zalan.do/acid/spilo-10`        |
 | `image.tag`                      | The version of the image to pull                                                                                               | `1.5-p5`                                            |
 | `image.pullPolicy`               | The pull policy                                                                                                                | `IfNotPresent`                                      |
+| `credentials.random`             | Using passwords created randomly                                                                                               | `true`                                              |
 | `credentials.superuser`          | Password of the superuser                                                                                                      | `tea`                                               |
 | `credentials.admin`              | Password of the admin                                                                                                          | `cola`                                              |
 | `credentials.standby`            | Password of the replication user                                                                                               | `pinacolada`                                        |
@@ -88,17 +99,9 @@ The following table lists the configurable parameters of the patroni chart and t
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
-Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
-
-```console
-$ helm install --name my-release -f values.yaml incubator/patroni
-```
-
-> **Tip**: You can use the default [values.yaml](values.yaml)
-
 ## Cleanup
 
-To remove the spawned pods you can run a simple `helm delete <release-name>`.
+To remove the spawned pods you can run a simple `helm uninstall <release-name> [--namespace <my-namespace>]`.
 
 Helm will however preserve created persistent volume claims and configmaps,
 to also remove them execute the commands below.
@@ -109,8 +112,6 @@ $ helm delete $release
 $ kubectl delete pvc -l release=$release
 $ kubectl delete configmaps -l release=$release
 ```
-
-
 
 ## Internals
 

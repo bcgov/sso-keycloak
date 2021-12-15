@@ -32,10 +32,6 @@ postgres:
     min: 5
     max: 20
 
-jgroupCluster:
-  secret: sso-jgroups
-  passwordKey: password
-
 # see https://github.com/keycloak/keycloak-containers/blob/master/server/README.md#start-a-keycloak-instance-with-custom-command-line-options
 additionalServerOptions: "-Dkeycloak.profile.feature.authorization=enabled -Djboss.persistent.log.dir=/var/log/eap"
 

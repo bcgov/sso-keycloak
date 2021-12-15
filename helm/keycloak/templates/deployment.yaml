@@ -112,8 +112,8 @@ spec:
             - name: JGROUPS_CLUSTER_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.jgroupCluster.secret }}
-                  key: {{ .Values.jgroupCluster.passwordKey }}
+                  name: {{ include "..fullname" . }}-jgroups
+                  key: cluster-password
             # Additional server startup options (extension of JAVA_OPTS)
             - name: JAVA_OPTS_APPEND
               value: {{ .Values.additionalServerOptions }}

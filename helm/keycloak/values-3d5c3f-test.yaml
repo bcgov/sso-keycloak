@@ -18,9 +18,6 @@ postgres:
     adminUsername: postgres
     passwordKey: password-superuser
 
-jgroupCluster:
-  secret: sso-jgroups-test
-
 tls:
   enabled: true
 

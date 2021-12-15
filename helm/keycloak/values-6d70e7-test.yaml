@@ -14,9 +14,6 @@ postgres:
   admin:
     secret: sso-admin-test
 
-jgroupCluster:
-  secret: sso-jgroups-test
-
 tls:
   enabled: true
 

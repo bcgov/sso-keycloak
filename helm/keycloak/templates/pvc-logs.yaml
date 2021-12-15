@@ -1,4 +1,4 @@
-{{- if .Values.pingService.enabled }}
+{{- if .Values.persistentLog.enabled }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
