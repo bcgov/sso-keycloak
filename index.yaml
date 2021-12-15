@@ -12,6 +12,32 @@ entries:
   patroni:
   - apiVersion: v1
     appVersion: 1.5-p5
+    created: "2021-12-15T20:02:13.313223638Z"
+    dependencies:
+    - condition: etcd.deployChart
+      name: etcd
+      repository: https://charts.helm.sh/incubator
+      version: 0.6.2
+    - condition: zookeeper.deployChart
+      name: zookeeper
+      repository: https://charts.helm.sh/incubator
+      version: 1.0.0
+    - condition: consul.deployChart
+      name: consul
+      repository: https://charts.helm.sh/stable
+      version: 3.6.1
+    description: 'Highly available elephant herd: HA PostgreSQL cluster.'
+    digest: de1fce2962e831601d16b190c6cfd3f149446ded9bbdf3f1e30347b8a7da1ae4
+    home: https://github.com/zalando/patroni
+    name: patroni
+    sources:
+    - https://github.com/zalando/patroni
+    - https://github.com/zalando/spilo
+    urls:
+    - https://github.com/bcgov/sso-keycloak/releases/download/patroni-0.16.8/patroni-0.16.8.tgz
+    version: 0.16.8
+  - apiVersion: v1
+    appVersion: 1.5-p5
     created: "2021-12-09T21:41:37.112831626Z"
     dependencies:
     - condition: etcd.deployChart
@@ -108,6 +134,16 @@ entries:
   sso-keycloak:
   - apiVersion: v1
     appVersion: 0.1.0
+    created: "2021-12-15T20:02:13.480791441Z"
+    description: Open Source Identity and Access Management For Modern Applications
+      and Services
+    digest: 143b0a389f48040354eaab734f664688fd77126fc01a5d040eb83200ab273399
+    name: sso-keycloak
+    urls:
+    - https://github.com/bcgov/sso-keycloak/releases/download/sso-keycloak-0.1.7/sso-keycloak-0.1.7.tgz
+    version: 0.1.7
+  - apiVersion: v1
+    appVersion: 0.1.0
     created: "2021-12-10T00:20:56.768620007Z"
     description: Open Source Identity and Access Management For Modern Applications
       and Services
@@ -176,4 +212,4 @@ entries:
     urls:
     - https://github.com/bcgov/sso-keycloak/releases/download/sso-keycloak-0.1.0/sso-keycloak-0.1.0.tgz
     version: 0.1.0
-generated: "2021-12-10T00:20:56.768686111Z"
+generated: "2021-12-15T20:02:13.480837541Z"
