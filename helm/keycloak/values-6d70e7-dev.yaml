@@ -14,9 +14,6 @@ postgres:
   admin:
     secret: sso-admin-dev
 
-jgroupCluster:
-  secret: sso-jgroups-dev
-
 tls:
   enabled: true
 
