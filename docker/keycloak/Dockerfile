@@ -1,7 +1,7 @@
 FROM maven:3.8.2-jdk-11-slim AS builder
 COPY ./extensions /tmp/
 WORKDIR /tmp/
-RUN mvn package
+RUN mvn -B clean package --file pom.xml
 
 # see https://catalog.redhat.com/software/containers/rh-sso-7/sso74-openshift-rhel8/5e7e033d5a1346687697bbd3
 FROM registry.redhat.io/rh-sso-7/sso74-openshift-rhel8:7.4-37

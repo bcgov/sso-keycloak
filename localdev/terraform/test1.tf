@@ -16,9 +16,10 @@ resource "keycloak_oidc_identity_provider" "idir" {
   realm             = keycloak_realm.realm.id
   alias             = "idir"
   enabled           = true
-  store_token       = false
+  store_token       = true
   authorization_url = "https://dev.oidc.gov.bc.ca/auth/realms/onestopauth/protocol/openid-connect/auth?kc_idp_hint=idir"
   token_url         = "https://dev.oidc.gov.bc.ca/auth/realms/onestopauth/protocol/openid-connect/token"
+  user_info_url     = "https://dev.oidc.gov.bc.ca/auth/realms/onestopauth/protocol/openid-connect/userinfo"
   client_id         = var.idir_client_id
   client_secret     = var.idir_client_secret
 
@@ -31,9 +32,10 @@ resource "keycloak_oidc_identity_provider" "azureidir" {
   realm             = keycloak_realm.realm.id
   alias             = "azureidir"
   enabled           = true
-  store_token       = false
+  store_token       = true
   authorization_url = "https://dev.oidc.gov.bc.ca/auth/realms/onestopauth/protocol/openid-connect/auth?kc_idp_hint=_azureidir"
   token_url         = "https://dev.oidc.gov.bc.ca/auth/realms/onestopauth/protocol/openid-connect/token"
+  user_info_url     = "https://dev.oidc.gov.bc.ca/auth/realms/onestopauth/protocol/openid-connect/userinfo"
   client_id         = var.idir_client_id
   client_secret     = var.idir_client_secret
 
@@ -46,9 +48,10 @@ resource "keycloak_oidc_identity_provider" "github" {
   realm             = keycloak_realm.realm.id
   alias             = "github"
   enabled           = true
-  store_token       = false
+  store_token       = true
   authorization_url = "https://dev.oidc.gov.bc.ca/auth/realms/onestopauth/protocol/openid-connect/auth?kc_idp_hint=github"
   token_url         = "https://dev.oidc.gov.bc.ca/auth/realms/onestopauth/protocol/openid-connect/token"
+  user_info_url     = "https://dev.oidc.gov.bc.ca/auth/realms/onestopauth/protocol/openid-connect/userinfo"
   client_id         = var.idir_client_id
   client_secret     = var.idir_client_secret
 
