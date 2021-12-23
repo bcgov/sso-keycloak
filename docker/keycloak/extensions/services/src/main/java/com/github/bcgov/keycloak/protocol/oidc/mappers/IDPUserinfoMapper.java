@@ -41,8 +41,7 @@ public class IDPUserinfoMapper extends AbstractOIDCProtocolMapper
 
   static {
     OIDCAttributeMapperHelper.addTokenClaimNameConfig(configProperties);
-    OIDCAttributeMapperHelper.addIncludeInTokensConfig(
-        configProperties, IDPUserinfoMapper.class);
+    OIDCAttributeMapperHelper.addIncludeInTokensConfig(configProperties, IDPUserinfoMapper.class);
   }
 
   public static final String PROVIDER_ID = "oidc-idp-userinfo-mapper";
@@ -104,15 +103,14 @@ public class IDPUserinfoMapper extends AbstractOIDCProtocolMapper
     if (identityProviderConfig.isStoreToken()) {
       IdentityProviderModel identityProviderModel = realm.getIdentityProviderByAlias(idp);
       String userInfoUrl = identityProviderModel.getConfig().get("userInfoUrl");
-      if (userInfoUrl != null) {
 
+      if (userInfoUrl != null) {
         FederatedIdentityModel identity =
             keycloakSession.users().getFederatedIdentity(userSession.getUser(), idp, realm);
         // after upgrade to 7.5
         // FederatedIdentityModel identity = keycloakSession.users().getFederatedIdentity(realm,
         // userSession.getUser(), idp);
         String brokerToken = identity.getToken();
-
         AccessTokenResponse brokerAccessToken = parseTokenString(brokerToken);
         Client httpClient = ClientBuilder.newClient();
         String userinfoString =

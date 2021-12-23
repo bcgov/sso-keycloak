@@ -24,7 +24,7 @@ import org.keycloak.services.managers.ClientSessionCode;
 /** @author <a href="mailto:junmin@button.is">Junmin Ahn</a> */
 public class IdentityProviderStopAuthenticator implements Authenticator {
 
-  private static final Logger LOG = Logger.getLogger(IdentityProviderStopAuthenticator.class);
+  private static final Logger logger = Logger.getLogger(IdentityProviderStopAuthenticator.class);
 
   protected static final String ACCEPTS_PROMPT_NONE = "acceptsPromptNoneForwardFromClient";
 
@@ -33,7 +33,7 @@ public class IdentityProviderStopAuthenticator implements Authenticator {
     List<IdentityProviderModel> allowedIdps = new ArrayList<IdentityProviderModel>();
     List<IdentityProviderModel> realmIdps = context.getRealm().getIdentityProviders();
     Map<String, ClientScopeModel> scopes =
-        context.getAuthenticationSession().getClient().getClientScopes(true, true);
+        context.getAuthenticationSession().getClient().getClientScopes(true);
 
     for (IdentityProviderModel ridp : realmIdps) {
       if (ridp.isEnabled() && scopes.containsKey(ridp.getAlias())) {
@@ -43,7 +43,7 @@ public class IdentityProviderStopAuthenticator implements Authenticator {
 
     if (allowedIdps.size() == 1) {
       IdentityProviderModel firstIdp = allowedIdps.get(0);
-      LOG.tracef("Single IDP found, Redirecting to %s", firstIdp.getAlias());
+      logger.tracef("Single IDP found, Redirecting to %s", firstIdp.getAlias());
       redirect(context, firstIdp);
     } else if (allowedIdps.size() > 1) {
       if (context.getUriInfo().getQueryParameters().containsKey(AdapterConstants.KC_IDP_HINT)) {
@@ -53,7 +53,7 @@ public class IdentityProviderStopAuthenticator implements Authenticator {
         if (hintIdp != null && !hintIdp.equals("")) {
           for (IdentityProviderModel aidp : allowedIdps) {
             if (hintIdp.equals(aidp.getAlias())) {
-              LOG.tracef("Hint IDP found, Redirecting to %s", hintIdp);
+              logger.tracef("Hint IDP found, Redirecting to %s", hintIdp);
               redirect(context, aidp);
               return;
             }
@@ -61,10 +61,10 @@ public class IdentityProviderStopAuthenticator implements Authenticator {
         }
       }
 
-      LOG.tracef("Multiple IDP found, Navigating to login page");
+      logger.tracef("Multiple IDP found, Navigating to login page");
       context.attempted();
     } else {
-      LOG.tracef("Zero IDP found, Navigating to login page");
+      logger.tracef("Zero IDP found, Navigating to login page");
       context.attempted();
     }
   }

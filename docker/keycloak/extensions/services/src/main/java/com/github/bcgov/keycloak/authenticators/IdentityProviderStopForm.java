@@ -29,7 +29,7 @@ public class IdentityProviderStopForm extends AbstractUsernameFormAuthenticator 
   public void authenticate(AuthenticationFlowContext context) {
     List<IdentityProviderModel> realmIdps = context.getRealm().getIdentityProviders();
     Map<String, ClientScopeModel> scopes =
-        context.getAuthenticationSession().getClient().getClientScopes(true, true);
+        context.getAuthenticationSession().getClient().getClientScopes(true);
     String idpkeys = "";
 
     for (IdentityProviderModel ridp : realmIdps) {
