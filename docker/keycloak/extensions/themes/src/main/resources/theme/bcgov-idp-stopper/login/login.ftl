@@ -1,21 +1,33 @@
 <#import "template.ftl" as layout>
-<@layout.registrationLayout displayInfo=social.displayInfo displayWide=(realm.password && social.providers??); section>
+<@layout.registrationLayout displayMessage=!messagesPerField.existsError('username','password') displayInfo=realm.password && realm.registrationAllowed && !registrationDisabled??; section>
     <#if section = "header">
-        ${msg("doLogIn")}
+        ${msg("loginAccountTitle")}
     <#elseif section = "form">
-    <div id="kc-form" <#if realm.password && social.providers??>class="${properties.kcContentWrapperClass!}"</#if>>
-        <#if realm.password && social.providers??>
-            <div id="kc-social-providers" class="${properties.kcFormSocialAccountContentClass!} ${properties.kcFormSocialAccountClass!}">
-                <ul class="${properties.kcFormSocialAccountListClass!} <#if social.providers?size gt 4>${properties.kcFormSocialAccountDoubleListClass!}</#if>">
-                    <#list social.providers as p>
-                        <#if login.username?contains("##" + p.alias + "##")>
-                            <li class="${properties.kcFormSocialAccountListLinkClass!}"><a href="${p.loginUrl}" id="zocial-${p.alias}" class="zocial ${p.providerId}"> <span>${p.displayName}</span></a></li>
-                        </#if>
-                    </#list>
-                </ul>
+    <div id="kc-form">
+      <div id="kc-form-wrapper">
+            <#if realm.password && social.providers??>
+                <div id="kc-social-providers" class="${properties.kcFormSocialAccountSectionClass!}">
+                    <ul class="${properties.kcFormSocialAccountListClass!} <#if social.providers?size gt 3>${properties.kcFormSocialAccountListGridClass!}</#if>">
+                        <#list social.providers as p>
+                            <#if login.username?contains("##" + p.alias + "##")>
+                                <li class="${properties.kcFormSocialAccountNameClass!}"><a href="${p.loginUrl}" id="zocial-${p.alias}" class="zocial ${p.providerId}"> <span>${p.displayName}</span></a></li>
+                            </#if>
+                        </#list>
+                    </ul>
+                </div>
+            </#if>
+        </div>
+    </div>
+
+    <#elseif section = "info" >
+        <#if realm.password && realm.registrationAllowed && !registrationDisabled??>
+            <div id="kc-registration-container">
+                <div id="kc-registration">
+                    <span>${msg("noAccount")} <a tabindex="6"
+                                                 href="${url.registrationUrl}">${msg("doRegister")}</a></span>
+                </div>
             </div>
         </#if>
-      </div>
-    <#elseif section = "info" >
     </#if>
+
 </@layout.registrationLayout>
