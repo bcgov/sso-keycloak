@@ -94,9 +94,17 @@
         <subsystem xmlns="urn:jboss:domain:logging:8.0">
             <console-handler name="CONSOLE">
                 <formatter>
-                    <named-formatter name="COLOR-PATTERN" />
+                    <named-formatter name="OPENSHIFT" />
                 </formatter>
             </console-handler>
+            <periodic-rotating-file-handler name="FILE">
+                <!-- <file relative-to="jboss.server.log.dir" path="server.log"/> -->
+                <file path="${jboss.persistent.log.dir}/audit-log-${jboss.node.name}-keycloak.log" />
+                <suffix value=".yyyy-MM-dd" />
+                <formatter>
+                    <named-formatter name="OPENSHIFT" />
+                </formatter>
+            </periodic-rotating-file-handler>
             <logger category="com.arjuna">
                 <level name="WARN" />
             </logger>
@@ -105,6 +113,13 @@
             </logger>
             <logger category="org.jboss.as.config">
                 <level name="DEBUG" />
+            </logger>
+            <logger category="org.keycloak.events" use-parent-handlers="false">
+                <level name="DEBUG" />
+                <handlers>
+                    <handler name="FILE" />
+                    <handler name="CONSOLE" />
+                </handlers>
             </logger>
             <logger category="sun.rmi">
                 <level name="WARN" />
