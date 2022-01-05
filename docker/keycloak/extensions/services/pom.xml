@@ -51,12 +51,6 @@
                 <scope>import</scope>
             </dependency>
 
-            <dependency>
-                <groupId>org.keycloak</groupId>
-                <artifactId>keycloak-testsuite-utils</artifactId>
-                <version>${keycloak.version}</version>
-            </dependency>
-
             <!-- Tests -->
             <dependency>
                 <groupId>junit</groupId>
