@@ -7,7 +7,7 @@ RUN mvn -B clean package --file pom.xml
 # FROM registry.redhat.io/rh-sso-7/sso74-openshift-rhel8:7.4-37
 FROM registry.redhat.io/rh-sso-7/sso75-openshift-rhel8:7.5-9
 
-ENV CONFIGURATION /opt/eap/standalone/configuration/
+ENV CONFIGURATION /opt/eap/standalone/configuration
 
 USER 0
 
@@ -18,8 +18,8 @@ COPY ./extensions/themes/src/main/resources/theme /opt/eap/themes/
 # to deploy the archive, drop it into the `standalone/deployments/` directory and it will be automatically loaded.
 COPY --from=builder /tmp/services/target/bcgov-services-1.0.0.jar /opt/eap/standalone/deployments/
 
-COPY ./configuration/standalone-openshift-7.4-37.xml ${CONFIGURATION}
-COPY ./configuration/standalone-openshift-7.5-9.xml ${CONFIGURATION}
+# COPY ./configuration/standalone-openshift-7.4-37.xml ${CONFIGURATION}
+COPY ./configuration/standalone-openshift-7.5-9.xml ${CONFIGURATION}/standalone-openshift.xml
 
 RUN chown -R 185:0 ${CONFIGURATION}
 
