@@ -11,17 +11,17 @@ dep:
 .PHONY: install
 install: dep
 install:
-	helm install "${NAME}" . -n "${NAMESPACE}" -f values.yaml -f "values-${NAMESPACE}-${NAME}.yaml"
+	helm install "${NAME}" bcgov/backup-storage -n "${NAMESPACE}" -f values.yaml -f "values-${NAMESPACE}-${NAME}.yaml"
 
 .PHONY: upgrade
-install: dep
+upgrade: dep
 upgrade:
-	helm upgrade --install "${NAME}" . -n "${NAMESPACE}" -f values.yaml -f "values-${NAMESPACE}-${NAME}.yaml"
+	helm upgrade --install "${NAME}" bcgov/backup-storage -n "${NAMESPACE}" -f values.yaml -f "values-${NAMESPACE}-${NAME}.yaml"
 
 .PHONY: lint
-install: dep
+lint: dep
 lint:
-	helm upgrade --dry-run --install "${NAME}" -n "${NAMESPACE}" -f values.yaml -f "values-${NAMESPACE}-${NAME}.yaml"
+	helm upgrade --dry-run --install "${NAME}" bcgov/backup-storage -n "${NAMESPACE}" -f values.yaml -f "values-${NAMESPACE}-${NAME}.yaml"
 
 .PHONY: uninstall
 uninstall:
