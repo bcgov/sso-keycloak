@@ -1,3 +1,7 @@
+# see https://github.com/bcgov/helm-charts/blob/master/charts/backup-storage/values.yaml
+nameOverride: "backup-storage"
+fullnameOverride: "backup-storage"
+
 image:
   repository: ghcr.io/bcgov/backup-storage
   tag: dev

@@ -1,3 +1,6 @@
+nameOverride: "metabase-backup-storage"
+fullnameOverride: "metabase-backup-storage"
+
 db:
   secretName: metabase-postgresql-credentials
   usernameKey: username
