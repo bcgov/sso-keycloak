@@ -1,0 +1,9 @@
+image:
+  repository: ghcr.io/bcgov/backup-storage
+  tag: dev
+  pullPolicy: Always
+
+db:
+  secretName: patroni-credentials
+  usernameKey: username
+  passwordKey: password

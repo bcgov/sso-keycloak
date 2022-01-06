@@ -1,0 +1,26 @@
+replicaCount: 3
+
+image:
+  tag: dev
+
+service:
+  type: ClusterIP
+  port: 8443
+
+postgres:
+  host: sso-pgsql-master-dev
+  credentials:
+    secret: sso-pgsql-dev
+  admin:
+    secret: sso-admin-dev
+
+tls:
+  enabled: true
+
+resources:
+  limits:
+    cpu: 2
+    memory: 4Gi
+  requests:
+    cpu: 1250m
+    memory: 4Gi

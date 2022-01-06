@@ -1,0 +1,4 @@
+db:
+  secretName: metabase-postgresql-credentials
+  usernameKey: username
+  passwordKey: password
