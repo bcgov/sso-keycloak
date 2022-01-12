@@ -1,0 +1,59 @@
+<Response xmlns="urn:oasis:names:tc:SAML:2.0:protocol" Destination="https://dev.oidc.gov.bc.ca/auth/realms/_bceidbasic/broker/_bceidbasic/endpoint" ID="_cb329fadec3d8ab3ca7eff0cc3705dfb4560" InResponseTo="ID_d421fefb-0ba3-6460-19bc-4a793a2ecce2" IssueInstant="2022-01-11T04:48:44Z" Version="2.0">
+    <ns1:Issuer xmlns:ns1="urn:oasis:names:tc:SAML:2.0:assertion" Format="urn:oasis:names:tc:SAML:2.0:nameid-format:entity">oidc-bceidbasic</ns1:Issuer>
+    <Status>
+        <StatusCode Value="urn:oasis:names:tc:SAML:2.0:status:Success" />
+    </Status>
+    <ns2:Assertion xmlns:ns2="urn:oasis:names:tc:SAML:2.0:assertion" ID="_4c6b672d56c156f40a7519ab1010f7d89644" IssueInstant="2022-01-11T19:46:08Z" Version="2.0">
+        <ns2:Issuer Format="urn:oasis:names:tc:SAML:2.0:nameid-format:entity">oidc-bceidbasic</ns2:Issuer>
+        <ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+            <ds:SignedInfo>
+                <ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" />
+                <ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256" />
+                <ds:Reference URI="#_4c6b672d56c156f40a7519ab1010f7d89644">
+                    <ds:Transforms>
+                        <ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" />
+                        <ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" />
+                    </ds:Transforms>
+                    <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256" />
+                    <ds:DigestValue>===DigestValue===</ds:DigestValue>
+                </ds:Reference>
+            </ds:SignedInfo>
+            <ds:SignatureValue>===SignatureValue===</ds:SignatureValue>
+            <ds:KeyInfo>
+                <ds:X509Data>
+                    <ds:X509Certificate>===X509Certificate===</ds:X509Certificate>
+                </ds:X509Data>
+            </ds:KeyInfo>
+        </ds:Signature>
+        <ns2:Subject>
+            <ns2:NameID Format="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent">18D1BA09D4BF06B759AD5EF21FE7C906</ns2:NameID>
+            <ns2:SubjectConfirmation Method="urn:oasis:names:tc:SAML:2.0:cm:bearer">
+                <ns2:SubjectConfirmationData InResponseTo="ID_d421fefb-0ba3-6460-19bc-4a793a2ecce2" NotOnOrAfter="2022-01-11T04:50:14Z" Recipient="https://dev.oidc.gov.bc.ca/auth/realms/_bceidbasic/broker/_bceidbasic/endpoint" />
+            </ns2:SubjectConfirmation>
+        </ns2:Subject>
+        <ns2:Conditions NotBefore="2022-01-11T19:45:38Z" NotOnOrAfter="2022-01-11T19:47:38Z">
+            <ns2:AudienceRestriction>
+                <ns2:Audience>https://dev.oidc.gov.bc.ca/auth/realms/_bceidbasic</ns2:Audience>
+            </ns2:AudienceRestriction>
+        </ns2:Conditions>
+        <ns2:AuthnStatement AuthnInstant="2022-01-11T04:48:43Z" SessionIndex="WHho4XMwsYTuiXLHog0jESXpBXK=PA5KQu==" SessionNotOnOrAfter="2022-01-11T04:50:14Z">
+            <ns2:AuthnContext>
+                <ns2:AuthnContextClassRef>urn:oasis:names:tc:SAML:2.0:ac:classes:Password</ns2:AuthnContextClassRef>
+            </ns2:AuthnContext>
+        </ns2:AuthnStatement>
+        <ns2:AttributeStatement>
+            <ns2:Attribute Name="displayName" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified">
+                <ns2:AttributeValue>Admin SSO</ns2:AttributeValue>
+            </ns2:Attribute>
+            <ns2:Attribute Name="email" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified">
+                <ns2:AttributeValue>Admin.SSO@gov.bc.ca</ns2:AttributeValue>
+            </ns2:Attribute>
+            <ns2:Attribute Name="useridentifier" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified">
+                <ns2:AttributeValue>18D1BA09D4BF06B759AD5EF21FE7C906</ns2:AttributeValue>
+            </ns2:Attribute>
+            <ns2:Attribute Name="username" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified">
+                <ns2:AttributeValue>ssoadmin</ns2:AttributeValue>
+            </ns2:Attribute>
+        </ns2:AttributeStatement>
+    </ns2:Assertion>
+</Response>
