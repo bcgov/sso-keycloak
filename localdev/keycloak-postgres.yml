@@ -24,7 +24,7 @@ services:
       SSO_ADMIN_USERNAME: admin
       SSO_ADMIN_PASSWORD: admin
       TZ: America/Vancouver
-      JAVA_OPTS_APPEND: '-Djboss.persistent.log.dir=/var/log/eap'
+      JAVA_OPTS_APPEND: '-Djboss.persistent.log.dir=/'
     ports:
       - 8080:8080
     depends_on:

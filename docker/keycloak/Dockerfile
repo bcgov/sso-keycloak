@@ -1,13 +1,16 @@
+# 7.4-37 | 7.5-9
+ARG TARGET_TAG="7.5-9"
+
 FROM maven:3.8.2-jdk-11-slim AS builder
 COPY ./extensions /tmp/
 WORKDIR /tmp/
 RUN mvn -B clean package --file pom.xml
 
 # see https://catalog.redhat.com/software/containers/rh-sso-7/sso74-openshift-rhel8/5e7e033d5a1346687697bbd3
-# FROM registry.redhat.io/rh-sso-7/sso74-openshift-rhel8:7.4-37
-FROM registry.redhat.io/rh-sso-7/sso75-openshift-rhel8:7.5-9
+FROM registry.redhat.io/rh-sso-7/sso75-openshift-rhel8:${TARGET_TAG}
 
 ENV CONFIGURATION /opt/eap/standalone/configuration
+ARG TARGET_TAG
 
 USER 0
 
@@ -18,8 +21,7 @@ COPY ./extensions/themes/src/main/resources/theme /opt/eap/themes/
 # to deploy the archive, drop it into the `standalone/deployments/` directory and it will be automatically loaded.
 COPY --from=builder /tmp/services/target/bcgov-services-1.0.0.jar /opt/eap/standalone/deployments/
 
-# COPY ./configuration/standalone-openshift-7.4-37.xml ${CONFIGURATION}
-COPY ./configuration/standalone-openshift-7.5-9.xml ${CONFIGURATION}/standalone-openshift.xml
+COPY ./configuration/standalone-openshift-${TARGET_TAG}.xml ${CONFIGURATION}/standalone-openshift.xml
 
 RUN chown -R 185:0 ${CONFIGURATION}
 

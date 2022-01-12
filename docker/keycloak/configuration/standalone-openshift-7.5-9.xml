@@ -97,14 +97,13 @@
                     <named-formatter name="OPENSHIFT" />
                 </formatter>
             </console-handler>
-            <periodic-rotating-file-handler name="FILE">
-                <!-- <file relative-to="jboss.server.log.dir" path="server.log"/> -->
+            <!-- <periodic-rotating-file-handler name="FILE">
                 <file path="${jboss.persistent.log.dir}/audit-log-${jboss.node.name}-keycloak.log" />
                 <suffix value=".yyyy-MM-dd" />
                 <formatter>
                     <named-formatter name="OPENSHIFT" />
                 </formatter>
-            </periodic-rotating-file-handler>
+            </periodic-rotating-file-handler> -->
             <logger category="com.arjuna">
                 <level name="WARN" />
             </logger>
@@ -117,7 +116,7 @@
             <logger category="org.keycloak.events" use-parent-handlers="false">
                 <level name="DEBUG" />
                 <handlers>
-                    <handler name="FILE" />
+                    <!-- <handler name="FILE" /> -->
                     <handler name="CONSOLE" />
                 </handlers>
             </logger>

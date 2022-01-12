@@ -7,6 +7,11 @@ image:
   tag: dev
   pullPolicy: Always
 
+backupConfig: |
+  postgres=patroni-postgresql-gw:5432/gw
+  0 1 * * * default ./backup.sh -s
+  0 4 * * * default ./backup.sh -s -v all
+
 db:
   secretName: patroni-credentials
   usernameKey: username
