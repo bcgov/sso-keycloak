@@ -54,4 +54,4 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          file: Dockerfile-${{ startsWith(steps.meta.outputs.labels['org.opencontainers.image.version'], '7.4-37') && '7.4-37' || '7.5-9' )}}
+          file: Dockerfile-${{ startsWith(steps.meta.outputs.labels['org.opencontainers.image.version'], '7.4-37') && '7.4-37' || '7.5-9' }}
