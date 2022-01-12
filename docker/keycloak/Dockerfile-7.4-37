@@ -1,0 +1,25 @@
+FROM maven:3.8.2-jdk-11-slim AS builder
+
+COPY ./extensions-7.4-37 /tmp/
+WORKDIR /tmp/
+RUN mvn -B clean package --file pom.xml
+
+# see https://catalog.redhat.com/software/containers/rh-sso-7/sso74-openshift-rhel8/5e7e033d5a1346687697bbd3
+FROM registry.redhat.io/rh-sso-7/sso74-openshift-rhel8:7.4-37
+
+ENV CONFIGURATION /opt/eap/standalone/configuration
+
+USER 0
+
+# see https://access.redhat.com/documentation/en-us/red_hat_single_sign-on/7.3/html/server_developer_guide/themes
+# copy the theme directory to `/opt/eap/themes/` for now, but we can consider to archive to be deployed later.
+COPY ./extensions-7.4-37/themes/src/main/resources/theme /opt/eap/themes/
+
+# to deploy the archive, drop it into the `standalone/deployments/` directory and it will be automatically loaded.
+COPY --from=builder /tmp/services/target/bcgov-services-1.0.0.jar /opt/eap/standalone/deployments/
+
+COPY ./configuration/standalone-openshift-7.4-37.xml ${CONFIGURATION}/standalone-openshift.xml
+
+RUN chown -R 185:0 ${CONFIGURATION}
+
+USER 185
