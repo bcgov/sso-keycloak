@@ -1,2 +1,3 @@
 com.github.bcgov.keycloak.authenticators.RequireRoleByClientFactory
 com.github.bcgov.keycloak.IdpCreateUserIfUniqueAuthenticatorFactory
+com.github.bcgov.keycloak.authenticators.broker.IdpDeleteUserIfDuplicateAuthenticatorFactory
