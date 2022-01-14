@@ -1,15 +1,15 @@
 # see https://registry.terraform.io/providers/mrparkers/keycloak/latest/docs/resources/oidc_identity_provider
-resource "keycloak_oidc_identity_provider" "onestopauth_bceidbusiness" {
+resource "keycloak_oidc_identity_provider" "bceidbusiness" {
   realm        = keycloak_realm.this.id
-  alias        = local.bceidbusiness_idp_name
-  display_name = "BCEID BUSINESS"
+  alias        = var.bceidbusiness_realm_name
+  display_name = var.bceidbusiness_realm_name
 
   enabled           = true
   store_token       = true
-  authorization_url = "${var.keycloak_url}/auth/realms/${var.idp_realm_name}/protocol/openid-connect/auth"
-  token_url         = "${var.keycloak_url}/auth/realms/${var.idp_realm_name}/protocol/openid-connect/token"
-  user_info_url     = "${var.keycloak_url}/auth/realms/${var.idp_realm_name}/protocol/openid-connect/userinfo"
-  jwks_url          = "${var.keycloak_url}/auth/realms/${var.idp_realm_name}/protocol/openid-connect/certs"
+  authorization_url = "${var.keycloak_url}/auth/realms/${var.bceidbusiness_realm_name}/protocol/openid-connect/auth"
+  token_url         = "${var.keycloak_url}/auth/realms/${var.bceidbusiness_realm_name}/protocol/openid-connect/token"
+  user_info_url     = "${var.keycloak_url}/auth/realms/${var.bceidbusiness_realm_name}/protocol/openid-connect/userinfo"
+  jwks_url          = "${var.keycloak_url}/auth/realms/${var.bceidbusiness_realm_name}/protocol/openid-connect/certs"
   client_id         = var.bceidbusiness_client_id
   client_secret     = var.bceidbusiness_client_secret
 
@@ -20,10 +20,10 @@ resource "keycloak_oidc_identity_provider" "onestopauth_bceidbusiness" {
   }
 }
 
-resource "keycloak_custom_identity_provider_mapper" "onestopauth_bceidbusiness_mapper_displayname" {
+resource "keycloak_custom_identity_provider_mapper" "bceidbusiness_displayname" {
   realm                    = keycloak_realm.this.id
   name                     = "display_name"
-  identity_provider_alias  = keycloak_oidc_identity_provider.onestopauth_bceidbusiness.alias
+  identity_provider_alias  = keycloak_oidc_identity_provider.bceidbusiness.alias
   identity_provider_mapper = "oidc-user-attribute-idp-mapper"
 
   extra_config = {
@@ -33,10 +33,10 @@ resource "keycloak_custom_identity_provider_mapper" "onestopauth_bceidbusiness_m
   }
 }
 
-resource "keycloak_custom_identity_provider_mapper" "onestopauth_bceidbusiness_mapper_bceid_userid" {
+resource "keycloak_custom_identity_provider_mapper" "bceidbusiness_bceid_userid" {
   realm                    = keycloak_realm.this.id
   name                     = "bceid_userid"
-  identity_provider_alias  = keycloak_oidc_identity_provider.onestopauth_bceidbusiness.alias
+  identity_provider_alias  = keycloak_oidc_identity_provider.bceidbusiness.alias
   identity_provider_mapper = "oidc-user-attribute-idp-mapper"
 
   extra_config = {

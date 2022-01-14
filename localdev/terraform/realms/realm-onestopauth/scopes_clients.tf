@@ -1,10 +1,10 @@
 locals {
   idp_names = [
-    local.idir_idp_name,
-    local.azureidir_idp_name,
-    local.bceidbasic_idp_name,
-    local.bceidbusiness_idp_name,
-    local.bceidboth_idp_name,
+    var.idir_realm_name,
+    var.azureidir_realm_name,
+    var.bceidbasic_realm_name,
+    var.bceidbusiness_realm_name,
+    var.bceidboth_realm_name,
   ]
 }
 
