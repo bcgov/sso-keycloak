@@ -144,7 +144,7 @@ resource "keycloak_authentication_flow" "flow" {
 resource "keycloak_authentication_execution" "execution1" {
   realm_id          = keycloak_realm.realm.id
   parent_flow_alias = keycloak_authentication_flow.flow.alias
-  authenticator     = "auth-cookie"
+  authenticator     = "cookie-stopper"
   requirement       = "ALTERNATIVE"
 }
 
@@ -206,7 +206,7 @@ resource "keycloak_authentication_flow" "flow2" {
 resource "keycloak_authentication_execution" "execution12" {
   realm_id          = keycloak_realm.realm2.id
   parent_flow_alias = keycloak_authentication_flow.flow2.alias
-  authenticator     = "auth-cookie"
+  authenticator     = "cookie-stopper"
   requirement       = "ALTERNATIVE"
 }
 

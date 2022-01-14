@@ -12,6 +12,9 @@ metadata:
     "helm.sh/hook-delete-policy": "before-hook-creation"
 type: Opaque
 data:
+  user-superuser: {{ .Values.users.superuser | b64enc }}
+  user-admin: {{ .Values.users.admin | b64enc }}
+  user-standby: {{ .Values.users.standby | b64enc }}
   {{- if .Values.credentials.random }}
   password-superuser: {{ randAlphaNum 32 | b64enc | quote }}
   password-admin: {{ randAlphaNum 32 | b64enc | quote }}

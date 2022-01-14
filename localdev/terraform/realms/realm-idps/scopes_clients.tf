@@ -36,7 +36,7 @@ resource "keycloak_openid_client" "idp_clients" {
   access_type   = "CONFIDENTIAL"
   client_secret = "<UPDATE_ME>"
 
-  valid_redirect_uris = ["http://${var.keycloak_url}/auth/realms/${var.standard_realm_name}/broker/${each.key}/endpoint"]
+  valid_redirect_uris = ["${var.keycloak_url}/auth/realms/${var.standard_realm_name}/broker/${each.key}/endpoint"]
   web_origins         = []
 
   authentication_flow_binding_overrides {

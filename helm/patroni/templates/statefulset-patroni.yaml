@@ -27,6 +27,21 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
+        - name: PGUSER_SUPERUSER
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "patroni.fullname" . }}
+              key: user-superuser
+        - name: PGUSER_ADMIN
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "patroni.fullname" . }}
+              key: user-admin
+        - name: PGUSER_STANDBY
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "patroni.fullname" . }}
+              key: user-standby
         - name: PGPASSWORD_SUPERUSER
           valueFrom:
             secretKeyRef:

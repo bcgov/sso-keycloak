@@ -1,13 +1,11 @@
 resource "keycloak_realm" "this" {
-  realm             = var.standard_realm_name
+  realm             = var.realm_name
   enabled           = true
-  display_name      = "Onestopauth"
-  display_name_html = "<b>Onestopauth</b>"
+  display_name      = var.realm_name
+  display_name_html = "<b>${var.realm_name}</b>"
 
   login_with_email_allowed = false
   duplicate_emails_allowed = true
-
-  login_theme = "bcgov-idp-stopper"
 
   sso_session_idle_timeout                 = "30m"  # SSO Session Idle
   sso_session_max_lifespan                 = "10h"  # SSO Session Max
@@ -22,7 +20,9 @@ resource "keycloak_realm" "this" {
   action_token_generated_by_admin_lifespan = "12h"  # Default Admin-Initiated Action Lifespan
 }
 
-module "idp_auth_flow" {
-  source   = "../idp-auth-flow"
-  realm_id = keycloak_realm.this.id
+resource "keycloak_openid_client_scope" "idp_scope" {
+  realm_id               = keycloak_realm.this.id
+  name                   = var.realm_name
+  description            = "${var.realm_name} idp client scope"
+  include_in_token_scope = false
 }
