@@ -8,8 +8,12 @@ image:
 imagePullSecrets:
   - name: gh-registry-config
 
+project: sso-keycloak
 nameOverride: sso-keycloak
 fullnameOverride: sso-keycloak
+
+networkPolicies:
+  enabled: true
 
 service:
   type: ClusterIP

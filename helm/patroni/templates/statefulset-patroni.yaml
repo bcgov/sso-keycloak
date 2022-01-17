@@ -7,6 +7,7 @@ metadata:
     chart: {{ template "patroni.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+    project: {{ template "patroni.project" . }}
 spec:
   serviceName: {{ template "patroni.fullname" . }}
   replicas: {{ .Values.replicaCount }}
@@ -14,12 +15,14 @@ spec:
     matchLabels:
       app: {{ template "patroni.fullname" . }}
       release: {{ .Release.Name }}
+      project: {{ template "patroni.project" . }}
   template:
     metadata:
       name: {{ template "patroni.fullname" . }}
       labels:
         app: {{ template "patroni.fullname" . }}
         release: {{ .Release.Name }}
+        project: {{ template "patroni.project" . }}
     spec:
       serviceAccountName: {{ template "patroni.serviceAccountName" . }}
       containers:
@@ -30,32 +33,32 @@ spec:
         - name: PGUSER_SUPERUSER
           valueFrom:
             secretKeyRef:
-              name: {{ template "patroni.fullname" . }}
-              key: user-superuser
+              name: {{ if .Values.auth.existingSecret }}{{ .Values.auth.existingSecret }}{{ else }}{{ template "patroni.fullname" . }}{{ end }}
+              key: username-superuser
         - name: PGUSER_ADMIN
           valueFrom:
             secretKeyRef:
-              name: {{ template "patroni.fullname" . }}
-              key: user-admin
+              name: {{ if .Values.auth.existingSecret }}{{ .Values.auth.existingSecret }}{{ else }}{{ template "patroni.fullname" . }}{{ end }}
+              key: username-admin
         - name: PGUSER_STANDBY
           valueFrom:
             secretKeyRef:
-              name: {{ template "patroni.fullname" . }}
-              key: user-standby
+              name: {{ if .Values.auth.existingSecret }}{{ .Values.auth.existingSecret }}{{ else }}{{ template "patroni.fullname" . }}{{ end }}
+              key: username-standby
         - name: PGPASSWORD_SUPERUSER
           valueFrom:
             secretKeyRef:
-              name: {{ template "patroni.fullname" . }}
+              name: {{ if .Values.auth.existingSecret }}{{ .Values.auth.existingSecret }}{{ else }}{{ template "patroni.fullname" . }}{{ end }}
               key: password-superuser
         - name: PGPASSWORD_ADMIN
           valueFrom:
             secretKeyRef:
-              name: {{ template "patroni.fullname" . }}
+              name: {{ if .Values.auth.existingSecret }}{{ .Values.auth.existingSecret }}{{ else }}{{ template "patroni.fullname" . }}{{ end }}
               key: password-admin
         - name: PGPASSWORD_STANDBY
           valueFrom:
             secretKeyRef:
-              name: {{ template "patroni.fullname" . }}
+              name: {{ if .Values.auth.existingSecret }}{{ .Values.auth.existingSecret }}{{ else }}{{ template "patroni.fullname" . }}{{ end }}
               key: password-standby
         {{- if .Values.kubernetes.dcs.enable }}
         - name: DCS_ENABLE_KUBERNETES_API

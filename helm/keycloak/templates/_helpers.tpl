@@ -1,4 +1,12 @@
 {{/* vim: set filetype=mustache: */}}
+
+{{/*
+Expand the name of the project.
+*/}}
+{{- define "..project" -}}
+{{- default .Chart.Name .Values.project | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
 {{/*
 Expand the name of the chart.
 */}}

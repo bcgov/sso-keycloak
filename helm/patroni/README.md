@@ -27,9 +27,14 @@ $ helm dependency update
 ```console
 $ helm install <release-name> sso-keycloak/patroni [--namespace <my-namespace>] [--version <x.y.z>] [--values ./custom-values.yaml]
 
-# To install the chart with randomly generated passwords:
-$ helm install patroni . \
-  --set credentials.superuser="$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c32)",credentials.admin="$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c32)",credentials.standby="$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c32)"
+# To install the chart with randomly generated db credentials secret
+$ kubectl create secret generic <secret-name> -n <my-namespace> \
+  --from-literal=username-superuser=postgres \
+  --from-literal=username-admin=admin \
+  --from-literal=username-standby=standby \
+  --from-literal=password-superuser="$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c32)" \
+  --from-literal=password-admin="$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c32)" \
+  --from-literal=password-standby="$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c32)"
 ```
 
 ### Upgrade this chart repository
@@ -56,10 +61,13 @@ The following table lists the configurable parameters of the patroni chart and t
 | `image.repository`               | The image to pull                                                                                                              | `registry.opensource.zalan.do/acid/spilo-10`        |
 | `image.tag`                      | The version of the image to pull                                                                                               | `1.5-p5`                                            |
 | `image.pullPolicy`               | The pull policy                                                                                                                | `IfNotPresent`                                      |
-| `credentials.random`             | Using passwords created randomly                                                                                               | `true`                                              |
-| `credentials.superuser`          | Password of the superuser                                                                                                      | `tea`                                               |
-| `credentials.admin`              | Password of the admin                                                                                                          | `cola`                                              |
-| `credentials.standby`            | Password of the replication user                                                                                               | `pinacolada`                                        |
+| `auth.existingSecret`            | Using existing credentials secret                                                                                              | `nil`                                               |
+| `auth.superuser.username`        | Username of the superuser                                                                                                      | `postgres`                                          |
+| `auth.superuser.password`        | Password of the superuser                                                                                                      | `tea`                                               |
+| `auth.admin.username`            | Username of the admin                                                                                                          | `admin`                                             |
+| `auth.admin.password`            | Password of the admin                                                                                                          | `cola`                                              |
+| `auth.standby.username`          | Username of the standby                                                                                                        | `standby`                                           |
+| `auth.standby.password`          | Password of the standby                                                                                                        | `pinacolada`                                        |
 | `kubernetes.dcs.enable`          | Using Kubernetes as DCS                                                                                                        | `true`                                              |
 | `kubernetes.configmaps.enable`   | Using Kubernetes configmaps instead of endpoints                                                                               | `false`                                             |
 | `etcd.enable`                    | Using etcd as DCS                                                                                                              | `false`                                             |
