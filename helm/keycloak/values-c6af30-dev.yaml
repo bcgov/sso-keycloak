@@ -1,5 +1,7 @@
 replicaCount: 3
 
+project: sso-keycloak
+
 image:
   tag: dev
 
@@ -8,11 +10,11 @@ service:
   port: 8443
 
 postgres:
-  host: sso-pgsql-master-dev
+  host: sso-patroni
   credentials:
-    secret: sso-pgsql-dev
-  admin:
-    secret: sso-admin-dev
+    secret: sso-patroni
+    adminUsername: postgres
+    passwordKey: password-superuser
 
 tls:
   enabled: true

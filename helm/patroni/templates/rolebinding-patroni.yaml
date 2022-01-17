@@ -8,6 +8,7 @@ metadata:
     chart: {{ template "patroni.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+    project: {{ template "patroni.project" . }}
 subjects:
   - kind: ServiceAccount
     name: {{ template "patroni.serviceAccountName" . }}

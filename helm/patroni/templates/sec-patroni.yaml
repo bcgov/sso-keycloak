@@ -1,3 +1,4 @@
+{{- if not .Values.auth.existingSecret }}
 apiVersion: v1
 kind: Secret
 metadata:
@@ -7,20 +8,13 @@ metadata:
     chart: {{ template "patroni.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-  annotations:
-    "helm.sh/hook": "pre-install"
-    "helm.sh/hook-delete-policy": "before-hook-creation"
+    project: {{ template "patroni.project" . }}
 type: Opaque
 data:
-  user-superuser: {{ .Values.users.superuser | b64enc }}
-  user-admin: {{ .Values.users.admin | b64enc }}
-  user-standby: {{ .Values.users.standby | b64enc }}
-  {{- if .Values.credentials.random }}
-  password-superuser: {{ randAlphaNum 32 | b64enc | quote }}
-  password-admin: {{ randAlphaNum 32 | b64enc | quote }}
-  password-standby: {{ randAlphaNum 32 | b64enc | quote }}
-  {{- else }}
-  password-superuser: {{ .Values.credentials.superuser | b64enc }}
-  password-admin: {{ .Values.credentials.admin | b64enc }}
-  password-standby: {{ .Values.credentials.standby | b64enc }}
-  {{- end }}
+  username-superuser: {{ .Values.auth.superuser.username | b64enc }}
+  username-admin: {{ .Values.auth.admin.username | b64enc }}
+  username-standby: {{ .Values.auth.standby.username | b64enc }}
+  password-superuser: {{ .Values.auth.superuser.password | b64enc }}
+  password-admin: {{ .Values.auth.admin.password | b64enc }}
+  password-standby: {{ .Values.auth.standby.password | b64enc }}
+{{- end }}
