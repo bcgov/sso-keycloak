@@ -1,0 +1,12 @@
+nameOverride: "sso-backup-storage"
+fullnameOverride: "sso-backup-storage"
+
+backupConfig: |
+  sso-patroni:5432/rhsso
+  0 1 * * * default ./backup.sh -s
+  0 4 * * * default ./backup.sh -s -v all
+
+db:
+  secretName: sso-patroni
+  usernameKey: username-superuser
+  passwordKey: password-superuser
