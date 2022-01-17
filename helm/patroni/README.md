@@ -27,7 +27,7 @@ $ helm dependency update
 ```console
 $ helm install <release-name> sso-keycloak/patroni [--namespace <my-namespace>] [--version <x.y.z>] [--values ./custom-values.yaml]
 
-# To install the chart with randomly generated db credentials secret
+# To create a randomly generated db credentials secret
 $ kubectl create secret generic <secret-name> -n <my-namespace> \
   --from-literal=username-superuser=postgres \
   --from-literal=username-admin=admin \
