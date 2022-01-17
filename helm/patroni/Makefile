@@ -32,8 +32,8 @@ uninstall:
 force-install: uninstall
 force-install: install
 
-.PHONY: create-randome-db-secret
-create-randome-db-secret:
+.PHONY: create-random-db-secret
+create-random-db-secret:
 	kubectl create secret generic "${NAME}" -n "${NAMESPACE}" \
 		--from-literal=username-superuser=postgres \
 		--from-literal=username-admin=admin \
