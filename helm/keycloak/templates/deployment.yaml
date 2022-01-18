@@ -1,26 +1,15 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "..fullname" . }}
-  labels:
-    app.kubernetes.io/name: {{ include "..name" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
-    helm.sh/chart: {{ include "..chart" . }}
-    project: {{ include "..project" . }}
+  name: {{ include "sso-keycloak.fullname" . }}
+  labels: {{ include "sso-keycloak.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
-    matchLabels:
-      app.kubernetes.io/name: {{ include "..name" . }}
-      app.kubernetes.io/instance: {{ .Release.Name }}
-      project: {{ include "..project" . }}
+    matchLabels: {{ include "sso-keycloak.labels" . | nindent 6 }}
   template:
     metadata:
-      labels:
-        app.kubernetes.io/name: {{ include "..name" . }}
-        app.kubernetes.io/instance: {{ .Release.Name }}
-        project: {{ include "..project" . }}
+      labels: {{ include "sso-keycloak.labels" . | nindent 8 }}
     spec:
       containers:
         - name: {{ .Chart.Name }}
@@ -104,7 +93,7 @@ spec:
             - name: SSO_ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "..fullname" . }}-admin-secret
+                  name: {{ include "sso-keycloak.fullname" . }}-admin-secret
                   key: password-admin
             # DB POOL SIZES
             - name: DB_MIN_POOL_SIZE
@@ -115,7 +104,7 @@ spec:
             - name: JGROUPS_CLUSTER_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "..fullname" . }}-jgroups
+                  name: {{ include "sso-keycloak.fullname" . }}-jgroups
                   key: cluster-password
             # Additional server startup options (extension of JAVA_OPTS)
             - name: JAVA_OPTS_APPEND
@@ -124,7 +113,7 @@ spec:
               value: /var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt
             {{- if .Values.pingService.enabled }}
             - name: OPENSHIFT_DNS_PING_SERVICE_NAME
-              value: {{ include "..fullname" . }}-ping
+              value: {{ include "sso-keycloak.fullname" . }}-ping
             - name: OPENSHIFT_DNS_PING_SERVICE_PORT
               value: {{ .Values.pingService.port | quote }}
             {{- end }}
@@ -166,7 +155,7 @@ spec:
         {{- if .Values.persistentLog.enabled }}
         - name: logs-volume
           persistentVolumeClaim:
-            claimName: {{ include "..fullname" . }}-logs
+            claimName: {{ include "sso-keycloak.fullname" . }}-logs
         {{- end }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:

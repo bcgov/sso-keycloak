@@ -72,3 +72,6 @@ The following table lists the configurable parameters of the Keycloak chart and 
 - The helm chart installs two `Secret` k8s objects:
   1. `<release-name>-admin-secret`: it stores the Keycloak admin password.
   1. `<release-name>-jgroups`: it stores the Keycloak cluster jgroups password.
+
+- k8s resource object label conventions
+  1. see https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/#labels
