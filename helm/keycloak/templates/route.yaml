@@ -1,13 +1,8 @@
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
-  name: {{ include "..fullname" . }}
-  labels:
-    app.kubernetes.io/name: {{ include "..name" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
-    helm.sh/chart: {{ include "..chart" . }}
-    project: {{ include "..project" . }}
+  name: {{ include "sso-keycloak.fullname" . }}
+  labels: {{ include "sso-keycloak.labels" . | nindent 4 }}
   annotations:
     haproxy.router.openshift.io/balance: roundrobin
     haproxy.router.openshift.io/disable_cookies: 'true'
@@ -21,4 +16,4 @@ spec:
     {{ end }}
   to:
     kind: Service
-    name: {{ include "..fullname" . }}
+    name: {{ include "sso-keycloak.fullname" . }}

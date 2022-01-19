@@ -1,7 +1,9 @@
 replicaCount: 5
 
+project: sso-keycloak
+
 image:
-  tag: 7.4-37-rc.2
+  tag: 7.4-37-rc.3
 
 service:
   type: ClusterIP
@@ -11,8 +13,8 @@ postgres:
   host: sso-pgsql-master-test
   credentials:
     secret: sso-pgsql-test
-  admin:
-    secret: sso-admin-test
+    usernameKey: app-db-username
+    passwordKey: app-db-password
 
 tls:
   enabled: true

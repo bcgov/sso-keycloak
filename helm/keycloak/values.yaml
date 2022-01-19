@@ -29,9 +29,11 @@ postgres:
   dbName: rhsso
   port: 5432
   credentials:
-    secret: sso-pgsql
-    adminUsername: postgres
+    secret:
+    usernameKey: username-superuser
     passwordKey: password-superuser
+    adminUsername: postgres
+    adminPassword: postgres
   poolSize:
     min: 5
     max: 20

@@ -2,13 +2,8 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "..fullname" . }}-ping
-  labels:
-    app.kubernetes.io/name: {{ include "..name" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
-    helm.sh/chart: {{ include "..chart" . }}
-    project: {{ include "..project" . }}
+  name: {{ include "sso-keycloak.fullname" . }}-ping
+  labels: {{ include "sso-keycloak.labels" . | nindent 4 }}
   annotations:
     description: "The JGroups ping port for clustering."
     service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
@@ -22,7 +17,5 @@ spec:
       name: ping
       targetPort: ping
       protocol: TCP
-  selector:
-    app.kubernetes.io/name: {{ include "..name" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
+  selector: {{ include "sso-keycloak.selectorLabels" . | nindent 4 }}
 {{- end }}
