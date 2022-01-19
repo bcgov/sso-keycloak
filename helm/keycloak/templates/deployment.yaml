@@ -6,7 +6,7 @@ metadata:
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
-    matchLabels: {{ include "sso-keycloak.labels" . | nindent 6 }}
+    matchLabels: {{ include "sso-keycloak.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels: {{ include "sso-keycloak.labels" . | nindent 8 }}
