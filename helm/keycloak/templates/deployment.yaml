@@ -79,22 +79,36 @@ spec:
               value: {{ .Values.postgres.port | quote }}
             # DB Credentials
             - name: DB_USERNAME
+              {{- if and .Values.postgres.credentials.secret .Values.postgres.credentials.usernameKey }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgres.credentials.secret }}
+                  key: {{ .Values.postgres.credentials.usernameKey }}
+              {{- else -}}
               value: {{ .Values.postgres.credentials.adminUsername }}
+              {{- end }}
             - name: DB_PASSWORD
+              {{- if and .Values.postgres.credentials.secret .Values.postgres.credentials.passwordKey }}
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.postgres.credentials.secret }}
                   key: {{ .Values.postgres.credentials.passwordKey }}
+              {{- else -}}
+              value: {{ .Values.postgres.credentials.adminPassword }}
+              {{- end }}
             - name: DB_DATABASE
               value: {{ .Values.postgres.dbName }}
             # DB Admin Credentials
             - name: SSO_ADMIN_USERNAME
-              value: admin
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "sso-keycloak.fullname" . }}-admin-secret
+                  key: username
             - name: SSO_ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ include "sso-keycloak.fullname" . }}-admin-secret
-                  key: password-admin
+                  key: password
             # DB POOL SIZES
             - name: DB_MIN_POOL_SIZE
               value: {{ .Values.postgres.poolSize.min | quote }}

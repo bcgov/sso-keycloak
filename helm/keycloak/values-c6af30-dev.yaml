@@ -13,7 +13,7 @@ postgres:
   host: sso-patroni
   credentials:
     secret: sso-patroni
-    adminUsername: postgres
+    usernameKey: username-superuser
     passwordKey: password-superuser
 
 tls:
