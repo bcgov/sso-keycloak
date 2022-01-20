@@ -45,7 +45,7 @@ The following table lists the configurable parameters of the Keycloak chart and 
 | `pingService.enabled`                | enable DNS ping                                | `true`                                                                                     |
 | `pingService.port`                   | exposed port of ping service                   | `8888`                                                                                     |
 | `postgres.host`                      | host of postgres service                       | `sso-pgsql-master`                                                                         |
-| `postgres.dbName`                    | name of database                               | `rhsso`                                                                                    |
+| `postgres.database`                  | name of database                               | `rhsso`                                                                                    |
 | `postgres.port`                      | exposed port of database                       | `5432`                                                                                     |
 | `postgres.credentials.secret`        | name of secret containing database credentials | `sso-pgsql`                                                                                |
 | `postgres.credentials.adminUsername` | name of admin database user                    | `postgres`                                                                                 |
@@ -70,6 +70,7 @@ The following table lists the configurable parameters of the Keycloak chart and 
 ### Notes
 
 - The helm chart installs two `Secret` k8s objects:
+
   1. `<release-name>-admin-secret`: it stores the Keycloak admin password.
   1. `<release-name>-jgroups`: it stores the Keycloak cluster jgroups password.
 
