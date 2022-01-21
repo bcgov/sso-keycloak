@@ -106,10 +106,7 @@ public class IDPUserinfoMapper extends AbstractOIDCProtocolMapper
 
       if (userInfoUrl != null) {
         FederatedIdentityModel identity =
-            keycloakSession.users().getFederatedIdentity(userSession.getUser(), idp, realm);
-        // after upgrade to 7.5
-        // FederatedIdentityModel identity = keycloakSession.users().getFederatedIdentity(realm,
-        // userSession.getUser(), idp);
+            keycloakSession.users().getFederatedIdentity(realm, userSession.getUser(), idp);
         String brokerToken = identity.getToken();
         AccessTokenResponse brokerAccessToken = parseTokenString(brokerToken);
         Client httpClient = ClientBuilder.newClient();

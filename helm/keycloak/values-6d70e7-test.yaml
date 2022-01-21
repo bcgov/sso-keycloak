@@ -11,6 +11,7 @@ service:
 
 postgres:
   host: sso-pgsql-master-test
+  database: keycloak
   credentials:
     secret: sso-pgsql-test
     usernameKey: app-db-username

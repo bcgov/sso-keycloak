@@ -1,3 +1,0 @@
-com.github.bcgov.keycloak.mappers.GitHubOrgToGroupMapper
-com.github.bcgov.keycloak.mappers.GitHubOrgToRoleMapper
-com.github.bcgov.keycloak.mappers.TwoWayClaimToRoleMapper

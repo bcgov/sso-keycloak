@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.jboss.logging.Logger;
 import org.keycloak.authentication.AuthenticationFlowContext;
 import org.keycloak.authentication.Authenticator;
+import org.keycloak.models.AuthenticatorConfigModel;
 import org.keycloak.models.ClientModel;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
@@ -16,21 +17,32 @@ import org.keycloak.sessions.AuthenticationSessionModel;
 public class ClientLoginAuthenticator implements Authenticator {
 
   private static final Logger logger = Logger.getLogger(ClientLoginAuthenticator.class);
-  private static final String CLIENT_MEMBER_ROLE = "member";
+  private static final String DEFAULT_CLIENT_MEMBER_ROLE = "member";
 
   @Override
   public void authenticate(AuthenticationFlowContext context) {
+    AuthenticatorConfigModel config = context.getAuthenticatorConfig();
+
+    String mrole = DEFAULT_CLIENT_MEMBER_ROLE;
+    if (config != null
+        && config.getConfig() != null
+        && config.getConfig().containsKey(ClientLoginAuthenticatorFactory.MEMBER_ROLE_NAME)) {
+      mrole = config.getConfig().get(ClientLoginAuthenticatorFactory.MEMBER_ROLE_NAME);
+    }
+
+    final String clientMemberRole = mrole;
+
     AuthenticationSessionModel session = context.getAuthenticationSession();
     ClientModel client = session.getClient();
     UserModel user = session.getAuthenticatedUser();
-    RoleModel memberRole = client.getRole(CLIENT_MEMBER_ROLE);
+    RoleModel memberRole = client.getRole(clientMemberRole);
     if (memberRole == null) {
-      memberRole = client.addRole(CLIENT_MEMBER_ROLE);
+      memberRole = client.addRole(clientMemberRole);
     }
 
     Optional<RoleModel> assignedMemberRole =
         user.getClientRoleMappingsStream(client)
-            .filter(role -> Objects.equals(CLIENT_MEMBER_ROLE, role.getName()))
+            .filter(role -> Objects.equals(clientMemberRole, role.getName()))
             .findFirst();
 
     if (!assignedMemberRole.isPresent()) {

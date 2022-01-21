@@ -12,7 +12,7 @@ fullnameOverride: sso-keycloak
 
 postgres:
   host: sso-pgsql-master-test
-  dbName: rhsso
+  database: rhsso
   credentials:
     secret: patroni-test-jon
     adminUsername: postgres
