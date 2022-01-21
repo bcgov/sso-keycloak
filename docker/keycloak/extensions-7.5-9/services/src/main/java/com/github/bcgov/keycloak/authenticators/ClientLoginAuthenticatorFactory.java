@@ -1,5 +1,6 @@
 package com.github.bcgov.keycloak.authenticators;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.keycloak.Config;
 import org.keycloak.OAuth2Constants;
@@ -19,6 +20,20 @@ public class ClientLoginAuthenticatorFactory
   protected static final Requirement[] REQUIREMENT_CHOICES = {
     Requirement.REQUIRED, Requirement.ALTERNATIVE, Requirement.DISABLED
   };
+
+  public static final String MEMBER_ROLE_NAME = "memberRole";
+  private static final List<ProviderConfigProperty> configProperties =
+      new ArrayList<ProviderConfigProperty>();
+
+  static {
+    ProviderConfigProperty property;
+    property = new ProviderConfigProperty();
+    property.setName(MEMBER_ROLE_NAME);
+    property.setLabel("Client Member Role");
+    property.setType(ProviderConfigProperty.STRING_TYPE);
+    property.setHelpText("Role name to grant to user. default to 'member'");
+    configProperties.add(property);
+  }
 
   @Override
   public String getId() {
@@ -54,7 +69,7 @@ public class ClientLoginAuthenticatorFactory
 
   @Override
   public List<ProviderConfigProperty> getConfigProperties() {
-    return null;
+    return configProperties;
   }
 
   @Override
@@ -64,7 +79,7 @@ public class ClientLoginAuthenticatorFactory
 
   @Override
   public boolean isConfigurable() {
-    return false;
+    return true;
   }
 
   @Override

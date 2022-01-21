@@ -1,4 +1,4 @@
-package com.github.bcgov.keycloak.authenticators;
+package com.github.bcgov.keycloak.authenticators.browser;
 
 import java.util.List;
 import org.keycloak.Config;
