@@ -5,7 +5,7 @@
     <#elseif section = "form">
     <div id="kc-form">
       <div id="kc-form-wrapper">
-            <#if realm.password && social.providers??>
+            <#if realm.password && social.providers?? && login.username??>
                 <div id="kc-social-providers" class="${properties.kcFormSocialAccountSectionClass!}">
                     <ul class="${properties.kcFormSocialAccountListClass!} <#if social.providers?size gt 3>${properties.kcFormSocialAccountListGridClass!}</#if>">
                         <#list social.providers as p>
