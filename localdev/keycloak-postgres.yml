@@ -3,6 +3,8 @@ version: '3'
 volumes:
   postgres_data:
     driver: local
+  log_data:
+    driver: local
 
 services:
   postgres:
@@ -24,8 +26,10 @@ services:
       SSO_ADMIN_USERNAME: admin
       SSO_ADMIN_PASSWORD: admin
       TZ: America/Vancouver
-      JAVA_OPTS_APPEND: '-Djboss.persistent.log.dir=/'
+      JAVA_OPTS_APPEND: '-Djboss.persistent.log.dir=/opt/eap'
     ports:
       - 8080:8080
     depends_on:
       - postgres
+    volumes:
+      - log_data:/opt/eap:rw

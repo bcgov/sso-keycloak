@@ -65,7 +65,7 @@
                 <json-formatter name="json-formatter" />
             </formatters>
             <handlers>
-                <file-handler name="file" formatter="json-formatter" path="audit-log.log" relative-to="jboss.server.data.dir" />
+                <periodic-rotating-file-handler name="file" formatter="json-formatter" path="${jboss.persistent.log.dir}/audit-log-${jboss.node.name}-jboss.log" suffix=".yyyy-MM-dd" />
             </handlers>
             <logger log-boot="true" log-read-only="false" enabled="false">
                 <handlers>
@@ -97,13 +97,13 @@
                     <named-formatter name="OPENSHIFT" />
                 </formatter>
             </console-handler>
-            <!-- <periodic-rotating-file-handler name="FILE">
+            <periodic-rotating-file-handler name="AUDIT">
                 <file path="${jboss.persistent.log.dir}/audit-log-${jboss.node.name}-keycloak.log" />
                 <suffix value=".yyyy-MM-dd" />
                 <formatter>
                     <named-formatter name="OPENSHIFT" />
                 </formatter>
-            </periodic-rotating-file-handler> -->
+            </periodic-rotating-file-handler>
             <logger category="com.arjuna">
                 <level name="WARN" />
             </logger>
@@ -116,7 +116,7 @@
             <logger category="org.keycloak.events" use-parent-handlers="false">
                 <level name="DEBUG" />
                 <handlers>
-                    <!-- <handler name="FILE" /> -->
+                    <!-- <handler name="AUDIT" /> -->
                     <handler name="CONSOLE" />
                 </handlers>
             </logger>
@@ -384,12 +384,14 @@
                 <local-cache name="users">
                     <heap-memory size="10000" />
                 </local-cache>
-                <distributed-cache name="sessions" owners="${env.CACHE_OWNERS_COUNT:1}" />
-                <distributed-cache name="authenticationSessions" owners="${env.CACHE_OWNERS_AUTH_SESSIONS_COUNT:1}" />
-                <distributed-cache name="offlineSessions" owners="${env.CACHE_OWNERS_COUNT:1}" />
-                <distributed-cache name="clientSessions" owners="${env.CACHE_OWNERS_COUNT:1}" />
-                <distributed-cache name="offlineClientSessions" owners="${env.CACHE_OWNERS_COUNT:1}" />
-                <distributed-cache name="loginFailures" owners="${env.CACHE_OWNERS_COUNT:1}" />
+                <!-- see https://docs.jboss.org/author/display/ISPN50/What%20is%20the%20difference%20between%20a%20replicated%20cache%20and%20a%20distributed%20cache_.html -->
+                <!-- see https://lists.jboss.org/pipermail/keycloak-user/2018-September/015577.html -->
+                <replicated-cache name="sessions" />
+                <replicated-cache name="authenticationSessions" />
+                <replicated-cache name="offlineSessions" />
+                <replicated-cache name="clientSessions" />
+                <replicated-cache name="offlineClientSessions" />
+                <replicated-cache name="loginFailures" />
                 <local-cache name="authorization">
                     <heap-memory size="10000" />
                 </local-cache>
@@ -637,6 +639,15 @@
                 <cacheTemplates>true</cacheTemplates>
                 <dir>${jboss.home.dir}/themes</dir>
             </theme>
+            <spi name="eventsListener">
+                <default-provider>jboss-logging</default-provider>
+                <provider name="jboss-logging" enabled="true">
+                    <properties>
+                        <property name="success-level" value="info" />
+                        <property name="error-level" value="warn" />
+                    </properties>
+                </provider>
+            </spi>
             <spi name="eventsStore">
                 <provider name="jpa" enabled="true">
                     <properties>
@@ -661,7 +672,8 @@
                     <properties>
                         <property name="dataSource" value="java:jboss/datasources/KeycloakDS" />
                         <property name="initializeEmpty" value="true" />
-                        <property name="migrationStrategy" value="update" />
+                        <!-- see https://www.keycloak.org/docs/latest/upgrading/#_migrate_db -->
+                        <property name="migrationStrategy" value="manual" />
                         <property name="migrationExport" value="${jboss.home.dir}/keycloak-database-update.sql" />
                     </properties>
                 </provider>
