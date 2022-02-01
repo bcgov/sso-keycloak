@@ -1,0 +1,31 @@
+replicaCount: 3
+
+image:
+  repository: gcr.io/ggl-cas-storage/cas-postgres
+  pullPolicy: Always
+  tag: "0.2.1"
+
+project: sso-keycloak
+nameOverride: sso-patroni
+fullnameOverride: sso-patroni
+
+auth:
+  existingSecret: sso-patroni
+
+env:
+  ALLOW_NOSSL: "true"
+
+resources: {}
+persistentVolume:
+  storageClass: netapp-block-standard
+  size: 30Gi
+
+# As per https://patroni.readthedocs.io/en/latest/kubernetes.html#use-configmaps
+# "in some cases, for instance, when running on OpenShift, there is no alternative to using ConfigMaps."
+kubernetes:
+  dcs:
+    enable: true
+  configmaps:
+    enable: true
+walE:
+  enable: false
