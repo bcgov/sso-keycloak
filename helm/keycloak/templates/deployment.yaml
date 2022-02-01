@@ -5,6 +5,11 @@ metadata:
   labels: {{ include "sso-keycloak.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1 # how many pod we can add at a time
+      maxUnavailable: 0 # how many pod can be unavailable
   selector:
     matchLabels: {{ include "sso-keycloak.selectorLabels" . | nindent 6 }}
   template:
@@ -48,6 +53,7 @@ spec:
               port: 8080
             initialDelaySeconds: 300
             periodSeconds: 20
+            timeoutSeconds: 1
             successThreshold: 1
             failureThreshold: 5
           readinessProbe:
@@ -56,6 +62,7 @@ spec:
               port: 8080
             initialDelaySeconds: 200
             periodSeconds: 20
+            timeoutSeconds: 1
             successThreshold: 1
             failureThreshold: 5
           ports:

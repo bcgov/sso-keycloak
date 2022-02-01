@@ -1,7 +1,7 @@
 SHELL := /usr/bin/env bash
 
 NAME=app
-NAMESPACE=3d5c3f-dev
+NAMESPACE=xxxxxx-dev
 
 .PHONY: dep
 dep:
