@@ -1,5 +1,5 @@
 SHELL := /usr/bin/env bash
-NAMESPACE="3d5c3f-dev"
+NAMESPACE=""
 
 .PHONY: install
 install:
