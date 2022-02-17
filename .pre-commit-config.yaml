@@ -18,14 +18,14 @@ repos:
       - id: prettier
         name: Format js files with prettier
         files: "scripts/.*$"
-  - repo: local
-    hooks:
-      - id: java-formatter
-        name: Format java codes
-        entry: docker/keycloak/format.sh
-        language: script
-        types: [python]
-        pass_filenames: false
+  # - repo: local
+  #   hooks:
+  #     - id: java-formatter
+  #       name: Format java codes
+  #       entry: docker/keycloak/format.sh
+  #       language: script
+  #       types: [python]
+  #       pass_filenames: false
   - repo: git://github.com/antonbabenko/pre-commit-terraform
     rev: v1.50.0
     hooks:
