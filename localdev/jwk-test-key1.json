@@ -1,0 +1,12 @@
+{
+  "keys": [
+    {
+      "kty": "RSA",
+      "kid": "jwk-test-key1",
+      "use": "enc",
+      "alg": "RSA-OAEP",
+      "e": "AQAB",
+      "n": "urDvfKsFXEyirdoukVC6grbwNwSFHoJ0JReQsi-tdE9sF-JjmeHe5FblyoIhONBIzBocF50CBYihqSvqibtkmxsXsltqPc0LDwUh-qyi36ak9npWu2PBberaBiIb1J60DdtS9GmOESfX3B7F7hBy7jxz58SUHKsZK_H4yReSShyWBlHoNo9Y7jFW079WqwAx1qv0YEHlrZRNeItLq2lzTGr2n3DgIpD2Zu4ZHsdRmkwVs5HXxVy1mWuo06bMWw5dGpQjxrlRKS1GJM8nR5vONk12EGOn0cs_5NtEiR0v-DjqqqUjQaAQhmJUIMDjtcbLU5L1qwjQEeyaEfcdDh9Pcw"
+    }
+  ]
+}
