@@ -4,6 +4,8 @@
 
 This documentation follows the [Sysdig developer documentation](https://docs.sysdig.com/en/docs/developer-tools/)
 
+The python scripts are pulled from the sysdig [Github Repo](https://github.com/sysdiglabs/sysdig-sdk-python/tree/master/examples).
+
 ### Create a virtual env for the python packages (optional but recomended)
 
 To create a venv run the command:
@@ -37,7 +39,7 @@ python download_dashboards.py API_TOKEN SAVED_DASHBOARDS.ZIP
 
 ### Extract the zipped dashboards
 
-The download script pulls down a zipped folder of dashboards on the user's account.  To edit them manually they must be unzipped. 
+The download script pulls down a zipped folder of dashboards on the user's account.  To edit them manually they must be unzipped.
 
 ### Delete the extra dashboards
 
@@ -65,4 +67,4 @@ python restore_dashboards.py API_TOKEN SAVED_DASHBOARDS.zip
 
 ### Clean up
 
-This will recreate all dashboards in the web client.  These are owned by the user that ran the scripts. These will need to be shared with the teams `6d70e7-team` or `6d70e7-team-persistent-storage`. 
+This will recreate all dashboards in the web client.  These are owned by the user that ran the scripts. These will need to be shared with the teams `6d70e7-team` or `6d70e7-team-persistent-storage`.
