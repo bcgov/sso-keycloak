@@ -10,7 +10,7 @@ The python scripts are pulled from the sysdig [Github Repo](https://github.com/s
 
 To create a venv run the command:
 
-`python -m venv env`
+`python3 -m venv env`
 
 and activate it (in mac or linux) using:
 
