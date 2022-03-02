@@ -1,1 +1,2 @@
 sdcclient
+python-dotenv
