@@ -9,11 +9,12 @@
                 "useNewTemplate": true
             },
             "customerId": 23935,
+            "description": "A new promQL Alert 2",
             "enabled": false,
             "groupName": "default",
             "id": 4613716,
             "invalidMetrics": [],
-            "modifiedOn": 1635982563000,
+            "modifiedOn": 1646282120874,
             "name": "New PromQL Alert",
             "notificationCount": 0,
             "rateOfChange": false,
@@ -25,7 +26,7 @@
             "timespan": 60000000,
             "type": "PROMETHEUS",
             "valid": true,
-            "version": 3
+            "version": 6
         },
         {
             "autoCreated": false,
@@ -40,8 +41,8 @@
             "groupName": "active",
             "id": 5051431,
             "invalidMetrics": [],
-            "lastCheckTimeInMs": 1646244780000,
-            "modifiedOn": 1635982875518,
+            "lastCheckTimeInMs": 1646283180000,
+            "modifiedOn": 1646282121242,
             "name": "SANDBOX - Backup DB PVC over 60%",
             "notificationCount": 0,
             "rateOfChange": false,
@@ -53,7 +54,7 @@
             "timespan": 600000000,
             "type": "PROMETHEUS",
             "valid": true,
-            "version": 4
+            "version": 7
         },
         {
             "autoCreated": false,
@@ -68,8 +69,8 @@
             "groupName": "active",
             "id": 5051432,
             "invalidMetrics": [],
-            "lastCheckTimeInMs": 1646244720000,
-            "modifiedOn": 1635982926365,
+            "lastCheckTimeInMs": 1646283180000,
+            "modifiedOn": 1646282121691,
             "name": "SANDBOX - Postgres PVCs over 60%",
             "notificationCount": 0,
             "rateOfChange": false,
@@ -81,7 +82,7 @@
             "timespan": 600000000,
             "type": "PROMETHEUS",
             "valid": true,
-            "version": 6
+            "version": 9
         },
         {
             "autoCreated": false,
@@ -96,8 +97,8 @@
             "groupName": "active",
             "id": 5051435,
             "invalidMetrics": [],
-            "lastCheckTimeInMs": 1646244720000,
-            "modifiedOn": 1635983189192,
+            "lastCheckTimeInMs": 1646283180000,
+            "modifiedOn": 1646282122174,
             "name": "Patroni - PVCs > 80%",
             "notificationCount": 0,
             "rateOfChange": false,
@@ -109,7 +110,7 @@
             "timespan": 600000000,
             "type": "PROMETHEUS",
             "valid": true,
-            "version": 2
+            "version": 5
         }
     ]
 }
