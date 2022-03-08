@@ -18,17 +18,13 @@ spec:
     spec:
       initContainers:
         - name: initdb
-          image: postgres:11.6-alpine
+          image: postgres:14.2-alpine
           command: ["bash", "-c"]
           args:
             - |
               echo starting;
               set -euo pipefail;
               echo "select 'create database $PGDATABASE_NAME' where NOT exists (select from pg_database where datname = '$PGDATABASE_NAME')\gexec" | psql -d postgres
-              psql -d $PGDATABASE_NAME -qtA --set ON_ERROR_STOP=1 << 'EOF'
-              {{ .Files.Get "migration.sql" | nindent 20 -}}
-              ;
-              EOF
           env:
             - name: PGHOST
               value: {{ .Values.postgres.host }}
