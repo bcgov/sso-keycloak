@@ -18,6 +18,7 @@ spec:
   selector:
     app: {{ template "patroni.fullname" . }}
     release: {{ .Release.Name }}
+    project: {{ template "patroni.project" . }}
     spilo-role: master
 ---
 apiVersion: v1
@@ -40,4 +41,5 @@ spec:
   selector:
     app: {{ template "patroni.fullname" . }}
     release: {{ .Release.Name }}
+    project: {{ template "patroni.project" . }}
     spilo-role: replica
