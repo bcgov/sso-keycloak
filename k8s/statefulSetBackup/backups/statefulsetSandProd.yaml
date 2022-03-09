@@ -1,0 +1,452 @@
+apiVersion: v1
+items:
+- apiVersion: apps/v1
+  kind: StatefulSet
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"StatefulSet","metadata":{"annotations":{},"generation":80,"labels":{"app":"sso-prod","app-name":"sso","app.kubernetes.io/component":"database","app.kubernetes.io/instance":"sso-pgsql-prod","app.kubernetes.io/managed-by":"template","app.kubernetes.io/name":"patroni","app.kubernetes.io/version":"10","cluster-name":"sso-pgsql-prod","env-name":"sbox","github-owner":"bcgov","github-repo":"ocp-sso","phase":"deploy","template-hash":"753600e39ebc4d7a669b53290f514ca9ebea7bde"},"managedFields":[{"apiVersion":"apps/v1","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:kubectl.kubernetes.io/last-applied-configuration":{}},"f:labels":{".":{},"f:app":{},"f:app-name":{},"f:app.kubernetes.io/component":{},"f:app.kubernetes.io/instance":{},"f:app.kubernetes.io/managed-by":{},"f:app.kubernetes.io/name":{},"f:app.kubernetes.io/version":{},"f:cluster-name":{},"f:env-name":{},"f:github-owner":{},"f:github-repo":{},"f:phase":{},"f:template-hash":{}}},"f:spec":{"f:podManagementPolicy":{},"f:replicas":{},"f:revisionHistoryLimit":{},"f:selector":{},"f:serviceName":{},"f:template":{"f:metadata":{"f:labels":{".":{},"f:app":{},"f:app-name":{},"f:app.kubernetes.io/name":{},"f:cluster-name":{},"f:env-name":{},"f:github-owner":{},"f:github-repo":{},"f:statefulset":{}}},"f:spec":{"f:containers":{"k:{\"name\":\"postgresql\"}":{".":{},"f:env":{".":{},"k:{\"name\":\"APP_DATABASE\"}":{".":{},"f:name":{},"f:valueFrom":{".":{},"f:secretKeyRef":{".":{},"f:key":{},"f:name":{}}}},"k:{\"name\":\"APP_PASSWORD\"}":{".":{},"f:name":{},"f:valueFrom":{".":{},"f:secretKeyRef":{".":{},"f:key":{},"f:name":{}}}},"k:{\"name\":\"APP_USER\"}":{".":{},"f:name":{},"f:valueFrom":{".":{},"f:secretKeyRef":{".":{},"f:key":{},"f:name":{}}}},"k:{\"name\":\"PATRONI_KUBERNETES_LABELS\"}":{".":{},"f:name":{},"f:value":{}},"k:{\"name\":\"PATRONI_KUBERNETES_NAMESPACE\"}":{".":{},"f:name":{},"f:valueFrom":{".":{},"f:fieldRef":{".":{},"f:apiVersion":{},"f:fieldPath":{}}}},"k:{\"name\":\"PATRONI_LOG_LEVEL\"}":{".":{},"f:name":{},"f:value":{}},"k:{\"name\":\"PATRONI_NAME\"}":{".":{},"f:name":{},"f:valueFrom":{".":{},"f:fieldRef":{".":{},"f:apiVersion":{},"f:fieldPath":{}}}},"k:{\"name\":\"PATRONI_POSTGRESQL_DATA_DIR\"}":{".":{},"f:name":{},"f:value":{}},"k:{\"name\":\"PATRONI_POSTGRESQL_LISTEN\"}":{".":{},"f:name":{},"f:value":{}},"k:{\"name\":\"PATRONI_POSTGRESQL_PGPASS\"}":{".":{},"f:name":{},"f:value":{}},"k:{\"name\":\"PATRONI_REPLICATION_PASSWORD\"}":{".":{},"f:name":{},"f:valueFrom":{".":{},"f:secretKeyRef":{".":{},"f:key":{},"f:name":{}}}},"k:{\"name\":\"PATRONI_REPLICATION_USERNAME\"}":{".":{},"f:name":{},"f:valueFrom":{".":{},"f:secretKeyRef":{".":{},"f:key":{},"f:name":{}}}},"k:{\"name\":\"PATRONI_RESTAPI_LISTEN\"}":{".":{},"f:name":{},"f:value":{}},"k:{\"name\":\"PATRONI_SCOPE\"}":{".":{},"f:name":{},"f:value":{}},"k:{\"name\":\"PATRONI_SUPERUSER_PASSWORD\"}":{".":{},"f:name":{},"f:valueFrom":{".":{},"f:secretKeyRef":{".":{},"f:key":{},"f:name":{}}}},"k:{\"name\":\"PATRONI_SUPERUSER_USERNAME\"}":{".":{},"f:name":{},"f:valueFrom":{".":{},"f:secretKeyRef":{".":{},"f:key":{},"f:name":{}}}},"k:{\"name\":\"POD_IP\"}":{".":{},"f:name":{},"f:valueFrom":{".":{},"f:fieldRef":{".":{},"f:apiVersion":{},"f:fieldPath":{}}}},"k:{\"name\":\"POSTGRESQL_MAX_CONNECTIONS\"}":{".":{},"f:name":{},"f:value":{}},"k:{\"name\":\"POSTGRESQL_MAX_PREPARED_TRANSACTIONS\"}":{".":{},"f:name":{},"f:value":{}}},"f:imagePullPolicy":{},"f:name":{},"f:ports":{".":{},"k:{\"containerPort\":5432,\"protocol\":\"TCP\"}":{".":{},"f:containerPort":{},"f:protocol":{}},"k:{\"containerPort\":8008,\"protocol\":\"TCP\"}":{".":{},"f:containerPort":{},"f:protocol":{}}},"f:readinessProbe":{".":{},"f:exec":{".":{},"f:command":{}},"f:failureThreshold":{},"f:initialDelaySeconds":{},"f:periodSeconds":{},"f:successThreshold":{},"f:timeoutSeconds":{}},"f:resources":{".":{},"f:limits":{".":{},"f:cpu":{},"f:memory":{}},"f:requests":{".":{},"f:cpu":{},"f:memory":{}}},"f:terminationMessagePath":{},"f:terminationMessagePolicy":{},"f:volumeMounts":{".":{},"k:{\"mountPath\":\"/home/postgres/pgdata\"}":{".":{},"f:mountPath":{},"f:name":{}}}}},"f:dnsPolicy":{},"f:restartPolicy":{},"f:schedulerName":{},"f:securityContext":{},"f:serviceAccount":{},"f:serviceAccountName":{},"f:terminationGracePeriodSeconds":{},"f:volumes":{".":{},"k:{\"name\":\"postgresql\"}":{".":{},"f:name":{},"f:persistentVolumeClaim":{".":{},"f:claimName":{}}}}}},"f:updateStrategy":{"f:type":{}},"f:volumeClaimTemplates":{}}},"manager":"oc","operation":"Update","time":"2021-06-30T18:49:21Z"},{"apiVersion":"apps/v1","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{"f:template":{"f:spec":{"f:containers":{"k:{\"name\":\"postgresql\"}":{"f:image":{}}}}}}},"manager":"Mozilla","operation":"Update","time":"2022-02-24T23:09:06Z"},{"apiVersion":"apps/v1","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:collisionCount":{},"f:currentReplicas":{},"f:currentRevision":{},"f:observedGeneration":{},"f:readyReplicas":{},"f:replicas":{},"f:updateRevision":{},"f:updatedReplicas":{}}},"manager":"kube-controller-manager","operation":"Update","time":"2022-02-25T19:49:32Z"}],"name":"sso-pgsql-prod","namespace":"3d5c3f-prod"},"spec":{"podManagementPolicy":"OrderedReady","replicas":3,"revisionHistoryLimit":10,"selector":{"matchLabels":{"statefulset":"sso-pgsql-prod"}},"serviceName":"sso-pgsql-prod","template":{"metadata":{"labels":{"app":"sso-prod","app-name":"sso","app.kubernetes.io/name":"patroni","cluster-name":"sso-pgsql-prod","env-name":"sbox","github-owner":"bcgov","github-repo":"ocp-sso","statefulset":"sso-pgsql-prod"}},"spec":{"affinity":{"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":[{"labelSelector":{"matchExpressions":[{"key":"statefulset","operator":"In","values":["sso-pgsql-prod"]}]},"topologyKey":"kubernetes.io/hostname"}]}},"containers":[{"env":[{"name":"POD_IP","valueFrom":{"fieldRef":{"apiVersion":"v1","fieldPath":"status.podIP"}}},{"name":"PATRONI_KUBERNETES_NAMESPACE","valueFrom":{"fieldRef":{"apiVersion":"v1","fieldPath":"metadata.namespace"}}},{"name":"PATRONI_KUBERNETES_LABELS","value":"{\"cluster-name\": \"sso-pgsql-prod\", \"app.kubernetes.io/name\": \"patroni\"}"},{"name":"PATRONI_SUPERUSER_USERNAME","valueFrom":{"secretKeyRef":{"key":"superuser-username","name":"sso-pgsql-prod"}}},{"name":"PATRONI_SUPERUSER_PASSWORD","valueFrom":{"secretKeyRef":{"key":"superuser-password","name":"sso-pgsql-prod"}}},{"name":"PATRONI_REPLICATION_USERNAME","valueFrom":{"secretKeyRef":{"key":"replication-username","name":"sso-pgsql-prod"}}},{"name":"PATRONI_REPLICATION_PASSWORD","valueFrom":{"secretKeyRef":{"key":"replication-password","name":"sso-pgsql-prod"}}},{"name":"APP_USER","valueFrom":{"secretKeyRef":{"key":"app-db-username","name":"sso-pgsql-prod"}}},{"name":"APP_PASSWORD","valueFrom":{"secretKeyRef":{"key":"app-db-password","name":"sso-pgsql-prod"}}},{"name":"APP_DATABASE","valueFrom":{"secretKeyRef":{"key":"app-db-name","name":"sso-pgsql-prod"}}},{"name":"PATRONI_SCOPE","value":"sso-pgsql-prod"},{"name":"POSTGRESQL_MAX_CONNECTIONS","value":"500"},{"name":"POSTGRESQL_MAX_PREPARED_TRANSACTIONS","value":"500"},{"name":"PATRONI_NAME","valueFrom":{"fieldRef":{"apiVersion":"v1","fieldPath":"metadata.name"}}},{"name":"PATRONI_LOG_LEVEL","value":"WARNING"},{"name":"PATRONI_POSTGRESQL_DATA_DIR","value":"/home/postgres/pgdata/pgroot/data"},{"name":"PATRONI_POSTGRESQL_PGPASS","value":"/tmp/pgpass"},{"name":"PATRONI_POSTGRESQL_LISTEN","value":"0.0.0.0:5432"},{"name":"PATRONI_RESTAPI_LISTEN","value":"0.0.0.0:8008"}],"image":"image-registry.openshift-image-registry.svc:5000/3d5c3f-prod/patroni-postgres-container:latest","imagePullPolicy":"Always","name":"postgresql","ports":[{"containerPort":8008,"protocol":"TCP"},{"containerPort":5432,"protocol":"TCP"}],"readinessProbe":{"exec":{"command":["/usr/share/scripts/patroni/health_check.sh"]},"failureThreshold":4,"initialDelaySeconds":5,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":5},"resources":{"limits":{"cpu":"750m","memory":"2Gi"},"requests":{"cpu":"500m","memory":"1Gi"}},"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","volumeMounts":[{"mountPath":"/home/postgres/pgdata","name":"postgresql"}]}],"dnsPolicy":"ClusterFirst","restartPolicy":"Always","schedulerName":"default-scheduler","securityContext":{},"serviceAccount":"sso-pgsql-prod","serviceAccountName":"sso-pgsql-prod","terminationGracePeriodSeconds":0,"volumes":[{"name":"postgresql","persistentVolumeClaim":{"claimName":"postgresql"}}]}},"updateStrategy":{"type":"RollingUpdate"},"volumeClaimTemplates":[{"apiVersion":"v1","kind":"PersistentVolumeClaim","metadata":{"annotations":{"volume.beta.kubernetes.io/storage-class":"netapp-block-standard"},"labels":{"statefulset":"sso-pgsql-prod"},"name":"postgresql"},"spec":{"accessModes":["ReadWriteOnce"],"resources":{"requests":{"storage":"5Gi"}},"storageClassName":"netapp-block-standard","volumeMode":"Filesystem"},"status":{"phase":"Pending"}}]},"status":{"collisionCount":0,"currentReplicas":3,"currentRevision":"sso-pgsql-prod-74598f47d6","observedGeneration":80,"readyReplicas":3,"replicas":3,"updateRevision":"sso-pgsql-prod-74598f47d6","updatedReplicas":3}}
+    generation: 81
+    labels:
+      app: sso-prod
+      app-name: sso
+      app.kubernetes.io/component: database
+      app.kubernetes.io/instance: sso-pgsql-prod
+      app.kubernetes.io/managed-by: template
+      app.kubernetes.io/name: patroni
+      app.kubernetes.io/version: "10"
+      cluster-name: sso-pgsql-prod
+      env-name: sbox
+      github-owner: bcgov
+      github-repo: ocp-sso
+      phase: deploy
+      template-hash: 753600e39ebc4d7a669b53290f514ca9ebea7bde
+    managedFields:
+    - apiVersion: apps/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:spec:
+          f:template:
+            f:spec:
+              f:containers:
+                k:{"name":"postgresql"}:
+                  f:image: {}
+      manager: Mozilla
+      operation: Update
+      time: "2022-02-24T23:09:06Z"
+    - apiVersion: apps/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:kubectl.kubernetes.io/last-applied-configuration: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:app-name: {}
+            f:app.kubernetes.io/component: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/name: {}
+            f:app.kubernetes.io/version: {}
+            f:cluster-name: {}
+            f:env-name: {}
+            f:github-owner: {}
+            f:github-repo: {}
+            f:phase: {}
+            f:template-hash: {}
+        f:spec:
+          f:podManagementPolicy: {}
+          f:replicas: {}
+          f:revisionHistoryLimit: {}
+          f:selector: {}
+          f:serviceName: {}
+          f:template:
+            f:metadata:
+              f:labels:
+                .: {}
+                f:app: {}
+                f:app-name: {}
+                f:app.kubernetes.io/name: {}
+                f:cluster-name: {}
+                f:env-name: {}
+                f:github-owner: {}
+                f:github-repo: {}
+                f:statefulset: {}
+            f:spec:
+              f:affinity:
+                .: {}
+                f:podAntiAffinity:
+                  .: {}
+                  f:requiredDuringSchedulingIgnoredDuringExecution: {}
+              f:containers:
+                k:{"name":"postgresql"}:
+                  .: {}
+                  f:env:
+                    .: {}
+                    k:{"name":"APP_DATABASE"}:
+                      .: {}
+                      f:name: {}
+                      f:valueFrom:
+                        .: {}
+                        f:secretKeyRef:
+                          .: {}
+                          f:key: {}
+                          f:name: {}
+                    k:{"name":"APP_PASSWORD"}:
+                      .: {}
+                      f:name: {}
+                      f:valueFrom:
+                        .: {}
+                        f:secretKeyRef:
+                          .: {}
+                          f:key: {}
+                          f:name: {}
+                    k:{"name":"APP_USER"}:
+                      .: {}
+                      f:name: {}
+                      f:valueFrom:
+                        .: {}
+                        f:secretKeyRef:
+                          .: {}
+                          f:key: {}
+                          f:name: {}
+                    k:{"name":"PATRONI_KUBERNETES_LABELS"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"PATRONI_KUBERNETES_NAMESPACE"}:
+                      .: {}
+                      f:name: {}
+                      f:valueFrom:
+                        .: {}
+                        f:fieldRef:
+                          .: {}
+                          f:apiVersion: {}
+                          f:fieldPath: {}
+                    k:{"name":"PATRONI_LOG_LEVEL"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"PATRONI_NAME"}:
+                      .: {}
+                      f:name: {}
+                      f:valueFrom:
+                        .: {}
+                        f:fieldRef:
+                          .: {}
+                          f:apiVersion: {}
+                          f:fieldPath: {}
+                    k:{"name":"PATRONI_POSTGRESQL_DATA_DIR"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"PATRONI_POSTGRESQL_LISTEN"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"PATRONI_POSTGRESQL_PGPASS"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"PATRONI_REPLICATION_PASSWORD"}:
+                      .: {}
+                      f:name: {}
+                      f:valueFrom:
+                        .: {}
+                        f:secretKeyRef:
+                          .: {}
+                          f:key: {}
+                          f:name: {}
+                    k:{"name":"PATRONI_REPLICATION_USERNAME"}:
+                      .: {}
+                      f:name: {}
+                      f:valueFrom:
+                        .: {}
+                        f:secretKeyRef:
+                          .: {}
+                          f:key: {}
+                          f:name: {}
+                    k:{"name":"PATRONI_RESTAPI_LISTEN"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"PATRONI_SCOPE"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"PATRONI_SUPERUSER_PASSWORD"}:
+                      .: {}
+                      f:name: {}
+                      f:valueFrom:
+                        .: {}
+                        f:secretKeyRef:
+                          .: {}
+                          f:key: {}
+                          f:name: {}
+                    k:{"name":"PATRONI_SUPERUSER_USERNAME"}:
+                      .: {}
+                      f:name: {}
+                      f:valueFrom:
+                        .: {}
+                        f:secretKeyRef:
+                          .: {}
+                          f:key: {}
+                          f:name: {}
+                    k:{"name":"POD_IP"}:
+                      .: {}
+                      f:name: {}
+                      f:valueFrom:
+                        .: {}
+                        f:fieldRef:
+                          .: {}
+                          f:apiVersion: {}
+                          f:fieldPath: {}
+                    k:{"name":"POSTGRESQL_MAX_CONNECTIONS"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"POSTGRESQL_MAX_PREPARED_TRANSACTIONS"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                  f:imagePullPolicy: {}
+                  f:name: {}
+                  f:ports:
+                    .: {}
+                    k:{"containerPort":5432,"protocol":"TCP"}:
+                      .: {}
+                      f:containerPort: {}
+                      f:protocol: {}
+                    k:{"containerPort":8008,"protocol":"TCP"}:
+                      .: {}
+                      f:containerPort: {}
+                      f:protocol: {}
+                  f:readinessProbe:
+                    .: {}
+                    f:exec:
+                      .: {}
+                      f:command: {}
+                    f:failureThreshold: {}
+                    f:initialDelaySeconds: {}
+                    f:periodSeconds: {}
+                    f:successThreshold: {}
+                    f:timeoutSeconds: {}
+                  f:resources:
+                    .: {}
+                    f:limits:
+                      .: {}
+                      f:cpu: {}
+                      f:memory: {}
+                    f:requests:
+                      .: {}
+                      f:cpu: {}
+                      f:memory: {}
+                  f:terminationMessagePath: {}
+                  f:terminationMessagePolicy: {}
+                  f:volumeMounts:
+                    .: {}
+                    k:{"mountPath":"/home/postgres/pgdata"}:
+                      .: {}
+                      f:mountPath: {}
+                      f:name: {}
+              f:dnsPolicy: {}
+              f:restartPolicy: {}
+              f:schedulerName: {}
+              f:securityContext: {}
+              f:serviceAccount: {}
+              f:serviceAccountName: {}
+              f:terminationGracePeriodSeconds: {}
+              f:volumes:
+                .: {}
+                k:{"name":"postgresql"}:
+                  .: {}
+                  f:name: {}
+                  f:persistentVolumeClaim:
+                    .: {}
+                    f:claimName: {}
+          f:updateStrategy:
+            f:type: {}
+          f:volumeClaimTemplates: {}
+      manager: oc
+      operation: Update
+      time: "2022-03-08T22:47:17Z"
+    - apiVersion: apps/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:status:
+          f:collisionCount: {}
+          f:currentReplicas: {}
+          f:currentRevision: {}
+          f:observedGeneration: {}
+          f:readyReplicas: {}
+          f:replicas: {}
+          f:updateRevision: {}
+          f:updatedReplicas: {}
+      manager: kube-controller-manager
+      operation: Update
+      time: "2022-03-08T22:59:21Z"
+    name: sso-pgsql-prod
+    namespace: 3d5c3f-prod
+  spec:
+    podManagementPolicy: OrderedReady
+    replicas: 3
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        statefulset: sso-pgsql-prod
+    serviceName: sso-pgsql-prod
+    template:
+      metadata:
+        labels:
+          app: sso-prod
+          app-name: sso
+          app.kubernetes.io/name: patroni
+          cluster-name: sso-pgsql-prod
+          env-name: sbox
+          github-owner: bcgov
+          github-repo: ocp-sso
+          statefulset: sso-pgsql-prod
+      spec:
+        containers:
+        - env:
+          - name: POD_IP
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: status.podIP
+          - name: PATRONI_KUBERNETES_NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+          - name: PATRONI_KUBERNETES_LABELS
+            value: '{"cluster-name": "sso-pgsql-prod", "app.kubernetes.io/name": "patroni"}'
+          - name: PATRONI_SUPERUSER_USERNAME
+            valueFrom:
+              secretKeyRef:
+                key: superuser-username
+                name: sso-pgsql-prod
+          - name: PATRONI_SUPERUSER_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: superuser-password
+                name: sso-pgsql-prod
+          - name: PATRONI_REPLICATION_USERNAME
+            valueFrom:
+              secretKeyRef:
+                key: replication-username
+                name: sso-pgsql-prod
+          - name: PATRONI_REPLICATION_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: replication-password
+                name: sso-pgsql-prod
+          - name: APP_USER
+            valueFrom:
+              secretKeyRef:
+                key: app-db-username
+                name: sso-pgsql-prod
+          - name: APP_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: app-db-password
+                name: sso-pgsql-prod
+          - name: APP_DATABASE
+            valueFrom:
+              secretKeyRef:
+                key: app-db-name
+                name: sso-pgsql-prod
+          - name: PATRONI_SCOPE
+            value: sso-pgsql-prod
+          - name: POSTGRESQL_MAX_CONNECTIONS
+            value: "500"
+          - name: POSTGRESQL_MAX_PREPARED_TRANSACTIONS
+            value: "500"
+          - name: PATRONI_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.name
+          - name: PATRONI_LOG_LEVEL
+            value: WARNING
+          - name: PATRONI_POSTGRESQL_DATA_DIR
+            value: /home/postgres/pgdata/pgroot/data
+          - name: PATRONI_POSTGRESQL_PGPASS
+            value: /tmp/pgpass
+          - name: PATRONI_POSTGRESQL_LISTEN
+            value: 0.0.0.0:5432
+          - name: PATRONI_RESTAPI_LISTEN
+            value: 0.0.0.0:8008
+          image: image-registry.openshift-image-registry.svc:5000/3d5c3f-prod/patroni-postgres-container:latest
+          imagePullPolicy: Always
+          name: postgresql
+          ports:
+          - containerPort: 8008
+            protocol: TCP
+          - containerPort: 5432
+            protocol: TCP
+          readinessProbe:
+            exec:
+              command:
+              - /usr/share/scripts/patroni/health_check.sh
+            failureThreshold: 4
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+          resources:
+            limits:
+              cpu: 750m
+              memory: 2Gi
+            requests:
+              cpu: 500m
+              memory: 1Gi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /home/postgres/pgdata
+            name: postgresql
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: sso-pgsql-prod
+        serviceAccountName: sso-pgsql-prod
+        terminationGracePeriodSeconds: 0
+        volumes:
+        - name: postgresql
+          persistentVolumeClaim:
+            claimName: postgresql
+    updateStrategy:
+      type: RollingUpdate
+    volumeClaimTemplates:
+    - apiVersion: v1
+      kind: PersistentVolumeClaim
+      metadata:
+        annotations:
+          volume.beta.kubernetes.io/storage-class: netapp-block-standard
+        labels:
+          statefulset: sso-pgsql-prod
+        name: postgresql
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 5Gi
+        storageClassName: netapp-block-standard
+        volumeMode: Filesystem
+      status:
+        phase: Pending
+  status:
+    collisionCount: 0
+    currentReplicas: 3
+    currentRevision: sso-pgsql-prod-74cb4d68bb
+    observedGeneration: 81
+    readyReplicas: 3
+    replicas: 3
+    updateRevision: sso-pgsql-prod-74cb4d68bb
+    updatedReplicas: 3
+kind: List
