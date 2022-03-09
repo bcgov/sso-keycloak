@@ -1,0 +1,363 @@
+apiVersion: v1
+items:
+- apiVersion: apps/v1
+  kind: StatefulSet
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: sso-patroni
+      meta.helm.sh/release-namespace: 3d5c3f-test
+    generation: 1
+    labels:
+      app: sso-patroni
+      app.kubernetes.io/managed-by: Helm
+      chart: patroni-0.17.8
+      heritage: Helm
+      project: sso-keycloak
+      release: sso-patroni
+    managedFields:
+    - apiVersion: apps/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:chart: {}
+            f:heritage: {}
+            f:project: {}
+            f:release: {}
+        f:spec:
+          f:podManagementPolicy: {}
+          f:replicas: {}
+          f:revisionHistoryLimit: {}
+          f:selector: {}
+          f:serviceName: {}
+          f:template:
+            f:metadata:
+              f:labels:
+                .: {}
+                f:app: {}
+                f:project: {}
+                f:release: {}
+              f:name: {}
+            f:spec:
+              f:affinity:
+                .: {}
+                f:podAntiAffinity:
+                  .: {}
+                  f:preferredDuringSchedulingIgnoredDuringExecution: {}
+              f:containers:
+                k:{"name":"patroni"}:
+                  .: {}
+                  f:env:
+                    .: {}
+                    k:{"name":"ALLOW_NOSSL"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"DCS_ENABLE_KUBERNETES_API"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"KUBERNETES_LABELS"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"KUBERNETES_SCOPE_LABEL"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"KUBERNETES_USE_CONFIGMAPS"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"PGPASSWORD_ADMIN"}:
+                      .: {}
+                      f:name: {}
+                      f:valueFrom:
+                        .: {}
+                        f:secretKeyRef:
+                          .: {}
+                          f:key: {}
+                          f:name: {}
+                    k:{"name":"PGPASSWORD_STANDBY"}:
+                      .: {}
+                      f:name: {}
+                      f:valueFrom:
+                        .: {}
+                        f:secretKeyRef:
+                          .: {}
+                          f:key: {}
+                          f:name: {}
+                    k:{"name":"PGPASSWORD_SUPERUSER"}:
+                      .: {}
+                      f:name: {}
+                      f:valueFrom:
+                        .: {}
+                        f:secretKeyRef:
+                          .: {}
+                          f:key: {}
+                          f:name: {}
+                    k:{"name":"PGROOT"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"PGUSER_ADMIN"}:
+                      .: {}
+                      f:name: {}
+                      f:valueFrom:
+                        .: {}
+                        f:secretKeyRef:
+                          .: {}
+                          f:key: {}
+                          f:name: {}
+                    k:{"name":"PGUSER_STANDBY"}:
+                      .: {}
+                      f:name: {}
+                      f:valueFrom:
+                        .: {}
+                        f:secretKeyRef:
+                          .: {}
+                          f:key: {}
+                          f:name: {}
+                    k:{"name":"PGUSER_SUPERUSER"}:
+                      .: {}
+                      f:name: {}
+                      f:valueFrom:
+                        .: {}
+                        f:secretKeyRef:
+                          .: {}
+                          f:key: {}
+                          f:name: {}
+                    k:{"name":"POD_NAMESPACE"}:
+                      .: {}
+                      f:name: {}
+                      f:valueFrom:
+                        .: {}
+                        f:fieldRef:
+                          .: {}
+                          f:apiVersion: {}
+                          f:fieldPath: {}
+                    k:{"name":"SCOPE"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"USE_WALE"}:
+                      .: {}
+                      f:name: {}
+                  f:image: {}
+                  f:imagePullPolicy: {}
+                  f:name: {}
+                  f:ports:
+                    .: {}
+                    k:{"containerPort":5432,"protocol":"TCP"}:
+                      .: {}
+                      f:containerPort: {}
+                      f:protocol: {}
+                    k:{"containerPort":8008,"protocol":"TCP"}:
+                      .: {}
+                      f:containerPort: {}
+                      f:protocol: {}
+                  f:resources: {}
+                  f:terminationMessagePath: {}
+                  f:terminationMessagePolicy: {}
+                  f:volumeMounts:
+                    .: {}
+                    k:{"mountPath":"/etc/patroni"}:
+                      .: {}
+                      f:mountPath: {}
+                      f:name: {}
+                      f:readOnly: {}
+                    k:{"mountPath":"/home/postgres/pgdata"}:
+                      .: {}
+                      f:mountPath: {}
+                      f:name: {}
+              f:dnsPolicy: {}
+              f:restartPolicy: {}
+              f:schedulerName: {}
+              f:securityContext: {}
+              f:serviceAccount: {}
+              f:serviceAccountName: {}
+              f:terminationGracePeriodSeconds: {}
+              f:volumes:
+                .: {}
+                k:{"name":"patroni-config"}:
+                  .: {}
+                  f:name: {}
+                  f:secret:
+                    .: {}
+                    f:defaultMode: {}
+                    f:secretName: {}
+          f:updateStrategy:
+            f:rollingUpdate:
+              .: {}
+              f:partition: {}
+            f:type: {}
+          f:volumeClaimTemplates: {}
+      manager: Go-http-client
+      operation: Update
+      time: "2022-02-25T21:43:07Z"
+    - apiVersion: apps/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:status:
+          f:collisionCount: {}
+          f:currentReplicas: {}
+          f:currentRevision: {}
+          f:observedGeneration: {}
+          f:readyReplicas: {}
+          f:replicas: {}
+          f:updateRevision: {}
+          f:updatedReplicas: {}
+      manager: kube-controller-manager
+      operation: Update
+      time: "2022-02-25T21:44:02Z"
+    name: sso-patroni
+    namespace: 3d5c3f-test
+  spec:
+    podManagementPolicy: OrderedReady
+    replicas: 3
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: sso-patroni
+        project: sso-keycloak
+        release: sso-patroni
+    serviceName: sso-patroni
+    template:
+      metadata:
+        labels:
+          app: sso-patroni
+          project: sso-keycloak
+          release: sso-patroni
+        name: sso-patroni
+      spec:
+        affinity:
+          podAntiAffinity:
+            preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app: sso-patroni
+                    release: sso-patroni
+                topologyKey: kubernetes.io/hostname
+              weight: 100
+        containers:
+        - env:
+          - name: PGUSER_SUPERUSER
+            valueFrom:
+              secretKeyRef:
+                key: username-superuser
+                name: sso-patroni
+          - name: PGUSER_ADMIN
+            valueFrom:
+              secretKeyRef:
+                key: username-admin
+                name: sso-patroni
+          - name: PGUSER_STANDBY
+            valueFrom:
+              secretKeyRef:
+                key: username-standby
+                name: sso-patroni
+          - name: PGPASSWORD_SUPERUSER
+            valueFrom:
+              secretKeyRef:
+                key: password-superuser
+                name: sso-patroni
+          - name: PGPASSWORD_ADMIN
+            valueFrom:
+              secretKeyRef:
+                key: password-admin
+                name: sso-patroni
+          - name: PGPASSWORD_STANDBY
+            valueFrom:
+              secretKeyRef:
+                key: password-standby
+                name: sso-patroni
+          - name: DCS_ENABLE_KUBERNETES_API
+            value: "true"
+          - name: KUBERNETES_LABELS
+            value: '{ "app": "sso-patroni", "release": "sso-patroni" }'
+          - name: KUBERNETES_SCOPE_LABEL
+            value: app
+          - name: KUBERNETES_USE_CONFIGMAPS
+            value: "true"
+          - name: SCOPE
+            value: sso-patroni
+          - name: USE_WALE
+          - name: PGROOT
+            value: /home/postgres/pgdata/pgroot
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+          - name: ALLOW_NOSSL
+            value: "true"
+          image: registry.opensource.zalan.do/acid/spilo-13:2.1-p1
+          imagePullPolicy: Always
+          name: patroni
+          ports:
+          - containerPort: 8008
+            protocol: TCP
+          - containerPort: 5432
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /home/postgres/pgdata
+            name: storage-volume
+          - mountPath: /etc/patroni
+            name: patroni-config
+            readOnly: true
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: sso-patroni
+        serviceAccountName: sso-patroni
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - name: patroni-config
+          secret:
+            defaultMode: 420
+            secretName: sso-patroni
+    updateStrategy:
+      rollingUpdate:
+        partition: 0
+      type: RollingUpdate
+    volumeClaimTemplates:
+    - apiVersion: v1
+      kind: PersistentVolumeClaim
+      metadata:
+        labels:
+          app: sso-patroni
+          heritage: Helm
+          release: sso-patroni
+        name: storage-volume
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 2Gi
+        storageClassName: netapp-block-standard
+        volumeMode: Filesystem
+      status:
+        phase: Pending
+  status:
+    collisionCount: 0
+    currentReplicas: 3
+    currentRevision: sso-patroni-b4c555469
+    observedGeneration: 1
+    readyReplicas: 3
+    replicas: 3
+    updateRevision: sso-patroni-b4c555469
+    updatedReplicas: 3
+kind: List
