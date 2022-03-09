@@ -5,7 +5,7 @@ This will allow us to backup and restore the statefulsets in the 6 silver namesp
 There are six silver namepaces with stateful sets that must be backed up manually:
 
  - 3d5c3f-dev - SandDev
- - 3d5c3f-test - SandTest
+ - ~~3d5c3f-test - SandTest~~ Sanbox test is deployed using helm charts
  - 3d5c3f-prod - SandProd
  - 6d70e7-dev - ProductionDev
  - 6d70e7-test - ProductionTest
