@@ -9,7 +9,7 @@ We require a minimum of 2 patroni pods up at all times.
 To add a pdb to a project run:
 
 ```
- oc process -f ./patroni-pdb.yaml -n <namespace> -p STATEFULSET=<stateful set label> | oc apply -f -
+ oc process -f ./patroni-pdb.yaml -p STATEFULSET=<stateful set label> | oc apply -f -
 ```
 
 The namespaces and stateful sets this will be applied to are:
