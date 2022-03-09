@@ -118,14 +118,39 @@ for backup_alert in backedup_alerts:
             break
     if not alert_exists_in_sysdig:
         print(f"Attempting to create alert.")
-        # ok, res = sdclient.create_alert(backup_alert)
+        backedup_alerts.pop('createdOn')
+        print(backedup_alerts)
+        # ok, res = sdclient.update_alert(backedup_alerts)
+        # # ok, res = sdclient.create_alert(backedup_alerts)
         # if not ok:
         #     print(res_update)
         #     sys.exit(1)
-        # print(f"The alert '{alert['name']}' was created.")
+        print(f"The alert '{backedup_alerts['name']}' was created.")
 
 
+        '''
+        Create a threshold-based alert.
 
+        Args:
+            name (str): the alert name. This will appear in the Sysdig Monitor UI and in notification emails
+            description (str): the alert description. This will appear in the Sysdig Monitor UI and in notification emails
+            severity (int): syslog-encoded alert severity. This is a number from 0 to 7 where 0 means 'emergency' and 7 is 'debug'
+            for_atleast_s (int): the number of consecutive seconds the condition must be satisfied for the alert to fire
+            condition (int): the alert condition, as described here https://app.sysdigcloud.com/apidocs/#!/Alerts/post_api_alerts
+            segmentby (List(str)): a list of Sysdig Monitor segmentation criteria that can be used to apply the alert to multiple entities. For example, segmenting a CPU alert by ``['host.mac', 'proc.name']`` allows to apply it to any process in any machine.
+            segment_condition (str): When :param:`segmentby` is specified (and therefore the alert will cover multiple entities) this field is used to determine when it will fire. In particular, you have two options for *segment_condition*: **ANY** (the alert will fire when at least one of the monitored entities satisfies the condition) and **ALL** (the alert will fire when all of the monitored entities satisfy the condition).
+            user_filter (str): a boolean expression combining Sysdig Monitor segmentation criteria that makes it possible to reduce the scope of the alert. For example: ``kubernetes.namespace.name='production' and container.image='nginx'``.
+            notify (str): the type of notification you want this alert to generate. Options are ``EMAIL``, ``SNS``, ``PAGER_DUTY``, ``SYSDIG_DUMP``
+            enabled (bool): if True, the alert will be enabled when created.
+            annotations (dict): an optional dictionary of custom properties that you can associate to this alert for automation or management reasons.
+            alert_obj (object): an optional fully-formed Alert object of the format returned in an "alerts" list by :func:`~SdcClient.get_alerts` This is an alternative to creating the Alert using the individual parameters listed above.
+            type (str): the type of the alert, ``MANUAL`` if the alert uses a normal query, ``PROMETHEUS``  if it's PromQL
+
+        Returns:
+            A tuple where the first parameter indicates if the call was successful,
+            and the second parameter holds either the error as string, or the
+            response object.
+        '''
 # Update
 # for alert in current_alerts:
 #     alert_in_backup= False

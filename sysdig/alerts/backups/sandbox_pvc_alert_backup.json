@@ -14,7 +14,7 @@
             "groupName": "default",
             "id": 4613716,
             "invalidMetrics": [],
-            "modifiedOn": 1646282120874,
+            "modifiedOn": 1646365513485,
             "name": "New PromQL Alert",
             "notificationCount": 0,
             "rateOfChange": false,
@@ -26,7 +26,7 @@
             "timespan": 60000000,
             "type": "PROMETHEUS",
             "valid": true,
-            "version": 6
+            "version": 11
         },
         {
             "autoCreated": false,
@@ -41,8 +41,8 @@
             "groupName": "active",
             "id": 5051431,
             "invalidMetrics": [],
-            "lastCheckTimeInMs": 1646283180000,
-            "modifiedOn": 1646282121242,
+            "lastCheckTimeInMs": 1646369100000,
+            "modifiedOn": 1646365513853,
             "name": "SANDBOX - Backup DB PVC over 60%",
             "notificationCount": 0,
             "rateOfChange": false,
@@ -54,7 +54,7 @@
             "timespan": 600000000,
             "type": "PROMETHEUS",
             "valid": true,
-            "version": 7
+            "version": 12
         },
         {
             "autoCreated": false,
@@ -69,8 +69,8 @@
             "groupName": "active",
             "id": 5051432,
             "invalidMetrics": [],
-            "lastCheckTimeInMs": 1646283180000,
-            "modifiedOn": 1646282121691,
+            "lastCheckTimeInMs": 1646369100000,
+            "modifiedOn": 1646365514158,
             "name": "SANDBOX - Postgres PVCs over 60%",
             "notificationCount": 0,
             "rateOfChange": false,
@@ -82,7 +82,7 @@
             "timespan": 600000000,
             "type": "PROMETHEUS",
             "valid": true,
-            "version": 9
+            "version": 14
         },
         {
             "autoCreated": false,
@@ -97,8 +97,8 @@
             "groupName": "active",
             "id": 5051435,
             "invalidMetrics": [],
-            "lastCheckTimeInMs": 1646283180000,
-            "modifiedOn": 1646282122174,
+            "lastCheckTimeInMs": 1646369100000,
+            "modifiedOn": 1646365514537,
             "name": "Patroni - PVCs > 80%",
             "notificationCount": 0,
             "rateOfChange": false,
@@ -110,7 +110,105 @@
             "timespan": 600000000,
             "type": "PROMETHEUS",
             "valid": true,
-            "version": 5
+            "version": 10
+        },
+        {
+            "autoCreated": false,
+            "createdOn": 1646369170603,
+            "customNotification": {
+                "titleTemplate": "{{__alert_name__}} is {{__alert_status__}}",
+                "useNewTemplate": true
+            },
+            "customerId": 23935,
+            "enabled": true,
+            "groupName": "default",
+            "id": 8137970,
+            "invalidMetrics": [],
+            "modifiedOn": 1646369170603,
+            "monitor": [
+                {
+                    "metric": "cpu.cores.used",
+                    "stdDevFactor": 2.0
+                },
+                {
+                    "metric": "cpu.cores.used.percent",
+                    "stdDevFactor": 2.0
+                },
+                {
+                    "metric": "cpu.stolen.percent",
+                    "stdDevFactor": 2.0
+                },
+                {
+                    "metric": "cpu.used.percent",
+                    "stdDevFactor": 2.0
+                },
+                {
+                    "metric": "file.bytes.total",
+                    "stdDevFactor": 2.0
+                },
+                {
+                    "metric": "fs.used.percent",
+                    "stdDevFactor": 2.0
+                },
+                {
+                    "metric": "memory.bytes.used",
+                    "stdDevFactor": 2.0
+                },
+                {
+                    "metric": "memory.swap.bytes.used",
+                    "stdDevFactor": 2.0
+                },
+                {
+                    "metric": "metricCount.appCheck",
+                    "stdDevFactor": 2.0
+                },
+                {
+                    "metric": "metricCount.jmx",
+                    "stdDevFactor": 2.0
+                },
+                {
+                    "metric": "metricCount.prometheus",
+                    "stdDevFactor": 2.0
+                },
+                {
+                    "metric": "metricCount.statsd",
+                    "stdDevFactor": 2.0
+                },
+                {
+                    "metric": "net.bytes.total",
+                    "stdDevFactor": 2.0
+                },
+                {
+                    "metric": "net.tcp.queue.len",
+                    "stdDevFactor": 2.0
+                },
+                {
+                    "metric": "syscall.count",
+                    "stdDevFactor": 2.0
+                },
+                {
+                    "metric": "thread.count",
+                    "stdDevFactor": 2.0
+                }
+            ],
+            "name": "Test alert 5",
+            "notificationCount": 0,
+            "rateOfChange": false,
+            "reNotify": false,
+            "reNotifyMinutes": 30,
+            "segmentBy": [
+                "container.id"
+            ],
+            "segmentCondition": {
+                "type": "ANY"
+            },
+            "severity": 4,
+            "severityLabel": "LOW",
+            "teamId": 36251,
+            "timespan": 600000000,
+            "type": "BASELINE",
+            "valid": true,
+            "version": 1
         }
     ]
 }
