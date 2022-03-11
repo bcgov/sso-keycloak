@@ -1,12 +1,3 @@
-#
-
-### Retrieve the sysdig API token
-
-This can be found in your sysdig `User Profile` in the online app.
-
-## Backup the dashboards
-
-### Download the the existing dashboards
 # Backup and restore the dashboards
 
 Dashboards are tied to the user that created them so a user leaving the project could cause the team to lose them. This process allows the team to backup and restore them.
