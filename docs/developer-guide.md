@@ -6,7 +6,7 @@ to keep the development process consistent and secure.
 ## Connecting to GitHub with SSH
 
 It is recommended to use an SSH key to interact with GitHub repositories over username & password plain authentication method.
-test 2
+
 - see https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent
 
 ## GPG key signing
