@@ -22,5 +22,7 @@ The backups are stored in the `backup` folder.
 ## Restore Alerts
 
 ```
-python scripts/update_alerts.py <TEAM>
+python scripts/restore_alerts.py <TEAM>
 ```
+
+Note, if you attempt to restore the alert twice an error  `status code 409` will get produced, blocking the script.  If this happens you may need to manually restore individual alerts.
