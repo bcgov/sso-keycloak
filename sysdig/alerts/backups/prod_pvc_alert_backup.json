@@ -1,0 +1,1473 @@
+{
+    "alerts": [
+        {
+            "autoCreated": true,
+            "condition": "avg(timeAvg(kubernetes.deployment.replicas.desired)) != avg(timeAvg(kubernetes.deployment.replicas.updated))",
+            "createdOn": 1614799299870,
+            "customNotification": {
+                "titleTemplate": "{{__alert_name__}} is {{__alert_status__}} on kubernetes.deployment.name = {{kubernetes.deployment.name}}",
+                "useNewTemplate": true
+            },
+            "customerId": 23935,
+            "description": "When updated pods is not equal to the desired pods, deployment may get stuck",
+            "enabled": false,
+            "groupName": "default",
+            "id": 2718443,
+            "invalidMetrics": [],
+            "modifiedOn": 1614799299870,
+            "name": "[Kubernetes] Deployment Stuck",
+            "notificationCount": 0,
+            "rateOfChange": false,
+            "reNotify": false,
+            "reNotifyMinutes": 30,
+            "segmentBy": [
+                "kubernetes.deployment.name"
+            ],
+            "segmentCondition": {
+                "type": "ANY"
+            },
+            "severity": 4,
+            "severityLabel": "LOW",
+            "teamId": 34493,
+            "timespan": 60000000,
+            "type": "MANUAL",
+            "valid": true,
+            "version": 1
+        },
+        {
+            "autoCreated": true,
+            "condition": "avg(avg(net.http.error.count)) > 10",
+            "createdOn": 1614799299872,
+            "customNotification": {
+                "titleTemplate": "{{__alert_name__}} is {{__alert_status__}} on host.hostName = {{host.hostName}}",
+                "useNewTemplate": true
+            },
+            "customerId": 23935,
+            "description": "HTTP error warning",
+            "enabled": false,
+            "groupName": "default",
+            "id": 2718444,
+            "invalidMetrics": [],
+            "modifiedOn": 1614799299872,
+            "name": "HTTP error warning",
+            "notificationCount": 0,
+            "rateOfChange": false,
+            "reNotify": false,
+            "reNotifyMinutes": 30,
+            "segmentBy": [
+                "host.hostName"
+            ],
+            "segmentCondition": {
+                "type": "ANY"
+            },
+            "severity": 4,
+            "severityLabel": "LOW",
+            "teamId": 34493,
+            "timespan": 300000000,
+            "type": "MANUAL",
+            "valid": true,
+            "version": 1
+        },
+        {
+            "autoCreated": true,
+            "condition": "rateOfChange(avg(avg(fs.used.percent))) > 20",
+            "createdOn": 1614799299874,
+            "customNotification": {
+                "titleTemplate": "{{__alert_name__}} is {{__alert_status__}} on host.hostName = {{host.hostName}} and fs.mountDir = {{fs.mountDir}}",
+                "useNewTemplate": true
+            },
+            "customerId": 23935,
+            "description": "Disk usage increased by more than 20% in the last day",
+            "enabled": false,
+            "groupName": "default",
+            "id": 2718445,
+            "invalidMetrics": [],
+            "modifiedOn": 1614799299874,
+            "name": "Rate of change of disk usage",
+            "notificationCount": 0,
+            "rateOfChange": true,
+            "reNotify": false,
+            "reNotifyMinutes": 30,
+            "segmentBy": [
+                "host.hostName",
+                "fs.mountDir"
+            ],
+            "segmentCondition": {
+                "type": "ANY"
+            },
+            "severity": 4,
+            "severityLabel": "LOW",
+            "teamId": 34493,
+            "timespan": 86400000000,
+            "type": "MANUAL",
+            "valid": true,
+            "version": 1
+        },
+        {
+            "autoCreated": true,
+            "condition": "avg(avg(fs.largest.used.percent)) > 80",
+            "createdOn": 1614799299875,
+            "customNotification": {
+                "titleTemplate": "{{__alert_name__}} is {{__alert_status__}} on host.mac = {{host.mac}}",
+                "useNewTemplate": true
+            },
+            "customerId": 23935,
+            "description": "Largest volume disk usage warning",
+            "enabled": false,
+            "groupName": "default",
+            "id": 2718446,
+            "invalidMetrics": [],
+            "modifiedOn": 1614799299875,
+            "name": "Largest volume disk usage warning",
+            "notificationCount": 0,
+            "rateOfChange": false,
+            "reNotify": false,
+            "reNotifyMinutes": 30,
+            "segmentBy": [
+                "host.mac"
+            ],
+            "segmentCondition": {
+                "type": "ANY"
+            },
+            "severity": 4,
+            "severityLabel": "LOW",
+            "teamId": 34493,
+            "timespan": 300000000,
+            "type": "MANUAL",
+            "valid": true,
+            "version": 1
+        },
+        {
+            "autoCreated": true,
+            "condition": "avg(avg(fs.inodes.used.percent)) > 80",
+            "createdOn": 1614799299877,
+            "customNotification": {
+                "titleTemplate": "{{__alert_name__}} is {{__alert_status__}} on host.mac = {{host.mac}}",
+                "useNewTemplate": true
+            },
+            "customerId": 23935,
+            "description": "Out of free inodes warning",
+            "enabled": false,
+            "groupName": "default",
+            "id": 2718447,
+            "invalidMetrics": [],
+            "modifiedOn": 1614799299877,
+            "name": "Out of free inodes warning",
+            "notificationCount": 0,
+            "rateOfChange": false,
+            "reNotify": false,
+            "reNotifyMinutes": 30,
+            "segmentBy": [
+                "host.mac"
+            ],
+            "segmentCondition": {
+                "type": "ANY"
+            },
+            "severity": 4,
+            "severityLabel": "LOW",
+            "teamId": 34493,
+            "timespan": 300000000,
+            "type": "MANUAL",
+            "valid": true,
+            "version": 1
+        },
+        {
+            "autoCreated": true,
+            "condition": "avg(avg(proc.count)) > 300",
+            "createdOn": 1614799299879,
+            "customNotification": {
+                "titleTemplate": "{{__alert_name__}} is {{__alert_status__}} on host.mac = {{host.mac}}",
+                "useNewTemplate": true
+            },
+            "customerId": 23935,
+            "description": "Too many processes warning",
+            "enabled": false,
+            "groupName": "default",
+            "id": 2718448,
+            "invalidMetrics": [],
+            "modifiedOn": 1614799299879,
+            "name": "Too many processes warning",
+            "notificationCount": 0,
+            "rateOfChange": false,
+            "reNotify": false,
+            "reNotifyMinutes": 30,
+            "segmentBy": [
+                "host.mac"
+            ],
+            "segmentCondition": {
+                "type": "ANY"
+            },
+            "severity": 4,
+            "severityLabel": "LOW",
+            "teamId": 34493,
+            "timespan": 300000000,
+            "type": "MANUAL",
+            "valid": true,
+            "version": 1
+        },
+        {
+            "autoCreated": true,
+            "condition": "count(customEvent)>0",
+            "createdOn": 1614799299881,
+            "criteria": {
+                "query": null,
+                "scope": null,
+                "severity": null,
+                "source": "kubernetes",
+                "text": "Readiness probe failed"
+            },
+            "customNotification": {
+                "titleTemplate": "{{__alert_name__}} is {{__alert_status__}} on kubernetes.pod.name = {{kubernetes.pod.name}}",
+                "useNewTemplate": true
+            },
+            "customerId": 23935,
+            "description": "A Kubernets pod failed when checking its readiness probe",
+            "enabled": false,
+            "groupName": "default",
+            "id": 2718449,
+            "invalidMetrics": [],
+            "modifiedOn": 1614799299881,
+            "name": "[Kubernetes] Readiness probe failed",
+            "notificationCount": 0,
+            "rateOfChange": false,
+            "reNotify": false,
+            "reNotifyMinutes": 30,
+            "segmentBy": [
+                "kubernetes.pod.name"
+            ],
+            "segmentCondition": {
+                "type": "ANY"
+            },
+            "severity": 4,
+            "severityLabel": "LOW",
+            "teamId": 34493,
+            "timespan": 60000000,
+            "type": "EVENT",
+            "valid": true,
+            "version": 1
+        },
+        {
+            "autoCreated": true,
+            "condition": "avg(avg(kubernetes.node.memoryPressure)) != 0",
+            "createdOn": 1614799299883,
+            "customNotification": {
+                "titleTemplate": "{{__alert_name__}} is {{__alert_status__}} on kubernetes.node.name = {{kubernetes.node.name}}",
+                "useNewTemplate": true
+            },
+            "customerId": 23935,
+            "enabled": false,
+            "groupName": "default",
+            "id": 2718450,
+            "invalidMetrics": [],
+            "modifiedOn": 1614799299883,
+            "name": "[Kubernetes] Node memory under pressure",
+            "notificationCount": 0,
+            "rateOfChange": false,
+            "reNotify": false,
+            "reNotifyMinutes": 30,
+            "segmentBy": [
+                "kubernetes.node.name"
+            ],
+            "segmentCondition": {
+                "type": "ANY"
+            },
+            "severity": 4,
+            "severityLabel": "LOW",
+            "teamId": 34493,
+            "timespan": 600000000,
+            "type": "MANUAL",
+            "valid": true,
+            "version": 1
+        },
+        {
+            "autoCreated": true,
+            "condition": "avg(avg(kubernetes.node.diskPressure)) != 0",
+            "createdOn": 1614799299885,
+            "customNotification": {
+                "titleTemplate": "{{__alert_name__}} is {{__alert_status__}} on kubernetes.node.name = {{kubernetes.node.name}}",
+                "useNewTemplate": true
+            },
+            "customerId": 23935,
+            "enabled": false,
+            "groupName": "default",
+            "id": 2718451,
+            "invalidMetrics": [],
+            "modifiedOn": 1614799299885,
+            "name": "[Kubernetes] Node under disk pressure",
+            "notificationCount": 0,
+            "rateOfChange": false,
+            "reNotify": false,
+            "reNotifyMinutes": 30,
+            "segmentBy": [
+                "kubernetes.node.name"
+            ],
+            "segmentCondition": {
+                "type": "ANY"
+            },
+            "severity": 4,
+            "severityLabel": "LOW",
+            "teamId": 34493,
+            "timespan": 600000000,
+            "type": "MANUAL",
+            "valid": true,
+            "version": 1
+        },
+        {
+            "autoCreated": true,
+            "condition": "avg(avg(kubernetes.node.ready)) < 0.5",
+            "createdOn": 1614799299888,
+            "customNotification": {
+                "titleTemplate": "{{__alert_name__}} is {{__alert_status__}} on kubernetes.node.name = {{kubernetes.node.name}} and kubernetes.cluster.name = {{kubernetes.cluster.name}}",
+                "useNewTemplate": true
+            },
+            "customerId": 23935,
+            "description": "Alert if any Kubernetes node is not ready",
+            "enabled": false,
+            "groupName": "default",
+            "id": 2718452,
+            "invalidMetrics": [],
+            "modifiedOn": 1614799299888,
+            "name": "[Kubernetes] Node Not Ready",
+            "notificationCount": 0,
+            "rateOfChange": false,
+            "reNotify": false,
+            "reNotifyMinutes": 30,
+            "segmentBy": [
+                "kubernetes.node.name",
+                "kubernetes.cluster.name"
+            ],
+            "segmentCondition": {
+                "type": "ANY"
+            },
+            "severity": 4,
+            "severityLabel": "LOW",
+            "teamId": 34493,
+            "timespan": 120000000,
+            "type": "MANUAL",
+            "valid": true,
+            "version": 1
+        },
+        {
+            "autoCreated": true,
+            "condition": "avg(avg(kubernetes.node.unschedulable)) > 0",
+            "createdOn": 1614799299890,
+            "customNotification": {
+                "titleTemplate": "{{__alert_name__}} is {{__alert_status__}} on kubernetes.node.name = {{kubernetes.node.name}}",
+                "useNewTemplate": true
+            },
+            "customerId": 23935,
+            "description": "Requestor is full",
+            "enabled": false,
+            "groupName": "default",
+            "id": 2718453,
+            "invalidMetrics": [],
+            "modifiedOn": 1614799299890,
+            "name": "[Kubernetes] Nodes unschedulable",
+            "notificationCount": 0,
+            "rateOfChange": false,
+            "reNotify": false,
+            "reNotifyMinutes": 30,
+            "segmentBy": [
+                "kubernetes.node.name"
+            ],
+            "segmentCondition": {
+                "type": "ANY"
+            },
+            "severity": 4,
+            "severityLabel": "LOW",
+            "teamId": 34493,
+            "timespan": 600000000,
+            "type": "MANUAL",
+            "valid": true,
+            "version": 1
+        },
+        {
+            "autoCreated": true,
+            "condition": "avg(avg(cpu.iowait.percent)) > 20",
+            "createdOn": 1614799299893,
+            "customNotification": {
+                "titleTemplate": "{{__alert_name__}} is {{__alert_status__}} on host.mac = {{host.mac}}",
+                "useNewTemplate": true
+            },
+            "customerId": 23935,
+            "description": "Disk I/O overload warning",
+            "enabled": false,
+            "groupName": "default",
+            "id": 2718454,
+            "invalidMetrics": [],
+            "modifiedOn": 1614799299893,
+            "name": "Disk I/O overload warning",
+            "notificationCount": 0,
+            "rateOfChange": false,
+            "reNotify": false,
+            "reNotifyMinutes": 30,
+            "segmentBy": [
+                "host.mac"
+            ],
+            "segmentCondition": {
+                "type": "ANY"
+            },
+            "severity": 4,
+            "severityLabel": "LOW",
+            "teamId": 34493,
+            "timespan": 300000000,
+            "type": "MANUAL",
+            "valid": true,
+            "version": 1
+        },
+        {
+            "autoCreated": true,
+            "condition": "avg(avg(cpu.used.percent)) >= 80",
+            "createdOn": 1614799299895,
+            "customNotification": {
+                "titleTemplate": "{{__alert_name__}} is {{__alert_status__}} on host.mac = {{host.mac}}",
+                "useNewTemplate": true
+            },
+            "customerId": 23935,
+            "description": "CPU usage warning",
+            "enabled": false,
+            "groupName": "default",
+            "id": 2718455,
+            "invalidMetrics": [],
+            "modifiedOn": 1614799299895,
+            "name": "CPU usage warning",
+            "notificationCount": 0,
+            "rateOfChange": false,
+            "reNotify": false,
+            "reNotifyMinutes": 30,
+            "segmentBy": [
+                "host.mac"
+            ],
+            "segmentCondition": {
+                "type": "ANY"
+            },
+            "severity": 4,
+            "severityLabel": "LOW",
+            "teamId": 34493,
+            "timespan": 600000000,
+            "type": "MANUAL",
+            "valid": true,
+            "version": 1
+        },
+        {
+            "autoCreated": true,
+            "condition": "avg(avg(memory.used.percent)) >= 90",
+            "createdOn": 1614799299897,
+            "customNotification": {
+                "titleTemplate": "{{__alert_name__}} is {{__alert_status__}} on host.mac = {{host.mac}}",
+                "useNewTemplate": true
+            },
+            "customerId": 23935,
+            "description": "Memory usage critical",
+            "enabled": false,
+            "groupName": "default",
+            "id": 2718456,
+            "invalidMetrics": [],
+            "modifiedOn": 1614799299897,
+            "name": "Memory usage critical",
+            "notificationCount": 0,
+            "rateOfChange": false,
+            "reNotify": false,
+            "reNotifyMinutes": 30,
+            "segmentBy": [
+                "host.mac"
+            ],
+            "segmentCondition": {
+                "type": "ANY"
+            },
+            "severity": 2,
+            "severityLabel": "MEDIUM",
+            "teamId": 34493,
+            "timespan": 600000000,
+            "type": "MANUAL",
+            "valid": true,
+            "version": 1
+        },
+        {
+            "autoCreated": true,
+            "condition": "avg(avg(fs.root.used.percent)) > 80",
+            "createdOn": 1614799299899,
+            "customNotification": {
+                "titleTemplate": "{{__alert_name__}} is {{__alert_status__}} on host.mac = {{host.mac}}",
+                "useNewTemplate": true
+            },
+            "customerId": 23935,
+            "description": "Root volume disk usage warning",
+            "enabled": false,
+            "groupName": "default",
+            "id": 2718457,
+            "invalidMetrics": [],
+            "modifiedOn": 1614799299899,
+            "name": "Root volume disk usage warning",
+            "notificationCount": 0,
+            "rateOfChange": false,
+            "reNotify": false,
+            "reNotifyMinutes": 30,
+            "segmentBy": [
+                "host.mac"
+            ],
+            "segmentCondition": {
+                "type": "ANY"
+            },
+            "severity": 4,
+            "severityLabel": "LOW",
+            "teamId": 34493,
+            "timespan": 300000000,
+            "type": "MANUAL",
+            "valid": true,
+            "version": 1
+        },
+        {
+            "autoCreated": true,
+            "condition": "avg(avg(fs.used.percent)) > 75",
+            "createdOn": 1614799299901,
+            "customNotification": {
+                "titleTemplate": "{{__alert_name__}} is {{__alert_status__}} on host.mac = {{host.mac}} and fs.mountDir = {{fs.mountDir}}",
+                "useNewTemplate": true
+            },
+            "customerId": 23935,
+            "description": "Filesystem device full warning",
+            "enabled": false,
+            "groupName": "default",
+            "id": 2718458,
+            "invalidMetrics": [],
+            "modifiedOn": 1614799299901,
+            "name": "Filesystem device full warning",
+            "notificationCount": 0,
+            "rateOfChange": false,
+            "reNotify": false,
+            "reNotifyMinutes": 30,
+            "segmentBy": [
+                "host.mac",
+                "fs.mountDir"
+            ],
+            "segmentCondition": {
+                "type": "ANY"
+            },
+            "severity": 4,
+            "severityLabel": "LOW",
+            "teamId": 34493,
+            "timespan": 300000000,
+            "type": "MANUAL",
+            "valid": true,
+            "version": 1
+        },
+        {
+            "autoCreated": true,
+            "condition": "avg(avg(net.error.count)) > 10",
+            "createdOn": 1614799299903,
+            "customNotification": {
+                "titleTemplate": "{{__alert_name__}} is {{__alert_status__}} on host.hostName = {{host.hostName}}",
+                "useNewTemplate": true
+            },
+            "customerId": 23935,
+            "description": "Network error warning",
+            "enabled": false,
+            "groupName": "default",
+            "id": 2718459,
+            "invalidMetrics": [],
+            "modifiedOn": 1614799299903,
+            "name": "Network error warning",
+            "notificationCount": 0,
+            "rateOfChange": false,
+            "reNotify": false,
+            "reNotifyMinutes": 30,
+            "segmentBy": [
+                "host.hostName"
+            ],
+            "segmentCondition": {
+                "type": "ANY"
+            },
+            "severity": 4,
+            "severityLabel": "LOW",
+            "teamId": 34493,
+            "timespan": 300000000,
+            "type": "MANUAL",
+            "valid": true,
+            "version": 1
+        },
+        {
+            "autoCreated": true,
+            "condition": "avg(avg(memory.used.percent)) >= 80",
+            "createdOn": 1614799299906,
+            "customNotification": {
+                "titleTemplate": "{{__alert_name__}} is {{__alert_status__}} on host.mac = {{host.mac}}",
+                "useNewTemplate": true
+            },
+            "customerId": 23935,
+            "description": "Memory usage warning",
+            "enabled": false,
+            "groupName": "default",
+            "id": 2718460,
+            "invalidMetrics": [],
+            "modifiedOn": 1614799299906,
+            "name": "Memory usage warning",
+            "notificationCount": 0,
+            "rateOfChange": false,
+            "reNotify": false,
+            "reNotifyMinutes": 30,
+            "segmentBy": [
+                "host.mac"
+            ],
+            "segmentCondition": {
+                "type": "ANY"
+            },
+            "severity": 4,
+            "severityLabel": "LOW",
+            "teamId": 34493,
+            "timespan": 600000000,
+            "type": "MANUAL",
+            "valid": true,
+            "version": 1
+        },
+        {
+            "autoCreated": true,
+            "condition": "avg(avg(kubernetes.node.networkUnavailable)) != 0",
+            "createdOn": 1614799299908,
+            "customNotification": {
+                "titleTemplate": "{{__alert_name__}} is {{__alert_status__}} on kubernetes.node.name = {{kubernetes.node.name}}",
+                "useNewTemplate": true
+            },
+            "customerId": 23935,
+            "enabled": false,
+            "groupName": "default",
+            "id": 2718461,
+            "invalidMetrics": [],
+            "modifiedOn": 1614799299908,
+            "name": "[Kubernetes] Node network unavailable",
+            "notificationCount": 0,
+            "rateOfChange": false,
+            "reNotify": false,
+            "reNotifyMinutes": 30,
+            "segmentBy": [
+                "kubernetes.node.name"
+            ],
+            "segmentCondition": {
+                "type": "ANY"
+            },
+            "severity": 4,
+            "severityLabel": "LOW",
+            "teamId": 34493,
+            "timespan": 600000000,
+            "type": "MANUAL",
+            "valid": true,
+            "version": 1
+        },
+        {
+            "autoCreated": true,
+            "condition": "avg(avg(memory.swap.used.percent)) > 50",
+            "createdOn": 1614799299910,
+            "customNotification": {
+                "titleTemplate": "{{__alert_name__}} is {{__alert_status__}} on host.mac = {{host.mac}}",
+                "useNewTemplate": true
+            },
+            "customerId": 23935,
+            "description": "Lack of free swap space warning",
+            "enabled": false,
+            "groupName": "default",
+            "id": 2718462,
+            "invalidMetrics": [],
+            "modifiedOn": 1614799299910,
+            "name": "Lack of free swap space warning",
+            "notificationCount": 0,
+            "rateOfChange": false,
+            "reNotify": false,
+            "reNotifyMinutes": 30,
+            "segmentBy": [
+                "host.mac"
+            ],
+            "segmentCondition": {
+                "type": "ANY"
+            },
+            "severity": 4,
+            "severityLabel": "LOW",
+            "teamId": 34493,
+            "timespan": 300000000,
+            "type": "MANUAL",
+            "valid": true,
+            "version": 1
+        },
+        {
+            "autoCreated": true,
+            "condition": "avg(avg(net.http.error.count)) > 5",
+            "createdOn": 1614799299912,
+            "customNotification": {
+                "titleTemplate": "{{__alert_name__}} is {{__alert_status__}} on kubernetes.namespace.name = {{kubernetes.namespace.name}} and kubernetes.service.name = {{kubernetes.service.name}} and kubernetes.pod.name = {{kubernetes.pod.name}}",
+                "useNewTemplate": true
+            },
+            "customerId": 23935,
+            "description": "A Kubernetes service with repeated HTTP errors (400 and 500 status codes) ",
+            "enabled": false,
+            "groupName": "default",
+            "id": 2718463,
+            "invalidMetrics": [],
+            "modifiedOn": 1614799299912,
+            "name": "[Kubernetes] Service generating HTTP errors",
+            "notificationCount": 0,
+            "rateOfChange": false,
+            "reNotify": false,
+            "reNotifyMinutes": 30,
+            "segmentBy": [
+                "kubernetes.namespace.name",
+                "kubernetes.service.name",
+                "kubernetes.pod.name"
+            ],
+            "segmentCondition": {
+                "type": "ANY"
+            },
+            "severity": 4,
+            "severityLabel": "LOW",
+            "teamId": 34493,
+            "timespan": 300000000,
+            "type": "MANUAL",
+            "valid": true,
+            "version": 1
+        },
+        {
+            "autoCreated": true,
+            "condition": "avg(avg(kubernetes.deployment.replicas.paused)) != 0",
+            "createdOn": 1614799299914,
+            "customNotification": {
+                "titleTemplate": "{{__alert_name__}} is {{__alert_status__}} on kubernetes.deployment.name = {{kubernetes.deployment.name}}",
+                "useNewTemplate": true
+            },
+            "customerId": 23935,
+            "description": "No deployments should be in paused state for too long",
+            "enabled": false,
+            "groupName": "default",
+            "id": 2718464,
+            "invalidMetrics": [],
+            "modifiedOn": 1614799299914,
+            "name": "[Kubernetes] Deployment Paused for Long",
+            "notificationCount": 0,
+            "rateOfChange": false,
+            "reNotify": false,
+            "reNotifyMinutes": 30,
+            "segmentBy": [
+                "kubernetes.deployment.name"
+            ],
+            "segmentCondition": {
+                "type": "ANY"
+            },
+            "severity": 4,
+            "severityLabel": "LOW",
+            "teamId": 34493,
+            "timespan": 300000000,
+            "type": "MANUAL",
+            "valid": true,
+            "version": 1
+        },
+        {
+            "autoCreated": true,
+            "condition": "avg(avg(memory.bytes.available)) < 20971520",
+            "createdOn": 1614799299916,
+            "customNotification": {
+                "titleTemplate": "{{__alert_name__}} is {{__alert_status__}} on host.mac = {{host.mac}}",
+                "useNewTemplate": true
+            },
+            "customerId": 23935,
+            "description": "Out of memory warning",
+            "enabled": false,
+            "groupName": "default",
+            "id": 2718465,
+            "invalidMetrics": [],
+            "modifiedOn": 1614799299916,
+            "name": "Out of memory warning",
+            "notificationCount": 0,
+            "rateOfChange": false,
+            "reNotify": false,
+            "reNotifyMinutes": 30,
+            "segmentBy": [
+                "host.mac"
+            ],
+            "segmentCondition": {
+                "type": "ANY"
+            },
+            "severity": 4,
+            "severityLabel": "LOW",
+            "teamId": 34493,
+            "timespan": 300000000,
+            "type": "MANUAL",
+            "valid": true,
+            "version": 1
+        },
+        {
+            "autoCreated": true,
+            "condition": "count(customEvent)>0",
+            "createdOn": 1614799299919,
+            "criteria": {
+                "query": null,
+                "scope": null,
+                "severity": null,
+                "source": "kubernetes",
+                "text": "Failed to pull image"
+            },
+            "customNotification": {
+                "titleTemplate": "{{__alert_name__}} is {{__alert_status__}} on kubernetes.pod.name = {{kubernetes.pod.name}}",
+                "useNewTemplate": true
+            },
+            "customerId": 23935,
+            "description": "A Kubernetes pod failed to pull an image from the registry",
+            "enabled": false,
+            "groupName": "default",
+            "id": 2718466,
+            "invalidMetrics": [],
+            "modifiedOn": 1614799299919,
+            "name": "[Kubernetes] Failed to pull image",
+            "notificationCount": 0,
+            "rateOfChange": false,
+            "reNotify": false,
+            "reNotifyMinutes": 30,
+            "segmentBy": [
+                "kubernetes.pod.name"
+            ],
+            "segmentCondition": {
+                "type": "ANY"
+            },
+            "severity": 4,
+            "severityLabel": "LOW",
+            "teamId": 34493,
+            "timespan": 60000000,
+            "type": "EVENT",
+            "valid": true,
+            "version": 1
+        },
+        {
+            "autoCreated": true,
+            "condition": "count(customEvent)>1",
+            "createdOn": 1614799299921,
+            "criteria": {
+                "query": null,
+                "scope": null,
+                "severity": null,
+                "source": "kubernetes",
+                "text": "Liveness probe failed"
+            },
+            "customNotification": {
+                "titleTemplate": "{{__alert_name__}} is {{__alert_status__}} on kubernetes.pod.name = {{kubernetes.pod.name}}",
+                "useNewTemplate": true
+            },
+            "customerId": 23935,
+            "description": "A Kubernetes pod failed when checking its liveness proble",
+            "enabled": false,
+            "groupName": "default",
+            "id": 2718467,
+            "invalidMetrics": [],
+            "modifiedOn": 1614799299921,
+            "name": "[Kubernetes]: Liveness probe failed",
+            "notificationCount": 0,
+            "rateOfChange": false,
+            "reNotify": false,
+            "reNotifyMinutes": 30,
+            "segmentBy": [
+                "kubernetes.pod.name"
+            ],
+            "segmentCondition": {
+                "type": "ANY"
+            },
+            "severity": 4,
+            "severityLabel": "LOW",
+            "teamId": 34493,
+            "timespan": 600000000,
+            "type": "EVENT",
+            "valid": true,
+            "version": 1
+        },
+        {
+            "autoCreated": true,
+            "condition": "avg(avg(kubernetes.node.outOfDisk)) != 0",
+            "createdOn": 1614799299923,
+            "customNotification": {
+                "titleTemplate": "{{__alert_name__}} is {{__alert_status__}} on kubernetes.node.name = {{kubernetes.node.name}}",
+                "useNewTemplate": true
+            },
+            "customerId": 23935,
+            "enabled": false,
+            "groupName": "default",
+            "id": 2718468,
+            "invalidMetrics": [],
+            "modifiedOn": 1614799299923,
+            "name": "[Kubernetes] Node out of disk",
+            "notificationCount": 0,
+            "rateOfChange": false,
+            "reNotify": false,
+            "reNotifyMinutes": 30,
+            "segmentBy": [
+                "kubernetes.node.name"
+            ],
+            "segmentCondition": {
+                "type": "ANY"
+            },
+            "severity": 4,
+            "severityLabel": "LOW",
+            "teamId": 34493,
+            "timespan": 600000000,
+            "type": "MANUAL",
+            "valid": true,
+            "version": 1
+        },
+        {
+            "autoCreated": true,
+            "condition": "sum(avg(container.count)) > 20",
+            "createdOn": 1614799299925,
+            "customNotification": {
+                "titleTemplate": "{{__alert_name__}} is {{__alert_status__}} on container.image = {{container.image}}",
+                "useNewTemplate": true
+            },
+            "customerId": 23935,
+            "description": "High container count warning",
+            "enabled": false,
+            "groupName": "default",
+            "id": 2718469,
+            "invalidMetrics": [],
+            "modifiedOn": 1614799299925,
+            "name": "High container count warning",
+            "notificationCount": 0,
+            "rateOfChange": false,
+            "reNotify": false,
+            "reNotifyMinutes": 30,
+            "segmentBy": [
+                "container.image"
+            ],
+            "segmentCondition": {
+                "type": "ANY"
+            },
+            "severity": 4,
+            "severityLabel": "LOW",
+            "teamId": 34493,
+            "timespan": 300000000,
+            "type": "MANUAL",
+            "valid": true,
+            "version": 1
+        },
+        {
+            "autoCreated": true,
+            "condition": "avg(min(system.uptime)) < 300",
+            "createdOn": 1614799299927,
+            "customNotification": {
+                "titleTemplate": "{{__alert_name__}} is {{__alert_status__}} on host.mac = {{host.mac}}",
+                "useNewTemplate": true
+            },
+            "customerId": 23935,
+            "description": "Host has been restarted",
+            "enabled": false,
+            "groupName": "default",
+            "id": 2718470,
+            "invalidMetrics": [],
+            "modifiedOn": 1614799299927,
+            "name": "Host has been restarted",
+            "notificationCount": 0,
+            "rateOfChange": false,
+            "reNotify": false,
+            "reNotifyMinutes": 30,
+            "segmentBy": [
+                "host.mac"
+            ],
+            "segmentCondition": {
+                "type": "ANY"
+            },
+            "severity": 4,
+            "severityLabel": "LOW",
+            "teamId": 34493,
+            "timespan": 300000000,
+            "type": "MANUAL",
+            "valid": true,
+            "version": 1
+        },
+        {
+            "autoCreated": true,
+            "condition": "avg(timeAvg(uptime)) <= 0",
+            "createdOn": 1614799299929,
+            "customNotification": {
+                "titleTemplate": "{{__alert_name__}} is {{__alert_status__}} on host.mac = {{host.mac}}",
+                "useNewTemplate": true
+            },
+            "customerId": 23935,
+            "description": "Host is down",
+            "enabled": false,
+            "groupName": "default",
+            "id": 2718471,
+            "invalidMetrics": [],
+            "modifiedOn": 1614799299929,
+            "name": "Host is down",
+            "notificationCount": 0,
+            "rateOfChange": false,
+            "reNotify": false,
+            "reNotifyMinutes": 30,
+            "segmentBy": [
+                "host.mac"
+            ],
+            "segmentCondition": {
+                "type": "ANY"
+            },
+            "severity": 4,
+            "severityLabel": "LOW",
+            "teamId": 34493,
+            "timespan": 300000000,
+            "type": "MANUAL",
+            "valid": true,
+            "version": 1
+        },
+        {
+            "autoCreated": true,
+            "condition": "sum(avg(container.count)) < 2",
+            "createdOn": 1614799299931,
+            "customNotification": {
+                "titleTemplate": "{{__alert_name__}} is {{__alert_status__}} on container.image = {{container.image}}",
+                "useNewTemplate": true
+            },
+            "customerId": 23935,
+            "description": "Low container count warning",
+            "enabled": false,
+            "groupName": "default",
+            "id": 2718472,
+            "invalidMetrics": [],
+            "modifiedOn": 1614799299931,
+            "name": "Low container count warning",
+            "notificationCount": 0,
+            "rateOfChange": false,
+            "reNotify": false,
+            "reNotifyMinutes": 30,
+            "segmentBy": [
+                "container.image"
+            ],
+            "segmentCondition": {
+                "type": "ANY"
+            },
+            "severity": 4,
+            "severityLabel": "LOW",
+            "teamId": 34493,
+            "timespan": 300000000,
+            "type": "MANUAL",
+            "valid": true,
+            "version": 1
+        },
+        {
+            "autoCreated": true,
+            "condition": "avg(avg(load.average.percpu.5m)) > 5",
+            "createdOn": 1614799299934,
+            "customNotification": {
+                "titleTemplate": "{{__alert_name__}} is {{__alert_status__}} on host.mac = {{host.mac}}",
+                "useNewTemplate": true
+            },
+            "customerId": 23935,
+            "description": "Processor Load is too high",
+            "enabled": false,
+            "groupName": "default",
+            "id": 2718473,
+            "invalidMetrics": [],
+            "modifiedOn": 1614799299934,
+            "name": "Processor Load is too high",
+            "notificationCount": 0,
+            "rateOfChange": false,
+            "reNotify": false,
+            "reNotifyMinutes": 30,
+            "segmentBy": [
+                "host.mac"
+            ],
+            "segmentCondition": {
+                "type": "ANY"
+            },
+            "severity": 4,
+            "severityLabel": "LOW",
+            "teamId": 34493,
+            "timespan": 300000000,
+            "type": "MANUAL",
+            "valid": true,
+            "version": 1
+        },
+        {
+            "autoCreated": true,
+            "condition": "sum(timeAvg(kubernetes.pod.restart.count)) > 2",
+            "createdOn": 1614799299936,
+            "customNotification": {
+                "titleTemplate": "{{__alert_name__}} is {{__alert_status__}} on kubernetes.namespace.name = {{kubernetes.namespace.name}} and kubernetes.deployment.name = {{kubernetes.deployment.name}} and kubernetes.pod.name = {{kubernetes.pod.name}}",
+                "useNewTemplate": true
+            },
+            "customerId": 23935,
+            "description": "A Kubernetes pod failed to restart",
+            "enabled": false,
+            "groupName": "default",
+            "id": 2718474,
+            "invalidMetrics": [],
+            "modifiedOn": 1614799299936,
+            "name": "[Kubernetes] CrashLoopBackOff",
+            "notificationCount": 0,
+            "rateOfChange": false,
+            "reNotify": false,
+            "reNotifyMinutes": 30,
+            "segmentBy": [
+                "kubernetes.namespace.name",
+                "kubernetes.deployment.name",
+                "kubernetes.pod.name"
+            ],
+            "segmentCondition": {
+                "type": "ANY"
+            },
+            "severity": 4,
+            "severityLabel": "LOW",
+            "teamId": 34493,
+            "timespan": 60000000,
+            "type": "MANUAL",
+            "valid": true,
+            "version": 1
+        },
+        {
+            "autoCreated": true,
+            "condition": "avg(max(kubernetes.deployment.replicas.available)) < 1",
+            "createdOn": 1614799299939,
+            "customNotification": {
+                "titleTemplate": "{{__alert_name__}} is {{__alert_status__}} on kubernetes.namespace.name = {{kubernetes.namespace.name}} and kubernetes.deployment.name = {{kubernetes.deployment.name}}",
+                "useNewTemplate": true
+            },
+            "customerId": 23935,
+            "enabled": false,
+            "groupName": "default",
+            "id": 2718475,
+            "invalidMetrics": [],
+            "modifiedOn": 1614799299939,
+            "name": "[Kubernetes] Deployments with no available Pods",
+            "notificationCount": 0,
+            "rateOfChange": false,
+            "reNotify": false,
+            "reNotifyMinutes": 30,
+            "segmentBy": [
+                "kubernetes.namespace.name",
+                "kubernetes.deployment.name"
+            ],
+            "segmentCondition": {
+                "type": "ANY"
+            },
+            "severity": 4,
+            "severityLabel": "LOW",
+            "teamId": 34493,
+            "timespan": 60000000,
+            "type": "MANUAL",
+            "valid": true,
+            "version": 1
+        },
+        {
+            "autoCreated": true,
+            "condition": "avg(timeAvg(kubernetes.deployment.replicas.available)) < avg(timeAvg(kubernetes.deployment.replicas.desired))",
+            "createdOn": 1614799299941,
+            "customNotification": {
+                "titleTemplate": "{{__alert_name__}} is {{__alert_status__}} on kubernetes.namespace.name = {{kubernetes.namespace.name}} and kubernetes.deployment.name = {{kubernetes.deployment.name}}",
+                "useNewTemplate": true
+            },
+            "customerId": 23935,
+            "description": "Not enough pods running for deployment",
+            "enabled": false,
+            "groupName": "default",
+            "id": 2718476,
+            "invalidMetrics": [],
+            "modifiedOn": 1614799299941,
+            "name": "[Kubernetes] Pods Available less than desired",
+            "notificationCount": 0,
+            "rateOfChange": false,
+            "reNotify": false,
+            "reNotifyMinutes": 30,
+            "segmentBy": [
+                "kubernetes.namespace.name",
+                "kubernetes.deployment.name"
+            ],
+            "segmentCondition": {
+                "type": "ANY"
+            },
+            "severity": 4,
+            "severityLabel": "LOW",
+            "teamId": 34493,
+            "timespan": 600000000,
+            "type": "MANUAL",
+            "valid": true,
+            "version": 1
+        },
+        {
+            "autoCreated": false,
+            "condition": "avg(kubelet_volume_stats_used_bytes/kubelet_volume_stats_capacity_bytes) by (persistentvolumeclaim) >= 0.6",
+            "createdOn": 1631122296776,
+            "customNotification": {
+                "titleTemplate": "{{__alert_name__}} is {{__alert_status__}}",
+                "useNewTemplate": true
+            },
+            "customerId": 23935,
+            "defaultSettings": [
+                {
+                    "notificationChannelId": 47290,
+                    "options": {
+                        "emailRecipients": [
+                            "junmin@button.is",
+                            "jonathan.sharman@gov.bc.ca",
+                            "arcshiftsolutions@gmail.com",
+                            "zorin.samji@gov.bc.ca",
+                            "bryan@button.is"
+                        ],
+                        "notifyOnOk": true,
+                        "notifyOnResolve": false
+                    },
+                    "type": "EMAIL"
+                },
+                {
+                    "notificationChannelId": 45990,
+                    "options": {
+                        "additionalHeaders": {},
+                        "allowInsecureConnections": false,
+                        "notifyOnOk": true,
+                        "notifyOnResolve": true,
+                        "url": "https://chat.developer.gov.bc.ca/hooks/gFs2Cqw5esdpsr7BS/daSGF68miEHzMExxDQhm7zs57dJJyFdNPZBFAKumm3rMouPf"
+                    },
+                    "type": "WEBHOOK"
+                },
+                {
+                    "notificationChannelId": 47592,
+                    "options": {
+                        "apiKey": "0a8d7514-1736-40b3-83ca-8b201686f178",
+                        "notifyOnOk": true,
+                        "notifyOnResolve": true,
+                        "region": "US",
+                        "url": "https://api.opsgenie.com/v1/json/sysdigcloud?apiKey=0a8d7514-1736-40b3-83ca-8b201686f178"
+                    },
+                    "type": "OPSGENIE"
+                }
+            ],
+            "description": "Alert if postgresql-sso Filesystem exceeds more than 60%",
+            "enabled": false,
+            "groupName": "default",
+            "id": 3890082,
+            "invalidMetrics": [],
+            "modifiedOn": 1633628736000,
+            "name": "App - Prod - SSO - DB PVC Filesystem > 60%",
+            "notificationChannelIds": [
+                45990,
+                47592,
+                47290
+            ],
+            "notificationCount": 0,
+            "rateOfChange": false,
+            "reNotify": true,
+            "reNotifyMinutes": 30,
+            "severity": 2,
+            "severityLabel": "MEDIUM",
+            "teamId": 34493,
+            "timespan": 600000000,
+            "type": "PROMETHEUS",
+            "valid": true,
+            "version": 10
+        },
+        {
+            "autoCreated": false,
+            "condition": "avg(kubelet_volume_stats_used_bytes{persistentvolumeclaim=~\"postgresql-sso-pgsql-prod-.*\"}*100 / kubelet_volume_stats_capacity_bytes{persistentvolumeclaim=~\"postgresql-sso-pgsql-prod-.*\"}) by (persistentvolumeclaim) > 60",
+            "createdOn": 1633560158589,
+            "customNotification": {
+                "titleTemplate": "{{__alert_name__}} is {{__alert_status__}}",
+                "useNewTemplate": true
+            },
+            "customerId": 23935,
+            "defaultSettings": [
+                {
+                    "notificationChannelId": 47290,
+                    "options": {
+                        "emailRecipients": [
+                            "junmin@button.is",
+                            "jonathan.sharman@gov.bc.ca",
+                            "arcshiftsolutions@gmail.com",
+                            "zorin.samji@gov.bc.ca",
+                            "bryan@button.is"
+                        ],
+                        "notifyOnOk": true,
+                        "notifyOnResolve": false
+                    },
+                    "type": "EMAIL"
+                },
+                {
+                    "notificationChannelId": 47592,
+                    "options": {
+                        "apiKey": "0a8d7514-1736-40b3-83ca-8b201686f178",
+                        "notifyOnOk": true,
+                        "notifyOnResolve": true,
+                        "region": "US",
+                        "url": "https://api.opsgenie.com/v1/json/sysdigcloud?apiKey=0a8d7514-1736-40b3-83ca-8b201686f178"
+                    },
+                    "type": "OPSGENIE"
+                },
+                {
+                    "notificationChannelId": 45990,
+                    "options": {
+                        "additionalHeaders": {},
+                        "allowInsecureConnections": false,
+                        "notifyOnOk": true,
+                        "notifyOnResolve": true,
+                        "url": "https://chat.developer.gov.bc.ca/hooks/gFs2Cqw5esdpsr7BS/daSGF68miEHzMExxDQhm7zs57dJJyFdNPZBFAKumm3rMouPf"
+                    },
+                    "type": "WEBHOOK"
+                }
+            ],
+            "enabled": true,
+            "groupName": "active",
+            "id": 4613865,
+            "invalidMetrics": [],
+            "lastCheckTimeInMs": 1646244660000,
+            "modifiedOn": 1636040262253,
+            "name": "Patroni - PVCs > 60%",
+            "notificationChannelIds": [
+                45990,
+                47592,
+                47290
+            ],
+            "notificationCount": 0,
+            "rateOfChange": false,
+            "reNotify": false,
+            "reNotifyMinutes": 30,
+            "severity": 4,
+            "severityLabel": "LOW",
+            "teamId": 34493,
+            "timespan": 600000000,
+            "type": "PROMETHEUS",
+            "valid": true,
+            "version": 8
+        },
+        {
+            "autoCreated": false,
+            "condition": "avg(kubelet_volume_stats_used_bytes{namespace=\"6d70e7-prod\", persistentvolumeclaim=\"patroni-backup-storage-backup-pvc\"} * 100 /\nkubelet_volume_stats_capacity_bytes{namespace=\"6d70e7-prod\", persistentvolumeclaim=\"patroni-backup-storage-backup-pvc\"}) by (persistentvolumeclaim) > 60\n",
+            "createdOn": 1633621780164,
+            "customNotification": {
+                "titleTemplate": "{{__alert_name__}} is {{__alert_status__}}",
+                "useNewTemplate": true
+            },
+            "customerId": 23935,
+            "defaultSettings": [
+                {
+                    "notificationChannelId": 47290,
+                    "options": {
+                        "emailRecipients": [
+                            "junmin@button.is",
+                            "jonathan.sharman@gov.bc.ca",
+                            "arcshiftsolutions@gmail.com",
+                            "zorin.samji@gov.bc.ca",
+                            "bryan@button.is"
+                        ],
+                        "notifyOnOk": true,
+                        "notifyOnResolve": false
+                    },
+                    "type": "EMAIL"
+                },
+                {
+                    "notificationChannelId": 45990,
+                    "options": {
+                        "additionalHeaders": {},
+                        "allowInsecureConnections": false,
+                        "notifyOnOk": true,
+                        "notifyOnResolve": true,
+                        "url": "https://chat.developer.gov.bc.ca/hooks/gFs2Cqw5esdpsr7BS/daSGF68miEHzMExxDQhm7zs57dJJyFdNPZBFAKumm3rMouPf"
+                    },
+                    "type": "WEBHOOK"
+                },
+                {
+                    "notificationChannelId": 47592,
+                    "options": {
+                        "apiKey": "0a8d7514-1736-40b3-83ca-8b201686f178",
+                        "notifyOnOk": true,
+                        "notifyOnResolve": true,
+                        "region": "US",
+                        "url": "https://api.opsgenie.com/v1/json/sysdigcloud?apiKey=0a8d7514-1736-40b3-83ca-8b201686f178"
+                    },
+                    "type": "OPSGENIE"
+                }
+            ],
+            "enabled": true,
+            "groupName": "active",
+            "id": 4626642,
+            "invalidMetrics": [],
+            "lastCheckTimeInMs": 1646244660000,
+            "modifiedOn": 1636040351923,
+            "name": "Patroni - Backup PVC over 60%",
+            "notificationChannelIds": [
+                45990,
+                47592,
+                47290
+            ],
+            "notificationCount": 0,
+            "rateOfChange": false,
+            "reNotify": false,
+            "reNotifyMinutes": 30,
+            "severity": 4,
+            "severityLabel": "LOW",
+            "teamId": 34493,
+            "timespan": 600000000,
+            "type": "PROMETHEUS",
+            "valid": true,
+            "version": 8
+        },
+        {
+            "autoCreated": false,
+            "condition": "avg(kubelet_volume_stats_used_bytes{persistentvolumeclaim=~\"postgresql-sso-pgsql-prod-.*\"}*100 / kubelet_volume_stats_capacity_bytes{persistentvolumeclaim=~\"postgresql-sso-pgsql-prod-.*\"}) by (persistentvolumeclaim) > 80",
+            "createdOn": 1636040274954,
+            "customNotification": {
+                "titleTemplate": "{{__alert_name__}} is {{__alert_status__}}",
+                "useNewTemplate": true
+            },
+            "customerId": 23935,
+            "defaultSettings": [
+                {
+                    "notificationChannelId": 47290,
+                    "options": {
+                        "emailRecipients": [
+                            "junmin@button.is",
+                            "jonathan.sharman@gov.bc.ca",
+                            "arcshiftsolutions@gmail.com",
+                            "zorin.samji@gov.bc.ca",
+                            "bryan@button.is"
+                        ],
+                        "notifyOnOk": true,
+                        "notifyOnResolve": false
+                    },
+                    "type": "EMAIL"
+                },
+                {
+                    "notificationChannelId": 47592,
+                    "options": {
+                        "apiKey": "0a8d7514-1736-40b3-83ca-8b201686f178",
+                        "notifyOnOk": true,
+                        "notifyOnResolve": true,
+                        "region": "US",
+                        "url": "https://api.opsgenie.com/v1/json/sysdigcloud?apiKey=0a8d7514-1736-40b3-83ca-8b201686f178"
+                    },
+                    "type": "OPSGENIE"
+                },
+                {
+                    "notificationChannelId": 45990,
+                    "options": {
+                        "additionalHeaders": {},
+                        "allowInsecureConnections": false,
+                        "notifyOnOk": true,
+                        "notifyOnResolve": true,
+                        "url": "https://chat.developer.gov.bc.ca/hooks/gFs2Cqw5esdpsr7BS/daSGF68miEHzMExxDQhm7zs57dJJyFdNPZBFAKumm3rMouPf"
+                    },
+                    "type": "WEBHOOK"
+                }
+            ],
+            "enabled": true,
+            "groupName": "active",
+            "id": 5058787,
+            "invalidMetrics": [],
+            "lastCheckTimeInMs": 1646244660000,
+            "modifiedOn": 1636040292266,
+            "name": "Patroni - PVCs > 80%",
+            "notificationChannelIds": [
+                45990,
+                47592,
+                47290
+            ],
+            "notificationCount": 0,
+            "rateOfChange": false,
+            "reNotify": false,
+            "reNotifyMinutes": 30,
+            "severity": 2,
+            "severityLabel": "MEDIUM",
+            "teamId": 34493,
+            "timespan": 600000000,
+            "type": "PROMETHEUS",
+            "valid": true,
+            "version": 2
+        }
+    ]
+}

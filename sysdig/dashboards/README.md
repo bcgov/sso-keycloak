@@ -1,35 +1,8 @@
-# Sysdig API config
+# Backup and restore the dashboards
 
-## Install requirements for the SDCClient
-
-This documentation follows the [Sysdig developer documentation](https://docs.sysdig.com/en/docs/developer-tools/)
-
-The python scripts are pulled from the sysdig [Github Repo](https://github.com/sysdiglabs/sysdig-sdk-python/tree/master/examples).
-
-### Create a virtual env for the python packages (optional but recomended)
-
-To create a venv run the command:
-
-`python -m venv env`
-
-and activate it (in mac or linux) using:
-
-`source env/bin/activate`
-
- The environment is deactivated by running `deactivate`.
-
-### Install the requirements
-
- `pip install -r requirements.txt`
-
-
-### Retrieve the sysdig API token
-
-This can be found in your sysdig `User Profile` in the online app.
+Dashboards are tied to the user that created them so a user leaving the project could cause the team to lose them. This process allows the team to backup and restore them.
 
 ## Backup the dashboards
-
-### Download the the existing dashboards
 
 The dashboards can be backed up py running the `downloan_dashboards` script:
 
