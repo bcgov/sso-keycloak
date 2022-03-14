@@ -14,7 +14,7 @@ There are six silver namepaces with stateful sets that must be backed up manuall
 To back up this configuration, pull them down, convert them to yaml.
 
 ```
- oc -n <<Namspace>> get statefulset -o yaml > .backups/statefulset<<Name>>.yaml
+ oc -n <<Namspace>> get statefulset -o yaml > ./backups/statefulset<<Name>>.yaml
 ```
 
 Remove the folling content from the YAML:
@@ -30,5 +30,5 @@ This will cause errors if we attempt to restore the statefull set with them in i
 To restore these, run
 
 ```
-oc -n <<Namespace>> apply -f .backups/statefulset<<Name>>.yaml
+oc -n <<Namespace>> apply -f ./backups/statefulset<<Name>>.yaml
 ```
