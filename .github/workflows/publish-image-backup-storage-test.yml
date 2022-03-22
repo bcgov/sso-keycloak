@@ -23,7 +23,10 @@ jobs:
     steps:
       - name: Checkout backup storage repository
         run: git clone https://github.com/BCDevOps/backup-container.git
-
+      
+      - name: Replace the dockerfile
+        run: cp ./docker/backup-container/Dockerfile ./backup-container/docker/Dockerfile
+      
       - name: Log in to the GitHub Container registry
         uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
         with:
