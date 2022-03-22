@@ -27,9 +27,8 @@ jobs:
       - name: Checkout backup storage repository
         run: git clone https://github.com/BCDevOps/backup-container.git
       
-      - name: Run ls
-        run: ls
       - name: Replace the dockerfile
+        if: ${{ github.event.inputs.postgres_version }} == '13'
         run: cp ./docker/backup-container/Dockerfile ./backup-container/docker/Dockerfile
       
       - name: Log in to the GitHub Container registry
