@@ -24,6 +24,8 @@ jobs:
       - name: Checkout backup storage repository
         run: git clone https://github.com/BCDevOps/backup-container.git
       
+      - name: Run ls
+        run: ls
       - name: Replace the dockerfile
         run: cp ./docker/backup-container/Dockerfile ./backup-container/docker/Dockerfile
       
