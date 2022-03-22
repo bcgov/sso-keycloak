@@ -11,7 +11,7 @@ on:
 
 env:
   GITHUB_REGISTRY: ghcr.io
-  IMAGE_NAME: bcgov/backup-storage-${{ github.event.inputs.postgres_version }};
+  IMAGE_NAME: bcgov/backup-storage-${{ github.event.inputs.postgres_version }}
 
 jobs:
   build-and-push-image:
