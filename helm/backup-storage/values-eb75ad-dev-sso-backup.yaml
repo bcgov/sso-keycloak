@@ -2,7 +2,7 @@ nameOverride: "sso-backup-storage"
 fullnameOverride: "sso-backup-storage"
 
 image:
-  repository: ghcr.io/bcgov/backup-storage
+  repository: ghcr.io/bcgov/backup-storage-13
 
 backupConfig: |
   sso-patroni:5432/ssokeycloak
@@ -13,3 +13,6 @@ db:
   secretName: sso-patroni
   usernameKey: username-superuser
   passwordKey: password-superuser
+
+env:
+  ENVIRONMENT_FRIENDLY_NAME: "Gold Production Dev environment"
