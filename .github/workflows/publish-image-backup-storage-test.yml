@@ -47,8 +47,8 @@ jobs:
       - name: Print tags
         run: echo ${{ steps.meta.outputs.tags }}
         
-      - name: Print labels
-        run: echo ${{ steps.meta.outputs.labels }}
+#       - name: Print labels
+#         run: echo ${{ steps.meta.outputs.labels }}
         
       - name: Build and push Docker image
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
@@ -56,4 +56,5 @@ jobs:
           context: backup-container/docker
           push: true
           tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          labels: postgres-${{ github.event.inputs.postgres_version}} 
+#           labels: ${{ steps.meta.outputs.labels }}
