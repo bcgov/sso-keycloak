@@ -52,5 +52,5 @@ jobs:
         with:
           context: backup-container/docker
           push: true
-          tags: ${{ env.GITHUB_REGISTRY }}/${{ env.IMAGE_NAME }}:postgres-${{ github.event.inputs.postgres_version}} 
+          tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
