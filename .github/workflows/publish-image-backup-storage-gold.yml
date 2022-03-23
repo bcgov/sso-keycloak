@@ -11,7 +11,7 @@ on:
 
 env:
   GITHUB_REGISTRY: ghcr.io
-  IMAGE_NAME: bcgov/backup-storage-${{ github.event.inputs.postgres_version }}
+  IMAGE_NAME: bcgov/backup-storage
 
 jobs:
   build-and-push-image:
@@ -38,16 +38,10 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
-        with:
-          images: ${{ env.GITHUB_REGISTRY }}/${{ env.IMAGE_NAME }}
-
       - name: Build and push Docker image
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
           context: backup-container/docker
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ env.GITHUB_REGISTRY }}/${{ env.IMAGE_NAME }}:postgres-${{ github.event.inputs.postgres_version}}
+          labels: sso-keycloak-backup
