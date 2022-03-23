@@ -51,5 +51,5 @@ jobs:
           push: true
           tags: |
             ${{ steps.meta.outputs.tags }}
-            postgres-${{ github.event.inputs.postgres_version}} 
+            type=postgres-${{ github.event.inputs.postgres_version}} 
           labels: ${{ steps.meta.outputs.labels }}
