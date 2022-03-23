@@ -13,6 +13,3 @@ db:
   secretName: sso-patroni
   usernameKey: username-superuser
   passwordKey: password-superuser
-
-env:
-  ENVIRONMENT_FRIENDLY_NAME: "Gold Production Dev environment"
