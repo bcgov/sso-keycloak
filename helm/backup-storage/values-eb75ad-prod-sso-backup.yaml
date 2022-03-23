@@ -1,0 +1,16 @@
+nameOverride: "sso-backup-storage"
+fullnameOverride: "sso-backup-storage"
+
+image:
+  repository: ghcr.io/bcgov/backup-storage
+  tag: postgres-13
+
+backupConfig: |
+  sso-patroni:5432/ssokeycloak
+  0 1 * * * default ./backup.sh -s
+  0 4 * * * default ./backup.sh -s -v all
+
+db:
+  secretName: sso-patroni
+  usernameKey: username-superuser
+  passwordKey: password-superuser
