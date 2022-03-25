@@ -14,3 +14,12 @@ db:
   secretName: sso-patroni
   usernameKey: username-superuser
   passwordKey: password-superuser
+
+env:
+  ENVIRONMENT_FRIENDLY_NAME:
+    value: "SSO Gold Dev Production Backup"
+  ENVIRONMENT_NAME:
+    value: eb75ad-dev
+  WEBHOOK_URL:
+    value: <<Insert value>>
+    secure: true
