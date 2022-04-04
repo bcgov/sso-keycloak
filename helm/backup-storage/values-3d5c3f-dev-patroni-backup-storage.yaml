@@ -1,0 +1,34 @@
+# The command to restore the latest backup is:
+# ./backup.sh -r postgres=sso-pgsql-master-dev:5432/rhsso
+# The command to update the backup in sandbox dev is:
+# make upgrade NAME=patroni-backup-storage NAMESPACE=3d5c3f-dev
+
+nameOverride: "sso-backup-storage"
+fullnameOverride: "sso-backup-storage"
+
+backupConfig: |
+  postgres=sso-pgsql-master-dev:5432/rhsso
+
+  0 1 * * * default ./backup.sh -s
+  0 4 * * * default ./backup.sh -s -v all
+
+db:
+  secretName: sso-pgsql-dev
+  usernameKey: app-db-username
+  passwordKey: app-db-password
+
+env:
+  DATABASE_SERVICE_NAME:
+    value: sso-pgsql-patroni-master-dev
+
+  ENVIRONMENT_FRIENDLY_NAME:
+    value: "Silver SSO sbox-dev DB Backups"
+
+  DATABASE_SERVER_TIMEOUT:
+    value: 500
+
+  ENVIRONMENT_NAME:
+    value: "sbox"
+
+  TABLE_SCHEMA:
+    value: "public"
