@@ -1,7 +1,7 @@
 # The command to restore the latest backup is:
 # ./backup.sh -r postgres=sso-pgsql-master-dev:5432/rhsso
 # The command to update the backup in sandbox dev is:
-# make upgrade NAME=patroni-backup-storage NAMESPACE=3d5c3f-dev
+# make upgrade NAME=patroni-backup-storage NAMESPACE=6d70e7-dev
 
 nameOverride: "sso-backup-storage"
 fullnameOverride: "sso-backup-storage"
@@ -19,16 +19,20 @@ db:
 
 env:
   DATABASE_SERVICE_NAME:
-    value: sso-pgsql-patroni-master-dev
+    value: sso-pgsql-master-dev
 
   ENVIRONMENT_FRIENDLY_NAME:
-    value: "Silver SSO sandbox-dev DB Backups"
+    value: "Silver SSO production-dev DB Backups"
 
   DATABASE_SERVER_TIMEOUT:
     value: 500
 
   ENVIRONMENT_NAME:
-    value: "sand-dev"
+    value: "production-dev"
+
+  WEBHOOK_URL:
+    value: "<<WEBHOOK URL FOR ROCKETCHAT>>"
+    secure: true
 
   TABLE_SCHEMA:
     value: "public"
