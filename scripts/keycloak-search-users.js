@@ -2,13 +2,13 @@ const _ = require('lodash');
 const { argv } = require('yargs');
 const Confirm = require('prompt-confirm');
 const { getAdminClient } = require('./keycloak-core');
-const { env, realm, client, totp } = argv;
+const { env, realm, totp, email, firstname: firstName, lastname: lastName, username, search, first, max } = argv;
 
 async function main() {
   if (!env || !realm) {
     console.info(`
     Usages:
-      node keycloak-search-users.js --env <env> --realm <realm> [--totp <totp>]
+      node keycloak-search-users.js --env <env> --realm <realm> [--totp <totp>] [--email <email>] [--firstName <firstName>] [--lastName <lastName>] [--username <username>] [--search <search>] [--first <first>] [--max <max>]
     `);
 
     return;
@@ -23,17 +23,7 @@ async function main() {
 
     if (!answer) return;
 
-    // use the following attributes for additional search criteria
-    //   interface UserQuery {
-    //     email?: string;
-    //     first?: number;
-    //     firstName?: string;
-    //     lastName?: string;
-    //     max?: number;
-    //     search?: string;
-    //     username?: string;
-    // }
-    const users = await kcAdminClient.users.find({ realm, username: '', email: '', firstName: '', lastName: '' });
+    const users = await kcAdminClient.users.find({ realm, email, firstName, lastName, username, search, first, max });
     console.log(JSON.stringify(users, null, 2));
   } catch (err) {
     console.error(err.response.data && err.response.data.error);
