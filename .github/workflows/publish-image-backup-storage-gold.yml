@@ -1,5 +1,5 @@
 # https://github.com/bcgov/helm-charts/tree/master/charts/backup-storage#build-the-container-image-using-github-actions
-name: Create and publish Backup Storage Docker image
+name: Create and publish Backup Storage Docker image Gold
 
 on:
   workflow_dispatch:
