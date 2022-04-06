@@ -10,7 +10,7 @@ async function main() {
   if (!env || !realm || !targetRealm) {
     console.info(`
     Usages:
-      node keycloak-migrate-idir-users.js --env <env> --realm <realm> --targetrealm <targetrealm> [--totp <totp>]
+      node keycloak-migrate-users.js --env <env> --realm <realm> --targetrealm <targetrealm> [--totp <totp>]
     `);
 
     return;
