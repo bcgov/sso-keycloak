@@ -29,6 +29,13 @@ const envs = {
     username: process.env.PROD_KEYCLOAK_USERNAME,
     password: process.env.PROD_KEYCLOAK_PASSWORD,
   },
+  target: {
+    url: removeTrailingSlash(process.env.TARGET_KEYCLOAK_URL),
+    clientId: process.env.TARGET_KEYCLOAK_CLIENT_ID || 'admin-cli',
+    clientSecret: process.env.TARGET_KEYCLOAK_CLIENT_SECRET,
+    username: process.env.TARGET_KEYCLOAK_USERNAME,
+    password: process.env.TARGET_KEYCLOAK_PASSWORD,
+  },
 };
 
 function getRealmUrl(env = 'dev', realm = 'master') {
@@ -72,15 +79,20 @@ async function getAdminClient(env = 'dev', { totp = '' } = {}) {
       },
     });
 
-    await kcAdminClient.auth({
-      grantType: config.clientSecret ? 'client_credentials' : 'password',
-      clientId: config.clientId,
-      clientSecret: config.clientSecret,
-      username: config.username,
-      password: config.password,
-      totp,
-    });
+    const auth = async () => {
+      await kcAdminClient.auth({
+        grantType: config.clientSecret ? 'client_credentials' : 'password',
+        clientId: config.clientId,
+        clientSecret: config.clientSecret,
+        username: config.username,
+        password: config.password,
+        totp,
+      });
+    };
 
+    kcAdminClient.reauth = auth;
+
+    await auth();
     return kcAdminClient;
   } catch (err) {
     console.log(err);
