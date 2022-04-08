@@ -1,0 +1,31 @@
+replicaCount: 1
+
+project: sso-keycloak
+nameOverride: sso-keycloak
+fullnameOverride: sso-keycloak
+
+image:
+  tag: 7.5-9-rc.2
+
+service:
+  type: ClusterIP
+  port: 8443
+
+postgres:
+  host: sso-patroni
+  database: ssokeycloak
+  credentials:
+    secret: sso-patroni
+    usernameKey: username-appuser
+    passwordKey: password-appuser
+
+tls:
+  enabled: false
+
+resources:
+  limits:
+    cpu: 1
+    memory: 1Gi
+  requests:
+    cpu: 0.5
+    memory: 512M
