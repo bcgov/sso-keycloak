@@ -17,42 +17,6 @@ spec:
     metadata:
       labels: {{ include "sso-keycloak.labels" . | nindent 8 }}
     spec:
-      initContainers:
-        - name: initdb
-          image: postgres:14.2-alpine
-          imagePullPolicy: Always
-          command: ["bash", "-c"]
-          args:
-            - |
-              echo starting;
-              set -euo pipefail;
-              echo "select 'create database $PGDATABASE_NAME' where NOT exists (select from pg_database where datname = '$PGDATABASE_NAME')\gexec" | psql -d postgres
-              echo "done"
-          env:
-            - name: PGHOST
-              value: {{ .Values.postgres.host }}
-            - name: PGPORT
-              value: {{ .Values.postgres.port | quote }}
-            - name: PGUSER
-              {{- if and .Values.postgres.credentials.secret .Values.postgres.credentials.usernameKey }}
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.postgres.credentials.secret }}
-                  key: {{ .Values.postgres.credentials.usernameKey }}
-              {{- else -}}
-              value: {{ .Values.postgres.credentials.adminUsername }}
-              {{- end }}
-            - name: PGPASSWORD
-              {{- if and .Values.postgres.credentials.secret .Values.postgres.credentials.passwordKey }}
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.postgres.credentials.secret }}
-                  key: {{ .Values.postgres.credentials.passwordKey }}
-              {{- else -}}
-              value: {{ .Values.postgres.credentials.adminPassword }}
-              {{- end }}
-            - name: PGDATABASE_NAME
-              value: {{ .Values.postgres.database }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

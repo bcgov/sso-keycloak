@@ -38,6 +38,8 @@ create-random-db-secret:
 		--from-literal=username-superuser=postgres \
 		--from-literal=username-admin=admin \
 		--from-literal=username-standby=standby \
+		--from-literal=username-appuser=appuser \
 		--from-literal=password-superuser=$(shell bash -c 'echo $$RANDOM | md5sum | head -c 32') \
 		--from-literal=password-admin=$(shell bash -c 'echo $$RANDOM | md5sum | head -c 32') \
-		--from-literal=password-standby=$(shell bash -c 'echo $$RANDOM | md5sum | head -c 32')
+		--from-literal=password-standby=$(shell bash -c 'echo $$RANDOM | md5sum | head -c 32') \
+		--from-literal=password-appuser=$(shell bash -c 'echo $$RANDOM | md5sum | head -c 32')

@@ -26,6 +26,10 @@ auth:
     username: standby
     password: pinacolada
 
+appdb:
+  create: false
+  dbname:
+
 # Distribution Configuration stores
 # Please note that only one of the following stores should be enabled.
 kubernetes:
