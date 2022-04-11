@@ -46,6 +46,8 @@ Scripts to manage Keycloak realms and configurations
 
 - Delete a custom realm
 
+  **WARNING: This is almost impossible to revert. Before deleting a custom realm, deactivate it in the dev test an and prod environments for a few days as a final safeguard to make sure it's not in use by other projects.**
+
   - Workflow
 
     1.  Find all IDPs associated with this realm
