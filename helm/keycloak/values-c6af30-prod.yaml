@@ -1,6 +1,8 @@
-replicaCount: 1
+replicaCount: 2
 
 project: sso-keycloak
+nameOverride: sso-keycloak
+fullnameOverride: sso-keycloak
 
 image:
   tag: 7.5-9-rc.2
@@ -11,10 +13,11 @@ service:
 
 postgres:
   host: sso-patroni
+  database: ssokeycloak
   credentials:
     secret: sso-patroni
-    usernameKey: username-superuser
-    passwordKey: password-superuser
+    usernameKey: username-appuser
+    passwordKey: password-appuser
 
 tls:
   enabled: true
