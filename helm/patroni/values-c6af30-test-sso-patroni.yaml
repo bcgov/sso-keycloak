@@ -12,6 +12,10 @@ fullnameOverride: sso-patroni
 auth:
   existingSecret: sso-patroni
 
+appdb:
+  create: true
+  dbname: ssokeycloak
+
 env:
   ALLOW_NOSSL: "true"
 
