@@ -1,9 +1,11 @@
 replicaCount: 3
 
 image:
-  repository: gcr.io/ggl-cas-storage/cas-postgres
+  # https://github.com/zalando/spilo/releases/tag/2.1-p1
+  # RH SSO JDBC is enable to connect to PostgreSQL 14
+  repository: registry.opensource.zalan.do/acid/spilo-13
   pullPolicy: Always
-  tag: "0.3.0"
+  tag: 2.1-p1
 
 project: sso-keycloak
 nameOverride: sso-patroni
@@ -33,9 +35,3 @@ kubernetes:
     enable: true
 walE:
   enable: false
-
-# auth:
-#   existingSecret: sso-patroni
-#   superuser:
-#     username: username-superuser
-#     password: password-superuser
