@@ -25,10 +25,6 @@ ADD https://github.com/$SOURCE_REPO/go-crond/releases/download/$GOCROND_VERSION/
 
 USER root
 
-RUN yum install -y git
-RUN git clone https://github.com/powa-team/pg_stat_kcache.git
-RUN cd pg_stat_kcache && cp pg_stat_kcache.control /opt/rh/rh-postgresql13/root/usr/share/pgsql/extension/
-
 RUN chmod +x /usr/bin/go-crond
 # ========================================================================================================
 
