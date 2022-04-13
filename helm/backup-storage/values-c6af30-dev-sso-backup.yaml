@@ -1,5 +1,5 @@
-nameOverride: "sso-backup-storage"
-fullnameOverride: "sso-backup-storage"
+nameOverride: sso-backup-storage
+fullnameOverride: sso-backup-storage
 
 image:
   repository: ghcr.io/bcgov/backup-storage

@@ -80,8 +80,8 @@ function onRestoreDatabase(){
     # Drop Patroni-specific schemas
     if (( ${_rtnCd} == 0 )); then
       psql -h "${_hostname}" ${_portArg} -a -d ${_database} <<EOF
-DROP SCHEMA IF EXISTS metric_helpers;
-DROP SCHEMA IF EXISTS user_management;
+DROP SCHEMA IF EXISTS metric_helpers CASCADE;
+DROP SCHEMA IF EXISTS user_management CASCADE;
 EOF
 
       _rtnCd=${?}
