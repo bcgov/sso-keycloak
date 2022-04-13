@@ -1,6 +1,11 @@
 nameOverride: "sso-backup-storage"
 fullnameOverride: "sso-backup-storage"
 
+image:
+  repository: ghcr.io/bcgov/backup-storage
+  tag: postgres-13
+  pullPolicy: Always
+
 backupConfig: |
   sso-patroni:5432/rhsso
   0 1 * * * default ./backup.sh -s
