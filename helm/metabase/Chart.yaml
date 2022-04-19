@@ -1,0 +1,5 @@
+description: |
+  This is a PostgreSQL backed Metabase (http://www.metabase.com/) deployment. Metabase is the easy, open source way for everyone in your company to ask questions and learn from data.
+name: metabase
+tags: analytics,database,metabase
+version: v0.0.1

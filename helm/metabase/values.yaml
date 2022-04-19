@@ -1,0 +1,12 @@
+metabase_image: docker-remote.artifacts.developer.gov.bc.ca/metabase/metabase:latest
+# metabase_route_host: '# TODO: must define a default value for .metabase_route_host'
+metabase_service_name: metabase
+postgresql_database: metabase
+postgresql_image_namespace: openshift
+postgresql_password: '# TODO: must define a default value for .postgresql_password'
+postgresql_user: metabase
+postgresql_version: "9.6"
+postgresql_volume_capacity: 1Gi
+namespace: ""
+networkPolicies:
+  enabled: true

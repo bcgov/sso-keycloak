@@ -1,0 +1,3 @@
+postgresql_password: #Add password!
+metabase_image: gcr.io/ggl-cas-storage/metabase:latest
+namespace: eb75ad-tools
