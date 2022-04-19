@@ -23,4 +23,5 @@ upgrade:
 	helm upgrade --install metabase . \
 	-n eb75ad-tools \
 	-f values.yaml \
-	-f "values-eb75ad-tools.yaml"
+	-f "values-eb75ad-tools.yaml" \
+	--set postgresql_password="$(shell bash -c 'echo $$RANDOM | md5sum | head -c 32')"

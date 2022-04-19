@@ -1,2 +1,0 @@
-# postgresql_password: #Set in the Makefile
-metabase_image: gcr.io/ggl-cas-storage/metabase:latest
