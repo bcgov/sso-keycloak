@@ -19,7 +19,10 @@ spec:
         - podSelector: {}
   policyTypes:
     - Ingress
----
+```
+and
+
+```
 kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
 metadata:
@@ -40,7 +43,15 @@ These network policies are fairly generic and may or may not already be configur
 
 ### Install the helm charts
 
-The two helm commands are run through the make file in this folder, `make install` and `make upgrade`.  This will install and upgrade metabase in the Gold Production Tools namespace.  If we need to install it somewhere else the script will need to be generalized.  Note this helm chart has not been used to deploy the Silver cluster metabase instance.
+The two helm commands are run through the make file in this folder:
+
+ `make install NAMESPACE=eb75ad-tools`
+
+and
+
+ `make upgrade NAMESPACE=eb75ad-tools`
+
+This will install and upgrade metabase in the Gold Production Tools namespace.  If we need to install it somewhere else the script will need to be generalized.  Note this helm chart has not been used to deploy the Silver cluster metabase instance.
 
 ## Adding a databse to metabase:
 
