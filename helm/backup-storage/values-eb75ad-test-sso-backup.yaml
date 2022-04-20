@@ -1,16 +1,25 @@
-nameOverride: "sso-backup-storage"
-fullnameOverride: "sso-backup-storage"
+nameOverride: sso-backup-storage
+fullnameOverride: sso-backup-storage
 
 image:
   repository: ghcr.io/bcgov/backup-storage
   tag: postgres-13
+  pullPolicy: Always
 
 backupConfig: |
   sso-patroni:5432/ssokeycloak
   0 1 * * * default ./backup.sh -s
-  0 4 * * * default ./backup.sh -s -v all
 
 db:
   secretName: sso-patroni
-  usernameKey: username-superuser
-  passwordKey: password-superuser
+  usernameKey: username-appuser
+  passwordKey: password-appuser
+
+env:
+  ENVIRONMENT_FRIENDLY_NAME:
+    value: "SSO Gold Client Test Backup"
+  ENVIRONMENT_NAME:
+    value: eb75ad-test
+  WEBHOOK_URL:
+    value: <<Insert value>>
+    secure: true
