@@ -3,12 +3,12 @@ kind: PersistentVolumeClaim
 metadata:
   labels:
     app: metabase
-    service: {{ .Values.metabase_service_name }}
+    service: {{ .Values.metabaseServiceName }}
     template: metabase-postgresql-template
-  name: {{ .Values.metabase_service_name }}-postgresql
+  name: {{ .Values.metabaseServiceName }}-postgresql
 spec:
   accessModes:
   - ReadWriteOnce
   resources:
     requests:
-      storage: {{ .Values.postgresql_volume_capacity }}
+      storage: {{ .Values.postgresqlVolumeCapacity }}

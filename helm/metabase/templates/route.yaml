@@ -3,13 +3,13 @@ kind: Route
 metadata:
   labels:
     app: metabase
-    service: {{ .Values.metabase_service_name }}
+    service: {{ .Values.metabaseServiceName }}
     template: metabase-postgresql-template
-  name: {{ .Values.metabase_service_name }}
+  name: {{ .Values.metabaseServiceName }}
 spec:
   tls:
     insecureEdgeTerminationPolicy: Redirect
     termination: edge
   to:
     kind: Service
-    name: {{ .Values.metabase_service_name }}
+    name: {{ .Values.metabaseServiceName }}

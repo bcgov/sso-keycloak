@@ -1,2 +1,2 @@
-metabase_image: gcr.io/ggl-cas-storage/metabase:latest
+metabaseImage: gcr.io/ggl-cas-storage/metabase:latest
 namespace: eb75ad-tools

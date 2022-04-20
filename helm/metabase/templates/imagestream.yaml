@@ -4,12 +4,12 @@ metadata:
   labels:
     app: metabase
     template: metabase-postgresql-template
-  name: {{ .Values.metabase_service_name }}
+  name: {{ .Values.metabaseServiceName }}
 spec:
   tags:
   - from:
       kind: DockerImage
-      name: {{ .Values.metabase_image }}
+      name: {{ .Values.metabaseImage }}
     generation: 2
     name: latest
     referencePolicy:

@@ -3,20 +3,20 @@ kind: DeploymentConfig
 metadata:
   labels:
     app: metabase
-    service: {{ .Values.metabase_service_name }}
+    service: {{ .Values.metabaseServiceName }}
     template: metabase-postgresql-template
-  name: {{ .Values.metabase_service_name }}-postgresql
+  name: {{ .Values.metabaseServiceName }}-postgresql
 spec:
   replicas: 1
   selector:
-    name: {{ .Values.metabase_service_name }}-postgresql
+    name: {{ .Values.metabaseServiceName }}-postgresql
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
         app: metabase
-        name: {{ .Values.metabase_service_name }}-postgresql
+        name: {{ .Values.metabaseServiceName }}-postgresql
     spec:
       containers:
       - env:
@@ -24,17 +24,17 @@ spec:
           valueFrom:
             secretKeyRef:
               key: database
-              name: {{ .Values.metabase_service_name }}-postgresql-credentials
+              name: {{ .Values.metabaseServiceName }}-postgresql-credentials
         - name: POSTGRESQL_USER
           valueFrom:
             secretKeyRef:
               key: username
-              name: {{ .Values.metabase_service_name }}-postgresql-credentials
+              name: {{ .Values.metabaseServiceName }}-postgresql-credentials
         - name: POSTGRESQL_PASSWORD
           valueFrom:
             secretKeyRef:
               key: password
-              name: {{ .Values.metabase_service_name }}-postgresql-credentials
+              name: {{ .Values.metabaseServiceName }}-postgresql-credentials
         image: ' '
         imagePullPolicy: IfNotPresent
         livenessProbe:
@@ -46,7 +46,7 @@ spec:
             - pg_isready -h 127.0.0.1 -p 5432
           initialDelaySeconds: 30
           timeoutSeconds: 1
-        name: {{ .Values.metabase_service_name }}-postgresql
+        name: {{ .Values.metabaseServiceName }}-postgresql
         ports:
         - containerPort: 5432
           protocol: TCP
@@ -63,23 +63,23 @@ spec:
         terminationMessagePath: /dev/termination-log
         volumeMounts:
         - mountPath: /var/lib/pgsql/data
-          name: {{ .Values.metabase_service_name }}-postgresql-data
+          name: {{ .Values.metabaseServiceName }}-postgresql-data
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       volumes:
-      - name: {{ .Values.metabase_service_name }}-postgresql-data
+      - name: {{ .Values.metabaseServiceName }}-postgresql-data
         persistentVolumeClaim:
-          claimName: {{ .Values.metabase_service_name }}-postgresql
+          claimName: {{ .Values.metabaseServiceName }}-postgresql
   triggers:
   - type: ConfigChange
   - imageChangeParams:
       automatic: true
       containerNames:
-      - {{ .Values.metabase_service_name }}-postgresql
+      - {{ .Values.metabaseServiceName }}-postgresql
       from:
         kind: ImageStreamTag
-        name: postgresql:{{ .Values.postgresql_version }}
-        namespace: {{ .Values.postgresql_image_namespace }}
+        name: postgresql:{{ .Values.postgresqlVersion }}
+        namespace: {{ .Values.postgresqlImageNamespace }}
       lastTriggeredImage: ""
     type: ImageChange
 ---
@@ -88,22 +88,22 @@ kind: DeploymentConfig
 metadata:
   labels:
     app: metabase
-    service: {{ .Values.metabase_service_name }}
+    service: {{ .Values.metabaseServiceName }}
     template: metabase-postgresql-template
-  name: {{ .Values.metabase_service_name }}
+  name: {{ .Values.metabaseServiceName }}
 spec:
   replicas: 1
   selector:
     app: metabase
-    deploymentconfig: {{ .Values.metabase_service_name }}
+    deploymentconfig: {{ .Values.metabaseServiceName }}
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
         app: metabase
-        deploymentconfig: {{ .Values.metabase_service_name }}
-        service: {{ .Values.metabase_service_name }}
+        deploymentconfig: {{ .Values.metabaseServiceName }}
+        service: {{ .Values.metabaseServiceName }}
         template: metabase
     spec:
       containers:
@@ -123,22 +123,22 @@ spec:
         - name: MB_DB_TYPE
           value: postgres
         - name: MB_DB_HOST
-          value: {{ .Values.metabase_service_name }}-postgresql
+          value: {{ .Values.metabaseServiceName }}-postgresql
         - name: MB_DB_PORT
           value: "5432"
         - name: MB_DB_DBNAME
-          value: {{ .Values.postgresql_database }}
+          value: {{ .Values.postgresqlDatabase }}
         - name: MB_DB_USER
           valueFrom:
             secretKeyRef:
               key: username
-              name: {{ .Values.metabase_service_name }}-postgresql-credentials
+              name: {{ .Values.metabaseServiceName }}-postgresql-credentials
         - name: MB_DB_PASS
           valueFrom:
             secretKeyRef:
               key: password
-              name: {{ .Values.metabase_service_name }}-postgresql-credentials
-        image: {{ .Values.metabase_image }}
+              name: {{ .Values.metabaseServiceName }}-postgresql-credentials
+        image: {{ .Values.metabaseImage }}
         imagePullPolicy: Always
         livenessProbe:
           failureThreshold: 30
@@ -147,10 +147,10 @@ spec:
             port: 3000
           initialDelaySeconds: 240
           timeoutSeconds: 3
-        name: {{ .Values.metabase_service_name }}
+        name: {{ .Values.metabaseServiceName }}
         ports:
         - containerPort: 3000
-          name: {{ .Values.metabase_service_name }}
+          name: {{ .Values.metabaseServiceName }}
           protocol: TCP
         readinessProbe:
           httpGet:
@@ -170,17 +170,17 @@ spec:
       imagePullSecrets:
       - name: artifactory-creds
       restartPolicy: Always
-      serviceAccount: {{ .Values.metabase_service_name }}
-      serviceAccountName: {{ .Values.metabase_service_name }}
+      serviceAccount: {{ .Values.metabaseServiceName }}
+      serviceAccountName: {{ .Values.metabaseServiceName }}
       terminationGracePeriodSeconds: 30
   triggers:
   - type: ConfigChange
   - imageChangeParams:
       automatic: true
       containerNames:
-      - {{ .Values.metabase_service_name }}
+      - {{ .Values.metabaseServiceName }}
       from:
         kind: ImageStreamTag
-        name: {{ .Values.metabase_service_name }}:latest
+        name: {{ .Values.metabaseServiceName }}:latest
       lastTriggeredImage: ""
     type: ImageChange
