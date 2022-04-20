@@ -65,24 +65,33 @@ Metabase needs to access other namespaces.  To allow access we must create a net
 kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
 metadata:
-  name: sso-dev-production-gold-metabase-access
-  namespace: eb75ad-dev
+  name: <NAMESPACE DESCRIPTION>-metabase-access
+  namespace: <TARGET NAMESPACE>
 spec:
   podSelector:
     matchLabels:
-      app: sso-patroni
+      app: <DATABASE CLUSTER TAG>
   ingress:
     - from:
         - namespaceSelector:
             matchLabels:
-              environment: tools
-              name: eb75ad
+              environment: <METABASE NAMESPACE ENVIRONMENT>
+              name: <METABASE NAMESPACE LICENCE PLATE>
         - podSelector:
             matchLabels:
               app: metabase
   policyTypes:
     - Ingress
 ```
+
+The config for Gold Metabase are:
+
+```
+  DATABASE CLUSTER TAG: sso-patroni
+  METABASE NAMESPACE ENVIRONMENT: tools
+  METABASE NAMESPACE LICENCE PLATE: eb75ad
+```
+
 
 ### Connect to the database
 
