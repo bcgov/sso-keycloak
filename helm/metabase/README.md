@@ -2,6 +2,44 @@
 
 ## Installing metabase
 
+### Confirm network policies
+
+In order for metabase to deploy successfully, pods within the namespace must have access to each other.  Ensure the the following two network policies are in place:
+
+```
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: allow-same-namespace
+  namespace: <NAMESPACE>
+spec:
+  podSelector: {}
+  ingress:
+    - from:
+        - podSelector: {}
+  policyTypes:
+    - Ingress
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: allow-from-openshift-ingress
+  namespace: <NAMESPACE>
+spec:
+  podSelector: {}
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              network.openshift.io/policy-group: ingress
+  policyTypes:
+    - Ingress
+```
+
+These network policies are fairly generic and may or may not already be configured in the namespace where Metabase is being deployed.
+
+### Install the helm charts
+
 The two helm commands are run through the make file in this folder, `make install` and `make upgrade`.  This will install and upgrade metabase in the Gold Production Tools namespace.  If we need to install it somewhere else the script will need to be generalized.  Note this helm chart has not been used to deploy the Silver cluster metabase instance.
 
 ## Adding a databse to metabase:
