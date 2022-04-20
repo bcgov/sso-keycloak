@@ -34,6 +34,9 @@ Create chart name and version as used by the chart label.
 Common labels
 */}}
 {{- define "metabase.labels" -}}
+app: metabase
+service: {{ .Values.metabaseServiceName }}
+template: metabase-postgresql-template
 helm.sh/chart: {{ include "metabase.chart" . }}
 {{ include "metabase.selectorLabels" . }}
 {{- if .Chart.AppVersion }}

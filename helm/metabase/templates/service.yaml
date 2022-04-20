@@ -3,10 +3,7 @@ kind: Service
 metadata:
   annotations:
     template.openshift.io/expose-uri: http://{.spec.clusterIP}:{.spec.ports[?(.name=="{{ .Values.metabaseServiceName }}")].port}
-  labels:
-    app: metabase
-    service: {{ .Values.metabaseServiceName }}
-    template: metabase-postgresql-template
+  labels: {{ include "metabase.labels" . | nindent 4 }}
   name: {{ .Values.metabaseServiceName }}
 spec:
   ports:

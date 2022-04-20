@@ -1,10 +1,7 @@
 apiVersion: apps.openshift.io/v1
 kind: DeploymentConfig
 metadata:
-  labels:
-    app: metabase
-    service: {{ .Values.metabaseServiceName }}
-    template: metabase-postgresql-template
+  labels: {{ include "metabase.labels" . | nindent 4 }}
   name: {{ .Values.metabaseServiceName }}-postgresql
 spec:
   replicas: 1
@@ -86,10 +83,7 @@ spec:
 apiVersion: apps.openshift.io/v1
 kind: DeploymentConfig
 metadata:
-  labels:
-    app: metabase
-    service: {{ .Values.metabaseServiceName }}
-    template: metabase-postgresql-template
+  labels: {{ include "metabase.labels" . | nindent 4 }}
   name: {{ .Values.metabaseServiceName }}
 spec:
   replicas: 1
