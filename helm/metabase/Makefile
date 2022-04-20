@@ -1,13 +1,5 @@
 SHELL := /usr/bin/env bash
 
-# TODO Create a random password for metabase to access the metabase database
-.PHONY: create-random-db-secret
-create-random-db-secret:
-	kubectl create secret generic metabase-db-secret -n eb75ad-tools \
-		--from-literal=metabase-postgres-user=metabase \
-		--from-literal=metabase-postgres-password=$(shell bash -c 'echo $$RANDOM | md5sum | head -c 32')
-
-
 
 # This installs metabase in the gold production tools namespace
 .PHONY: install
@@ -17,7 +9,7 @@ install:
 	-f "values-eb75ad-tools.yaml" \
 	--set postgresql_password="$(shell bash -c 'echo $$RANDOM | md5sum | head -c 32')"
 
-# Upgrade will not regenerate the secrets
+# Upgrade will change an existing metabase deployment. The secret gets regenerated each time this is run
 .PHONY: upgrade
 upgrade:
 	helm upgrade --install metabase . \
