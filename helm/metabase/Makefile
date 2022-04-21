@@ -7,7 +7,7 @@ install:
 	helm install metabase . -n ${NAMESPACE} \
 	-f values.yaml \
 	-f "values-${NAMESPACE}.yaml" \
-	--set postgresqlPassword="$(shell bash -c 'echo $$RANDOM | md5sum | head -c 32')"
+	--set postgresql.password="$(shell bash -c 'echo $$RANDOM | md5sum | head -c 32')"
 
 # Upgrade will change an existing metabase deployment. The secret gets regenerated each time this is run
 .PHONY: upgrade
@@ -16,4 +16,4 @@ upgrade:
 	-n ${NAMESPACE} \
 	-f values.yaml \
 	-f "values-${NAMESPACE}.yaml" \
-	--set postgresqlPassword="$(shell bash -c 'echo $$RANDOM | md5sum | head -c 32')"
+	--set postgresql.password="$(shell bash -c 'echo $$RANDOM | md5sum | head -c 32')"

@@ -8,4 +8,4 @@ spec:
   - ReadWriteOnce
   resources:
     requests:
-      storage: {{ .Values.postgresqlVolumeCapacity }}
+      storage: {{ .Values.postgresql.persistence.size }}

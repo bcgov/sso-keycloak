@@ -75,7 +75,7 @@ spec:
       - {{ .Values.metabaseServiceName }}-postgresql
       from:
         kind: ImageStreamTag
-        name: postgresql:{{ .Values.postgresqlVersion }}
+        name: postgresql:{{ .Values.postgresql.version }}
         namespace: {{ .Values.postgresqlImageNamespace }}
       lastTriggeredImage: ""
     type: ImageChange
@@ -121,7 +121,7 @@ spec:
         - name: MB_DB_PORT
           value: "5432"
         - name: MB_DB_DBNAME
-          value: {{ .Values.postgresqlDatabase }}
+          value: {{ .Values.postgresql.database }}
         - name: MB_DB_USER
           valueFrom:
             secretKeyRef:
@@ -132,8 +132,8 @@ spec:
             secretKeyRef:
               key: password
               name: {{ .Values.metabaseServiceName }}-postgresql-credentials
-        image: {{ .Values.metabaseImage }}
-        imagePullPolicy: Always
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
         livenessProbe:
           failureThreshold: 30
           httpGet:
