@@ -103,3 +103,7 @@ The one complicated part of adding a db to the metabase account is the host.  Th
 ```
 
 It is important to connect to the read only service if one is available.  If the connection attempt times out, it is possible the network policy you created is not set up properly.
+
+## Troubleshooting
+
+The secrets for the db get regenerated each time the helm charts are tun.  This means the database pods may need to be scaled down to zero then back up to chance the credential.
