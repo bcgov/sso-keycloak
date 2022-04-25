@@ -51,7 +51,7 @@ and
 
  `make upgrade NAMESPACE=eb75ad-tools`
 
-This will install and upgrade metabase in the Gold Production Tools namespace.  If we need to install it somewhere else the script will need to be generalized.  Note this helm chart has not been used to deploy the Silver cluster metabase instance.
+This will install and upgrade metabase in the Gold Production Tools namespace.  The sandbox namespace is `c6af30-tools`.  Note this helm chart has not been used to deploy the Silver cluster metabase instance.
 
 ## Adding a databse to metabase:
 
@@ -89,7 +89,8 @@ The config for Gold Metabase are:
 ```
   DATABASE CLUSTER TAG: sso-patroni
   METABASE NAMESPACE ENVIRONMENT: tools
-  METABASE NAMESPACE LICENCE PLATE: eb75ad
+  METABASE NAMESPACE LICENCE PLATE (production): eb75ad
+  METABASE NAMESPACE LICENCE PLATE (sandbox): c6af30
 ```
 
 

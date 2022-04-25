@@ -1,0 +1,4 @@
+namespace: c6af30-tools
+
+image:
+  repository: gcr.io/ggl-cas-storage/metabase
