@@ -1,0 +1,35 @@
+replicaCount: 2
+
+image:
+  repository: gcr.io/ggl-cas-storage/cas-postgres
+  pullPolicy: Always
+  tag: "0.2.1"
+
+project: kc-cron-patroni
+nameOverride: kc-cron-patroni
+fullnameOverride: kc-cron-patroni
+
+auth:
+  existingSecret: kc-cron-patroni
+
+# The app db name is set in the cron-active-sessions.yaml file
+appdb:
+  create: true
+  dbname: rhsso
+
+env:
+  ALLOW_NOSSL: "true"
+
+resources: {}
+persistentVolume:
+  storageClass: netapp-block-standard
+  size: 5Gi
+# As per https://patroni.readthedocs.io/en/latest/kubernetes.html#use-configmaps
+# "in some cases, for instance, when running on OpenShift, there is no alternative to using ConfigMaps."
+kubernetes:
+  dcs:
+    enable: true
+  configmaps:
+    enable: true
+walE:
+  enable: false
