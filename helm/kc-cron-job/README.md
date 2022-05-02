@@ -6,7 +6,7 @@ The `kc-cron-jobs` are currently used to pull two types of data from the running
 
 The two jobs preserve the number of active sessions in the application and the event logs of the application.  These logs may also be preserved through our Hive/splunk integration however that process is unrelated to the cron jobs deployed here.
 
-The deplouyment steps for a new namespace follow:
+The deployment steps for a new namespace follow:
 
 ## 1. Create the patroni secret.
 
@@ -19,7 +19,7 @@ make create-random-db-secret NAME=kc-cron-patroni NAMESPACE=<namespace>
 
 ## 2. Expand the resources in the namespace
 
-If there is not enough space in the tools namespace for the logs you may need to request more.
+If there is not enough space in the tools namespace for the logs you may need to request more. This can be done through the (Platform Services Registry)[https://registry.developer.gov.bc.ca/]
 
 ## 3. Create the database in the tools namespace
 
@@ -31,7 +31,7 @@ make install NAME=kc-cron-patroni NAMESPACE=<namespace>
 
 ## 4. Create a service account
 
-Create a service account in key cloak.  This should eventually be set up in terraform, but for now do it manually.  In the `master` realm create the followin client if it does not exist:
+Create a service account in key cloak.  This should eventually be set up in terraform, but for now do it manually.  In the `master` realm create the following client if it does not exist:
 
 Name: `script-cli`
 Standard Flow Enabled" `OFF`
@@ -72,3 +72,5 @@ Note, unistall process may be slightly buggy and will not remove the helm patron
 ## 6. Add the db to metabase
 
 Once the cron job is running and the database is set up we can connect to the metabase instance. See the folder `helm/metabase/README.md` for details on connecting to metabase instances and setting network policies.
+
+Note, for the cron job to run successfully metabase must use the superuser credential.
