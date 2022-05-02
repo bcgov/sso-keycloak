@@ -36,6 +36,9 @@ Create a service account in key cloak.  This should eventually be set up in terr
 Name: `script-cli`
 Standard Flow Enabled" `OFF`
 Access type: `confidential`
+Service Accounts Enabled: `On`
+
+The `service account roles` will be be configured with a custom `viewer` role.
 
 The credential key will be added to the `kc-cron-service-account` secret for the cron job to access. To create this secret in the tools namespace, run the following command in the `helm/kc-cron-job` folder.
 
@@ -46,6 +49,8 @@ NAMESPACE=<namespace> \
 URL=<keycloak_url> \
 CLIENTSECRET=<credential_secret>
 ```
+
+
 
 ## 5. Install the helm chart for `kc-cron-job`
 
