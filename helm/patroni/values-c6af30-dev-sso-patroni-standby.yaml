@@ -1,0 +1,43 @@
+# The openshift container must be logged into gold dr before running this command
+# make install NAME=sso-patroni-standby NAMESPACE=c6af30-dev
+
+replicaCount: 2
+
+image:
+  # https://github.com/zalando/spilo/releases/tag/2.1-p1
+  # RH SSO JDBC is enable to connect to PostgreSQL 14
+  repository: registry.opensource.zalan.do/acid/spilo-13
+  pullPolicy: Always
+  tag: 2.1-p1
+
+# These were needed for this install to work
+project: sso-keycloak
+nameOverride: sso-patroni
+fullnameOverride: sso-patroni
+# Use the same secret as the leader cluster for now
+auth:
+  existingSecret: sso-patroni
+
+appdb:
+  create: true
+  dbname: ssokeycloak
+
+env:
+  ALLOW_NOSSL: "true"
+  STANDBY_HOST: "sso-patroni-gold.c6af30-dev.svc.cluster.local"
+  STANDBY_PORT: 64461
+
+resources: {}
+persistentVolume:
+  storageClass: netapp-block-standard
+  size: 5Gi
+
+# As per https://patroni.readthedocs.io/en/latest/kubernetes.html#use-configmaps
+# "in some cases, for instance, when running on OpenShift, there is no alternative to using ConfigMaps."
+kubernetes:
+  dcs:
+    enable: true
+  configmaps:
+    enable: true
+walE:
+  enable: false

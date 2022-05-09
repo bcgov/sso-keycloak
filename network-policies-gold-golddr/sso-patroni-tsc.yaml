@@ -1,0 +1,14 @@
+# sso-patroni-tsc.yaml
+# oc -n c6af30-dev apply -f sso-patroni-tsc.yaml
+apiVersion: porter.devops.gov.bc.ca/v1alpha1
+kind: TransportServerClaim
+metadata:
+  name: sso-patroni-transport-server
+  namespace: c6af30-dev
+spec:
+  monitor:
+    interval: 10
+    timeout: 10
+    type: tcp
+  service: sso-patroni
+  servicePort: 5432
