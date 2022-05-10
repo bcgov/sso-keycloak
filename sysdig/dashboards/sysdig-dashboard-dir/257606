@@ -1,1 +1,299 @@
-{"version": "v3", "dashboard": {"id": 257606, "teamId": 34492, "userId": 51970, "name": "SSO Production Pods & CPU (Jan 2022)", "panels": [{"id": 2, "type": "basicNumber", "name": "Ready Pod", "description": "Patroni pods are replicas of our database. We are setup to have 3 at any given time. An alert will be triggered if this fails below 3", "nullValueDisplayText": null, "basicQueries": [{"enabled": true, "displayInfo": {"displayName": "", "timeSeriesDisplayNameTemplate": "", "type": "lines"}, "format": {"unit": "number", "inputFormat": "1", "displayFormat": "auto", "decimals": null, "yAxis": "auto", "nullValueDisplayMode": "nullGap"}, "scope": {"expressions": [{"operand": "kubernetes.pod.label.project", "operator": "in", "displayName": "", "value": ["sso-keycloak"], "descriptor": null, "variable": false, "isVariable": false}], "extendsDashboardScope": true}, "compareTo": {"enabled": false, "delta": 1, "timeFormat": "day"}, "displayedValue": null, "metrics": [{"id": "kubernetes.pod.status.ready", "timeAggregation": "avg", "groupAggregation": "sum", "descriptor": null, "sorting": null}]}], "numberThresholds": {"values": [], "base": {"severity": "none", "displayText": ""}, "useDefaults": null}}, {"id": 3, "type": "basicNumber", "name": "Ready Patroni Pods", "description": "Patroni pods are replicas of our database. We are setup to have 3 at any given time. An alert will be triggered if this fails below 3", "nullValueDisplayText": null, "basicQueries": [{"enabled": true, "displayInfo": {"displayName": "", "timeSeriesDisplayNameTemplate": "", "type": "lines"}, "format": {"unit": "number", "inputFormat": "1", "displayFormat": "auto", "decimals": null, "yAxis": "auto", "nullValueDisplayMode": "nullGap"}, "scope": {"expressions": [{"operand": "kubernetes.pod.label.cluster-name", "operator": "in", "displayName": "", "value": ["sso-pgsql-prod"], "descriptor": null, "variable": false, "isVariable": false}], "extendsDashboardScope": true}, "compareTo": {"enabled": false, "delta": 1, "timeFormat": "day"}, "displayedValue": null, "metrics": [{"id": "kubernetes.pod.status.ready", "timeAggregation": "avg", "groupAggregation": "sum", "descriptor": null, "sorting": null}]}], "numberThresholds": {"values": [], "base": {"severity": "none", "displayText": ""}, "useDefaults": null}}, {"id": 1, "type": "basicTimechart", "name": "Total SSO Pod Usage", "description": "The CPU usage of our keycloak pods. Our alerts will begin to trigger when this goes over 3, and at over 5 have noticed serious issues. The dotted line is last weeks values for comparison.", "nullValueDisplayText": null, "basicQueries": [{"enabled": true, "displayInfo": {"displayName": "", "timeSeriesDisplayNameTemplate": "", "type": "lines"}, "format": {"unit": "number", "inputFormat": "1", "displayFormat": "auto", "decimals": null, "yAxis": "auto", "nullValueDisplayMode": "nullGap"}, "scope": {"expressions": [], "extendsDashboardScope": true}, "compareTo": {"enabled": true, "delta": 14, "timeFormat": "day"}, "metrics": [{"id": "cpu.cores.used", "timeAggregation": "sum", "groupAggregation": "avg", "descriptor": null, "sorting": null}], "displayedValue": null, "segmentation": {"labels": [], "limit": 10, "direction": "desc"}}], "applyScopeToAll": false, "applySegmentationToAll": false, "legendConfiguration": {"enabled": true, "position": "bottom", "layout": "table", "showCurrent": true, "width": null, "height": null}, "axesConfiguration": {"bottom": {"enabled": true}, "left": {"enabled": true, "displayName": null, "unit": "auto", "displayFormat": "auto", "decimals": null, "minValue": 0.0, "maxValue": null, "minInputFormat": "1", "maxInputFormat": "1", "scale": "linear"}, "right": {"enabled": true, "displayName": null, "unit": "auto", "displayFormat": "auto", "decimals": null, "minValue": 0.0, "maxValue": null, "minInputFormat": "1", "maxInputFormat": "1", "scale": "linear"}}}], "scopeExpressionList": [{"operand": "kubernetes.namespace.name", "operator": "in", "displayName": null, "value": ["6d70e7-prod"], "descriptor": null, "variable": true, "isVariable": true}], "eventDisplaySettings": {"enabled": true, "queryParams": {"severities": [], "alertStatuses": [], "categories": [], "filter": null, "teamScope": false}}, "shared": true, "public": false, "version": 31, "createdOn": 1643238050499, "modifiedOn": 1643326592357, "description": "created as we lost Jon L's dashboard", "layout": [{"panelId": 2, "x": 0, "y": 7, "w": 6, "h": 4}, {"panelId": 3, "x": 6, "y": 7, "w": 6, "h": 4}, {"panelId": 1, "x": 0, "y": 0, "w": 12, "h": 7}], "sharingSettings": [{"role": "ROLE_RESOURCE_EDIT", "member": {"type": "USER_TEAMS", "id": null, "name": null, "teamTheme": null}}], "publicNotation": false, "publicToken": "ddb7195bd9ee4ed1bf18d1260421cd5f", "favorite": false, "schema": 3, "username": "Zorin Samji (zorin.samji@gov.bc.ca)", "permissions": ["dashboards.read", "dashboards.edit"]}}
+{
+  "version": "v3",
+  "dashboard": {
+    "id": 257606,
+    "teamId": 34492,
+    "userId": 51970,
+    "name": "SSO Production Pods & CPU (Jan 2022)",
+    "panels": [
+      {
+        "id": 2,
+        "type": "basicNumber",
+        "name": "Ready Pod",
+        "description": "Patroni pods are replicas of our database. We are setup to have 3 at any given time. An alert will be triggered if this fails below 3",
+        "nullValueDisplayText": null,
+        "basicQueries": [
+          {
+            "enabled": true,
+            "displayInfo": {
+              "displayName": "",
+              "timeSeriesDisplayNameTemplate": "",
+              "type": "lines"
+            },
+            "format": {
+              "unit": "number",
+              "inputFormat": "1",
+              "displayFormat": "auto",
+              "decimals": null,
+              "yAxis": "auto",
+              "nullValueDisplayMode": "nullGap"
+            },
+            "scope": {
+              "expressions": [
+                {
+                  "operand": "kubernetes.pod.label.project",
+                  "operator": "in",
+                  "displayName": "",
+                  "value": [
+                    "sso-keycloak"
+                  ],
+                  "descriptor": null,
+                  "variable": false,
+                  "isVariable": false
+                }
+              ],
+              "extendsDashboardScope": true
+            },
+            "compareTo": {
+              "enabled": false,
+              "delta": 1,
+              "timeFormat": "day"
+            },
+            "displayedValue": null,
+            "metrics": [
+              {
+                "id": "kubernetes.pod.status.ready",
+                "timeAggregation": "avg",
+                "groupAggregation": "sum",
+                "descriptor": null,
+                "sorting": null
+              }
+            ]
+          }
+        ],
+        "numberThresholds": {
+          "values": [],
+          "base": {
+            "severity": "none",
+            "displayText": ""
+          },
+          "useDefaults": null
+        }
+      },
+      {
+        "id": 3,
+        "type": "basicNumber",
+        "name": "Ready Patroni Pods",
+        "description": "Patroni pods are replicas of our database. We are setup to have 3 at any given time. An alert will be triggered if this fails below 3",
+        "nullValueDisplayText": null,
+        "basicQueries": [
+          {
+            "enabled": true,
+            "displayInfo": {
+              "displayName": "",
+              "timeSeriesDisplayNameTemplate": "",
+              "type": "lines"
+            },
+            "format": {
+              "unit": "number",
+              "inputFormat": "1",
+              "displayFormat": "auto",
+              "decimals": null,
+              "yAxis": "auto",
+              "nullValueDisplayMode": "nullGap"
+            },
+            "scope": {
+              "expressions": [
+                {
+                  "operand": "kubernetes.pod.label.cluster-name",
+                  "operator": "in",
+                  "displayName": "",
+                  "value": [
+                    "sso-pgsql-prod"
+                  ],
+                  "descriptor": null,
+                  "variable": false,
+                  "isVariable": false
+                }
+              ],
+              "extendsDashboardScope": true
+            },
+            "compareTo": {
+              "enabled": false,
+              "delta": 1,
+              "timeFormat": "day"
+            },
+            "displayedValue": null,
+            "metrics": [
+              {
+                "id": "kubernetes.pod.status.ready",
+                "timeAggregation": "avg",
+                "groupAggregation": "sum",
+                "descriptor": null,
+                "sorting": null
+              }
+            ]
+          }
+        ],
+        "numberThresholds": {
+          "values": [],
+          "base": {
+            "severity": "none",
+            "displayText": ""
+          },
+          "useDefaults": null
+        }
+      },
+      {
+        "id": 1,
+        "type": "basicTimechart",
+        "name": "Total SSO Pod Usage",
+        "description": "The CPU usage of our keycloak pods. Our alerts will begin to trigger when this goes over 3, and at over 5 have noticed serious issues. The dotted line is last weeks values for comparison.",
+        "nullValueDisplayText": null,
+        "basicQueries": [
+          {
+            "enabled": true,
+            "displayInfo": {
+              "displayName": "",
+              "timeSeriesDisplayNameTemplate": "",
+              "type": "lines"
+            },
+            "format": {
+              "unit": "number",
+              "inputFormat": "1",
+              "displayFormat": "auto",
+              "decimals": null,
+              "yAxis": "auto",
+              "nullValueDisplayMode": "nullGap"
+            },
+            "scope": {
+              "expressions": [],
+              "extendsDashboardScope": true
+            },
+            "compareTo": {
+              "enabled": true,
+              "delta": 14,
+              "timeFormat": "day"
+            },
+            "metrics": [
+              {
+                "id": "cpu.cores.used",
+                "timeAggregation": "sum",
+                "groupAggregation": "avg",
+                "descriptor": null,
+                "sorting": null
+              }
+            ],
+            "displayedValue": null,
+            "segmentation": {
+              "labels": [],
+              "limit": 10,
+              "direction": "desc"
+            }
+          }
+        ],
+        "applyScopeToAll": false,
+        "applySegmentationToAll": false,
+        "legendConfiguration": {
+          "enabled": true,
+          "position": "bottom",
+          "layout": "table",
+          "showCurrent": true,
+          "width": null,
+          "height": null
+        },
+        "axesConfiguration": {
+          "bottom": {
+            "enabled": true
+          },
+          "left": {
+            "enabled": true,
+            "displayName": null,
+            "unit": "auto",
+            "displayFormat": "auto",
+            "decimals": null,
+            "minValue": 0,
+            "maxValue": null,
+            "minInputFormat": "1",
+            "maxInputFormat": "1",
+            "scale": "linear"
+          },
+          "right": {
+            "enabled": true,
+            "displayName": null,
+            "unit": "auto",
+            "displayFormat": "auto",
+            "decimals": null,
+            "minValue": 0,
+            "maxValue": null,
+            "minInputFormat": "1",
+            "maxInputFormat": "1",
+            "scale": "linear"
+          }
+        }
+      }
+    ],
+    "scopeExpressionList": [
+      {
+        "operand": "kubernetes.namespace.name",
+        "operator": "in",
+        "displayName": null,
+        "value": [
+          "6d70e7-prod"
+        ],
+        "descriptor": null,
+        "variable": true,
+        "isVariable": true
+      }
+    ],
+    "eventDisplaySettings": {
+      "enabled": true,
+      "queryParams": {
+        "severities": [],
+        "alertStatuses": [],
+        "categories": [],
+        "filter": null,
+        "teamScope": false
+      }
+    },
+    "shared": true,
+    "public": false,
+    "version": 31,
+    "createdOn": 1643238050499,
+    "modifiedOn": 1643326592357,
+    "description": "created as we lost Jon L's dashboard",
+    "layout": [
+      {
+        "panelId": 2,
+        "x": 0,
+        "y": 7,
+        "w": 6,
+        "h": 4
+      },
+      {
+        "panelId": 3,
+        "x": 6,
+        "y": 7,
+        "w": 6,
+        "h": 4
+      },
+      {
+        "panelId": 1,
+        "x": 0,
+        "y": 0,
+        "w": 12,
+        "h": 7
+      }
+    ],
+    "sharingSettings": [
+      {
+        "role": "ROLE_RESOURCE_EDIT",
+        "member": {
+          "type": "USER_TEAMS",
+          "id": null,
+          "name": null,
+          "teamTheme": null
+        }
+      }
+    ],
+    "publicNotation": false,
+    "publicToken": "ddb7195bd9ee4ed1bf18d1260421cd5f",
+    "favorite": false,
+    "schema": 3,
+    "username": "Zorin Samji (zorin.samji@gov.bc.ca)",
+    "permissions": [
+      "dashboards.read",
+      "dashboards.edit"
+    ]
+  }
+}

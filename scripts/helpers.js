@@ -10,4 +10,14 @@ function sleep(ms = 0) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-module.exports = { handleError, sleep };
+function ignoreError(prom, errorValue = null) {
+  return prom.then(
+    (data) => data,
+    (err) => {
+      console.error(err);
+      return errorValue;
+    },
+  );
+}
+
+module.exports = { handleError, sleep, ignoreError };
