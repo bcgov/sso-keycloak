@@ -9,7 +9,44 @@ entries:
     urls:
     - https://github.com/bcgov/sso-keycloak/releases/download/kc-cron-job-0.1.1/kc-cron-job-0.1.1.tgz
     version: 0.1.1
+  metabase:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2022-05-10T23:25:27.053941746Z"
+    description: A Helm chart for metabase
+    digest: 5673c4996bda1396e4072f3237666e1279a8bec626adfe910077779f733eb7cf
+    name: metabase
+    type: application
+    urls:
+    - https://github.com/bcgov/sso-keycloak/releases/download/metabase-0.1.0/metabase-0.1.0.tgz
+    version: 0.1.0
   patroni:
+  - apiVersion: v1
+    appVersion: 1.5-p5
+    created: "2022-05-10T23:25:27.202442196Z"
+    dependencies:
+    - condition: etcd.deployChart
+      name: etcd
+      repository: https://charts.helm.sh/incubator
+      version: 0.6.2
+    - condition: zookeeper.deployChart
+      name: zookeeper
+      repository: https://charts.helm.sh/incubator
+      version: 1.0.0
+    - condition: consul.deployChart
+      name: consul
+      repository: https://charts.helm.sh/stable
+      version: 3.6.1
+    description: 'Highly available elephant herd: HA PostgreSQL cluster.'
+    digest: c5e06a7b19d608aa66c495ab7a3f716b51623716de66f1322a4db16599631048
+    home: https://github.com/zalando/patroni
+    name: patroni
+    sources:
+    - https://github.com/zalando/patroni
+    - https://github.com/zalando/spilo
+    urls:
+    - https://github.com/bcgov/sso-keycloak/releases/download/patroni-0.17.8/patroni-0.17.8.tgz
+    version: 0.17.8
   - apiVersion: v1
     appVersion: 1.5-p5
     created: "2021-12-15T20:02:13.313223638Z"
@@ -222,4 +259,4 @@ entries:
     urls:
     - https://github.com/bcgov/sso-keycloak/releases/download/sso-keycloak-0.1.0/sso-keycloak-0.1.0.tgz
     version: 0.1.0
-generated: "2022-01-19T00:47:40.126469494Z"
+generated: "2022-05-10T23:25:27.202583797Z"
