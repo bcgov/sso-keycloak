@@ -1334,6 +1334,45 @@
                 "useNewTemplate": true
             },
             "customerId": 23935,
+            "defaultSettings": [
+                {
+                    "notificationChannelId": 47290,
+                    "options": {
+                        "emailRecipients": [
+                            "junmin@button.is",
+                            "jonathan.sharman@gov.bc.ca",
+                            "arcshiftsolutions@gmail.com",
+                            "zorin.samji@gov.bc.ca",
+                            "bryan@button.is"
+                        ],
+                        "notifyOnOk": true,
+                        "notifyOnResolve": false
+                    },
+                    "type": "EMAIL"
+                },
+                {
+                    "notificationChannelId": 45990,
+                    "options": {
+                        "additionalHeaders": {},
+                        "allowInsecureConnections": false,
+                        "notifyOnOk": true,
+                        "notifyOnResolve": true,
+                        "url": "https://chat.developer.gov.bc.ca/hooks/gFs2Cqw5esdpsr7BS/daSGF68miEHzMExxDQhm7zs57dJJyFdNPZBFAKumm3rMouPf"
+                    },
+                    "type": "WEBHOOK"
+                },
+                {
+                    "notificationChannelId": 47592,
+                    "options": {
+                        "apiKey": "0a8d7514-1736-40b3-83ca-8b201686f178",
+                        "notifyOnOk": true,
+                        "notifyOnResolve": true,
+                        "region": "US",
+                        "url": "https://api.opsgenie.com/v1/json/sysdigcloud?apiKey=0a8d7514-1736-40b3-83ca-8b201686f178"
+                    },
+                    "type": "OPSGENIE"
+                }
+            ],
             "enabled": true,
             "groupName": "active",
             "id": 4626642,
