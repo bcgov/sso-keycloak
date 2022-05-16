@@ -11,9 +11,9 @@ backupConfig: |
   0 1 * * * default ./backup.sh -s
 
 db:
-  secretName: sso-patroni
-  usernameKey: username-appuser
-  passwordKey: password-appuser
+  secretName: sso-patroni-appusers
+  usernameKey: username-appuser1
+  passwordKey: password-appuser1
 
 env:
   ENVIRONMENT_FRIENDLY_NAME:
