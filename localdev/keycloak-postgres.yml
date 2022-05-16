@@ -27,6 +27,7 @@ services:
       SSO_ADMIN_PASSWORD: admin
       TZ: America/Vancouver
       JAVA_OPTS_APPEND: '-Djboss.persistent.log.dir=/opt/eap'
+      KC_HEALTH_ENABLED: "true"
     ports:
       - 8080:8080
     depends_on:

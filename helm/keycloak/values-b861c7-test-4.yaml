@@ -1,25 +1,21 @@
 replicaCount: 1
 
-project: sso-keycloak-4
+project: sso-keycloak
 nameOverride: sso-keycloak-4
 fullnameOverride: sso-keycloak-4
-
-image:
-  tag: 7.5-9-rc.2
-
-service:
-  type: ClusterIP
-  port: 8443
 
 postgres:
   host: sso-patroni
   database: ssokeycloak4
   credentials:
-    secret: sso-patroni
-    usernameKey: username-superuser
-    passwordKey: password-superuser
+    secret: sso-patroni-appusers
+    usernameKey: username-appuser4
+    passwordKey: password-appuser4
 
 tls:
+  enabled: false
+
+networkPolicies:
   enabled: false
 
 resources:

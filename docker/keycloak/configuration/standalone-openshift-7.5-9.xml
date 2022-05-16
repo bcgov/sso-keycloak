@@ -384,14 +384,28 @@
                 <local-cache name="users">
                     <heap-memory size="10000" />
                 </local-cache>
+                <!-- see https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/7.4/html/configuration_guide/configuring_high_availability#clustering_modes -->
                 <!-- see https://docs.jboss.org/author/display/ISPN50/What%20is%20the%20difference%20between%20a%20replicated%20cache%20and%20a%20distributed%20cache_.html -->
                 <!-- see https://lists.jboss.org/pipermail/keycloak-user/2018-September/015577.html -->
-                <replicated-cache name="sessions" />
-                <replicated-cache name="authenticationSessions" />
-                <replicated-cache name="offlineSessions" />
-                <replicated-cache name="clientSessions" />
-                <replicated-cache name="offlineClientSessions" />
-                <replicated-cache name="loginFailures" />
+                <!-- see https://access.redhat.com/support/cases/#/case/03219599 -->
+                <replicated-cache name="sessions">
+                    <expiration lifespan="900000000000000000" />
+                </replicated-cache>
+                <replicated-cache name="authenticationSessions">
+                    <expiration lifespan="900000000000000000" />
+                </replicated-cache>
+                <replicated-cache name="offlineSessions">
+                    <expiration lifespan="900000000000000000" />
+                </replicated-cache>
+                <replicated-cache name="clientSessions">
+                    <expiration lifespan="900000000000000000" />
+                </replicated-cache>
+                <replicated-cache name="offlineClientSessions">
+                    <expiration lifespan="900000000000000000" />
+                </replicated-cache>
+                <replicated-cache name="loginFailures">
+                    <expiration lifespan="900000000000000000" />
+                </replicated-cache>
                 <local-cache name="authorization">
                     <heap-memory size="10000" />
                 </local-cache>
