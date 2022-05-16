@@ -1,23 +1,16 @@
 replicaCount: 1
 
-project: sso-keycloak-1
+project: sso-keycloak
 nameOverride: sso-keycloak-1
 fullnameOverride: sso-keycloak-1
-
-image:
-  tag: 7.5-9-rc.2
-
-service:
-  type: ClusterIP
-  port: 8443
 
 postgres:
   host: sso-patroni
   database: ssokeycloak1
   credentials:
-    secret: sso-patroni
-    usernameKey: username-superuser
-    passwordKey: password-superuser
+    secret: sso-patroni-appusers
+    usernameKey: username-appuser1
+    passwordKey: password-appuser1
 
 tls:
   enabled: false
@@ -29,3 +22,27 @@ resources:
   requests:
     cpu: 0.5
     memory: 512M
+
+patroni:
+  install: true
+  replicaCount: 3
+
+  additionalCredentials:
+    - username: ssokeycloak1
+      password:
+    - username: ssokeycloak2
+      password:
+    - username: ssokeycloak3
+      password:
+    - username: ssokeycloak4
+      password:
+    - username: ssokeycloak5
+      password:
+    - username: ssokeycloak6
+      password:
+
+  persistentVolume:
+    size: 3Gi
+
+  podDisruptionBudget:
+    enabled: true
