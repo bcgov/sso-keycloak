@@ -1,11 +1,4 @@
-blank_issues_enabled: false
-contact_links:
-  - name: Request for an Pathfinder SSO Client in a standard realm
-    url: https://bcgov.github.io/sso-requests/
-    about: To create a set of Pathfinder SSO clients (in KeyCloak DEV, TEST, PROD).
-  - name: Post or view our discussions page
-    url:   https://github.com/bcgov/sso-keycloak/discussions/categories/q-a
-    about: View our Q&A section 
+
   
   
   
