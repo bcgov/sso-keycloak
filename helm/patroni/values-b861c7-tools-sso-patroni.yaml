@@ -14,13 +14,17 @@ fullnameOverride: sso-patroni
 auth:
   existingSecret: sso-patroni
 
+appdb:
+  create: true
+  dbname: ssokeycloak
+
 env:
   ALLOW_NOSSL: "true"
 
 resources: {}
 persistentVolume:
   storageClass: netapp-block-standard
-  size: 30Gi
+  size: 10Gi
 
 # As per https://patroni.readthedocs.io/en/latest/kubernetes.html#use-configmaps
 # "in some cases, for instance, when running on OpenShift, there is no alternative to using ConfigMaps."

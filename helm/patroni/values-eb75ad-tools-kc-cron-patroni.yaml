@@ -5,8 +5,20 @@ image:
   pullPolicy: Always
   tag: "0.2.1"
 
-nameOverride: realm-registry-patroni
-fullnameOverride: realm-registry-patroni
+project: kc-cron-patroni
+nameOverride: kc-cron-patroni
+fullnameOverride: kc-cron-patroni
+
+auth:
+  existingSecret: kc-cron-patroni
+
+# The app db name is set in the cron-active-sessions.yaml file
+appdb:
+  create: true
+  dbname: rhsso
+
+env:
+  ALLOW_NOSSL: "true"
 
 resources: {}
 persistentVolume:

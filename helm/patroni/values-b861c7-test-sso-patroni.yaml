@@ -20,7 +20,7 @@ env:
 resources: {}
 persistentVolume:
   storageClass: netapp-block-standard
-  size: 10Gi
+  size: 3Gi
 
 # As per https://patroni.readthedocs.io/en/latest/kubernetes.html#use-configmaps
 # "in some cases, for instance, when running on OpenShift, there is no alternative to using ConfigMaps."

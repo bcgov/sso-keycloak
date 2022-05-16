@@ -10,7 +10,7 @@ on:
 
 jobs:
   build-and-push-helm:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -43,3 +43,4 @@ jobs:
           charts_dir: helm
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          CR_SKIP_EXISTING: true

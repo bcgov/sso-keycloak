@@ -16,3 +16,7 @@ db:
   secretName: patroni-credentials
   usernameKey: username
   passwordKey: password
+
+env:
+  ENVIRONMENT_FRIENDLY_NAME:
+    value: "SSO Backup"

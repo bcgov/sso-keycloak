@@ -2,13 +2,13 @@ const _ = require('lodash');
 const { argv } = require('yargs');
 const Confirm = require('prompt-confirm');
 const { getAdminClient } = require('./keycloak-core');
-const { env, realm = 'master', totp } = argv;
+const { env, realm, totp, email, firstname: firstName, lastname: lastName, username, search, first, max } = argv;
 
 async function main() {
   if (!env || !realm) {
     console.info(`
     Usages:
-      node keycloak-find-client.js --env <env> [--realm <realm>] [--totp <totp>]
+      node keycloak-search-users.js --env <env> --realm <realm> [--totp <totp>] [--email <email>] [--firstName <firstName>] [--lastName <lastName>] [--username <username>] [--search <search>] [--first <first>] [--max <max>]
     `);
 
     return;
@@ -23,19 +23,10 @@ async function main() {
 
     if (!answer) return;
 
-    const role = await kcAdminClient.roles.findOneByName({ realm, name: 'admin' });
-
-    if (role) {
-      role.composites = await kcAdminClient.roles.getCompositeRoles({ realm, id: role.id });
-    }
-
-    console.log(JSON.stringify(role, null, 2));
+    const users = await kcAdminClient.users.find({ realm, email, firstName, lastName, username, search, first, max });
+    console.log(JSON.stringify(users, null, 2));
   } catch (err) {
-    if (err.response) {
-      console.error(err.response.data && err.response.data.error);
-    } else {
-      console.error(err.message || err);
-    }
+    console.error(err.response.data && err.response.data.error);
   }
 }
 

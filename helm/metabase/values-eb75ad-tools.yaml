@@ -1,0 +1,4 @@
+namespace: eb75ad-tools
+
+image:
+  repository: gcr.io/ggl-cas-storage/metabase

@@ -4,7 +4,7 @@ on: push
 
 jobs:
   pre-commit:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
       - name: Install asdf
@@ -27,7 +27,7 @@ jobs:
           asdf reshim
           pre-commit run --color=always --show-diff-on-failure --all-files
   commitlint:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
         with:

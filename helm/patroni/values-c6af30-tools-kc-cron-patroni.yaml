@@ -1,18 +1,21 @@
-replicaCount: 3
+replicaCount: 2
 
 image:
-  # https://github.com/zalando/spilo/releases/tag/2.1-p1
-  # RH SSO JDBC is enable to connect to PostgreSQL 14
-  repository: registry.opensource.zalan.do/acid/spilo-13
+  repository: gcr.io/ggl-cas-storage/cas-postgres
   pullPolicy: Always
-  tag: 2.1-p1
+  tag: "0.2.1"
 
-project: sso-keycloak
-nameOverride: sso-patroni
-fullnameOverride: sso-patroni
+project: kc-cron-patroni
+nameOverride: kc-cron-patroni
+fullnameOverride: kc-cron-patroni
 
 auth:
-  existingSecret: sso-patroni
+  existingSecret: kc-cron-patroni
+
+# The app db name is set in the cron-active-sessions.yaml file
+appdb:
+  create: true
+  dbname: rhsso
 
 env:
   ALLOW_NOSSL: "true"
@@ -20,8 +23,7 @@ env:
 resources: {}
 persistentVolume:
   storageClass: netapp-block-standard
-  size: 10Gi
-
+  size: 5Gi
 # As per https://patroni.readthedocs.io/en/latest/kubernetes.html#use-configmaps
 # "in some cases, for instance, when running on OpenShift, there is no alternative to using ConfigMaps."
 kubernetes:

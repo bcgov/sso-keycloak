@@ -15,11 +15,12 @@ To add a pdb to a project run:
 The namespaces and stateful sets this will be applied to are:
 
  - 3d5c3f-dev - sso-pgsql-dev
- - 3d5c3f-test - sso-pgsql-test
+ - ~3d5c3f-test - sso-pgsql-test~
  - 3d5c3f-prod - sso-pgsql-prod
  - 6d70e7-dev - sso-pgsql-dev
  - 6d70e7-test - sso-pgsql-test
  - 6d70e7-prod - sso-pgsql-prod
 
+Note: the sandbox pdb has to be different due to the fact that it is deployed using helm. The label key value pair for it is `app: sso-patroni`
 
 ## SSO pdb
