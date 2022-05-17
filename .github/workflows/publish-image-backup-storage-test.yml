@@ -23,14 +23,14 @@ jobs:
     steps:
       - name: Checkout the sso-repos
         uses: actions/checkout@v3
-    
+
       - name: Checkout backup storage repository
         run: git clone https://github.com/BCDevOps/backup-container.git
-      
+
       - name: Replace the dockerfile
-        if: ${{ github.event.inputs.postgres_version == '13'}} 
+        if: ${{ github.event.inputs.postgres_version == '13'}}
         run: cp ./docker/backup-container/Dockerfile ./backup-container/docker/Dockerfile
-      
+
       - name: Log in to the GitHub Container registry
         uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
         with:
@@ -43,19 +43,19 @@ jobs:
 #         uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
 #         with:
 #           images: ${{ env.GITHUB_REGISTRY }}/${{ env.IMAGE_NAME }}
-    
+
 #       - name: Print tags
 #         run: echo ${{ steps.meta.outputs.tags }}
-        
+
 #       - name: Print labels
 #         run: echo ${{ steps.meta.outputs.labels }}
-        
+
       - name: Build and push Docker image
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
           context: backup-container/docker
           push: true
-          tags: ${{ env.GITHUB_REGISTRY }}/${{ env.IMAGE_NAME }}:postgres-${{ github.event.inputs.postgres_version}} 
+          tags: ${{ env.GITHUB_REGISTRY }}/${{ env.IMAGE_NAME }}:postgres-${{ github.event.inputs.postgres_version}}
 #           tags: ${{ steps.meta.outputs.tags }}
-#          labels: postgres-${{ github.event.inputs.postgres_version}} 
+#          labels: postgres-${{ github.event.inputs.postgres_version}}
           labels: sso-keycloak-backup
