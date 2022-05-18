@@ -1,0 +1,14 @@
+# Install Patroni
+# Install oc
+# Install helm?
+# Log into gold
+# Run patroni install
+# Log into golddr
+# Run patroni dr install
+
+# Switchover agen
+# log into golddr
+# rsh into patroni
+# use REST API to swith config
+# log into golddr
+# 
