@@ -10,7 +10,7 @@ async function main() {
   if (!baseEnv || !baseRealm || !targetEnv || !targetClient) {
     console.info(`
     Usages:
-      node groups-clientroles.js --base-env <env> --base-realm <realm> --target-env <env> --target-client <client> [--target-realm <realm>] [--auto]
+      node role-migrations/groups-clientroles.js --base-env <env> --base-realm <realm> --target-env <env> --target-client <client> [--target-realm <realm>] [--auto]
     `);
 
     return;

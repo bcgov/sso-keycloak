@@ -37,8 +37,10 @@ async function main() {
       total += count;
 
       for (let x = 0; x < users.length; x++) {
-        const { id, attributes = {} } = users[x];
-        const fids = await adminClient.users.listFederatedIdentities({ realm: githubRealm, id });
+        const { id, username, attributes = {} } = users[x];
+        if (attributes['github_id']) continue;
+
+        const fids = await ignoreError(adminClient.users.listFederatedIdentities({ realm: githubRealm, id }), []);
         const fid = fids.find((f) => f.identityProvider === 'github');
 
         // skip if no `github` linkage
@@ -48,9 +50,9 @@ async function main() {
         }
 
         const { userId } = fid;
-        await adminClient.users.update(
-          { realm: githubRealm, id },
-          { attributes: { ...attributes, github_id: [userId] } },
+        console.log(`processing ${userId}:${username}`);
+        await ignoreError(
+          adminClient.users.update({ realm: githubRealm, id }, { attributes: { ...attributes, github_id: [userId] } }),
         );
       }
 

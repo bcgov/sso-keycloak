@@ -40,8 +40,8 @@
 <div class="${properties.kcLoginClass!}">
     <div id="kc-header" class="${properties.kcHeaderClass!}">
         <div id="kc-header-wrapper" class="${properties.kcHeaderWrapperClass!}">
-            <#if properties.kcLoginTitleType == "client" && client.getDescription()??>
-                ${kcSanitize(msg("loginTitleHtml",(client.getDescription()!'')))?no_esc}
+            <#if properties.kcLoginTitleType == "client" && client.getName()??>
+                ${kcSanitize(msg("loginTitleHtml",(client.getName()!'')))?no_esc}
             <#else>
                 ${kcSanitize(msg("loginTitleHtml",(realm.displayNameHtml!'')))?no_esc}
             </#if>
