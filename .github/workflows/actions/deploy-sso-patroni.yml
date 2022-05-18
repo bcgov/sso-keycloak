@@ -1,0 +1,62 @@
+# Install Patroni
+# Install oc
+# Install helm?
+# Create secret for gold and golddr patroni instance 
+# Log into gold
+# Run patroni install
+# Log into golddr
+# Run patroni dr install
+
+# Switchover agen
+# log into golddr
+# rsh into patroni
+# use REST API to swith config
+# log into golddr
+# 
+
+# # variables 
+# - openshift url gold
+# - openshift token gold
+# - openshift url golddr
+# - openshift token golddr
+
+name: Deploy patroni to gold and golddr
+
+inputs: 
+  openshift_server_url:
+    description: "URL of the OpenShift server"
+    required: true
+  openshift_token:
+    description: "Unique login token for OpenShift"
+    required: true  
+  namespace:
+    description: "The namespace being deployed to"
+    required: true
+  values_file:
+    description: "The values file used by helm"
+    required: true
+  name: 
+    description: "The name of the service being built"
+    required: true
+  
+
+
+runs:
+  using: composite
+  steps:
+  - name: Authenticate, set context, and run deploy script
+    uses: redhat-actions/oc-login@v1
+    with:
+      openshift_server_url: ${{ inputs.openshift_server_url }}
+      openshift_token: ${{ inputs.openshift_token }}
+      namespace: ${{ inputs.namespace }}
+      insecure_skip_tls_verify: true
+  - run: |
+      chmod +x ./lib/helm_patroni_deploy.sh
+      ./lib/helm_patroni_deploy.sh \
+        ${{ inputs.name }} . \
+        -n ${{ inputs.namespace }} \
+        -f values.yaml \
+        -f "values-${{ inputs.namespace }}-${{ inputs.name }}.yaml"
+    shell: bash
+# Idea: set the standby_host, standby_port, and replica count using --set instead of values file 
