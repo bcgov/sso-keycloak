@@ -22,11 +22,17 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: list files
+        run: ls ./
       - name: Deploy
-        uses: ./.github/workflows/actions/
+        uses: ./.github/workflows/actions/deploy-patroni.yaml
         with:
           openshift_server_url: ${{ secrets.OPENSHIFT_SERVER }}
           openshift_token: ${{ secrets.OPENSHIFT_TOKEN_GOLD }}
           namespace: ${{ github.event.inputs.namespace }}
           values_file: "values-c6af30-dev-sso-patroni.yaml"
           name: "sso-patroni"
+          password_appuser: ${{ secrets.PATRONI_PASSWORD_APP_USER }}
+          password_standby: ${{ secrets.PATRONI_PASSWORD_STANDBY }}
+          password_admin: ${{ secrets.PATRONI_PASSWORD_ADMIN }}
+          password_superuser: ${{ secrets.PATRONI_PASSWORD_SUPERUSER }}
