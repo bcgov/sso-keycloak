@@ -15,8 +15,8 @@ jobs:
 
       - name: Log in and set context
         # In a real workflow, point the 'uses' to a tag.
-        # uses: redhat-actions/oc-login@v1
-        uses: ./
+        uses: redhat-actions/oc-login@v1
+        # uses: ./
         with:
           openshift_server_url: ${{ secrets.OPENSHIFT_SERVER }}
           openshift_token: ${{ secrets.OPENSHIFT_TOKEN_GOLD }}
