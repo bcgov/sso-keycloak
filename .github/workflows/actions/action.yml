@@ -63,7 +63,7 @@ runs:
       namespace: ${{ inputs.namespace }}
       insecure_skip_tls_verify: true
   - run: |
-      kubectl create secret generic <secret-name> -n <my-namespace> \
+      kubectl create secret generic sso-patroni-test-secret -n ${{ inputs.namespace }} \
         --from-literal=username-superuser=postgres \
         --from-literal=username-admin=admin \
         --from-literal=username-standby=standby \
