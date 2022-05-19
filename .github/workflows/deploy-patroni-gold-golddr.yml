@@ -25,7 +25,7 @@ jobs:
       - name: Deploy
         uses: ./.github/workflows/actions/
         with:
-          openshift_server_url: ${{ env.OPENSHIFT_SERVER }}
+          openshift_server_url: ${{ secrets.OPENSHIFT_SERVER }}
           openshift_token: ${{ secrets.OPENSHIFT_TOKEN_GOLD }}
           namespace: ${{ github.event.inputs.namespace }}
           values_file: "values-c6af30-dev-sso-patroni.yaml"
