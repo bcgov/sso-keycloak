@@ -25,7 +25,7 @@ jobs:
       - name: list files
         run: ls ./
       - name: Deploy
-        uses: ./.github/workflows/actions/deploy-patroni.yaml
+        uses: ./.github/workflows/actions/
         with:
           openshift_server_url: ${{ secrets.OPENSHIFT_SERVER }}
           openshift_token: ${{ secrets.OPENSHIFT_TOKEN_GOLD }}

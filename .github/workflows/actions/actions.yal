@@ -52,6 +52,15 @@ runs:
       namespace: ${{ inputs.namespace }}
       insecure_skip_tls_verify: true
   - run: |
+      kubectl create secret generic <secret-name> -n <my-namespace> \
+        --from-literal=username-superuser=postgres \
+        --from-literal=username-admin=admin \
+        --from-literal=username-standby=standby \
+        --from-literal=username-appuser= appuser \
+        --from-literal=password-superuser= ${{ inputs.password_superuser}} \
+        --from-literal=password-admin= ${{ inputs.password_admin }} \
+        --from-literal=password-standby=${{ inputs.password_standby }} \
+        --from-literal=password-appuser=${{ inputs.password_appuser }}
       chmod +x ./lib/helm_patroni_deploy.sh
       ./lib/helm_patroni_deploy.sh \
         ${{ inputs.name }} . \
