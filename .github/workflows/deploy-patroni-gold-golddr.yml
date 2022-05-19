@@ -22,8 +22,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: list files
-        run: echo ${{ secrets.OPENSHIFT_TOKEN_GOLD }} cut -c1-5
       - name: Deploy
         uses: ./.github/workflows/actions/
         with:
