@@ -7,39 +7,24 @@ on:
 
 jobs:
   login:
-    name: Multiplatform Workflow
-    strategy:
-      fail-fast: false
-      max-parallel: 1   # this is just to prevent concurrent modification of my k8s cluster.
-      matrix:
-        # os: [ ubuntu-latest, macos-latest, windows-latest ]
-        os: [ macos-latest, windows-latest ]
-    runs-on: ${{ matrix.os }}
-    env:
-      TEST_MANIFEST: __tests__/manifests/timer.yaml
-      TEST_NAMESPACE: github-actions-bot-dev
+    name: OpenShift Login and Test
+    runs-on: ubuntu-20.04
 
     steps:
       - uses: actions/checkout@v2
 
-      - name: Install oc
-        if: "runner.os != 'Linux'"
-        uses: redhat-actions/openshift-tools-installer@v1
-        with:
-          oc: latest
-
-      - name: Test oc
-        run: oc version --client
-
-      - name: Authenticate and set context
+      - name: Log in and set context
+        # In a real workflow, point the 'uses' to a tag.
+        # uses: redhat-actions/oc-login@v1
         uses: ./
         with:
           openshift_server_url: ${{ secrets.OPENSHIFT_SERVER }}
           openshift_token: ${{ secrets.OPENSHIFT_TOKEN_GOLD }}
-          namespace: c6af30-dev
+          # openshift_username: ${{ env.TEST_USER }}
+          # openshift_password: ${{ secrets.OPENSHIFT_PASSWORD }}
+          certificate_authority_data: ${{ secrets.CA_DATA }}
+          namespace: ${{ secrets.OPENSHIFT_NAMESPACE }}
 
       - name: Test
         run: |
           oc api-resources
-
-
