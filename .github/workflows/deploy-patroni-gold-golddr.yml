@@ -36,3 +36,5 @@ jobs:
           password_standby: ${{ secrets.PATRONI_PASSWORD_STANDBY }}
           password_admin: ${{ secrets.PATRONI_PASSWORD_ADMIN }}
           password_superuser: ${{ secrets.PATRONI_PASSWORD_SUPERUSER }}
+          openshift_server_url_dr: ${{ secrets.OPENSHIFT_SERVER_GOLDDR }}
+          openshift_token_dr: ${{ secrets.OPENSHIFT_TOKEN_GOLDDR }}
