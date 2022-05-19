@@ -57,6 +57,20 @@ runs:
         ${{ inputs.name }} . \
         -n ${{ inputs.namespace }} \
         -f values.yaml \
-        -f "values-${{ inputs.namespace }}-${{ inputs.name }}.yaml"
+        -f values-${{ inputs.namespace }}-${{ inputs.name }}.yaml
+      oc get secret sso-patroni -o yaml > sso-patroni.yaml
     shell: bash
+  # - name: Copy patroni secret to send to golddr
+  #   run: | 
+  #     oc get secret sso-patroni -o yaml > sso-patroni.yaml
+  # - name: Authenticate, set context, and run deploy script golddr
+  #   uses: redhat-actions/oc-login@v1
+  #   with:
+  #     openshift_server_url: ${{ inputs.openshift_server_url_gold_dr }}
+  #     openshift_token: ${{ inputs.openshift_token_gold_dr }}
+  #     namespace: ${{ inputs.namespace }}
+  #     insecure_skip_tls_verify: true
+  # - name: Apply secret to 
+
 # Idea: set the standby_host, standby_port, and replica count using --set instead of values file 
+# Idea: set up the network policies and tsc if necessary
