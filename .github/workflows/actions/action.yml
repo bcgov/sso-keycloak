@@ -38,7 +38,18 @@ inputs:
   name: 
     description: "The name of the service being built"
     required: true
-  
+  password_superuser:
+    description: "Patroni password"
+    required: true
+  password_admin:
+    description: "Patroni password"
+    required: true
+  password_standby:
+    description: "Patroni password"
+    required: true
+  password_appuser:
+    description: "Patroni password"
+    required: true 
 
 
 runs:
