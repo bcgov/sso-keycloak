@@ -1,16 +1,4 @@
-replicaCount: 5
-
-image:
-  repository: ghcr.io/bcgov/sso
-  tag: v7.5-9-build.1
-  pullPolicy: Always
-
-service:
-  type: ClusterIP
-  port: 8443
-
-tls:
-  enabled: true
+replicaCount: 1
 
 resources:
   limits:
@@ -20,10 +8,12 @@ resources:
     cpu: 1250m
     memory: 4Gi
 
-patroni:
-  install: true
-  replicaCount: 3
+postgres:
+  host: sso-patroni-gold.eb75ad-dev.svc.cluster.local
+  port: 48922
 
+patroni:
+  replicaCount: 2
   credentials:
     existingSecret: false
     superuser:
@@ -43,8 +33,7 @@ patroni:
   persistentVolume:
     size: 10Gi
 
-  podDisruptionBudget:
+  standby:
     enabled: true
-
-  transportServerClaim:
-    enabled: true
+    host: sso-patroni-gold.eb75ad-dev.svc.cluster.local
+    port: 48922
