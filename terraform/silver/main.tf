@@ -1,23 +1,17 @@
-module "b861c7_dev" {
-  source  = "bcgov/openshift/deployer"
-  version = "0.5.0"
+locals {
+  namespaces = ["b861c7-dev", "b861c7-prod"]
+}
+
+module "deployers" {
+  source   = "bcgov/openshift/deployer"
+  version  = "0.8.0"
+  for_each = toset(local.namespaces)
 
   name      = "oc-deployer"
-  namespace = "b861c7-dev"
+  namespace = each.key
 }
 
-module "b861c7_prod" {
-  source  = "bcgov/openshift/deployer"
-  version = "0.5.0"
-
-  name      = "oc-deployer"
-  namespace = "b861c7-prod"
-}
-
-output "b861c7_dev_secret" {
-  value = module.b861c7_dev.default_secret_name
-}
-
-output "b861c7_prod_secret" {
-  value = module.b861c7_prod.default_secret_name
+output "deployer_secrets" {
+  description = "Default secret names"
+  value       = { for n in sort(local.namespaces) : n => module.deployers[n].default_secret_name }
 }

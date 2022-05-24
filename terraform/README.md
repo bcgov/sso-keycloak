@@ -11,7 +11,11 @@ It stores the OCP cluster's `Terraform state` into the corresponding `S3` bucket
   1. Choose `xgr00q-prod` and `Click for Credentials`.
   1. Copy the AWS credentials and pastes into the local workspace.
 
-- Log in `OCP Cluster` that you want to run the Terraform scripts in.
+- Create `terraform.tfvars` in the target cluster's directory to include the following variables.
+
+```sh
+kubernetes_token = "token_from_<https://oauth-openshift.apps.(silver|gold|golddr).devops.gov.bc.ca/oauth/token/display>"
+```
 
 ### How To Run
 
