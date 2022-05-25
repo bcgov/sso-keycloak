@@ -4,11 +4,12 @@ locals {
 
 module "deployers" {
   source   = "bcgov/openshift/deployer"
-  version  = "0.8.0"
+  version  = "0.9.0"
   for_each = toset(local.namespaces)
 
   name      = "oc-deployer"
   namespace = each.key
+  ops_bcgov = true
 }
 
 output "deployer_secrets" {
