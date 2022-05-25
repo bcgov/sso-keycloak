@@ -2,7 +2,7 @@ replicaCount: 5
 
 image:
   repository: ghcr.io/bcgov/sso
-  tag: v7.5-9-build.1
+  tag: v7.5-9-build.4
   pullPolicy: Always
 
 service:
@@ -23,22 +23,6 @@ resources:
 patroni:
   install: true
   replicaCount: 3
-
-  credentials:
-    existingSecret: false
-    superuser:
-      username: postgres
-      password:
-    admin:
-      username: admin
-      password:
-    standby:
-      username: standby
-      password:
-
-  additionalCredentials:
-    - username: ssokeycloak
-      password:
 
   persistentVolume:
     size: 10Gi
