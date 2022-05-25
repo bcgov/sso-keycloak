@@ -2,7 +2,7 @@ replicaCount: 5
 
 image:
   repository: ghcr.io/bcgov/sso
-  tag: v7.5-9-build.1
+  tag: v7.5-9-build.4
   pullPolicy: Always
 
 service:
@@ -28,4 +28,7 @@ patroni:
     size: 10Gi
 
   podDisruptionBudget:
+    enabled: true
+
+  transportServerClaim:
     enabled: true
