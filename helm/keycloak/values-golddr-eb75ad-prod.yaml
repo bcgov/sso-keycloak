@@ -1,0 +1,40 @@
+replicaCount: 1
+
+resources:
+  limits:
+    cpu: 2
+    memory: 4Gi
+  requests:
+    cpu: 1250m
+    memory: 4Gi
+
+postgres:
+  host: sso-patroni-gold.eb75ad-prod.svc.cluster.local
+  port: 34065
+
+# Uncomment the credential blocks if the secret needs to be generated
+patroni:
+  replicaCount: 2
+  # credentials:
+  #   existingSecret: false
+  #   superuser:
+  #     username: postgres
+  #     password:
+  #   admin:
+  #     username: admin
+  #     password:
+  #   standby:
+  #     username: standby
+  #     password:
+
+  # additionalCredentials:
+  #   - username: ssokeycloak
+  #     password:
+
+  persistentVolume:
+    size: 10Gi
+
+  standby:
+    enabled: true
+    host: sso-patroni-gold.eb75ad-prod.svc.cluster.local
+    port: 34065
