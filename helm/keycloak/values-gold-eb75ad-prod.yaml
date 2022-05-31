@@ -12,6 +12,9 @@ service:
 tls:
   enabled: true
 
+persistentLog:
+  size: 15Gi
+
 resources:
   limits:
     cpu: 2
