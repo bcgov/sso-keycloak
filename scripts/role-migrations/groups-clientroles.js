@@ -50,9 +50,9 @@ async function main() {
         // find the role in the target realm to see if already exists, otherwise create one
         let role = await targetAdminClient.clients.findRole({ realm: targetRealm, id: clientId, roleName: name });
         if (role) {
-          console.log(`"${role.name}" already exists in the standard realm.`);
+          console.log(`=====> "${role.name}" already exists in the standard realm.`);
         } else {
-          role = await targetAdminClient.clients.createRole({
+          await targetAdminClient.clients.createRole({
             id: clientId,
             realm: targetRealm,
             name,
@@ -62,8 +62,8 @@ async function main() {
             containerId: clientId,
             attributes: {},
           });
-
-          console.log(`"${role.name}" created in the standard realm.`);
+          role = await targetAdminClient.clients.findRole({ realm: targetRealm, id: clientId, roleName: name });
+          console.log(`=====> "${role.name}" created in the standard realm.`);
         }
 
         // find all members belong to the group in the base realm
@@ -115,15 +115,14 @@ async function main() {
         }
       }
 
+      first = first + max;
       if (count < max) break;
 
       await baseAdminClient.reauth();
       await targetAdminClient.reauth();
-      first = first + max;
-      console.log(`complete ${first} groups`);
     }
 
-    console.log(`${total} groups imported.`);
+    console.log(`=====> ${total} groups imported.`);
     process.exit(0);
   } catch (err) {
     handleError(err);
