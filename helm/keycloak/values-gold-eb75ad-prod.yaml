@@ -1,11 +1,19 @@
 replicaCount: 5
 
+image:
+  repository: ghcr.io/bcgov/sso
+  tag: v7.5-9-build.4
+  pullPolicy: Always
+
 service:
   type: ClusterIP
   port: 8443
 
 tls:
   enabled: true
+
+persistentLog:
+  size: 15Gi
 
 resources:
   limits:
@@ -16,11 +24,13 @@ resources:
     memory: 4Gi
 
 patroni:
-  install: true
   replicaCount: 3
 
   persistentVolume:
-    size: 10Gi
+    size: 30Gi
 
   podDisruptionBudget:
+    enabled: true
+
+  transportServerClaim:
     enabled: true

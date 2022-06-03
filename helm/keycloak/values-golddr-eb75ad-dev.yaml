@@ -1,0 +1,24 @@
+replicaCount: 1
+
+resources:
+  limits:
+    cpu: 2
+    memory: 4Gi
+  requests:
+    cpu: 1250m
+    memory: 4Gi
+
+postgres:
+  host: sso-patroni-gold.eb75ad-dev.svc.cluster.local
+  port: 48922
+
+patroni:
+  replicaCount: 2
+
+  persistentVolume:
+    size: 10Gi
+
+  standby:
+    enabled: true
+    host: sso-patroni-gold.eb75ad-dev.svc.cluster.local
+    port: 48922
