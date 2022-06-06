@@ -72,8 +72,9 @@ runs:
       echo "Line one"
       echo 'Line two'
       echo "Line three"
-      chmod +x ./lib/patroni_dr_to_active.sh
-      ./lib/patroni_dr_to_active.sh 
+      oc rsh -n c6af30-test sso-patroni-0 curl -s -XPATCH -d '{  "standby_cluster":null}' http://localhost:8008/config
+  # chmod +x ./lib/patroni_dr_to_active.sh
+  # ./lib/patroni_dr_to_active.sh 
   # oc rsh -n ${{ inputs.namespace }} sso-patroni-0
   # curl -s -XPATCH -d '{  "standby_cluster":null}' http://localhost:8008/config | jq .
   # exit
