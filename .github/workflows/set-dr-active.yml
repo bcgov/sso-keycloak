@@ -35,3 +35,8 @@ jobs:
         run: |
           oc rsh -n ${{ github.event.inputs.namespace }} sso-patroni-0 curl -s -XPATCH -d '{  "standby_cluster":null}' http://localhost:8008/config | jq .
         shell: bash
+      - name: Deploy keycloak-dr in active mode
+        run: |
+          chmod +x ./lib/helm_deploy_kc_dr.sh
+          ./lib/helm_patroni_deploy.sh 
+        shell: bash
