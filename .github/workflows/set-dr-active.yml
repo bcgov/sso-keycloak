@@ -38,5 +38,5 @@ jobs:
       - name: Deploy keycloak-dr in active mode
         run: |
           chmod +x ./lib/helm_deploy_kc_dr.sh
-          ./lib/helm_patroni_deploy.sh 
+          ./lib/helm_deploy_kc_dr.sh 
         shell: bash
