@@ -15,7 +15,7 @@ env:
   OPENSHIFT_SERVER: ${{ secrets.OPENSHIFT_SERVER }}
 
 jobs:
-  deploy-to-openshift-development:
+  set-dr-to-active:
     runs-on: ubuntu-latest
     environment:
       name: development
@@ -24,17 +24,28 @@ jobs:
         uses: actions/checkout@v2
       - name: list files
         run: ls ./
-      - name: Deploy
-        uses: ./.github/workflows/actions/
+      - name: Log into golddr and remove patroni standby
+        uses: redhat-actions/oc-login@v1
         with:
-          openshift_server_url: ${{ secrets.OPENSHIFT_SERVER }}
-          openshift_token: ${{ secrets.OPENSHIFT_TOKEN_GOLD }}
+          openshift_server_url: ${{ secrets.OPENSHIFT_SERVER_GOLDDR }}
+          openshift_token: ${{ secrets.OPENSHIFT_TOKEN_GOLDDR }}
           namespace: ${{ github.event.inputs.namespace }}
-          values_file: "values-c6af30-dev-sso-patroni.yaml"
-          name: "sso-patroni"
-          password_appuser: ${{ secrets.PATRONI_PASSWORD_APP_USER }}
-          password_standby: ${{ secrets.PATRONI_PASSWORD_STANDBY }}
-          password_admin: ${{ secrets.PATRONI_PASSWORD_ADMIN }}
-          password_superuser: ${{ secrets.PATRONI_PASSWORD_SUPERUSER }}
-          openshift_server_golddr_url: ${{ secrets.OPENSHIFT_SERVER_GOLDDR }}
-          openshift_token_golddr: ${{ secrets.OPENSHIFT_TOKEN_GOLDDR }}
+          insecure_skip_tls_verify: true
+      - run: |
+          oc rsh -n ${{ github.event.inputs.namespace }} sso-patroni-0 curl -s -XPATCH -d '{  "standby_cluster":null}' http://localhost:8008/config | jq .
+        shell: bash
+
+      # - name: Deploy
+      #   uses: ./.github/workflows/actions/
+      #   with:
+      #     openshift_server_url: ${{ secrets.OPENSHIFT_SERVER }}
+      #     openshift_token: ${{ secrets.OPENSHIFT_TOKEN_GOLD }}
+      #     namespace: ${{ github.event.inputs.namespace }}
+      #     values_file: "values-c6af30-dev-sso-patroni.yaml"
+      #     name: "sso-patroni"
+      #     password_appuser: ${{ secrets.PATRONI_PASSWORD_APP_USER }}
+      #     password_standby: ${{ secrets.PATRONI_PASSWORD_STANDBY }}
+      #     password_admin: ${{ secrets.PATRONI_PASSWORD_ADMIN }}
+      #     password_superuser: ${{ secrets.PATRONI_PASSWORD_SUPERUSER }}
+      #     openshift_server_golddr_url: ${{ secrets.OPENSHIFT_SERVER_GOLDDR }}
+      #     openshift_token_golddr: ${{ secrets.OPENSHIFT_TOKEN_GOLDDR }}
