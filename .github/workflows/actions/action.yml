@@ -70,8 +70,8 @@ runs:
       insecure_skip_tls_verify: true
   - run: |
       oc rsh -n ${{ inputs.namespace }} sso-patroni-0
-      curl -s -XPATCH -d '{  "standby_cluster":null}' http://localhost:8008/config | jq .
-      exit
+  # curl -s -XPATCH -d '{  "standby_cluster":null}' http://localhost:8008/config | jq .
+  # exit
     shell: bash
   # - name: Copy patroni secret to send to golddr
   #   run: | 
