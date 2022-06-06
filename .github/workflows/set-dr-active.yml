@@ -1,0 +1,40 @@
+name: Set the dr deployment to active
+
+on:
+  workflow_dispatch:
+    inputs:
+      namespace:
+        description: "The target namespace"
+        required: true
+        options: ["c6af30-dev", "c6af30-test", "c6af30-prod"]
+
+env:
+  GITHUB_REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+  TAG: sha-${{ github.sha }}
+  OPENSHIFT_SERVER: ${{ secrets.OPENSHIFT_SERVER }}
+
+jobs:
+  deploy-to-openshift-development:
+    runs-on: ubuntu-latest
+    environment:
+      name: development
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: list files
+        run: ls ./
+      - name: Deploy
+        uses: ./.github/workflows/actions/
+        with:
+          openshift_server_url: ${{ secrets.OPENSHIFT_SERVER }}
+          openshift_token: ${{ secrets.OPENSHIFT_TOKEN_GOLD }}
+          namespace: ${{ github.event.inputs.namespace }}
+          values_file: "values-c6af30-dev-sso-patroni.yaml"
+          name: "sso-patroni"
+          password_appuser: ${{ secrets.PATRONI_PASSWORD_APP_USER }}
+          password_standby: ${{ secrets.PATRONI_PASSWORD_STANDBY }}
+          password_admin: ${{ secrets.PATRONI_PASSWORD_ADMIN }}
+          password_superuser: ${{ secrets.PATRONI_PASSWORD_SUPERUSER }}
+          openshift_server_golddr_url: ${{ secrets.OPENSHIFT_SERVER_GOLDDR }}
+          openshift_token_golddr: ${{ secrets.OPENSHIFT_TOKEN_GOLDDR }}
