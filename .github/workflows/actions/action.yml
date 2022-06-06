@@ -69,15 +69,9 @@ runs:
       namespace: ${{ inputs.namespace }}
       insecure_skip_tls_verify: true
   - run: |
-      echo "Line one"
-      echo 'Line two'
-      echo "Line three"
-      oc rsh -n c6af30-test sso-patroni-0 curl -s -XPATCH -d '{  "standby_cluster":null}' http://localhost:8008/config
-  # chmod +x ./lib/patroni_dr_to_active.sh
-  # ./lib/patroni_dr_to_active.sh 
-  # oc rsh -n ${{ inputs.namespace }} sso-patroni-0
-  # curl -s -XPATCH -d '{  "standby_cluster":null}' http://localhost:8008/config | jq .
-  # exit
+      oc rsh -n ${{ inputs.namespace }} sso-patroni-0 \
+      curl -s -XPATCH -d '{  "standby_cluster":null}' \ 
+      http://localhost:8008/config | jq .
     shell: bash
   # - name: Copy patroni secret to send to golddr
   #   run: | 
