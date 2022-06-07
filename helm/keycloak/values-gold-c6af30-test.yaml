@@ -9,11 +9,4 @@ resources:
     memory: 512M
 
 patroni:
-  install: true
   replicaCount: 3
-
-  persistentVolume:
-    size: 2Gi
-
-  podDisruptionBudget:
-    enabled: true
