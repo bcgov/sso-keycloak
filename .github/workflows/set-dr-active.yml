@@ -37,8 +37,8 @@ jobs:
         shell: bash
       - name: Deploy keycloak-dr in active mode
         run: |
-          chmod +x ./helm/keycloak/deploy-gold-c6af30-test.sh
-          ./helm/keycloak/deploy-gold-c6af30-test.sh
+          chmod +x ./lib/deploy-golddr-active.sh
+          ./lib/deploy-golddr-active.sh
 # chmod +x ./lib/helm_deploy_kc_dr.sh
 # ./lib/helm_deploy_kc_dr.sh 
         shell: bash
