@@ -1,4 +1,4 @@
-replicaCount: 2
+replicaCount: 3
 
 resources:
   limits:
@@ -10,7 +10,7 @@ resources:
 
 patroni:
   install: true
-  replicaCount: 2
+  replicaCount: 3
 
   persistentVolume:
     size: 2Gi
