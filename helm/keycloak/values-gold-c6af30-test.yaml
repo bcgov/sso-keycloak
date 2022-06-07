@@ -1,12 +1,38 @@
-replicaCount: 3
+replicaCount: 5
 
 resources:
   limits:
-    cpu: 1
-    memory: 1Gi
+    cpu: 2
+    memory: 4Gi
   requests:
-    cpu: 0.5
-    memory: 512M
+    cpu: 1250m
+    memory: 4Gi
+
+postgres:
+  host: sso-patroni
+  port: 5432
 
 patroni:
-  replicaCount: 3
+  replicaCount: 2
+  # credentials:
+  #   existingSecret: false
+  #   superuser:
+  #     username: postgres
+  #     password: 6644cd549abefaaf2a9095dd5aaf3b4b
+  #   admin:
+  #     username: admin
+  #     password: e242ba13588d816328861ddb583f6585
+  #   standby:
+  #     username: standby
+  #     password: aff3a4b562f47e69f6acd263fa36bc6d
+
+  # additionalCredentials:
+  #   - username: ssokeycloak
+  #     password: PyU2S1apJGnQCZmNEq35DyIN1XmUSRH4
+  persistentVolume:
+    size: 2Gi
+
+  standby:
+    enabled: true
+    host: sso-patroni-gold.c6af30-test.svc.cluster.local
+    port: 56583
