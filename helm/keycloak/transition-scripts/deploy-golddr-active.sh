@@ -16,7 +16,9 @@ helm repo update
 
 cd ./helm/keycloak/
 
-helm upgrade --install sso-keycloak sso-charts/sso-keycloak -n c6af30-test -f ./values-golddr-c6af30-test.yaml -f ./transition-scripts/deploy-golddr-active.sh --version v1.6.0
+helm upgrade --install sso-keycloak sso-charts/sso-keycloak \
+ -n c6af30-test -f ./values-golddr-c6af30-test.yaml  \
+ -f ./transition-values/set-dr-to-active-c6af30-test.yaml --version v1.6.0
 
 # helm repo add sso-charts https://bcgov.github.io/sso-helm-charts
 # helm repo update
