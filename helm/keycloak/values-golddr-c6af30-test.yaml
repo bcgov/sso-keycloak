@@ -1,4 +1,4 @@
-replicaCount: 4
+replicaCount: 3
 
 image:
   repository: ghcr.io/bcgov/sso
@@ -7,11 +7,11 @@ image:
 
 resources:
   limits:
-    cpu: 2
-    memory: 4Gi
+    cpu: 1
+    memory: 1Gi
   requests:
-    cpu: 1250m
-    memory: 4Gi
+    cpu: 0.5
+    memory: 512M
 
 # postgres:
 #   host: sso-patroni-gold.c6af30-test.svc.cluster.local
