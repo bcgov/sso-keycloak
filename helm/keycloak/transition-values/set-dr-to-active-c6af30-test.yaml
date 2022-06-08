@@ -7,9 +7,6 @@ postgres:
 patroni:
   replicaCount: 3
 
-  podDisruptionBudget:
-    enabled: true
-
   standby:
     enabled: false
     host: null
