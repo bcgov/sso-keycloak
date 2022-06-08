@@ -4,7 +4,7 @@
 
 
 pwd="$(dirname "$0")"
-source "./helm/keycloak/helpers.sh"
+source "./helm/helpers.sh"
 # TODO fix this context
 # if ! check_kube_context "api-golddr-devops-gov-bc-ca"; then
 #     echo "invalid context"
