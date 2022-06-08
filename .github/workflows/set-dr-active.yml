@@ -37,8 +37,6 @@ jobs:
         shell: bash
       - name: Deploy keycloak-dr in active mode
         run: |
-          chmod +x ./lib/deploy-golddr-active.sh
-          ./lib/deploy-golddr-active.sh
-# chmod +x ./lib/helm_deploy_kc_dr.sh
-# ./lib/helm_deploy_kc_dr.sh 
+          chmod +x ./helm/keycloak/transition-scripts/deploy-golddr-active.sh
+          ./helm/keycloak/transition-scripts/deploy-golddr-active.sh
         shell: bash
