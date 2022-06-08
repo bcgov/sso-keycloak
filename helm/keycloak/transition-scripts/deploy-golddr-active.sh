@@ -1,7 +1,7 @@
 #!/bin/bash
 # Todo, make this general for all namespaces
 
-NAMESPACE=""
+NAMESPACE=$1
 
 pwd="$(dirname "$0")"
 source "./helm/helpers.sh"
