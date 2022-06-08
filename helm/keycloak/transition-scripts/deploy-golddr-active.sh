@@ -3,8 +3,6 @@
 
 
 
-#!/bin/bash
-
 pwd="$(dirname "$0")"
 source "$pwd/helm/helpers.sh"
 # TODO fix this context
@@ -16,7 +14,9 @@ source "$pwd/helm/helpers.sh"
 helm repo add sso-charts https://bcgov.github.io/sso-helm-charts
 helm repo update
 
-helm upgrade --install sso-keycloak sso-charts/sso-keycloak -n c6af30-test -f ./helm/keycloak/values-golddr-c6af30-test.yaml --version v1.6.0
+cd ./helm/keycloak/
+
+helm upgrade --install sso-keycloak sso-charts/sso-keycloak -n c6af30-test -f ./values-golddr-c6af30-test.yaml ./transition-scripts/deploy-golddr-active.sh --version v1.6.0
 
 # helm repo add sso-charts https://bcgov.github.io/sso-helm-charts
 # helm repo update

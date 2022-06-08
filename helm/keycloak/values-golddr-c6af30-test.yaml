@@ -1,4 +1,4 @@
-replicaCount: 3
+replicaCount: 1
 
 image:
   repository: ghcr.io/bcgov/sso
@@ -13,12 +13,12 @@ resources:
     cpu: 0.5
     memory: 512M
 
-# postgres:
-#   host: sso-patroni-gold.c6af30-test.svc.cluster.local
-#   port: 56583
+postgres:
+  host: sso-patroni-gold.c6af30-test.svc.cluster.local
+  port: 56583
 
 patroni:
-  replicaCount: 3
+  replicaCount: 2
   # credentials:
   #   existingSecret: false
   #   superuser:
@@ -40,7 +40,7 @@ patroni:
   podDisruptionBudget:
     enabled: true
 
-  # standby:
-  #   enabled: true
-  #   host: sso-patroni-gold.c6af30-test.svc.cluster.local
-  #   port: 56583
+  standby:
+    enabled: true
+    host: sso-patroni-gold.c6af30-test.svc.cluster.local
+    port: 56583
