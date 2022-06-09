@@ -18,17 +18,17 @@ patroni:
   #   existingSecret: false
   #   superuser:
   #     username: postgres
-  #     password: 6644cd549abefaaf2a9095dd5aaf3b4b
+  #     password: 
   #   admin:
   #     username: admin
-  #     password: e242ba13588d816328861ddb583f6585
+  #     password: 
   #   standby:
   #     username: standby
-  #     password: aff3a4b562f47e69f6acd263fa36bc6d
+  #     password: 
 
   # additionalCredentials:
   #   - username: ssokeycloak
-  #     password: PyU2S1apJGnQCZmNEq35DyIN1XmUSRH4
+  #     password: 
   persistentVolume:
     size: 2Gi
 
