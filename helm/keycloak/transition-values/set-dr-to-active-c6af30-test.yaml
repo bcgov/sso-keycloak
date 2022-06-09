@@ -1,0 +1,13 @@
+replicaCount: 0
+
+postgres:
+  host: sso-patroni
+  port: 5432
+
+patroni:
+  replicaCount: 3
+
+  standby:
+    enabled: false
+    host: null
+    port: null
