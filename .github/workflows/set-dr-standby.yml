@@ -1,4 +1,4 @@
-name: Set the dr deployment to active
+name: Set the dr deployment to standby
 
 on:
   workflow_dispatch:
@@ -15,7 +15,7 @@ env:
   OPENSHIFT_SERVER: ${{ secrets.OPENSHIFT_SERVER }}
 
 jobs:
-  set-dr-to-active:
+  set-dr-to-standby:
     runs-on: ubuntu-latest
     environment:
       name: development
