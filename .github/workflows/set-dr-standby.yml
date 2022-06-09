@@ -31,12 +31,20 @@ jobs:
           openshift_token: ${{ secrets.OPENSHIFT_TOKEN_GOLDDR }}
           namespace: ${{ github.event.inputs.namespace }}
           insecure_skip_tls_verify: true
-      # - name: Set patroni-dr to primary
-      #   run: |
-      #     oc rsh -n ${{ github.event.inputs.namespace }} sso-patroni-0 curl -s -XPATCH -d '{  "standby_cluster":null}' http://localhost:8008/config | jq .
-      #   shell: bash
+      - name: Confirm Patroni Gold is active
+        run: |
+          echo: "Not Done Yet"
+        shell: bash
       - name: Deploy keycloak-dr in standby mode
         run: |
           chmod +x ./helm/keycloak/transition-scripts/deploy-golddr-standby.sh
           ./helm/keycloak/transition-scripts/deploy-golddr-standby.sh ${{ github.event.inputs.namespace }}
         shell: bash
+      - name: Set patroni-dr to standby
+        run: |
+          oc rsh -n ${{ github.event.inputs.namespace }} sso-patroni-0 \
+          curl -s -XPATCH -d '{  "standby_cluster": {"create_replica_methods": ["basebackup_fast_xlog"],"host": "sso-patroni-gold.c6af30-test.svc.cluster.local","port": 56583}}' http://localhost:8008/config | jq .
+        shell: bash
+
+
+        
