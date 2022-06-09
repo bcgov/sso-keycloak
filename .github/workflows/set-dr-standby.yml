@@ -33,7 +33,7 @@ jobs:
           insecure_skip_tls_verify: true
       - name: Confirm Patroni Gold is active
         run: |
-          echo: "Not Done Yet"
+          echo "Not Done Yet"
         shell: bash
       # - name: Deploy keycloak-dr in standby mode
       #   run: |
