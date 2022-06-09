@@ -35,11 +35,11 @@ jobs:
         run: |
           echo: "Not Done Yet"
         shell: bash
-      - name: Deploy keycloak-dr in standby mode
-        run: |
-          chmod +x ./helm/keycloak/transition-scripts/deploy-golddr-standby.sh
-          ./helm/keycloak/transition-scripts/deploy-golddr-standby.sh ${{ github.event.inputs.namespace }}
-        shell: bash
+      # - name: Deploy keycloak-dr in standby mode
+      #   run: |
+      #     chmod +x ./helm/keycloak/transition-scripts/deploy-golddr-standby.sh
+      #     ./helm/keycloak/transition-scripts/deploy-golddr-standby.sh ${{ github.event.inputs.namespace }}
+      #   shell: bash
       - name: Set patroni-dr to standby
         run: |
           oc rsh -n ${{ github.event.inputs.namespace }} sso-patroni-0 \
