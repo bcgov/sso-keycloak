@@ -25,10 +25,10 @@ jobs:
           insecure_skip_tls_verify: true
       - name: Set patroni-dr to primary
         run: |
-          oc rsh -n ${{ github.event.inputs.namespace }} sso-patroni-0 \ 
-          curl -s -XPATCH -d '{  "standby_cluster":null}' http://localhost:8008/config \
-          | jq .
+          chmod +x ./keycloak/transition-scripts/set-patroni-dr-active.sh
+          ./keycloak/transition-scripts/set-patroni-dr-active.sh ${{ github.event.inputs.namespace }}
         shell: bash
+        working-directory: helm
       - name: Deploy keycloak-dr in active mode
         run: |
           chmod +x ./keycloak/transition-scripts/deploy-golddr-active.sh
