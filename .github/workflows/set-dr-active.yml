@@ -29,7 +29,7 @@ jobs:
         shell: bash
       - name: Deploy keycloak-dr in active mode
         run: |
-          chmod +x ./transition-scripts/deploy-golddr-active.sh
-          ./transition-scripts/deploy-golddr-active.sh ${{ github.event.inputs.namespace }}
+          chmod +x ./keycloak/transition-scripts/deploy-golddr-active.sh
+          ./keycloak/transition-scripts/deploy-golddr-active.sh ${{ github.event.inputs.namespace }}
         shell: bash
-        working-directory: helm/keycloak 
+        working-directory: helm
