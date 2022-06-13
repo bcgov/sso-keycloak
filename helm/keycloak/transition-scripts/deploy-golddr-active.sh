@@ -5,6 +5,8 @@ NAMESPACE=$1
 pwd="$(dirname "$0")"
 echo ${pwd}
 
+ls 
+
 source "./helm/helpers.sh"
 
 if ! check_kube_context "api-golddr-devops-gov-bc-ca"; then
