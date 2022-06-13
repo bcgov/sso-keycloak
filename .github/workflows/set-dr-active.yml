@@ -8,12 +8,6 @@ on:
         required: true
         options: ["c6af30-dev", "c6af30-test", "c6af30-prod"]
 
-env:
-  GITHUB_REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
-  TAG: sha-${{ github.sha }}
-  OPENSHIFT_SERVER: ${{ secrets.OPENSHIFT_SERVER }}
-
 jobs:
   set-dr-to-active:
     runs-on: ubuntu-latest
@@ -35,6 +29,7 @@ jobs:
         shell: bash
       - name: Deploy keycloak-dr in active mode
         run: |
-          chmod +x ./helm/keycloak/transition-scripts/deploy-golddr-active.sh
-          ./helm/keycloak/transition-scripts/deploy-golddr-active.sh ${{ github.event.inputs.namespace }}
+          chmod +x ./transition-scripts/deploy-golddr-active.sh
+          ./transition-scripts/deploy-golddr-active.sh ${{ github.event.inputs.namespace }}
         shell: bash
+        working-directory: helm/keycloak 
