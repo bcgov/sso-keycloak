@@ -26,8 +26,8 @@ jobs:
       - name: Set patroni-dr to primary
         run: |
           oc rsh -n ${{ github.event.inputs.namespace }} \
-           sso-patroni-0 curl -s -XPATCH -d \ 
-           '{  "standby_cluster":null}' http://localhost:8008/config | jq .
+          sso-patroni-0 curl -s -XPATCH -d \ 
+          '{  "standby_cluster":null}' http://localhost:8008/config | jq .
         shell: bash
       - name: Deploy keycloak-dr in active mode
         run: |
