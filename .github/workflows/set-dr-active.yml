@@ -11,6 +11,8 @@ on:
 jobs:
   set-dr-to-active:
     runs-on: ubuntu-latest
+     outputs:
+      output1: ${{ steps.dr-activation.outputs.patroni-config }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -22,9 +24,11 @@ jobs:
           namespace: ${{ github.event.inputs.namespace }}
           insecure_skip_tls_verify: true
       - name: Set patroni-dr to primary
+        id: dr-activation
         run: |
           chmod +x ./keycloak/transition-scripts/set-patroni-dr-active.sh
           ./keycloak/transition-scripts/set-patroni-dr-active.sh ${{ github.event.inputs.namespace }}
+          echo "::set-output name=patroni-config::hello"
         shell: bash
         working-directory: helm
       - name: Deploy keycloak-dr in active mode
@@ -37,4 +41,4 @@ jobs:
     runs-on: ubuntu-latest
     needs: set-dr-to-active
     steps:
-      - run: echo ${{needs.set-dr-to-active.outputs.output2}}
+      - run: echo ${{needs.set-dr-to-active.outputs.output1}}
