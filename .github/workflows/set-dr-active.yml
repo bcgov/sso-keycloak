@@ -11,7 +11,7 @@ on:
 jobs:
   set-dr-to-active:
     runs-on: ubuntu-latest
-     outputs:
+    outputs:
       output1: ${{ steps.dractivation.outputs.patroniconfig }}
     steps:
       - name: Checkout
