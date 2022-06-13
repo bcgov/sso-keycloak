@@ -26,8 +26,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: list files
-        run: ls ./
       - name: Log into golddr and remove patroni standby
         uses: redhat-actions/oc-login@v1
         with:
