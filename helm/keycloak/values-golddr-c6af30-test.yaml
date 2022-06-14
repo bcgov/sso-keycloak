@@ -26,19 +26,20 @@ patroni:
   #     password:
   #   admin:
   #     username: admin
-  #     password: 
+  #     password:
   #   standby:
   #     username: standby
-  #     password: 
+  #     password:
 
   # additionalCredentials:
   #   - username: ssokeycloak
-  #     password: 
+  #     password:
+
   persistentVolume:
     size: 2Gi
 
   podDisruptionBudget:
-    enabled: true
+    enabled: false
 
   standby:
     enabled: true

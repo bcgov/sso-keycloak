@@ -1,4 +1,4 @@
-replicaCount: 0
+replicaCount: 3
 
 postgres:
   host: sso-patroni
