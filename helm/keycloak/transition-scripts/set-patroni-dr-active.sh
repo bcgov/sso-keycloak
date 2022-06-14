@@ -11,5 +11,6 @@ if ! check_kube_context "api-golddr-devops-gov-bc-ca"; then
     exit 1
 fi
 
-OUTPUT = oc rsh -n ${NAMESPACE} sso-patroni-0 curl -s -XPATCH -d '{"standby_cluster_blah":null}' http://localhost:8008/config | jq .
+OUTPUT = oc rsh -n ${NAMESPACE} sso-patroni-0 curl -s -XPATCH -d '{"standby_cluster":null}' http://localhost:8008/config 
 
+echo "::set-output name=patroniconfig::${OUTPUT | jq .}"

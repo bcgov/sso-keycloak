@@ -28,7 +28,6 @@ jobs:
         run: |
           chmod +x ./keycloak/transition-scripts/set-patroni-dr-active.sh
           ./keycloak/transition-scripts/set-patroni-dr-active.sh ${{ github.event.inputs.namespace }}
-          echo "::set-output name=patroniconfig::hello"
         shell: bash
         working-directory: helm
       - name: Deploy keycloak-dr in active mode
