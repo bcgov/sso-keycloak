@@ -8,6 +8,7 @@ on:
         required: true
         options: ["c6af30-dev", "c6af30-test", "c6af30-prod"]
 
+
 jobs:
   set-dr-to-active:
     runs-on: ubuntu-latest
