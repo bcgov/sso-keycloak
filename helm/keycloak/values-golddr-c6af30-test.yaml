@@ -38,7 +38,7 @@ patroni:
     size: 2Gi
 
   podDisruptionBudget:
-    enabled: true
+    enabled: false
 
   standby:
     enabled: true
