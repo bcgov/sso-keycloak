@@ -41,6 +41,8 @@ jobs:
     needs: set-dr-to-active
     if: ${{needs.set-dr-to-active.outputs.output1}} == '200'
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
       - name: Deploy keycloak-dr in active mode
         run: |
           chmod +x ./keycloak/transition-scripts/deploy-golddr-active.sh
