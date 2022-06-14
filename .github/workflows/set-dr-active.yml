@@ -39,5 +39,6 @@ jobs:
   deploy-kc-in-dr:
     runs-on: ubuntu-latest
     needs: set-dr-to-active
+    if: ${{needs.set-dr-to-active.outputs.output1}} == '200'
     steps:
       - run: echo ${{needs.set-dr-to-active.outputs.output1}}
