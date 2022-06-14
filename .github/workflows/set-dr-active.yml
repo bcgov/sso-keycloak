@@ -41,4 +41,9 @@ jobs:
     needs: set-dr-to-active
     if: ${{needs.set-dr-to-active.outputs.output1}} == '200'
     steps:
-      - run: echo ${{needs.set-dr-to-active.outputs.output1}}
+      - name: Deploy keycloak-dr in active mode
+        run: |
+          chmod +x ./keycloak/transition-scripts/deploy-golddr-active.sh
+          ./keycloak/transition-scripts/deploy-golddr-active.sh ${{ github.event.inputs.namespace }}
+        shell: bash
+        working-directory: helm
