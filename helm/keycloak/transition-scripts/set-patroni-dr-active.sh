@@ -13,4 +13,7 @@ fi
 
 OUTPUT=$(oc rsh -n ${NAMESPACE} sso-patroni-0 curl -s -XPATCH -d '{"standby_cluster":null}' http://localhost:8008/config)
 
-echo "::set-output name=patroniconfig::${OUTPUT | jq .}"
+echo ${OUTPUT}
+
+
+# echo "::set-output name=patroniconfig::${OUTPUT | jq .}"
