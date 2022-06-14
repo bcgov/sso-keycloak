@@ -30,12 +30,6 @@ jobs:
           ./keycloak/transition-scripts/set-patroni-dr-active.sh ${{ github.event.inputs.namespace }}
         shell: bash
         working-directory: helm
-      # - name: Deploy keycloak-dr in active mode
-      #   run: |
-      #     chmod +x ./keycloak/transition-scripts/deploy-golddr-active.sh
-      #     ./keycloak/transition-scripts/deploy-golddr-active.sh ${{ github.event.inputs.namespace }}
-      #   shell: bash
-      #   working-directory: helm
   deploy-kc-in-dr:
     runs-on: ubuntu-latest
     needs: set-dr-to-active
