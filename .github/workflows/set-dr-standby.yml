@@ -47,6 +47,3 @@ jobs:
           oc rsh -n ${{ github.event.inputs.namespace }} sso-patroni-0 \
           curl -s -XPATCH -d '{  "standby_cluster": {"create_replica_methods": ["basebackup_fast_xlog"],"host": "sso-patroni-gold.c6af30-test.svc.cluster.local","port": ${{ github.event.inputs.patroni-port }}}}' http://localhost:8008/config | jq .
         shell: bash
-
-
-        
