@@ -12,6 +12,10 @@ postgres:
   host: sso-patroni
   port: 5432
 
+maintenancePage:
+  enabled: true
+  on: true
+
 patroni:
   replicaCount: 2
   # credentials:

@@ -1,6 +1,6 @@
 FROM nginx:alpine
 
-COPY static /usr/share/nginx/html
+COPY static /opt/app-root/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 8080
