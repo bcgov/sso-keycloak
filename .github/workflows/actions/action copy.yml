@@ -1,7 +1,7 @@
 # Install Patroni
 # Install oc
 # Install helm?
-# Create secret for gold and golddr patroni instance 
+# Create secret for gold and golddr patroni instance
 # Log into gold
 # Run patroni install
 # Log into golddr
@@ -12,9 +12,9 @@
 # rsh into patroni
 # use REST API to swith config
 # log into golddr
-# 
+#
 
-# # variables 
+# # variables
 # - openshift url gold
 # - openshift token gold
 # - openshift url golddr
@@ -22,20 +22,20 @@
 
 name: Deploy patroni to gold and golddr
 
-inputs: 
+inputs:
   openshift_server_url:
     description: "URL of the OpenShift server"
     required: true
   openshift_token:
     description: "Unique login token for OpenShift"
-    required: true  
+    required: true
   namespace:
     description: "The namespace being deployed to"
     required: true
   values_file:
     description: "The values file used by helm"
     required: true
-  name: 
+  name:
     description: "The name of the service being built"
     required: true
   password_superuser:
@@ -55,7 +55,7 @@ inputs:
     required: true
   openshift_token_golddr:
     description: "Unique login token for Golddr OpenShift"
-    required: true   
+    required: true
 
 
 runs:
@@ -115,7 +115,7 @@ runs:
         --set env.STANDBY_PORT=64461
     shell: bash
   # - name: Copy patroni secret to send to golddr
-  #   run: | 
+  #   run: |
   #     oc get secret sso-patroni -o yaml > sso-patroni.yaml
   # - name: Authenticate, set context, and run deploy script golddr
   #   uses: redhat-actions/oc-login@v1
@@ -124,7 +124,7 @@ runs:
   #     openshift_token: ${{ inputs.openshift_token_gold_dr }}
   #     namespace: ${{ inputs.namespace }}
   #     insecure_skip_tls_verify: true
-  # - name: Apply secret to 
+  # - name: Apply secret to
 
-# Idea: set the standby_host, standby_port, and replica count using --set instead of values file 
+# Idea: set the standby_host, standby_port, and replica count using --set instead of values file
 # Idea: set up the network policies and tsc if necessary
