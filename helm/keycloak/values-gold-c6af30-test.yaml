@@ -14,7 +14,7 @@ postgres:
 
 maintenancePage:
   enabled: true
-  on: false
+  active: true
 
 patroni:
   replicaCount: 2
