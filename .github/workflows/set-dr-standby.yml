@@ -28,8 +28,8 @@ jobs:
       - name: Check that sso-patroni gold is active
         id: goldactive
         run: |
-          chmod +x ./keycloak/transition-scripts/check-patroni-gold-active.sh
-          ./keycloak/transition-scripts/check-patroni-gold-active.sh ${{ github.event.inputs.namespace }}
+          chmod +x ./keycloak/transition-scripts/check-patroni-active.sh
+          ./keycloak/transition-scripts/check-patroni-active.sh ${{ github.event.inputs.namespace }} gold
         shell: bash
         working-directory: helm
   set-patroni-dr-to-standby:
