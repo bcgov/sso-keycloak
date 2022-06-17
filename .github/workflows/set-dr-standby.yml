@@ -52,7 +52,7 @@ jobs:
         shell: bash
       - name: Set patroni-dr to standby
         run: |
-          chmod +x ./keycloak/transition-scripts/set-patroni-dr-standby.sh
-          ./keycloak/transition-scripts/set-patroni-dr-standby.sh ${{ github.event.inputs.namespace }} ${{ github.event.inputs.patroni-port }}
+          chmod +x ./keycloak/transition-scripts/set-patroni-standby.sh
+          ./keycloak/transition-scripts/set-patroni-standby.sh ${{ github.event.inputs.namespace }} ${{ github.event.inputs.patroni-port }} golddr
         shell: bash
         working-directory: helm

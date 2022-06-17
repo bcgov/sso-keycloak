@@ -1,5 +1,10 @@
 replicaCount: 5
 
+image:
+  repository: ghcr.io/bcgov/sso
+  tag: v7.5-9-build.4
+  pullPolicy: Always
+
 resources:
   limits:
     cpu: 2
@@ -36,7 +41,3 @@ patroni:
   persistentVolume:
     size: 2Gi
 
-  # standby:
-  #   enabled: true
-  #   host: sso-patroni-gold.c6af30-test.svc.cluster.local
-  #   port: 56583
