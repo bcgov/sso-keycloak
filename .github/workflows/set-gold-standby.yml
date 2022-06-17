@@ -32,27 +32,25 @@ jobs:
           ./keycloak/transition-scripts/check-patroni-active.sh ${{ github.event.inputs.namespace }} golddr
         shell: bash
         working-directory: helm
-  # set-patroni-dr-to-standby:
-  #   runs-on: ubuntu-latest
-  #   needs: check-patroni-gold-active
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v2
-  #     - name: Log into golddr and set patroni standby
-  #       uses: redhat-actions/oc-login@v1
-  #       with:
-  #         openshift_server_url: ${{ secrets.OPENSHIFT_SERVER_GOLDDR }}
-  #         openshift_token: ${{ secrets.OPENSHIFT_TOKEN_GOLDDR }}
-  #         namespace: ${{ github.event.inputs.namespace }}
-  #         insecure_skip_tls_verify: true
-  #     - name: Deploy keycloak-dr in standby mode
-  #       run: |
-  #         chmod +x ./helm/keycloak/transition-scripts/deploy-golddr-standby.sh
-  #         ./helm/keycloak/transition-scripts/deploy-golddr-standby.sh ${{ github.event.inputs.namespace }}
-  #       shell: bash
-  #     - name: Set patroni-dr to standby
-  #       run: |
-  #         chmod +x ./keycloak/transition-scripts/set-patroni-dr-standby.sh
-  #         ./keycloak/transition-scripts/set-patroni-dr-standby.sh ${{ github.event.inputs.namespace }} ${{ github.event.inputs.patroni-port }}
-  #       shell: bash
-  #       working-directory: helm
+  set-patroni-dr-to-standby:
+    runs-on: ubuntu-latest
+    needs: check-patroni-dr-active
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Log into gold and set patroni standby
+        uses: redhat-actions/oc-login@v1
+        with:
+          openshift_server_url: ${{ secrets.OPENSHIFT_SERVER_GOLD }}
+          openshift_token: ${{ secrets.OPENSHIFT_TOKEN_GOLD }}
+          namespace: ${{ github.event.inputs.namespace }}
+          insecure_skip_tls_verify: true
+      - name: Create backup of patroni gold before going to standby mode
+        run: |
+          echo "TOO BE COMPLETED"
+      - name: Set patroni-gold to standby
+        run: |
+          chmod +x ./keycloak/transition-scripts/set-patroni-standby.sh
+          ./keycloak/transition-scripts/set-patroni-standby.sh ${{ github.event.inputs.namespace }} ${{ github.event.inputs.patroni-port }} gold
+        shell: bash
+        working-directory: helm

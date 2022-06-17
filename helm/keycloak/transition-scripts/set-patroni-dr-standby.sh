@@ -4,9 +4,10 @@ NAMESPACE=$1
 # The port of the tsc service used to connect gold and golddr
 PORT=$2
 
-pwd="$(dirname "$0")"
 
-source "./helpers.sh"
+pwd="$(dirname "$0")"
+source "$pwd/../../helpers.sh"
+
 # Confirm This Is run on DR cluster
 if ! check_kube_context "api-golddr-devops-gov-bc-ca"; then
     echo "invalid context"
