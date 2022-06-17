@@ -26,8 +26,8 @@ jobs:
       - name: Set patroni-dr to primary
         id: dractivation
         run: |
-          chmod +x ./keycloak/transition-scripts/set-patroni-active.sh
-          ./keycloak/transition-scripts/set-patroni-active.sh ${{ github.event.inputs.namespace }} golddr
+          chmod +x ./keycloak/transition-scripts/set-patroni-dr-active.sh
+          ./keycloak/transition-scripts/set-patroni-dr-active.sh ${{ github.event.inputs.namespace }}
         shell: bash
         working-directory: helm
   deploy-kc-in-dr:
@@ -37,16 +37,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Log into gold
+      - name: Log into golddr
         uses: redhat-actions/oc-login@v1
         with:
-          openshift_server_url: ${{ secrets.OPENSHIFT_SERVER_GOLD }}
-          openshift_token: ${{ secrets.OPENSHIFT_TOKEN_GOLD }}
+          openshift_server_url: ${{ secrets.OPENSHIFT_SERVER_GOLDDR }}
+          openshift_token: ${{ secrets.OPENSHIFT_TOKEN_GOLDDR }}
           namespace: ${{ github.event.inputs.namespace }}
           insecure_skip_tls_verify: true
       - name: Deploy keycloak-dr in active mode
         run: |
-          chmod +x ./keycloak/transition-scripts/deploy-gold-active.sh
-          ./keycloak/transition-scripts/deploy-gold-active.sh ${{ github.event.inputs.namespace }} 
+          chmod +x ./keycloak/transition-scripts/deploy-golddr-active.sh
+          ./keycloak/transition-scripts/deploy-golddr-active.sh ${{ github.event.inputs.namespace }}
         shell: bash
         working-directory: helm
