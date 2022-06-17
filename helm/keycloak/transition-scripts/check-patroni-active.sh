@@ -30,7 +30,7 @@ RESPONSE=$(kubectl -n ${NAMESPACE} exec sso-patroni-0 -- curl -s -w "%{http_code
 RESPONSE_CODE=${RESPONSE: -3}
 echo "The response code is "$RESPONSE_CODE
 CLUSTERCONFIG=${RESPONSE:0:-3}
-STANDBY_CLUSTER=$(echo $CLUSTERCONFIG | jq .standby_cluster )
+STANDBY_CLUSTER_CONFIG_LENGTH=$(echo $CLUSTERCONFIG | jq .standby_cluster | jq length )
 
 if [[ $RESPONSE_CODE == 200 ]]; then
     echo "Patroni config response returned"
@@ -39,11 +39,12 @@ else
     exit 1
 fi
 
-if [ -z ${STANDBY_CLUSTER} ]; then
+# The length of the standby config json is 0 when patroni is in active mode
+if [ -z $STANDBY_CLUSTER_CONFIG_LENGTH ]; then
+    echo "Patroni $CLUSTER config in active mode"
+else
     echo "The $CLUSTER patroni pods must not be in standby mode"
     exit 1
-else
-    echo "Patroni config in active mode"
 fi
 
 #TODO: Check that the TSC service is running?
