@@ -6,7 +6,6 @@ pwd="$(dirname "$0")"
 
 source "./helpers.sh"
 
-
 if ! check_kube_context "api-golddr-devops-gov-bc-ca"; then
     echo "invalid context"
     exit 1

@@ -12,23 +12,27 @@ postgres:
   host: sso-patroni
   port: 5432
 
+maintenancePage:
+  enabled: true
+  active: false
+
 patroni:
   replicaCount: 2
   # credentials:
   #   existingSecret: false
   #   superuser:
   #     username: postgres
-  #     password: 
+  #     password:
   #   admin:
   #     username: admin
-  #     password: 
+  #     password:
   #   standby:
   #     username: standby
-  #     password: 
+  #     password:
 
   # additionalCredentials:
   #   - username: ssokeycloak
-  #     password: 
+  #     password:
   persistentVolume:
     size: 2Gi
 
