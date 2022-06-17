@@ -1,4 +1,4 @@
-name: Set the dr deployment to standby
+name: Set the gold deployment to standby
 
 on:
   workflow_dispatch:
