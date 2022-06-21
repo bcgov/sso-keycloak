@@ -26,8 +26,8 @@ jobs:
       - name: Set patroni-dr to primary
         id: dractivation
         run: |
-          chmod +x ./keycloak/transition-scripts/set-patroni-dr-active.sh
-          ./keycloak/transition-scripts/set-patroni-dr-active.sh ${{ github.event.inputs.namespace }}
+          chmod +x ./keycloak/transition-scripts/set-patroni-active.sh
+          ./keycloak/transition-scripts/set-patroni-active.sh ${{ github.event.inputs.namespace }} golddr
         shell: bash
         working-directory: helm
   deploy-kc-in-dr:

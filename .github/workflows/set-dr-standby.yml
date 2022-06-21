@@ -28,8 +28,8 @@ jobs:
       - name: Check that sso-patroni gold is active
         id: goldactive
         run: |
-          chmod +x ./keycloak/transition-scripts/check-patroni-gold-active.sh
-          ./keycloak/transition-scripts/check-patroni-gold-active.sh ${{ github.event.inputs.namespace }}
+          chmod +x ./keycloak/transition-scripts/check-patroni-active.sh
+          ./keycloak/transition-scripts/check-patroni-active.sh ${{ github.event.inputs.namespace }} gold
         shell: bash
         working-directory: helm
   set-patroni-dr-to-standby:
@@ -45,14 +45,14 @@ jobs:
           openshift_token: ${{ secrets.OPENSHIFT_TOKEN_GOLDDR }}
           namespace: ${{ github.event.inputs.namespace }}
           insecure_skip_tls_verify: true
+      - name: Set patroni-dr to standby
+        run: |
+          chmod +x ./keycloak/transition-scripts/set-patroni-standby.sh
+          ./keycloak/transition-scripts/set-patroni-standby.sh ${{ github.event.inputs.namespace }} ${{ github.event.inputs.patroni-port }} golddr
+        shell: bash
+        working-directory: helm
       - name: Deploy keycloak-dr in standby mode
         run: |
           chmod +x ./helm/keycloak/transition-scripts/deploy-golddr-standby.sh
           ./helm/keycloak/transition-scripts/deploy-golddr-standby.sh ${{ github.event.inputs.namespace }}
         shell: bash
-      - name: Set patroni-dr to standby
-        run: |
-          chmod +x ./keycloak/transition-scripts/set-patroni-dr-standby.sh
-          ./keycloak/transition-scripts/set-patroni-dr-standby.sh ${{ github.event.inputs.namespace }} ${{ github.event.inputs.patroni-port }}
-        shell: bash
-        working-directory: helm
