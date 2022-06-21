@@ -19,3 +19,4 @@ cd ./keycloak/
 helm upgrade --install sso-keycloak sso-charts/sso-keycloak \
  -n ${NAMESPACE} -f ./values-gold-${NAMESPACE}.yaml  \
  --version v1.7.1
+
