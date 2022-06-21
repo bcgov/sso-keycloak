@@ -36,7 +36,7 @@ patroni:
   #     password:
 
   persistentVolume:
-    size: 2Gi
+    size: 1.75Gi
 
   podDisruptionBudget:
     enabled: false
