@@ -1,0 +1,52 @@
+name: Set the gold deployment to active
+
+on:
+  workflow_dispatch:
+    inputs:
+      namespace:
+        description: "The target namespace"
+        required: true
+        options: ["c6af30-dev", "c6af30-test", "c6af30-prod"]
+
+jobs:
+  set-gold-to-active:
+    runs-on: ubuntu-latest
+    outputs:
+      output1: ${{ steps.goldactivation.outputs.patroniconfig }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Log into gold
+        uses: redhat-actions/oc-login@v1
+        with:
+          openshift_server_url: ${{ secrets.OPENSHIFT_SERVER_GOLD }}
+          openshift_token: ${{ secrets.OPENSHIFT_TOKEN_GOLD }}
+          namespace: ${{ github.event.inputs.namespace }}
+          insecure_skip_tls_verify: true
+      - name: Set patroni-gold to primary
+        id: goldactivation
+        run: |
+          chmod +x ./keycloak/transition-scripts/set-patroni-active.sh
+          ./keycloak/transition-scripts/set-patroni-active.sh ${{ github.event.inputs.namespace }} gold
+        shell: bash
+        working-directory: helm
+  deploy-kc-in-gold:
+    runs-on: ubuntu-latest
+    needs: set-gold-to-active
+    if: ${{needs.set-gold-to-active.outputs.output1}} == '200'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Log into gold
+        uses: redhat-actions/oc-login@v1
+        with:
+          openshift_server_url: ${{ secrets.OPENSHIFT_SERVER_GOLD }}
+          openshift_token: ${{ secrets.OPENSHIFT_TOKEN_GOLD }}
+          namespace: ${{ github.event.inputs.namespace }}
+          insecure_skip_tls_verify: true
+      - name: Deploy keycloak gold in active mode
+        run: |
+          chmod +x ./keycloak/transition-scripts/deploy-gold-active.sh
+          ./keycloak/transition-scripts/deploy-gold-active.sh ${{ github.event.inputs.namespace }}
+        shell: bash
+        working-directory: helm

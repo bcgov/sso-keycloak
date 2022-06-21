@@ -1,12 +1,14 @@
 #!/bin/bash
 
 NAMESPACE=$1
+CLUSTER=$2
 
 pwd="$(dirname "$0")"
+source "$pwd/../../helpers.sh"
 
-source "./helpers.sh"
-
-if ! check_kube_context "api-golddr-devops-gov-bc-ca"; then
+echo "Setting patroni-"$CLUSTER" to active"
+# Confirm that this action is running against $CLUSTER cluster
+if ! check_kube_context "api-$CLUSTER-devops-gov-bc-ca"; then
     echo "invalid context"
     exit 1
 fi
