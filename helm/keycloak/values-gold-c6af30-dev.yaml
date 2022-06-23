@@ -1,0 +1,23 @@
+replicaCount: 1
+
+resources:
+  limits:
+    cpu: 2
+    memory: 4Gi
+  requests:
+    cpu: 1250m
+    memory: 4Gi
+
+postgres:
+  host: sso-patroni-222
+  port: 5432
+
+maintenancePage:
+  enabled: false
+  active: false
+
+patroni:
+  replicaCount: 2
+
+  persistentVolume:
+    size: 2Gi
