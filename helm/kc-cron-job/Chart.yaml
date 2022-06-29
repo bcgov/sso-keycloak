@@ -2,3 +2,7 @@ apiVersion: v1
 name: kc-cron-job
 description: "Helm chart for CronJob to collect Keycloak active sessions"
 version: 0.1.1
+dependencies:
+  - name: patroni
+    version: 1.5.1
+    repository: https://bcgov.github.io/sso-helm-charts

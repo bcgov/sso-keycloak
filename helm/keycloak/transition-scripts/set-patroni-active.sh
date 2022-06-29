@@ -16,4 +16,3 @@ fi
 OUTPUT=$(kubectl -n  ${NAMESPACE} exec sso-patroni-0 -- curl -s -o /dev/null -w "%{http_code}" -XPATCH -d '{"standby_cluster":null}' http://localhost:8008/config)
 
 echo "::set-output name=patroniconfig::${OUTPUT}"
-
