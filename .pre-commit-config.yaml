@@ -17,7 +17,7 @@ repos:
     hooks:
       - id: prettier
         name: Format js files with prettier
-        files: "scripts/.*$, docker/kc-cron-job/.*$"
+        files: "scripts/.*$|docker/kc-cron-job/.*$"
   # - repo: local
   #   hooks:
   #     - id: java-formatter
