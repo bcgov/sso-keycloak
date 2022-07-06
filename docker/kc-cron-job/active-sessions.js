@@ -49,8 +49,8 @@ async function main() {
           dataset.push([
             KEYCLOAK_URL,
             realm.realm,
-            sessionActiveCount,
-            sessionClientID
+            sessionClientID,
+            sessionActiveCount
           ])
         }
       })
@@ -58,7 +58,7 @@ async function main() {
       }),
     );
 
-    const query = format('INSERT INTO active_sessions (keycloak_url, realm, session_count, client_id) VALUES %L', dataset);
+    const query = format('INSERT INTO active_sessions (keycloak_url, realm, client_id, session_count) VALUES %L', dataset);
 
     await client.connect();
     await client.query(query);
