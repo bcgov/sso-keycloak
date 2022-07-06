@@ -35,6 +35,7 @@ spec:
                         keycloak_url varchar(1000),
                         realm varchar(1000),
                         session_count int,
+                        client_id varchar(1000),
                         created_at timestamp with time zone default current_timestamp,
                         primary key(id)
                     );

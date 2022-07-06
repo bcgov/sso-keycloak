@@ -2,7 +2,6 @@ const _ = require('lodash');
 const { Client } = require('pg');
 const format = require('pg-format');
 const KcAdminClient = require('keycloak-admin').default;
-
 const KEYCLOAK_URL = process.env.KEYCLOAK_URL || 'https://dev.oidc.gov.bc.ca';
 const KEYCLOAK_CLIENT_ID = process.env.KEYCLOAK_CLIENT_ID || 'script-cli';
 const KEYCLOAK_CLIENT_SECRET = process.env.KEYCLOAK_CLIENT_SECRET;
@@ -24,7 +23,6 @@ async function main() {
       clientId: KEYCLOAK_CLIENT_ID,
       clientSecret: KEYCLOAK_CLIENT_SECRET,
     });
-
     // see https://node-postgres.com/api/client#new-clientconfig-object
     const client = new Client({
       host: PGHOST,
@@ -42,12 +40,23 @@ async function main() {
         const sessions = await kcAdminClient.sessions.find({
           realm: realm.realm,
         });
-        const totalActive = _.sum(_.map(sessions, 'active').map(Number));
-        if (totalActive > 0) dataset.push([KEYCLOAK_URL, realm.realm, totalActive]);
+      sessions.map( (session) => {
+        const sessionActiveCount=parseInt(session.active);
+        const sessionClientID= session.clientId;
+        if (sessionActiveCount>0) {
+          dataset.push([
+            KEYCLOAK_URL,
+            realm.realm,
+            sessionActiveCount,
+            sessionClientID
+          ])
+        }
+      })
+
       }),
     );
 
-    const query = format('INSERT INTO active_sessions (keycloak_url, realm, session_count) VALUES %L', dataset);
+    const query = format('INSERT INTO active_sessions (keycloak_url, realm, session_count, client_id) VALUES %L', dataset);
 
     await client.connect();
     await client.query(query);
