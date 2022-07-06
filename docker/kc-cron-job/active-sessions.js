@@ -42,23 +42,20 @@ async function main() {
         const sessions = await kcAdminClient.sessions.find({
           realm: realm.realm,
         });
-      sessions.map( (session) => {
-        const sessionActiveCount=parseInt(session.active);
-        const sessionClientID= session.clientId;
-        if (sessionActiveCount>0) {
-          dataset.push([
-            KEYCLOAK_URL,
-            realm.realm,
-            sessionClientID,
-            sessionActiveCount
-          ])
-        }
-      })
-
+        sessions.map((session) => {
+          const sessionActiveCount = parseInt(session.active);
+          const sessionClientID = session.clientId;
+          if (sessionActiveCount > 0) {
+            dataset.push([KEYCLOAK_URL, realm.realm, sessionClientID, sessionActiveCount]);
+          }
+        });
       }),
     );
 
-    const query = format('INSERT INTO active_sessions (keycloak_url, realm, client_id, session_count) VALUES %L', dataset);
+    const query = format(
+      'INSERT INTO active_sessions (keycloak_url, realm, client_id, session_count) VALUES %L',
+      dataset,
+    );
 
     await client.connect();
     await client.query(query);
