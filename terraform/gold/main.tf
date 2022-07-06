@@ -19,12 +19,13 @@ output "deployer_secrets" {
 
 module "admin_deployer" {
   source  = "bcgov/openshift/deployer"
-  version = "0.10.0"
+  version = "0.11.0"
 
   name                  = "oc-sso-deployer"
   namespace             = "eb75ad-prod"
   privileged_namespaces = local.namespaces
   ops_bcgov             = true
+  bcgov_tsc             = true
 }
 
 output "admin_deployer_secret" {
