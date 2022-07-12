@@ -31,3 +31,10 @@ service-acount-secret:
 		--from-literal=keycloak-url=${URL} \
 		--from-literal=client-id=script-cli \
 		--from-literal=client-secret=${CLIENTSECRET}
+
+.PHONY: service-acount-secret-gold-prod
+service-acount-secret-gold-prod:
+	kubectl create secret generic kc-cron-service-account -n "${NAMESPACE}" \
+		--from-literal=keycloak-url=${URL} \
+		--from-literal=client-id=viewer-cli \
+		--from-literal=client-secret=${CLIENTSECRET}
