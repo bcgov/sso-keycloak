@@ -2,6 +2,7 @@ SHELL := /usr/bin/env bash
 NAMESPACE=""
 URL=''
 CLIENTSECRET=''
+CLIENTNAME=''
 
 .PHONY: install
 install:
@@ -24,17 +25,11 @@ force-install: uninstall
 force-install: install
 
 # The service account secrets are located in the prod keycloak app
-# the client is located in the master realm
+# the client is located in the master realm CLIENTNAME=script-cli for silver and
+# and gold sandbox projects, CLIENTNAME=viewer-cli in gold production.
 .PHONY: service-acount-secret
 service-acount-secret:
 	kubectl create secret generic kc-cron-service-account -n "${NAMESPACE}" \
 		--from-literal=keycloak-url=${URL} \
-		--from-literal=client-id=script-cli \
-		--from-literal=client-secret=${CLIENTSECRET}
-
-.PHONY: service-acount-secret-gold-prod
-service-acount-secret-gold-prod:
-	kubectl create secret generic kc-cron-service-account -n "${NAMESPACE}" \
-		--from-literal=keycloak-url=${URL} \
-		--from-literal=client-id=viewer-cli \
+		--from-literal=client-id=${CLIENTNAME} \
 		--from-literal=client-secret=${CLIENTSECRET}
