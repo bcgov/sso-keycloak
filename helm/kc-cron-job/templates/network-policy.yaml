@@ -27,12 +27,12 @@ metadata:
 spec:
   podSelector:
     matchLabels:
-      app.kubernetes.io/instance: kc-cron-job
+      app.kubernetes.io/instance: {{.Values.nameOverride}}
   ingress:
     - from:
         - podSelector:
             matchLabels:
-              app.kubernetes.io/name: kc-cron-job
+              app.kubernetes.io/name: {{.Values.nameOverride}}
           namespaceSelector:
             matchLabels:
               environment: prod
