@@ -67,14 +67,18 @@ const reduceDataFromFiles = async (dirname) => {
   try {
     client = getClient();
     await client.connect();
-    const files = await fsPromises.readdir(dirname);
-    for (const filename of files) {
-      const lineReader = readline.createInterface({
-        input: fs.createReadStream(`${dirname}/${filename}`),
-      });
-      promises.push(saveLogsForFile(lineReader, client));
+    if (fs.existsSync(dirname)) {
+      const files = await fsPromises.readdir(dirname);
+      for (const filename of files) {
+        const lineReader = readline.createInterface({
+          input: fs.createReadStream(`${dirname}/${filename}`),
+        });
+        promises.push(saveLogsForFile(lineReader, client));
+      }
+      await Promise.all(promises);
+    } else {
+      console.info(`Directory ${dirname} does not exist.`);
     }
-    await Promise.all(promises);
   } catch (e) {
     console.error('error while reducing file data', e);
   } finally {
