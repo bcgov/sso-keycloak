@@ -9,7 +9,7 @@ env:
   CLUSTER: gold
 
 jobs:
-  run-docker-compose:
+  run-siteminder-tests:
     runs-on: ubuntu-latest
     steps:
       - name: check out repository
@@ -19,12 +19,11 @@ jobs:
           node-version: 16
       - name: run siteminder tests
         run: |
-          echo ${{ secrets.SITEMINDER_TESTS_ENV }} | base64 --decode > .env
+          echo "${{ secrets.SITEMINDER_TESTS_ENV }}" | base64 --decode > .env
           cd siteminder-tests
-          docker build -t siteminder-tests:latest .
-          docker run --rm -it --name siteminer-tests siteminder-tests:latest
+          docker run --rm -it -v $(pwd)/results:/app/results $(docker build -q .)
       - name: upload test results
         uses: actions/upload-artifact@v2
         with:
           name: ${{ inputs.cluster }}-${{ inputs.environment }}-results
-          path: ${{ github.workspace }}/e2e/results
+          path: ${{ github.workspace }}/siteminder-tests/results
