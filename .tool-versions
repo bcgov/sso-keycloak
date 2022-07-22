@@ -10,3 +10,4 @@ terraform-docs 0.12.1
 tflint 0.28.1
 java openjdk-14.0.1
 gradle 7.3.1
+docker-compose 1.28.6
