@@ -16,9 +16,9 @@ jobs:
           node-version: 16
       - name: Run siteminder tests
         run: |
-          echo "${{ secrets.SITEMINDER_TESTS_ENV }}" | base64 --decode > .env
           cd ${{ github.workspace }}/siteminder-tests
-          docker run --rm -e ENVIRONMENT=dev -e CLUSTER=gold -v $(pwd)/results:/app/results $(docker build -q .)
+          echo "${{ secrets.SITEMINDER_TESTS_ENV }}" | base64 --decode > .env
+          docker run --rm -e ENVIRONMENT=dev -e CLUSTER=gold --env-file .env -v $(pwd)/results:/app/results $(docker build -q .)
       - name: Upload test results
         uses: actions/upload-artifact@v2
         with:
