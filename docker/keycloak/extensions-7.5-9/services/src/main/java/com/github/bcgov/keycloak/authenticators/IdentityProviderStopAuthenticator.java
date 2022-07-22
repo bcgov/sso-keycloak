@@ -36,7 +36,10 @@ public class IdentityProviderStopAuthenticator implements Authenticator {
         context.getAuthenticationSession().getClient().getClientScopes(true);
 
     for (IdentityProviderModel ridp : realmIdps) {
-      if (ridp.isEnabled() && scopes.containsKey(ridp.getAlias())) {
+      String oidcAlias = ridp.getAlias();
+      String samlAlias = ridp.getAlias() + "-saml";
+
+      if (ridp.isEnabled() && (scopes.containsKey(oidcAlias) || scopes.containsKey(samlAlias))) {
         allowedIdps.add(ridp);
       }
     }

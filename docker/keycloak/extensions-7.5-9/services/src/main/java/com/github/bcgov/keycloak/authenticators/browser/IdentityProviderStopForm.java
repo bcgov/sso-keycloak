@@ -33,7 +33,10 @@ public class IdentityProviderStopForm extends AbstractUsernameFormAuthenticator 
     String idpkeys = "";
 
     for (IdentityProviderModel ridp : realmIdps) {
-      if (ridp.isEnabled() && scopes.containsKey(ridp.getAlias())) {
+      String oidcAlias = ridp.getAlias();
+      String samlAlias = ridp.getAlias() + "-saml";
+
+      if (ridp.isEnabled() && (scopes.containsKey(oidcAlias) || scopes.containsKey(samlAlias))) {
         idpkeys += "##" + ridp.getAlias() + "##";
       }
     }
