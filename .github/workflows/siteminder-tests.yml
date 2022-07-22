@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - 'util/iyOavXXy'
-env:
-  ENVIRONMENT: dev
-  CLUSTER: gold
 
 jobs:
   run-siteminder-tests:
@@ -21,7 +18,7 @@ jobs:
         run: |
           echo "${{ secrets.SITEMINDER_TESTS_ENV }}" | base64 --decode > .env
           cd ${{ github.workspace }}/siteminder-tests
-          docker run --rm -v $(pwd)/results:/app/results $(docker build -q .)
+          docker run --rm -e ENVIRONMENT=dev -e CLUSTER=gold -v $(pwd)/results:/app/results $(docker build -q .)
       - name: Upload test results
         uses: actions/upload-artifact@v2
         with:
