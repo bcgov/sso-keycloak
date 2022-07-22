@@ -46,3 +46,7 @@ override.tf.json
 terraform.rc
 
 docker/keycloak/extensions/services/target
+
+screen_shots
+saml_trace
+results

@@ -1,0 +1,45 @@
+name: Run Siteminder Tests to Validate SAML Payload
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment under test'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - test
+          - prod
+      cluster:
+        description: 'OCP'
+        required: true
+        default: 'silver'
+        type: choice
+        options:
+          - silver
+          - gold
+
+jobs:
+  run-docker-compose:
+    runs-on: ubuntu-latest
+    steps:
+      - name: check out repository
+        uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: run siteminder tests
+        run: |
+          echo ${{ secrets.SITEMINDER_TESTS_ENV }} | base64 --decode > .env
+          export ENVIRONMENT=${{ inputs.environment }}
+          export CLUSTER=${{ inputs.cluster }}
+          cd siteminder-tests
+          docker build -t siteminder-tests:latest .
+          docker run --rm -it --name siteminer-tests siteminder-tests:latest
+      - name: upload test results
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ inputs.cluster }}-${{ inputs.environment }}-results
+          path: ${{ github.workspace }}/e2e/results

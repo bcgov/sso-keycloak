@@ -1,0 +1,6 @@
+results
+screen_shots
+node_modules
+.prettierrc
+.eslintrc
+.dockerignore
