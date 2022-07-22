@@ -1,25 +1,31 @@
 name: Run Siteminder Tests to Validate SAML Payload
 
 on:
-  workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Environment under test'
-        required: true
-        default: 'dev'
-        type: choice
-        options:
-          - dev
-          - test
-          - prod
-      cluster:
-        description: 'OCP'
-        required: true
-        default: 'silver'
-        type: choice
-        options:
-          - silver
-          - gold
+  push:
+    branches:
+      - 'util/iyOavXXy'
+  # workflow_dispatch:
+  #   inputs:
+  #     environment:
+  #       description: 'Environment under test'
+  #       required: true
+  #       default: 'dev'
+  #       type: choice
+  #       options:
+  #         - dev
+  #         - test
+  #         - prod
+  #     cluster:
+  #       description: 'OCP'
+  #       required: true
+  #       default: 'silver'
+  #       type: choice
+  #       options:
+  #         - silver
+  #         - gold
+env:
+  ENVIRONMENT: dev
+  CLUSTER: gold
 
 jobs:
   run-docker-compose:
