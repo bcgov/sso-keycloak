@@ -12,17 +12,17 @@ jobs:
   run-siteminder-tests:
     runs-on: ubuntu-latest
     steps:
-      - name: check out repository
+      - name: Check out repository
         uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-      - name: run siteminder tests
+      - name: Run siteminder tests
         run: |
           echo "${{ secrets.SITEMINDER_TESTS_ENV }}" | base64 --decode > .env
-          cd siteminder-tests
-          docker run --rm -it -v $(pwd)/results:/app/results $(docker build -q .)
-      - name: upload test results
+          cd ${{ github.workspace }}/siteminder-tests
+          docker run --rm -v $(pwd)/results:/app/results $(docker build -q .)
+      - name: Upload test results
         uses: actions/upload-artifact@v2
         with:
           name: ${{ inputs.cluster }}-${{ inputs.environment }}-results
