@@ -10,3 +10,5 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    volumes:
+      - ./results:/app/results
