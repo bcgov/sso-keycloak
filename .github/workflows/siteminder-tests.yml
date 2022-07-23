@@ -1,10 +1,6 @@
 name: Run Siteminder Tests to Validate SAML Payload
 
 on:
-  push:
-    branches:
-      - 'util/iyOavXXy'
-
   workflow_dispatch:
     inputs:
       environment:
@@ -38,7 +34,7 @@ jobs:
         run: |
           cd ${{ github.workspace }}/siteminder-tests
           echo "${{ secrets.SITEMINDER_TESTS_ENV }}" | base64 --decode > .env
-          docker run --rm -e ENVIRONMENT=prod -e CLUSTER=gold -v $(pwd)/results:/app/results $(docker build -q .)
+          docker run --rm -e ENVIRONMENT=${{ inputs.environment }} -e CLUSTER=${{ inputs.cluster }} -v $(pwd)/results:/app/results $(docker build -q .)
       - name: Upload test results
         uses: actions/upload-artifact@v2
         with:

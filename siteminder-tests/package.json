@@ -6,7 +6,7 @@
   "scripts": {
     "test": "node ./node_modules/mocha/bin/mocha ./tests --no-diff",
     "html": "marge results/siteminder-test.json --reportDir results -i -t \"SSO Siteminder Tests Report\"",
-    "test:html": "run-s test html"
+    "test:html": "run-s --continue-on-error test html"
   },
   "devDependencies": {
     "eslint": "^8.20.0",
