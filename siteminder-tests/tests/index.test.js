@@ -1,7 +1,7 @@
 const puppeteer = require('puppeteer');
 const process = require('process');
 const { testsite, screenShotsDir } = require('../util');
-const { bceid_basic_config, bceid_business_config, fetchSsoUrl } = require('../config');
+const { idir_config, bceid_basic_config, bceid_business_config, fetchSsoUrl } = require('../config');
 const assert = require('assert');
 const { describe, it, beforeEach, afterEach } = require('mocha');
 const timeout = process.env.TIMEOUTSETTING ?? 3000;
@@ -26,6 +26,16 @@ describe('siteminder test suite', function () {
     await page.close();
     await browser.close();
     addContext(this, `assets/${this.currentTest.title}.png`);
+  });
+
+  it('idir', async function () {
+    const data = await testsite(fetchSsoUrl('IDIR'), idir_config.username, idir_config.password, 'IDIR', page);
+    assert.deepEqual(data.guid, idir_config.user_identifier, 'user_identifier');
+    assert.deepEqual(data.display_name, idir_config.display_name, 'display_name');
+    assert.deepEqual(data.username, idir_config.username, 'username');
+    assert.deepEqual(data.email, idir_config.email, 'email');
+    assert.deepEqual(data.firstname, idir_config.firstname, 'firstname');
+    assert.deepEqual(data.lastname, idir_config.lastname, 'lastname');
   });
 
   it('bceid-basic', async function () {

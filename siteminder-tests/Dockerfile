@@ -14,4 +14,4 @@ WORKDIR /app
 RUN yarn install
 
 ENTRYPOINT [ "yarn" ]
-CMD [ "test" ]
+CMD [ "test:html" ]

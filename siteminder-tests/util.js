@@ -80,8 +80,8 @@ module.exports = {
         siteminder_values.email = attributes['email'];
         siteminder_values.display_name =
           attributes['displayname'] ?? attributes['displayName'] ?? attributes['SMGOV_USERDISPLAYNAME'] ?? '';
-        siteminder_values.first_name = attributes['firstname'] ?? '';
-        siteminder_values.last_name = attributes['lastname'] ?? '';
+        siteminder_values.firstname = attributes['firstname'] ?? '';
+        siteminder_values.lastname = attributes['lastname'] ?? '';
         siteminder_values.business_guid = attributes['SMGOV_BUSINESSGUID'] ?? '';
         siteminder_values.business_legalname = attributes['SMGOV_BUSINESSLEGALNAME'] ?? '';
 

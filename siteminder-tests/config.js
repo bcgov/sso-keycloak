@@ -15,10 +15,23 @@ module.exports = {
     let realm = eval(`process.env.${cluster}_${provider}_REALM`);
 
     if (cluster === 'SILVER') {
-      return `https://${process.env.ENVIRONMENT}.oidc.gov.bc.ca/auth/admin/${realm}/console/`;
+      return `https://${
+        process.env.ENVIRONMENT === 'prod' ? '' : process.env.ENVIRONMENT + '.'
+      }oidc.gov.bc.ca/auth/admin/${realm}/console/`;
     } else {
-      return `https://${process.env.ENVIRONMENT}.loginproxy.gov.bc.ca/auth/admin/${realm}/console/`;
+      return `https://${
+        process.env.ENVIRONMENT === 'prod' ? '' : process.env.ENVIRONMENT + '.'
+      }loginproxy.gov.bc.ca/auth/admin/${realm}/console/`;
     }
+  },
+  idir_config: {
+    username: process.env.IDIR_USERNAME,
+    password: process.env.IDIR_PASSWORD,
+    user_identifier: process.env.IDIR_USER_IDENTIFIER,
+    display_name: process.env.IDIR_DISPLAYNAME,
+    email: process.env.IDIR_EMAIL,
+    firstname: process.env.IDIR_FIRSTNAME,
+    lastname: process.env.IDIR_LASTNAME,
   },
   bceid_basic_config: {
     username: fetchEnvParam('BCEID_BASIC_USERNAME'),
