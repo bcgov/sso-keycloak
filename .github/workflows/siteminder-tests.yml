@@ -1,0 +1,58 @@
+name: Run Siteminder Tests to Validate SAML Payload
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment under test'
+        required: true
+        default: 'prod'
+        type: choice
+        options: ['prod']
+      cluster:
+        description: 'OCP'
+        required: true
+        default: 'gold'
+        type: choice
+        options: ['silver', 'gold']
+jobs:
+  matrix-prep:
+    name: Generate matrix
+    runs-on: ubuntu-latest
+    outputs:
+      datacenters: ${{ steps.set-matrix.outputs.datacenters }}
+      hostname: ${{ steps.set-matrix.outputs.hostname }}
+    steps:
+      - name: Fetch environment specific parameters
+        id: set-matrix
+        run: |
+          datacenters=$(echo "${{ secrets.SITEMINDER_TESTS_DATACENTERS }}" | jq '."${{ github.event.inputs.environment }}".datacenters')
+          hostname=$(echo "${{ secrets.SITEMINDER_TESTS_DATACENTERS }}" | jq '."${{ github.event.inputs.environment }}".hostname')
+          echo ::set-output name=datacenters::{\"include\":$(echo $datacenters)}
+          echo ::set-output name=hostname::$(echo $hostname)
+
+  run-siteminder-tests:
+    runs-on: ubuntu-latest
+    needs: matrix-prep
+    strategy:
+      matrix: ${{ fromJson(needs.matrix-prep.outputs.datacenters) }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: Run siteminder tests
+        run: |
+          cd ${{ github.workspace }}/siteminder-tests
+          echo "${{ secrets.SITEMINDER_TESTS_ENV }}" | base64 --decode > .env
+          docker run --rm -e ENVIRONMENT=${{ github.event.inputs.environment }} \
+                          -e CLUSTER=${{ github.event.inputs.cluster }} \
+                          -v $(pwd)/results:/app/results \
+                          --add-host=${{ needs.matrix-prep.outputs.hostname }}:${{ matrix.ip }} \
+                          $(docker build -q .)
+      - name: Upload test results
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ github.event.inputs.cluster }}-${{ github.event.inputs.environment }}-${{ matrix.name }}-results
+          path: ${{ github.workspace }}/siteminder-tests/results
