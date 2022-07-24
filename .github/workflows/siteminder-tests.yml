@@ -8,7 +8,6 @@ on:
         required: true
         default: 'prod'
         type: choice
-        # options: ['dev', 'test', 'prod'] need to know the IPs for test env
         options: ['prod']
       cluster:
         description: 'OCP'
@@ -16,7 +15,6 @@ on:
         default: 'gold'
         type: choice
         options: ['silver', 'gold']
-
 jobs:
   matrix-prep:
     name: Generate matrix
@@ -28,8 +26,8 @@ jobs:
       - name: Fetch environment specific parameters
         id: set-matrix
         run: |
-          datacenters=$(echo "${{ secrets.SITEMINDER_TESTS_DATACENTERS }}" | jq '."${{ inputs.environment }}".datacenters')
-          hostname=$(echo "${{ secrets.SITEMINDER_TESTS_DATACENTERS }}" | jq '."${{ inputs.environment }}".hostname')
+          datacenters=$(echo "${{ secrets.SITEMINDER_TESTS_DATACENTERS }}" | jq '."${{ github.event.inputs.environment }}".datacenters')
+          hostname=$(echo "${{ secrets.SITEMINDER_TESTS_DATACENTERS }}" | jq '."${{ github.event.inputs.environment }}".hostname')
           echo ::set-output name=datacenters::{\"include\":$(echo $datacenters)}
           echo ::set-output name=hostname::$(echo $hostname)
 

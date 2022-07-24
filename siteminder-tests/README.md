@@ -1,8 +1,24 @@
 # SSO Siteminder Tests
 
+- This repository consists of automated tests that are run using puppeteer headless browser against consumer URLs. These tests are used to validate the payload attributes returned by the identity provider SAML
+- The identity provider has hosted the service on two data centers. In order to validate the data returned from two different data centers, the tests are being run twice, i.e. by adding one host record targetting a data center at a time
+- The tests will generate results report for each run against the data center
 
+## Requirements
 
-## Required Tools and Dependencies
+### Secrets
+
+**Note**: The below secrets are used by `siteminder-tests.yml` workflow to run the tests. Make sure these secrets are available as github action secrets before running the github action. These secrets are also stored under a secret `siteminder-tests` at `eb75ad-tools` namespace of gold cluster
+
+- `SITEMINDER_TESTS_DATACENTERS` stores a json payload in below format
+
+  ```json
+  {\"<ENVIRONMENT>\":{\"datacenters\":[{\"name\":\"<DATACENTER>\",\"ip\":\"<DATACENTER-IP>\"},{\"name\":\"<DATACENTER>\",\"ip\":\"<DATACENTER-IP>\"}],\"hostname\":\"<HOSTNAME>\"}}
+  ```
+
+- `SITEMINDER_TESTS_ENV` stores all the key-value pairs from `.env.example`
+
+### Tools
 
 - The required tools can be installed using [asdf](https://asdf-vm.com/guide/getting-started.html)
 
