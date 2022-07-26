@@ -4,7 +4,6 @@ const { testsite, screenShotsDir } = require('../util');
 const { idir_config, bceid_basic_config, bceid_business_config, fetchSsoUrl } = require('../config');
 const assert = require('assert');
 const { describe, it, beforeEach, afterEach } = require('mocha');
-const timeout = process.env.TIMEOUTSETTING ?? 3000;
 const addContext = require('mochawesome/addContext');
 
 describe('siteminder test suite', function () {
@@ -20,9 +19,9 @@ describe('siteminder test suite', function () {
   });
 
   afterEach(async function () {
-    await page.waitForTimeout(timeout);
+    await page.waitForTimeout(process.env.TIMEOUTSETTING);
     await page.screenshot({ path: `${screenShotsDir}/${this.currentTest.title}.png` });
-    await page.waitForTimeout(timeout);
+    await page.waitForTimeout(process.env.TIMEOUTSETTING);
     await page.close();
     await browser.close();
     addContext(this, `assets/${this.currentTest.title}.png`);
