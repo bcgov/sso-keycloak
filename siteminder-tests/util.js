@@ -52,8 +52,10 @@ module.exports = {
     const isIDIR = test_name.indexOf('IDIR') > -1;
 
     if (!isIDIR) {
-      await page.waitForSelector('input[type="submit"]');
-      await page.click('input[type="submit"]');
+      await this.page.waitFor(2000);
+      await page.waitForSelector('input[type=submit]');
+      const continueButton = await page.$('input[type=submit]');
+      await continueButton.evaluate((continueButton) => continueButton.click());
     }
 
     return new Promise((resolve) => {
