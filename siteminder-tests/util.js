@@ -52,8 +52,11 @@ module.exports = {
     const isIDIR = test_name.indexOf('IDIR') > -1;
 
     if (!isIDIR) {
-      await page.waitForSelector('input[value=Continue]', { visible: true });
-      page.click('input[value=Continue]', { clickCount: 2 });
+      await page.waitForTimeout(1000);
+      await page.waitForSelector('input[value=Continue]');
+      await page.evaluate(() => {
+        document.querySelector('input[value=Continue]').click();
+      });
     }
 
     return new Promise((resolve) => {
