@@ -1,4 +1,4 @@
-name: Run Siteminder Tests to Validate SAML Payload
+name: Run siteminder tests to validate saml payload
 
 on:
   workflow_dispatch:
@@ -27,7 +27,7 @@ jobs:
         id: set-matrix
         run: |
           datacenters=$(echo "${{ secrets.SITEMINDER_TESTS_DATACENTERS }}" | jq '."${{ github.event.inputs.environment }}".datacenters')
-          hostname=$(echo "${{ secrets.SITEMINDER_TESTS_DATACENTERS }}" | jq '."${{ github.event.inputs.environment }}".hostname')
+          hostname=$(echo "${{ secrets.SITEMINDER_TESTS_DATACENTERS }}" | jq -r '."${{ github.event.inputs.environment }}".hostname')
           echo ::set-output name=datacenters::{\"include\":$(echo $datacenters)}
           echo ::set-output name=hostname::$(echo "$hostname")
 
@@ -73,6 +73,7 @@ jobs:
                           --add-host=${{ needs.matrix-prep.outputs.hostname }}:${{ matrix.ip }} \
                           siteminder-tests
       - name: Upload test results
+        if: always()
         uses: actions/upload-artifact@v2
         with:
           name: ${{ github.event.inputs.cluster }}-${{ github.event.inputs.environment }}-${{ matrix.name }}-results
