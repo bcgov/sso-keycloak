@@ -49,12 +49,13 @@ module.exports = {
     await page.type('#password', idp_password);
 
     await page.keyboard.press('Enter');
-    var isIDIR = test_name.indexOf('IDIR');
-    if (isIDIR == -1) {
+    const isIDIR = test_name.indexOf('IDIR') > -1;
+
+    if (!isIDIR) {
       await page.waitForSelector('input[type=submit]');
       const continueButton = await page.$('input[type=submit]');
       await continueButton.evaluate((continueButton) => continueButton.click());
-    } //end if
+    }
 
     return new Promise((resolve) => {
       page.on('request', async (request) => {
@@ -68,7 +69,6 @@ module.exports = {
         const decodedXML = decodeBase64(cleanSamlResponse);
         const jsonResult = await parseStringSync(decodedXML);
         const assertion = _.get(jsonResult, 'Response.ns2:Assertion.0');
-        //const subject = _.get(assertion, 'ns2:Subject.0.ns2:NameID.0._');
 
         const getAttribute = (data) => ({ [_.get(data, '$.Name')]: _.get(data, 'ns2:AttributeValue.0') });
         const statements = _.get(assertion, 'ns2:AttributeStatement.0.ns2:Attribute');
