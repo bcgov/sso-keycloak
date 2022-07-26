@@ -69,6 +69,7 @@ jobs:
           echo "${{ secrets.SITEMINDER_TESTS_ENV }}" | base64 --decode > .env
           docker run --rm -e ENVIRONMENT=${{ github.event.inputs.environment }} \
                           -e CLUSTER=${{ github.event.inputs.cluster }} \
+                          --env-file .env \
                           -v $(pwd)/results:/app/results \
                           --add-host=${{ needs.matrix-prep.outputs.hostname }}:${{ matrix.ip }} \
                           siteminder-tests
