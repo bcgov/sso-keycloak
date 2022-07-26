@@ -53,11 +53,10 @@ jobs:
       - name: Build docker image
         uses: docker/build-push-action@v3
         with:
-          context: ./siteminder-tests
+          context: siteminder-tests/
           push: false
           load: true
           tags: siteminder-tests
-          file: Dockerfile
           cache-from: type=local,src=/tmp/.buildx-test-cache
           cache-to: type=local,dest=/tmp/.buildx-test-cache-new
       - name: Move cache
