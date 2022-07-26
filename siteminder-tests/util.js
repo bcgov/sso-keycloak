@@ -5,7 +5,6 @@ const fs = require('fs');
 const parseStringSync = promisify(parseString);
 const Buffer = require('buffer').Buffer;
 const screenShotsDir = './results/assets';
-const process = require('process');
 
 if (!fs.existsSync(screenShotsDir)) {
   fs.mkdirSync(screenShotsDir, { recursive: true });
@@ -53,11 +52,8 @@ module.exports = {
     const isIDIR = test_name.indexOf('IDIR') > -1;
 
     if (!isIDIR) {
-      await page.waitForTimeout(process.env.TIMEOUTSETTING);
-      await Promise.all([
-        page.waitForNavigation({ waitUntil: 'domcontentloaded' }),
-        page.click('input[type="submit"]'),
-      ]);
+      await page.waitForSelector('input[value=Continue]', { visible: true });
+      page.click('input[value=Continue]', { clickCount: 2 });
     }
 
     return new Promise((resolve) => {
