@@ -29,7 +29,7 @@ jobs:
           datacenters=$(echo "${{ secrets.SITEMINDER_TESTS_DATACENTERS }}" | jq '."${{ github.event.inputs.environment }}".datacenters')
           hostname=$(echo "${{ secrets.SITEMINDER_TESTS_DATACENTERS }}" | jq '."${{ github.event.inputs.environment }}".hostname')
           echo ::set-output name=datacenters::{\"include\":$(echo $datacenters)}
-          echo ::set-output name=hostname::$(echo $hostname)
+          echo ::set-output name=hostname::$(echo "$hostname")
 
   run-siteminder-tests:
     runs-on: ubuntu-20.04
