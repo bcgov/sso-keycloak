@@ -54,9 +54,10 @@ module.exports = {
 
     if (!isIDIR) {
       await page.waitForTimeout(process.env.TIMEOUTSETTING);
-      await page.waitForSelector('input[type=submit]');
-      const continueButton = await page.$('input[type=submit]');
-      await continueButton.evaluate((continueButton) => continueButton.click());
+      await Promise.all([
+        page.waitForNavigation({ waitUntil: 'domcontentloaded' }),
+        page.click('input[type="submit"]'),
+      ]);
     }
 
     return new Promise((resolve) => {
