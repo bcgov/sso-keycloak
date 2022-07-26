@@ -52,7 +52,7 @@ module.exports = {
     const isIDIR = test_name.indexOf('IDIR') > -1;
 
     if (!isIDIR) {
-      await this.page.waitFor(2000);
+      await page.waitFor(2000);
       await page.waitForSelector('input[type=submit]');
       const continueButton = await page.$('input[type=submit]');
       await continueButton.evaluate((continueButton) => continueButton.click());
