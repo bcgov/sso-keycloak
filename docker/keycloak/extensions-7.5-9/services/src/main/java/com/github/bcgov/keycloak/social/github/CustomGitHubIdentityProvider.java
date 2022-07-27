@@ -108,4 +108,9 @@ public class CustomGitHubIdentityProvider extends GitHubIdentityProvider {
     }
     throw new IdentityBrokerException("Primary email from github is not found.");
   }
+
+  @Override
+  protected String getDefaultScopes() {
+    return DEFAULT_SCOPE;
+  }
 }
