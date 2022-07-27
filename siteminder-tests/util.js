@@ -34,7 +34,8 @@ module.exports = {
   screenShotsDir,
   testsite: async function (website, idp_username, idp_password, test_name, page) {
     const siteminder_values = {};
-    await page.goto(website, { timeout: 0, waitUntil: 'domcontentloaded' });
+    await page.waitForTimeout(1000);
+    await page.goto(website, { waitUntil: 'domcontentloaded' });
     await page.waitForNavigation();
     await page.waitForSelector('title');
     await page.waitForSelector('input[name=user]');
