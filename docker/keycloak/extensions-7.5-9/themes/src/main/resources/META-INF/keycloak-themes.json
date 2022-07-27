@@ -1,12 +1,3 @@
 {
-  "themes": [
-    {
-      "name": "bcgov-clp",
-      "types": ["login", "email"]
-    },
-    {
-      "name": "bcgov-master-realm",
-      "types": ["login", "email"]
-    }
-  ]
+  "themes": []
 }

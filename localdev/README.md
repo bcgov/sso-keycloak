@@ -1,4 +1,4 @@
-##Keycloak Local Environment
+## Keycloak Local Environment
 
 It provides the local dev environment for Terraform scripts to help understand the Keycloak functionalities and [Keycloak Terraform module](https://registry.terraform.io/providers/mrparkers/keycloak/latest/docs).
 
