@@ -80,6 +80,18 @@ Executes all the tests and generates screenshots under `results/assets`
 
 Executes all the tests and generates screenshots and html report under `results` directory
 
+**Note**: To run the tests on browser visually, update `beforeEach` hook in `./tests/index.test.js` file as shown below
+
+```js
+  beforeEach(async function () {
+    browser = await puppeteer.launch({
+      headless: false,
+    });
+    page = await browser.newPage();
+    await page.setViewport({ width: 800, height: 600 });
+  });
+```
+
 ### Docker
 
 - Create `.env`
