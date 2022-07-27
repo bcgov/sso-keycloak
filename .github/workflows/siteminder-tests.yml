@@ -35,6 +35,7 @@ jobs:
     runs-on: ubuntu-20.04
     needs: matrix-prep
     strategy:
+      max-parallel: 1
       matrix: ${{ fromJson(needs.matrix-prep.outputs.datacenters) }}
     steps:
       - name: Check out repository
