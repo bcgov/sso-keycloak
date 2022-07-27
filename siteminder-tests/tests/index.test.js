@@ -11,6 +11,7 @@ describe('siteminder test suite', function () {
   let page;
   beforeEach(async function () {
     browser = await puppeteer.launch({
+      executablePath: '/usr/bin/google-chrome',
       headless: true,
       args: ['--disable-gpu', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-sandbox'],
     });
