@@ -35,7 +35,7 @@ module.exports = {
   testsite: async function (website, idp_username, idp_password, test_name, page) {
     const siteminder_values = {};
     await page.waitForTimeout(1000);
-    await page.goto(website, { waitUntil: 'domcontentloaded' });
+    await page.goto(website);
     await page.waitForNavigation();
     await page.waitForSelector('title');
     await page.waitForSelector('input[name=user]');
@@ -43,14 +43,6 @@ module.exports = {
     await page.type('#password', idp_password);
     await page.keyboard.press('Enter');
 
-    await page.goto(website);
-    await page.waitForSelector('title');
-
-    await page.waitForSelector('input[name=user]');
-    await page.type('#user', idp_username);
-    await page.type('#password', idp_password);
-
-    await page.keyboard.press('Enter');
     const isIDIR = test_name.indexOf('IDIR') > -1;
 
     if (!isIDIR) {

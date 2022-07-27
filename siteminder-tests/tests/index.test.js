@@ -19,12 +19,12 @@ describe('siteminder test suite', function () {
   });
 
   afterEach(async function () {
-    // await page.waitForTimeout(process.env.TIMEOUTSETTING);
-    // await page.screenshot({ path: `${screenShotsDir}/${this.currentTest.title}.png` });
-    // await page.waitForTimeout(process.env.TIMEOUTSETTING);
+    await page.waitForTimeout(process.env.TIMEOUTSETTING);
+    await page.screenshot({ path: `${screenShotsDir}/${this.currentTest.title}.png` });
+    await page.waitForTimeout(process.env.TIMEOUTSETTING);
     await page.close();
     await browser.close();
-    //addContext(this, `assets/${this.currentTest.title}.png`);
+    addContext(this, `assets/${this.currentTest.title}.png`);
   });
 
   it('idir', async function () {
