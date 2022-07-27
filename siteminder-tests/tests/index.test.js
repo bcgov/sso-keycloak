@@ -9,13 +9,15 @@ const addContext = require('mochawesome/addContext');
 describe('siteminder test suite', function () {
   let browser;
   let page;
+  let context;
 
   beforeEach(async function () {
     browser = await puppeteer.launch({
       headless: true,
       args: ['--disable-gpu', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-sandbox'],
     });
-    page = await browser.newPage();
+    context = await browser.createIncognitoBrowserContext();
+    page = await context.newPage();
   });
 
   afterEach(async function () {
