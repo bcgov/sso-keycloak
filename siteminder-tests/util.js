@@ -34,27 +34,24 @@ module.exports = {
   screenShotsDir,
   testsite: async function (website, idp_username, idp_password, test_name, page) {
     const siteminder_values = {};
-    await page.goto(website, { timeout: 0, waitUntil: 'domcontentloaded' });
-    await page.waitForSelector('title');
-    await page.waitForSelector('input[name=user]');
-    await page.type('#user', idp_username);
-    await page.type('#password', idp_password);
-    await page.keyboard.press('Enter');
-
+    await page.waitForTimeout(1000);
     await page.goto(website);
+    await page.waitForNavigation();
     await page.waitForSelector('title');
-
     await page.waitForSelector('input[name=user]');
     await page.type('#user', idp_username);
     await page.type('#password', idp_password);
-
     await page.keyboard.press('Enter');
+
     const isIDIR = test_name.indexOf('IDIR') > -1;
 
     if (!isIDIR) {
-      await page.waitForSelector('input[type=submit]');
-      const continueButton = await page.$('input[type=submit]');
-      await continueButton.evaluate((continueButton) => continueButton.click());
+      await page.waitForTimeout(1000);
+      await page.waitForSelector('input[value=Continue]');
+      await page.evaluate(() => {
+        const $button = document.querySelector('input[value=Continue]');
+        $button.click();
+      });
     }
 
     return new Promise((resolve) => {
