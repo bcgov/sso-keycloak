@@ -9,6 +9,7 @@ module "deployers" {
 
   name      = "oc-deployer"
   namespace = each.key
+  ops_bcgov = true
 }
 
 output "deployer_secrets" {
