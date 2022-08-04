@@ -1,0 +1,5 @@
+com.github.bcgov.keycloak.authenticators.IdentityProviderStopAuthenticatorFactory
+com.github.bcgov.keycloak.authenticators.CookieStopAuthenticatorFactory
+com.github.bcgov.keycloak.authenticators.ClientLoginAuthenticatorFactory
+com.github.bcgov.keycloak.authenticators.broker.IdpDeleteUserIfDuplicateAuthenticatorFactory
+com.github.bcgov.keycloak.authenticators.browser.IdentityProviderStopFormFactory
