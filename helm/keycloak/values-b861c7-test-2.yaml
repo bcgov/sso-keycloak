@@ -1,5 +1,9 @@
 replicaCount: 1
 
+image:
+  tag: 7.6.2-build.2
+  pullPolicy: IfNotPresent
+
 project: sso-keycloak
 nameOverride: sso-keycloak-2
 fullnameOverride: sso-keycloak-2
