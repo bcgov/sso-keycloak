@@ -67,4 +67,4 @@ When the desired logging is done, it is a good practice to turn off the request 
 
 ## Troubleshooting
 
-If we are loging a specific intergration or service provider. It is nessary to ensure the SPID is correct in the keycloak deployment. (Check <realm of interest>/Identity Providers/<idp of interest>/Service Provider Entity ID).
+If we are loging the request and responses of a SAML IDP. It is nessary to ensure the SPID is correct in the keycloak deployment. (Check <realm of interest>/Identity Providers/<idp of interest>/Service Provider Entity ID).
