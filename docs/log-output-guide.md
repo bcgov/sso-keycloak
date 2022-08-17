@@ -6,7 +6,7 @@ There are two areas of the keycloak config that users can modify to generate mor
 
 The keycloak configuration can be located in the [configuration folder](../docker/keycloak/configuration). Presently it is part of the image we deploy, meaning the image needs to be rebuilt before the logging change can take effect.  For testing purposes, there is a keycloak deployment that allows users to edit the config in openshift and preview the effect by restarting the keycloak pod. Without the need to rebuild the image.
 
-The test instance config is `sso-keycloak-4-sso-config` found in the `b861c7-test` namespace and is the associated with the `sso-keycloak-4` deployment. Making changes to the config will only be reflected in the `sso-keycloak-4` app after restarting the `sso-keyclaok-4` pod.
+The test instance config is `sso-keycloak-4-sso-config` found in the `b861c7-test` namespace and is the associated with the `sso-keycloak-4` deployment. Making changes to the config will only be reflected in the `sso-keycloak-4` app after restarting the `sso-keyclaok-4` pod. (Note this config is valid as of Aug 17 2022, the configuration may change as the product is under development.)
 
 Note this keycloak instance is used as a test environment for the CSS app's Gold-dev integrations.  So taking it offline for config changes may effect other developers' tests.
 
@@ -63,7 +63,10 @@ This configuration will output the requests and responses in the format:
 ==============================================================
 ```
 
+To access these logs, navigate to the keycloak pod logs in the openshift cluster.  It should be possible to query them using Kibana.
+
 When the desired logging is done, it is a good practice to turn off the request dumping as it can expose sensitive content.
+
 
 ## Troubleshooting
 
