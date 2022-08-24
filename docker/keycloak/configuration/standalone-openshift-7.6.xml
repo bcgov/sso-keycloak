@@ -718,6 +718,13 @@
                 <default-provider>${keycloak.x509cert.lookup.provider:default}</default-provider>
                 <provider name="default" enabled="true" />
             </spi>
+            <spi name="login-protocol">
+                <provider name="openid-connect" enabled="true">
+                    <properties>
+                        <property name="legacy-logout-redirect-uri" value="true" />
+                    </properties>
+                </provider>
+            </spi>
             <!-- ##SSO_SERVER_HOSTNAME_SPI## -->
             <!-- ##SSO_TRUSTSTORE## -->
             <!-- ##SSO_VAULT_CONFIG## -->

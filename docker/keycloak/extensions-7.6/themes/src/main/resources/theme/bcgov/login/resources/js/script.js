@@ -1,9 +1,9 @@
 document.addEventListener('DOMContentLoaded', function (event) {
   // use gov icon for tab:
   updateFavIcon();
-  // extent the login message:
-  const errorMsg = document.getElementById('kc-error-message');
-  const titleContent = errorMsg ? 'Login Error:' : 'Authenticate with:';
+
+  const errorElem = document.getElementById('kc-error-message');
+  const titleContent = errorElem ? 'Login Error:' : 'Authenticate with:';
   document.getElementById('kc-page-title').innerHTML = titleContent;
 });
 
