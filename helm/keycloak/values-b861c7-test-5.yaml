@@ -1,9 +1,8 @@
 replicaCount: 1
 
 image:
-  repository: ghcr.io/bcgov/sso
-  tag: v7.5-9-build.4
-  pullPolicy: Always
+  tag: 7.6.2-build.2
+  pullPolicy: IfNotPresent
 
 project: sso-keycloak
 nameOverride: sso-keycloak-5
