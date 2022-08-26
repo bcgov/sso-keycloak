@@ -8,7 +8,7 @@ on:
         required: true
         default: 'prod'
         type: choice
-        options: ['prod']
+        options: ['dev', 'test', 'prod']
       cluster:
         description: 'OCP'
         required: true
