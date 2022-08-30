@@ -7,6 +7,8 @@ const environment = process.env.ENVIRONMENT.toUpperCase() || 'DEV';
 const cluster = process.env.CLUSTER.toUpperCase() || 'SILVER';
 
 const fetchEnvParam = (param) => {
+  // Silver dev uses same credentials as test
+  if (cluster === 'SILVER' && environment === 'DEV') return eval(`process.env.TEST_${param}`);
   return eval(`process.env.${environment}_${param}`);
 };
 
