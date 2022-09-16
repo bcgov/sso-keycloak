@@ -1,0 +1,7 @@
+<div class="form-group">
+    <label class="col-sm-2 control-label" for="legacyLogoutRedirectUriSupported">Legacy Logout Redirect URI</label>
+    <div class="col-sm-4">
+        <input ng-model="identityProvider.config.legacyLogoutRedirectUriSupported" id="legacyLogoutRedirectUriSupported" onoffswitchvalue on-text="{{:: 'onText' | translate}}" off-text="{{:: 'offText' | translate}}" />
+    </div>
+    <kc-tooltip>Does the external IDP support legacy logout redirect URI (redirect_uri)?</kc-tooltip>
+</div>
