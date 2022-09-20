@@ -13,7 +13,7 @@ public class OverrideOIDCIdentityProviderFactory extends OIDCIdentityProviderFac
 
   @Override
   public String getName() {
-    return "OpenID Connect v1.0 - Override";
+    return "OpenID Connect v1.0";
   }
 
   @Override
