@@ -1,8 +1,17 @@
 replicaCount: 1
 
 image:
-  tag: 7.6.2-build.2
+  repository: ghcr.io/bcgov/sso
+  tag: 7.6.5-build.3
   pullPolicy: IfNotPresent
+
+rollingUpdate:
+  maxSurge: "100%"
+  maxUnavailable: 0
+
+configuration:
+  enabled: true
+  version: "7.6"
 
 project: sso-keycloak
 nameOverride: sso-keycloak-5
