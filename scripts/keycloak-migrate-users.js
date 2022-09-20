@@ -27,7 +27,7 @@ async function main() {
       if (!answer) return;
     }
 
-    const max = 50;
+    const max = 500;
     let first = 0;
     let total = 0;
 
@@ -115,9 +115,7 @@ async function main() {
 
       if (count < max) break;
 
-      await baseClient.reauth();
-      await targetClient.reauth();
-      first = first + 20;
+      first = first + max;
       console.log(`complete ${first} users`);
     }
 
