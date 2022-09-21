@@ -35,13 +35,20 @@ public class LegacyEndpoint
   }
 
   /**
-   * This endpoint parses the query params and regenerates them to redirect back to the OIDC logout endpoint.
-   * `id_token_hint`, `state`, `ui_locales`, and `initiating_idp` are passed through as they are.
+   * This endpoint parses the query params and regenerates them to redirect back to the OIDC logout
+   * endpoint. `id_token_hint`, `state`, `ui_locales`, and `initiating_idp` are passed through as
+   * they are.
    *
-   * 1. if `id_token_hint` exists, it sets the redirect uri to `post_logout_redirect_uri`.
+   * <p>1. if `id_token_hint` exists, it sets the redirect uri to `post_logout_redirect_uri`.<br>
    * 2. if `id_token_hint` omitted, it sets the redirect uri to `redirect_uri` (legacy).
    *
-   * @return
+   * @param deprecatedRedirectUri "redirect_uri"
+   * @param encodedIdToken "id_token_hint"
+   * @param postLogoutRedirectUri "post_logout_redirect_uri"
+   * @param state "state"
+   * @param uiLocales "ui_locales"
+   * @param initiatingIdp "initiating_idp"
+   * @return a redirect Response with the regenerated query params.
    */
   @GET
   @Path("/logout")
@@ -78,8 +85,7 @@ public class LegacyEndpoint
     if (redirectUri != null) {
       if (encodedIdToken != null) {
         uriBuilder =
-            uriBuilder
-                .queryParam(OIDCLoginProtocol.POST_LOGOUT_REDIRECT_URI_PARAM, redirectUri);
+            uriBuilder.queryParam(OIDCLoginProtocol.POST_LOGOUT_REDIRECT_URI_PARAM, redirectUri);
       } else {
         uriBuilder = uriBuilder.queryParam(OIDCLoginProtocol.REDIRECT_URI_PARAM, redirectUri);
       }
