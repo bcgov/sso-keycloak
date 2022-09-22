@@ -41,6 +41,9 @@ body:
       label: Gold environment 
       description: env
       options:
+         - Dev
+         - Test
+         - Prod
  - type: input
     id: new-realm-name
     attributes:
