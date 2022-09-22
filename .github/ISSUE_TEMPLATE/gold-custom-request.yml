@@ -43,3 +43,14 @@ body:
       placeholder: ex. myrealmname
     validations:
       required: true 
+  - type: dropdown
+    id: gold-env
+    attributes:
+      label: Gold environment needed pick one)
+      description: Which env
+      options:
+        - Dev
+        - Test
+        - Prod
+    validations:
+      required: true
