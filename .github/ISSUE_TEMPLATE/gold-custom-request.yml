@@ -46,7 +46,6 @@ body:
       required: true
   - type: markdown
     attributes:
-    label: Important Notes
       value: |
         Will have info on IDP and assoicated CSS App & Event Log as upcoming 
   - type: checkboxes
