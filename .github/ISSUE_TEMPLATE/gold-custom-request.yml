@@ -35,17 +35,6 @@ body:
         - 1.0.3 (Edge)
     validations:
       required: true
-  - type: dropdown
-    id: env
-    attributes:
-      label: Gold environment 
-      description: env
-      options:
-         - Dev
-         - Test
-         - Prod
-    validations:
-      required: true 
  - type: input
     id: new-realm-name
     attributes:
