@@ -10,48 +10,42 @@ body:
       value: |
         Thanks for taking the time to fill out this request!
   - type: input
-    id: contact
+    id: po-contact
     attributes:
-      label: Contact Details
+      label: Product Owner Contact Details
       description: How can we get in touch with you if we need more info?
       placeholder: ex. email@example.com
     validations:
       required: false
-  - type: textarea
-    id: what-happened
+  - type: input
+    id: to-contact
     attributes:
-      label: What happened?
-      description: Also tell us, what did you expect to happen?
-      placeholder: Tell us what you see!
-      value: "A bug happened!"
+      label: Technical Owner Contact Details
+      description: How can we get in touch with you if we need more info?
+      placeholder: ex. email@example.com
     validations:
-      required: true
+      required: false
   - type: dropdown
-    id: version
+    id: existing-realm
     attributes:
-      label: Version
-      description: What version of our software are you running?
+      label: Silver custom realm name
+      description: what is your realm name
       options:
         - 1.0.2 (Default)
         - 1.0.3 (Edge)
     validations:
       required: true
-  - type: dropdown
-    id: browsers
-    attributes:
-      label: What browsers are you seeing the problem on?
-      multiple: true
-      options:
-        - Firefox
-        - Chrome
-        - Safari
-        - Microsoft Edge
   - type: textarea
-    id: logs
+    id: new-realm-name
     attributes:
-      label: Relevant log output
-      description: Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backticks.
-      render: shell
+      label: Name your new Gold custom realm
+      description: Make it meaningful, unique and less than 10 characters
+      placeholder:  myrealm
+      value: "myrealm"
+    validations:
+      required: true
+ Note 1  we will have some information on IDP and mapping to CSS APP
+ Note 2 limitation on our event logs at this time
   - type: checkboxes
     id: terms
     attributes:
