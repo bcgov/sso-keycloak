@@ -47,7 +47,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thanks for taking the time to fill out this bug report!
+        Will have info on IDP and assoicated CSS App & Event Log as upcoming 
   - type: checkboxes
     id: terms
     attributes:
