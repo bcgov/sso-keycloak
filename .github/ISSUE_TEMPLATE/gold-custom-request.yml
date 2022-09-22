@@ -44,6 +44,8 @@ body:
          - Dev
          - Test
          - Prod
+    validations:
+      required: true 
  - type: input
     id: new-realm-name
     attributes:
