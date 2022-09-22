@@ -35,16 +35,24 @@ body:
         - 1.0.3 (Edge)
     validations:
       required: true
-  - type: textarea
-    id: new-realm-name
+  - type: dropdown
+    id: env
     attributes:
-      label: Name your new Gold custom realm
-      description: Make it meaningful, unique and less than 10 characters
-      placeholder:  myrealm
-      value: "myrealm"
+      label: Gold environment 
+      description: env
+      options:
+        -   - type: dropdown
+    id: existing-realm
+    attributes:
+      label: Silver custom realm name
+      description: what is your realm name
+      options:
+        - Dev
+        - Test
+        - Prod
     validations:
       required: true
-  - type: markdown
+ - type: markdown
     attributes:
       value: |
         Will have info on IDP and assoicated CSS App & Event Log as upcoming 
