@@ -43,7 +43,3 @@ body:
       placeholder: ex. myrealmname
     validations:
       required: true 
-  - type: markdown
-     attributes:
-      value: |
-        Will have info on IDP and assoicated CSS App & Event Log as upcoming 
