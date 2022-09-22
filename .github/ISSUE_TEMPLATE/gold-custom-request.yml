@@ -44,6 +44,9 @@ body:
       value: "myrealm"
     validations:
       required: true
+   - type: markdown
+    attributes:
+      value: |
  Note 1  we will have some information on IDP and mapping to CSS APP
  Note 2 limitation on our event logs at this time
   - type: checkboxes
