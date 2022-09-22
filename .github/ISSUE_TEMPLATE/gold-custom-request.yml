@@ -3,7 +3,7 @@ description: File a gold custom request
 title: "[Gold Custom]: "
 labels: ["gold", "custom"]
 assignees:
-  - octocat
+  - octocat 
 body:
   - type: markdown
     attributes:
@@ -25,6 +25,28 @@ body:
       placeholder: ex. email@example.com
     validations:
       required: false
+- type: dropdown
+    id: existing-realm
+    attributes:
+      label: Silver custom realm name
+      description: what is your realm name
+      options:
+        - 1.0.2 (Default)
+        - 1.0.3 (Edge)
+    validations:
+      required: true
+ - type: input
+    id: new-realm-name
+    attributes:
+      label: New realm name
+      description: new realm name syntax less that 10 characters and a meaningful name
+      placeholder: ex. myrealmname
+    validations:
+      required: true          
+ - type: markdown
+    attributes:
+      value: |
+        Will have info on IDP and assoicated CSS App & Event Log as upcoming 
   - type: checkboxes
     id: terms
     attributes:
