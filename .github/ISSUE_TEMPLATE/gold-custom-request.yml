@@ -41,17 +41,14 @@ body:
       label: Gold environment 
       description: env
       options:
-        -   - type: dropdown
-    id: existing-realm
+ - type: input
+    id: new-realm-name
     attributes:
-      label: Silver custom realm name
-      description: what is your realm name
-      options:
-        - Dev
-        - Test
-        - Prod
+      label: New realm name
+      description: new realm name syntax less that 10 characters and a meaningful name
+      placeholder: ex. myrealmname
     validations:
-      required: true
+      required: true          
  - type: markdown
     attributes:
       value: |
