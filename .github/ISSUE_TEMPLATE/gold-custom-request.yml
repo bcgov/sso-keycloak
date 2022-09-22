@@ -25,7 +25,7 @@ body:
       placeholder: ex. email@example.com
     validations:
       required: false
-- type: dropdown
+  - type: dropdown
     id: existing-realm
     attributes:
       label: Silver custom realm name
@@ -35,7 +35,7 @@ body:
         - 1.0.3 (Edge)
     validations:
       required: true
- - type: input
+   - type: input
     id: new-realm-name
     attributes:
       label: New realm name
@@ -43,11 +43,11 @@ body:
       placeholder: ex. myrealmname
     validations:
       required: true          
- - type: markdown
+   - type: markdown
     attributes:
       value: |
         Will have info on IDP and assoicated CSS App & Event Log as upcoming 
-  - type: checkboxes
+   - type: checkboxes
     id: terms
     attributes:
       label: Code of Conduct
