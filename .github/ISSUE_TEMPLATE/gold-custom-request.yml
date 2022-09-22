@@ -35,3 +35,11 @@ body:
         - 1.0.3 (Edge)
     validations:
       required: true
+  - type: input
+    id: new-realm-name
+    attributes:
+      label: New realm name
+      description: new realm name syntax less that 10 characters and a meaningful name
+      placeholder: ex. myrealmname
+    validations:
+      required: true 
