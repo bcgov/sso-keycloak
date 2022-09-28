@@ -1,16 +1,61 @@
 .login-pf body {
   background: none;
-  background-color: #036;
+  background-color: #0f3362;
   font-family: 'BCSans', 'Noto Sans', Verdana, Arial, sans-serif;
   color: #036;
 }
 
-.hidden {
-  /* Hide keycloak local account login */
-  display: none;
+.login-pf body .login-pf-page #kc-header {
+  margin-bottom: 0;
 }
 
-#kc-form-wrapper {
+.login-pf body .login-pf-page #kc-header #kc-header-wrapper {
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
+  text-transform: uppercase;
+  color: white;
+  padding: 62px 10px 20px;
+}
+
+.login-pf body .login-pf-page .login-pf-accounts,
+.login-pf body .login-pf-page .card-pf {
+  margin-bottom: 10px;
+  max-width: 450px;
+  padding: 10px 20px;
+  margin: auto;
+}
+
+@media (max-width: 450px) {
+  .login-pf body .login-pf-page .login-pf-accounts,
+  .login-pf body .login-pf-page .card-pf {
+    margin: 0 0.5rem;
+  }
+}
+
+.login-pf body .login-pf-page .login-pf-header {
+  padding-top: 20px;
+  margin-bottom: 0 !important;
+  text-align: center;
+  position: relative;
+}
+
+.login-pf body .login-pf-page .login-pf-header::before {
+  content: url('../img/logo.svg');
+  display: block;
+  padding-bottom: 20px;
+}
+
+.login-pf body .login-pf-page .login-pf-header #kc-page-title {
+  font-size: 1rem;
+  font-weight: 700;
+  border-bottom: 1px solid #b3b1b3;
+  color: #036;
+  padding-bottom: 5px;
+  margin-bottom: 0;
+}
+
+.login-pf body .login-pf-page #kc-content #kc-content-wrapper #kc-form-wrapper {
   width: 100%;
   margin-bottom: 20px;
   border-bottom: 1px solid #b3b1b3;
@@ -18,80 +63,7 @@
   padding: 10px 20px;
 }
 
-#kc-header-wrapper {
-  text-align: center;
-  color: white;
-  padding: 62px 10px 20px;
-}
-
-.login-pf-accounts,
-.card-pf {
-  max-width: 450px;
-  padding: 10px 20px;
-}
-
-.login-pf-header {
-  padding-top: 20px;
-  margin-bottom: 10px;
-  text-align: center;
-  position: relative;
-}
-
-header.login-pf-header::before {
-  content: url('../img/logo.svg');
-  display: block;
-  padding-bottom: 20px;
-}
-
-#kc-page-title {
-  font-size: 2em;
-  font-weight: 400;
-  border-bottom: 1px solid #b3b1b3;
-  color: #036;
-  padding-bottom: 5px;
-}
-
-#kc-info {
-  text-align: center;
-}
-
-#kc-social-providers {
-  border: none;
-  width: 100%;
-  padding: 0;
-}
-
-/* local login button, github, IDIR, BCeID, etc. */
-a.zocial,
-#kc-login,
-a.zocial.keycloak-oidc,
-.btn-primary {
-  background-image: none;
-  background-color: #003366;
-  border: none;
-  border-radius: 4px;
-  color: white;
-  text-align: center;
-  text-decoration: none;
-  display: block;
-  font-weight: 700;
-  letter-spacing: 1px;
-  cursor: pointer;
-  max-width: 150px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.zocial:hover,
-#kc-login:hover {
-  background: #ededed !important;
-  background-image: none !important;
-  text-decoration: underline !important;
-  opacity: 0.8 !important;
-  color: #036 !important;
-}
-
-#kc-error-message {
+.login-pf body .login-pf-page #kc-content #kc-content-wrapper #kc-error-message {
   padding: 7px 10px 0 10px;
   margin: 5px;
   text-align: center;
@@ -99,21 +71,136 @@ a.zocial.keycloak-oidc,
   border-radius: 5px;
 }
 
-@media (max-width: 768px) {
-  .login-pf-accounts,
-  .card-pf {
-    margin: 10px !important;
-  }
-
-  #kc-page-title {
-    font-size: 5vw;
-  }
-
-  #kc-header-wrapper {
-    font-size: 6vw;
-  }
+/* HEADER */
+.login-pf body > header {
+  background-color: #036;
+  border-bottom: 2px solid #fcba19;
+  padding: 0 2rem;
+  color: #fff;
+  display: flex;
+  height: 65px;
+  top: 0;
+  position: fixed;
+  width: 100%;
 }
-.subtitle {
-  margin-top: 0px;
-  float: right;
+
+.login-pf body > header .banner {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 0 10px 0 0;
+}
+
+.login-pf body > header .banner span {
+  content: url('../img/bcgovlogo.svg');
+  display: block;
+  height: 100%;
+}
+
+.login-pf body > header .banner h1 {
+  font-family: 'BCSans', 'Noto Sans', Verdana, Arial, sans-serif;
+  font-weight: 700;
+  margin: 5px 5px 0 18px;
+}
+
+.login-pf body > header .other {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+}
+
+/* FOOTER */
+.login-pf body footer {
+  padding: 0 2rem;
+  position: fixed;
+  bottom: 0;
+  width: 100vw;
+  background-color: #036;
+  border-top: 2px solid #fcba19;
+  color: #fff;
+  font-family: 'BCSans', 'Noto Sans', Verdana, Arial, sans-serif;
+}
+
+.login-pf body footer .list {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  height: 3rem;
+}
+
+.login-pf body footer ul {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin: 0;
+  color: #fff;
+  list-style: none;
+  align-items: center;
+  height: 100%;
+}
+
+.login-pf body footer ul li a {
+  font-size: 1rem;
+  font-weight: normal; /* 400 */
+  color: #fff;
+  border-right: 1px solid #4b5e7e;
+  padding-left: 0.8rem;
+  padding-right: 0.8rem;
+}
+
+/* BCGOV PRIMARY BUTTON */
+.bcgov-primary {
+  background-color: #003366;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  padding: 0.3rem 0.5rem;
+  text-align: center;
+  text-decoration: none;
+  display: block;
+  font-size: 1rem;
+  font-family: 'BCSans', 'Noto Sans', Verdana, Arial, sans-serif;
+  font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer;
+}
+
+.bcgov-primary:hover {
+  color: white !important;
+  text-decoration: underline;
+  opacity: 0.8;
+}
+
+.bcgov-primary:focus {
+  outline: 4px solid #3b99fc;
+  outline-offset: 1px;
+}
+
+.bcgov-primary:active {
+  opacity: 1;
+}
+
+/* GENERAL */
+.hidden {
+  display: none;
+}
+
+.mb-1 {
+  margin-bottom: 0.25rem;
+}
+
+.mb-2 {
+  margin-bottom: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .login-pf body > header,
+  .login-pf body footer {
+    padding: 0 0.3rem;
+  }
+
+  .login-pf body .login-pf-page #kc-header #kc-header-wrapper {
+    font-size: 1.8rem;
+  }
 }

@@ -37,6 +37,15 @@
 </head>
 
 <body class="${properties.kcBodyClass!}">
+
+<header>
+  <div class="banner">
+    <span></span>
+      <h1>Pathfinder SSO</h1>
+  </div>
+  <div class="other">&nbsp;</div>
+</header>
+
 <div class="${properties.kcLoginClass!}">
     <div id="kc-header" class="${properties.kcHeaderClass!}">
         <div id="kc-header-wrapper" class="${properties.kcHeaderWrapperClass!}">
@@ -151,9 +160,20 @@
           </#if>
         </div>
       </div>
-
     </div>
   </div>
+  <footer class="footer">
+    <div class="list">
+      <ul>
+        <li><a href=".">Home</a></li>
+        <li><a href="http://www2.gov.bc.ca/gov/content/home/disclaimer" target="_blank" rel="noopener">Disclaimer</a></li>
+        <li><a href="http://www2.gov.bc.ca/gov/content/home/privacy" target="_blank" rel="noopener">Privacy</a></li>
+        <li><a href="https://www2.gov.bc.ca/gov/content/home/accessible-government" target="_blank" rel="noopener">Accessibility</a></li>
+        <li><a href="https://www2.gov.bc.ca/gov/content/home/copyright" target="_blank" rel="noopener">Copyright</a></li>
+        <li><a href=".">Contact Us</a></li>
+      </ul>
+    </div>
+  </footer>
 </body>
 </html>
 </#macro>
