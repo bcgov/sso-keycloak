@@ -101,6 +101,7 @@
   font-family: 'BCSans', 'Noto Sans', Verdana, Arial, sans-serif;
   font-weight: 700;
   margin: 5px 5px 0 18px;
+  white-space: nowrap;
 }
 
 .login-pf body > header .other {
@@ -168,7 +169,7 @@
 
 .bcgov-primary:hover {
   color: white !important;
-  text-decoration: underline;
+  text-decoration-line: none;
   opacity: 0.8;
 }
 
