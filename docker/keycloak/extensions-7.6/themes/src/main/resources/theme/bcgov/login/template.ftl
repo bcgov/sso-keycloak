@@ -165,12 +165,10 @@
   <footer class="footer">
     <div class="list">
       <ul>
-        <li><a href=".">Home</a></li>
         <li><a href="http://www2.gov.bc.ca/gov/content/home/disclaimer" target="_blank" rel="noopener">Disclaimer</a></li>
         <li><a href="http://www2.gov.bc.ca/gov/content/home/privacy" target="_blank" rel="noopener">Privacy</a></li>
         <li><a href="https://www2.gov.bc.ca/gov/content/home/accessible-government" target="_blank" rel="noopener">Accessibility</a></li>
         <li><a href="https://www2.gov.bc.ca/gov/content/home/copyright" target="_blank" rel="noopener">Copyright</a></li>
-        <li><a href=".">Contact Us</a></li>
       </ul>
     </div>
   </footer>
