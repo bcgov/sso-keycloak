@@ -65,7 +65,7 @@
                 <json-formatter name="json-formatter" />
             </formatters>
             <handlers>
-                <periodic-rotating-file-handler name="file" formatter="json-formatter" path="${jboss.persistent.log.dir}/audit-log-${jboss.node.name}-jboss.log" suffix=".yyyy-MM-dd" />
+                <periodic-rotating-file-handler name="file" formatter="json-formatter" path="${jboss.persistent.log.dir}/${jboss.node.name}.log" suffix=".yyyy-MM-dd" />
             </handlers>
             <logger log-boot="true" log-read-only="false" enabled="false">
                 <handlers>
@@ -98,7 +98,7 @@
                 </formatter>
             </console-handler>
             <periodic-rotating-file-handler name="AUDIT">
-                <file path="${jboss.persistent.log.dir}/audit-log-${jboss.node.name}-keycloak.log" />
+                <file path="${jboss.persistent.log.dir}/${jboss.node.name}.log" />
                 <suffix value=".yyyy-MM-dd" />
                 <formatter>
                     <named-formatter name="OPENSHIFT" />
