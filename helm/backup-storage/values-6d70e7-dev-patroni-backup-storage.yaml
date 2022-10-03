@@ -7,19 +7,19 @@ nameOverride: "sso-backup-storage"
 fullnameOverride: "sso-backup-storage"
 
 backupConfig: |
-  postgres=sso-pgsql-master-dev:5432/rhsso
+  postgres=sso-pgsql-dev-11-patroni:5432/rhsso
 
   0 1 * * * default ./backup.sh -s
   0 4 * * * default ./backup.sh -s -v all
 
 db:
-  secretName: sso-pgsql-dev
-  usernameKey: app-db-username
-  passwordKey: app-db-password
+  secretName: patroni-11-dev-secret
+  usernameKey: username
+  passwordKey: password
 
 env:
   DATABASE_SERVICE_NAME:
-    value: sso-pgsql-master-dev
+    value: sso-pgsql-dev-11-patroni
 
   ENVIRONMENT_FRIENDLY_NAME:
     value: "Silver SSO production-dev DB Backups"
