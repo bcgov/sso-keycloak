@@ -1,7 +1,7 @@
 nameOverride: "sso-backup-storage"
 fullnameOverride: "sso-backup-storage"
 backupConfig: |
-  postgres=sso-pgsql-master-prod:5432/rhsso
+  postgres=test-patorni-3-patroni:5432/rhsso
 
   0 1 * * * default ./backup.sh -s
   0 4 * * * default ./backup.sh -s -v all
@@ -13,7 +13,7 @@ db:
 
 env:
   DATABASE_SERVICE_NAME:
-    value: sso-pgsql-master-prod
+    value: test-patorni-3-patroni
 
   ENVIRONMENT_FRIENDLY_NAME:
     value: "Silver SSO sbox-prod DB Backups"
