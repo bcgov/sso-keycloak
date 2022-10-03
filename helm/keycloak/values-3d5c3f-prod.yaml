@@ -8,11 +8,12 @@ service:
   port: 8443
 
 postgres:
-  host: sso-pgsql-master-prod
+  host: test-patorni-3-patroni
+  database: rhsso
   credentials:
     secret: sso-pgsql-prod
-  admin:
-    secret: sso-admin-prod
+    usernameKey: app-db-username
+    passwordKey: app-db-password
 
 tls:
   enabled: true
