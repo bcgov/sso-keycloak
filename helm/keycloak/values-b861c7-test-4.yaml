@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: ghcr.io/bcgov/sso
-  tag: 7.6.5-build.9
+  tag: 7.6.5-build.11
   pullPolicy: IfNotPresent
 
 rollingUpdate:
