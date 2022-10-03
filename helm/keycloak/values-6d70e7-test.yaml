@@ -10,12 +10,15 @@ service:
   port: 8443
 
 postgres:
-  host: sso-pgsql-master-test
+  host: sso-pgsql-test-11-patroni
   database: keycloak
   credentials:
-    secret: sso-pgsql-test
-    usernameKey: app-db-username
-    passwordKey: app-db-password
+    secret: patroni-11-test-secret
+    usernameKey: username
+    passwordKey: password
+
+persistentLog:
+  storageClassSize: 10Gi
 
 tls:
   enabled: true

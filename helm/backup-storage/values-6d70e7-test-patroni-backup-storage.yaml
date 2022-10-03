@@ -7,19 +7,19 @@ nameOverride: "sso-backup-storage"
 fullnameOverride: "sso-backup-storage"
 
 backupConfig: |
-  postgres=sso-pgsql-master-test:5432/keycloak
+  postgres=sso-pgsql-test-11-patroni:5432/keycloak
 
   0 1 * * * default ./backup.sh -s
   0 4 * * * default ./backup.sh -s -v all
 
 db:
-  secretName: sso-pgsql-test
-  usernameKey: app-db-username
-  passwordKey: app-db-password
+  secretName: patroni-11-test-secret
+  usernameKey: username
+  passwordKey: password
 
 env:
   DATABASE_SERVICE_NAME:
-    value: sso-pgsql-master-test
+    value: sso-pgsql-test-11-patroni
 
   ENVIRONMENT_FRIENDLY_NAME:
     value: "Silver SSO production-test DB Backups"
