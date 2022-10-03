@@ -1,0 +1,41 @@
+replicaCount: 3
+
+image:
+  repository: ghcr.io/bcgov/spilo-14
+  tag: 2.1-p5
+  pullPolicy: IfNotPresent
+
+imagePullSecrets:
+  - name: gh-registry-config
+
+postgresMajorVersion: 11
+
+# credentials:
+#   existingSecret: false
+#   superuser:
+#     username: postgres
+#     password:
+#   admin:
+#     username: admin
+#     password:
+#   standby:
+#     username: standby
+#     password:
+
+# additionalCredentials:
+#   - username: rhsso
+#     password:
+
+persistentVolume:
+  size: 5Gi
+
+podDisruptionBudget:
+  enabled: true
+
+
+# networkPolicy:
+#   enabled: true
+
+# rbac:
+#   # Specifies whether RBAC resources should be created
+#   create: true

@@ -10,11 +10,20 @@ service:
   port: 8443
 
 postgres:
-  host: sso-pgsql-master-dev
+  # host: sso-pgsql-master-dev
+  host: sso-pgsql-dev-11-patroni
+  database: rhsso
   credentials:
-    secret: sso-pgsql-dev
-    adminUsername: sso
-    passwordKey: app-db-password
+    secret: patroni-11-dev-secret
+    usernameKey: username
+    passwordKey: password
+
+    # secret: sso-pgsql-dev-11-patroni-appusers
+    # usernameKey: username-appuser1
+    # passwordKey: password-appuser1
+
+persistentLog:
+  storageClassSize: 10Gi
 
 tls:
   enabled: true

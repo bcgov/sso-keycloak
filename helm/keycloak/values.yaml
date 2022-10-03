@@ -50,6 +50,7 @@ tls:
 persistentLog:
   enabled: true
   storageClassName: netapp-file-standard
+  storageClassSize: 5Gi
   path: /var/log/eap
 
 resources:
