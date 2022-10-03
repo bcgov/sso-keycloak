@@ -2,139 +2,48 @@
 
 ## Purpose
 
-This helm chart is used for the silver keycloak apps.
+This helm chart is used for the silver keycloak apps. These charts will make upgrading postgres more reliable if another version is needed before keycloak silver is decomissioned.
 
 
-## Create a values file in silver-patroni folder.
-
-1. )
-
+## Installing a new patroni instance
 
 ```console
 $ helm repo add sso-charts https://bcgov.github.io/sso-helm-charts
 ```
 
 ```
-helm install test-patorni sso-charts/patroni --namespace 3d5c3f-prod --version 0.0.1 --values ./values-3d5c3f-prod.yaml
+helm install <<patroni-name>> sso-charts/patroni --namespace <<namespace>> --version 0.0.1 --values ./<<values_file>>.yaml
 ```
 
-```
-helm upgrade test-patorni sso-charts/patroni --namespace 3d5c3f-prod --version 0.0.1 --values ./values-3d5c3f-prod.yaml
-```
-
+To change an existing chart use the upgrade command:
 
 ```
-helm uninstall test-patorni --namespace 3d5c3f-prod
+helm upgrade <<patroni-name>> sso-charts/patroni --namespace <<namespace>> --values ./<<values_file>>.yaml
 ```
 
-For now try using
-```
-helm upgrade test-patorni sso-charts/patroni --namespace 3d5c3f-prod --values ./values-3d5c3f-prod.yaml
-```
+## Potential issues
 
+When upgrading there is a limitation in the sso patroni helm chart used.  It will only create additional databases whose user username matches the database name.  This is a patern followed in the gold cluster but not silver.
 
-Create copies of the secrets.  The helm chart was doing weird stuff
-
-sso-keycloak-admin-secret
-sso-keycloak-jgroups
-in the postgres cred, rename the admin cred:
- username-superuser password-superuser
-
-
-
-
-
-
-Write up attempt:
-
-
-
-
-
-
-Goal upgrade from postgres 10 to 11. Since we are hoping to
-
-
-Upgrade path:
-
- - Create the docker image pull credential in the namespace
-
- - Build the values file for the patroni helm chart (copy over the secrets)
-
- - Deploy the patroni helm chart with the correct image and postgress version 11. Use the same passwords as in active database.
-
- - Backup the database
-   `./backup.sh -s`
-
- - Get the leader pod `patronictl list` log into that terminal
-
- - Get the db name
-
- `psql`
- `\l`
-
- - scale down keycloak, put patroni leader in maintenance mode
-
-  `patronictl pause`
-  `patronictl resume`
-
-
-
-Create a local backup with dump all:
-
-`kubectl -n 3d5c3f-prod exec -i sso-pgsql-prod-0 -- /usr/bin/pg_dumpall -U postgres > sand_prod_dumpall`
-
-run `tail sand_prod_dumpall`
-
-The output should be "PostgreSQL database cluster dump complete."
-
-Verify the new cluster:
-oc -n 3d5c3f-prod get pods
-oc -n 3d5c3f-prod rsh test-patorni-3-patroni-0
-patronictl list
-
-Create the rhsso user:
-
-CREATE USER rhsso WITH PASSWORD '****************';
-
-THIS LINE DID NOT WORK!
-<!-- kubectl -n 3d5c3f-prod exec -i test-patorni-3-patroni-0 -- psql -U rhsso < sand_prod_dumpall -->
-
-
-kubectl -n 3d5c3f-prod exec -i test-patorni-3-patroni-0 -- psql < sand_prod_dumpall
-
-
-modify the helm keycloak chart
-`sso-keycloak/helm/keycloak/values-3d5c3f-prod.yaml`
-
-host points at the new service
+If there is a silver database that is being upgraded, it is best to create an app db matching the existing db name then adding a new user matching the old db username
 
 ```
-postgres:
-  host: test-patorni-3-patroni
+  additionalCredentials:
+    - username: <<old_db_name>>
+      password:
 ```
 
-make upgrade NAMESPACE=3d5c3f-prod
+This will create a database in the new statefull set with the old name.  Logging into the postgres cluster as the speruser, we can create a new user via:
 
-There are secrets not being generated properly
+```
+create user <<old_db_username>> with encrypted password '<<user_password>>';
+grant all privileges on database <<old_db_name>> to <<old_db_username>>;
+```
 
+This creates a username and database that will allow a seamless upgrade from one postgres version to another. Note a kubernetes secret will need to be passed to
 
-
-<!-- sso-keycloak-admin-secret
-sso-keycloak-jgroups
-in the postgres cred, rename the admin cred:
- username-superuser password-superuser -->
-
-Scale down the old patroni pods
-Delete 2 of the 3 PVCs
-Scale up the new patroni pods
-
-## In the silver patroni folder run
-
-Chang pod number in values-3d5c3f-prod.yaml from 1 to 3
-Comment out the credential creation step (they have already been created)
-helm upgrade test-patorni sso-charts/patroni --namespace 3d5c3f-prod --values ./values-3d5c3f-prod.yaml
-
-Connect the backup container to the new db
-Connect metabase to the new db
-KC cron jobs?
+```
+kubectl create secret generic patroni-11-test-secret -n 6d70e7-test \
+  --from-literal=username=<<old_db_username>> \
+  --from-literal=password=<<user_password>>
+```
