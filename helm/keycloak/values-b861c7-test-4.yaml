@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: ghcr.io/bcgov/sso
-  tag: 7.6.5-build.3
+  tag: 7.6.5-build.9
   pullPolicy: IfNotPresent
 
 rollingUpdate:
@@ -33,7 +33,7 @@ networkPolicies:
 
 resources:
   limits:
-    cpu: 1.2
+    cpu: 1
     memory: 1Gi
   requests:
     cpu: 0.5
