@@ -31,8 +31,25 @@ body:
       label: Silver custom realm name
       description: what is your realm name
       options:
-        - 1.0.2 (Default)
-        - 1.0.3 (Edge)
+        - ff09qn3f
+        - 4qjrpzzl
+        - v4mbqqas
+        - jxoe2o46
+        - umafubc9
+        - cp1qly2d
+        - 5k8dbl4h
+        - gzyg46lx
+        - 8gyaubg
+        - fcf0kpqr
+        - vtkayq4c
+        - kmas316h
+        - 3nwwef1
+        - 4piqfpfu
+        - gde0rjxl
+        - digitaltrust
+        - g7v0xlf4
+        - jbd6rnxw
+        - rzh2zkjq
     validations:
       required: true
   - type: input
@@ -43,10 +60,10 @@ body:
       placeholder: ex. myrealmname
     validations:
       required: true
-  - type: dropdown
+  - type: checkboxes
     id: gold-env
     attributes:
-      label: Gold environment needed pick one)
+      label: Gold environment needed
       description: Which env
       options:
         - Dev
@@ -57,12 +74,13 @@ body:
   - type: markdown
     attributes:
       value: |
-        *Will have info on IDP and assoicated CSS App & Event Log as upcoming *
+        ## Please create your IDP via our [Common Hosted Single Sign on App](https://bcgov.github.io/sso-requests) ##
+        ## [How to guide can be found here](https://stackoverflow.developer.gov.bc.ca/questions/864) ## 
   - type: checkboxes
     id: terms
     attributes:
       label: Code of Conduct
-      description: By submitting this issue, you agree to follow our [Code of Conduct](https://example.com)
+      description: By submitting this issue, you agree to follow our [Terms and Conditions](https://bcgov.github.io/sso-requests/terms-conditions)
       options:
-        - label: I agree to follow this project's Code of Conduct
+        - label: I agree to follow Pathfinder SSO's Terms and Conditions
           required: true
