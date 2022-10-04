@@ -87,5 +87,6 @@ jobs:
         with:
           type: ${{ job.status }}
           job_name: '*Siteminder Tests: ${{ github.event.inputs.environment }} - ${{ github.event.inputs.cluster }}*'
+          mention_if: 'failure'
           channel: '#sso-alerts'
           url: ${{ secrets.SSO_ALERTS }}
