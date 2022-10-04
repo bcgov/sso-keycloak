@@ -10,7 +10,7 @@ service:
   port: 8443
 
 postgres:
-  host: sso-pgsql-master-dev
+  host: sso-pgsql-dev-11-patroni
   database: rhsso
   credentials:
     secret: sso-pgsql-dev

@@ -1,0 +1,18 @@
+replicaCount: 3
+
+image:
+  repository: ghcr.io/bcgov/spilo-14
+  tag: 2.1-p5
+  pullPolicy: IfNotPresent
+
+imagePullSecrets:
+  - name: gh-registry-config
+
+postgresMajorVersion: 11
+
+
+persistentVolume:
+  size: 5Gi
+
+podDisruptionBudget:
+  enabled: true
