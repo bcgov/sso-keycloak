@@ -66,9 +66,9 @@ body:
       label: Gold environment needed
       description: Which env
       options:
-        - Dev
-        - Test
-        - Prod
+      - label: Dev
+      - label: Test
+      - label: Prod
     validations:
       required: true
   - type: markdown
