@@ -81,7 +81,7 @@ body:
     id: terms
     attributes:
       label: Code of Conduct
-      description: By submitting this issue, you agree to follow our [Terms and Conditions](https://bcgov.github.io/sso-requests/terms-conditions)
+      description: By submitting this issue, you agree to follow our [Gold Custom Realm Agreement](https://github.com/bcgov/sso-keycloak/wiki/Gold-Custom-Realm-Service-Agreement)
       options:
-        - label: I agree to follow Pathfinder SSO's Terms and Conditions
+        - label: I agree to follow Pathfinder SSO's Gold Custom Realm Agreement
           required: true
