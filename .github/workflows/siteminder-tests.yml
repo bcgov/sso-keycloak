@@ -81,3 +81,13 @@ jobs:
         with:
           name: ${{ github.event.inputs.cluster }}-${{ github.event.inputs.environment }}-${{ matrix.name }}-results
           path: ${{ github.workspace }}/siteminder-tests/results
+      - name: Rocket.Chat Notification
+        uses: RocketChat/Rocket.Chat.GitHub.Action.Notification@master
+        if: failure()
+        with:
+          type: ${{ job.status }}
+          job_name: '*Siteminder Tests: ${{ github.event.inputs.environment }} - ${{ github.event.inputs.cluster }}*'
+          mention: 'here'
+          mention_if: 'failure'
+          channel: '#sso-alerts'
+          url: ${{ secrets.SSO_ALERTS }}
