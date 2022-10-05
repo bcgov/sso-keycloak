@@ -90,4 +90,5 @@ jobs:
           "attachments": [{"color": "#FF0000","author_name": ${{ github.actor }}, \
           "title": "Failed test", "title_link": ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}, \
           "text": ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}, \
-          "fields": [{"title": "Environment", "value": ${{ github.event.inputs.environment }}, "short": false}, {"title": "Cluster", "value": ${{ github.event.inputs.cluster }}, "short": false}]}]}'
+          "fields": [{"title": "Environment", "value": ${{ github.event.inputs.environment }}, "short": false}, \
+          {"title": "Cluster", "value": ${{ github.event.inputs.cluster }}, "short": false}]}]}'
