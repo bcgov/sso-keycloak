@@ -89,7 +89,7 @@ body:
     id: terms
     attributes:
       label: Code of Conduct
-      description: By submitting this issue, you agree to follow our [Gold Custom Realm Agreement](https://github.com/bcgov/sso-keycloak/wiki/Gold-Custom-Realm-Service-Agreement)
+      description: By submitting this issue, you agree to follow our [Gold Custom Realm Community Ways of Working](https://github.com/bcgov/sso-keycloak/wiki/Gold-Custom-Realm-Community-Ways-of-Working)
       options:
-        - label: I agree to follow Pathfinder SSO's Gold Custom Realm Agreement
+        - label: I agree to follow Pathfinder SSO's Gold Custom Realm Community Ways of Working
           required: true
