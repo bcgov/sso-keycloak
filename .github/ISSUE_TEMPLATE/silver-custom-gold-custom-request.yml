@@ -8,7 +8,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thanks for taking the time to fill out this request!
+        Please reachout to us if you have any questions:  bcgov.sso@gov.bc.ca  or [rocketchat](https://chat.developer.gov.bc.ca/channel/sso)
   - type: input
     id: po-contact
     attributes:
@@ -37,7 +37,7 @@ body:
     id: existing-realm
     attributes:
       label: Silver custom realm name
-      description: what is your realm name
+      description: Please pick your SILVER custom realm name from the list below
       options:
         - ff09qn3f
         - 4qjrpzzl
@@ -64,7 +64,7 @@ body:
     id: new-realm-name
     attributes:
       label: New realm name
-      description: new realm name syntax less that 10 characters and a meaningful name
+      description: new realm name syntax less that 10 characters and a meaningful name. Please note that if there are any duplicate names, we will ask you to resubmit with another name.
       placeholder: ex. myrealmname
     validations:
       required: true
