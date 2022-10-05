@@ -83,12 +83,9 @@ jobs:
           path: ${{ github.workspace }}/siteminder-tests/results
       - name: Rocket.Chat Notification
         if: failure()
-        run: |
-          curl -X POST ${{ secrets.SSO_ALERTS }} \
-          -H 'Content-Type: application/json' \
-          --data '{"text": "Siteminder Tests Failed! @junmin.ahn @jsharman  @Marco  @zorin.samji @nithinshekar.kuruba", \
-          "attachments": [{"color": "#FF0000","author_name": ${{ github.actor }}, \
-          "title": "Failed test", "title_link": ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}, \
-          "text": ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}, \
-          "fields": [{"title": "Environment", "value": ${{ github.event.inputs.environment }}, "short": false}, \
-          {"title": "Cluster", "value": ${{ github.event.inputs.cluster }}, "short": false}]}]}'
+        uses: fjogeleit/http-request-action@master
+        with:
+          url: ${{ secrets.SSO_ALERTS }}
+          method: 'POST'
+          customHeaders: '{"Content-Type": "application/json"}'
+          data: '{"text": "Siteminder Tests Failed! @junmin.ahn @jsharman  @Marco  @zorin.samji @nithinshekar.kuruba", "attachments": [{"color": "#FF0000","author_name": ${{ github.actor }}, "title": "Failed test", "title_link": ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}, "text": ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}, "fields": [{"title": "Environment", "value": ${{ github.event.inputs.environment }}, "short": false}, {"title": "Cluster", "value": ${{ github.event.inputs.cluster }}, "short": false}]}]}'
