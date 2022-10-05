@@ -3,7 +3,7 @@ description: File a gold custom request
 title: "[Gold Custom]: "
 labels: ["gold", "custom"]
 assignees:
-  - octocat
+  - tzhang200,zsamji
 body:
   - type: markdown
     attributes:
