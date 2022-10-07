@@ -83,8 +83,8 @@ body:
     attributes:
       value: |
         ## Additional Information ##
-        Please create your IDP via our [Common Hosted Single Sign on App](https://bcgov.github.io/sso-requests) 
-        [How to guide can be found here](https://stackoverflow.developer.gov.bc.ca/questions/864) 
+        Please create your IDP via our [Common Hosted Single Sign on App](https://bcgov.github.io/sso-requests)
+        [How to guide can be found here](https://stackoverflow.developer.gov.bc.ca/questions/864)
   - type: checkboxes
     id: terms
     attributes:

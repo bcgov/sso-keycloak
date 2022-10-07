@@ -1,8 +1,3 @@
-# The command to restore the latest backup is:
-# ./backup.sh -r postgres=sso-pgsql-master-dev:5432/rhsso
-# The command to update the backup in sandbox dev is:
-# make upgrade NAME=patroni-backup-storage NAMESPACE=3d5c3f-dev
-
 nameOverride: "sso-backup-storage"
 fullnameOverride: "sso-backup-storage"
 
@@ -17,6 +12,11 @@ db:
   usernameKey: app-db-username
   passwordKey: app-db-password
 
+persistence:
+  backup:
+    size: 6Gi
+  verification:
+    size: 3Gi
 env:
   DATABASE_SERVICE_NAME:
     value: sso-pgsql-dev-11-patroni
