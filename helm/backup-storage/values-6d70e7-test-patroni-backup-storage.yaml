@@ -1,5 +1,5 @@
 # The command to restore the latest backup is:
-# ./backup.sh -r postgres=sso-pgsql-master-dev:5432/rhsso
+# ./backup.sh -r postgres=patroni-11-test-secret:5432/rhsso
 # The command to update the backup in sandbox dev is:
 # make upgrade NAME=patroni-backup-storage NAMESPACE=6d70e7-test
 
