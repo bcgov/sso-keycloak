@@ -12,6 +12,11 @@ db:
   usernameKey: app-db-username
   passwordKey: app-db-password
 
+persistence:
+  backup:
+    size: 6Gi
+  verification:
+    size: 3Gi
 env:
   DATABASE_SERVICE_NAME:
     value: sso-pgsql-dev-11-patroni
