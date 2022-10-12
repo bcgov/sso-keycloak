@@ -3,12 +3,12 @@ description: File a gold custom request
 title: "[Gold Custom]: "
 labels: ["gold", "custom"]
 assignees:
-  - octocat
+  - tzhang200,zsamji
 body:
   - type: markdown
     attributes:
       value: |
-        Thanks for taking the time to fill out this request!
+        Please reachout to us if you have any questions:  bcgov.sso@gov.bc.ca  or [rocketchat](https://chat.developer.gov.bc.ca/channel/sso)
   - type: input
     id: po-contact
     attributes:
@@ -16,11 +16,19 @@ body:
       description: How can we get in touch with you if we need more info?
       placeholder: ex. email@example.com
     validations:
-      required: false
+      required: true
   - type: input
     id: to-contact
     attributes:
       label: Technical Owner Contact Details
+      description: How can we get in touch with you if we need more info?
+      placeholder: ex. email@example.com
+    validations:
+      required: true
+  - type: input
+    id: 2-to-contact
+    attributes:
+      label: Secondary Technical Owner Contact Details
       description: How can we get in touch with you if we need more info?
       placeholder: ex. email@example.com
     validations:
@@ -29,7 +37,7 @@ body:
     id: existing-realm
     attributes:
       label: Silver custom realm name
-      description: what is your realm name
+      description: Please pick your SILVER custom realm name from the list below
       options:
         - ff09qn3f
         - 4qjrpzzl
@@ -56,7 +64,7 @@ body:
     id: new-realm-name
     attributes:
       label: New realm name
-      description: new realm name syntax less that 10 characters and a meaningful name
+      description: new realm name syntax less that 10 characters and a meaningful name. Please note that if there are any duplicate names, we will ask you to resubmit with another name.
       placeholder: ex. myrealmname
     validations:
       required: true
@@ -66,21 +74,22 @@ body:
       label: Gold environment needed
       description: Which env
       options:
-        - Dev
-        - Test
-        - Prod
+      - label: Dev
+      - label: Test
+      - label: Prod
     validations:
       required: true
   - type: markdown
     attributes:
       value: |
-        ## Please create your IDP via our [Common Hosted Single Sign on App](https://bcgov.github.io/sso-requests) ##
-        ## [How to guide can be found here](https://stackoverflow.developer.gov.bc.ca/questions/864) ## 
+        ## Additional Information ##
+        Please create your IDP via our [Common Hosted Single Sign on App](https://bcgov.github.io/sso-requests)
+        [How to guide can be found here](https://stackoverflow.developer.gov.bc.ca/questions/864)
   - type: checkboxes
     id: terms
     attributes:
       label: Code of Conduct
-      description: By submitting this issue, you agree to follow our [Terms and Conditions](https://bcgov.github.io/sso-requests/terms-conditions)
+      description: By submitting this issue, you agree to follow our [Gold Custom Realm Community Ways of Working](https://github.com/bcgov/sso-keycloak/wiki/Gold-Custom-Realm-Community-Ways-of-Working)
       options:
-        - label: I agree to follow Pathfinder SSO's Terms and Conditions
+        - label: I agree to follow Pathfinder SSO's Gold Custom Realm Community Ways of Working
           required: true

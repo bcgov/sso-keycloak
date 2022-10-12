@@ -36,6 +36,7 @@ jobs:
     needs: matrix-prep
     strategy:
       matrix: ${{ fromJson(needs.matrix-prep.outputs.datacenters) }}
+      max-parallel: 1
     steps:
       - name: Check out repository
         uses: actions/checkout@v3
@@ -82,10 +83,10 @@ jobs:
           name: ${{ github.event.inputs.cluster }}-${{ github.event.inputs.environment }}-${{ matrix.name }}-results
           path: ${{ github.workspace }}/siteminder-tests/results
       - name: Rocket.Chat Notification
-        uses: RocketChat/Rocket.Chat.GitHub.Action.Notification@master
         if: failure()
+        uses: fjogeleit/http-request-action@master
         with:
-          type: ${{ job.status }}
-          job_name: '*Siteminder Tests: ${{ github.event.inputs.environment }} - ${{ github.event.inputs.cluster }}*'
-          mention: 'here'
           url: ${{ secrets.SSO_ALERTS }}
+          method: 'POST'
+          customHeaders: '{"Content-Type": "application/json"}'
+          data: '{"text": "Siteminder Tests Failed! @junmin.ahn @jsharman  @Marco  @zorin.samji @nithinshekar.kuruba", "attachments": [{"color": "#FF0000","author_name": "${{ github.actor }}", "title": "Failed test", "title_link": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}", "text": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}", "fields": [{"title": "Environment", "value": "${{ github.event.inputs.environment }}", "short": false}, {"title": "Cluster", "value": "${{ github.event.inputs.cluster }}", "short": false}]}]}'
