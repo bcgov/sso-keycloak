@@ -17,6 +17,9 @@ postgres:
     usernameKey: username
     passwordKey: password
 
+annotations:
+  timeout: 60s
+
 persistentLog:
   storageClassSize: 15Gi
 

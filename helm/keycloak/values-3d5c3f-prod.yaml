@@ -1,7 +1,9 @@
-replicaCount: 1
+replicaCount: 7
+
+project: sso-keycloak
 
 image:
-  tag: 7.4-37-rc.2
+  tag: 7.4-37-rc.3
 
 service:
   type: ClusterIP
@@ -15,13 +17,16 @@ postgres:
     usernameKey: app-db-username
     passwordKey: app-db-password
 
+annotations:
+  timeout: 60s
+
 tls:
   enabled: true
 
 resources:
   limits:
     cpu: 2
-    memory: 2Gi
+    memory: 4Gi
   requests:
-    cpu: 1250m
-    memory: 2Gi
+    cpu: 250m
+    memory: 4Gi

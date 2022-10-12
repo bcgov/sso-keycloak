@@ -66,7 +66,7 @@ The following table lists the configurable parameters of the Keycloak chart and 
 | `nodeSelector`                       | node labels for pod assignment                 | `{}`                                                                                       |
 | `tolerations`                        | toleration settings                            | `[]`                                                                                       |
 | `affinity`                           | affinity settings                              | `{}`                                                                                       |
-
+| `annotations.timeout`                | route timeout                                  | null                                                                                       |
 ### Notes
 
 - The helm chart installs two `Secret` k8s objects:
