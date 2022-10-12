@@ -2,7 +2,10 @@ package com.github.bcgov.keycloak.social.github;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import org.jboss.logging.Logger;
 import org.keycloak.broker.oidc.OAuth2IdentityProviderConfig;
 import org.keycloak.broker.oidc.mappers.AbstractJsonUserAttributeMapper;
@@ -51,31 +54,38 @@ public class CustomGitHubIdentityProvider extends GitHubIdentityProvider {
     try {
       OAuth2IdentityProviderConfig config = getConfig();
       String targetOrg = config.getConfig().get("githubOrg");
+      String[] targetOrgs = targetOrg == null ? new String[0] : targetOrg.split(" ");
+      boolean targetOrgRequired = Boolean.parseBoolean(config.getConfig().get("githubOrgRequired"));
+      boolean orgVerified = false;
+      List<String> myOrgs = new ArrayList<>();
 
-      if (targetOrg != null) {
+      if (targetOrgs.length > 0) {
         JsonNode userOrgs =
             SimpleHttp.doGet(USER_ORGS_URL, session)
                 .header("Authorization", "Bearer " + accessToken)
                 .asJson();
 
-        boolean found = false;
-        for (JsonNode org : userOrgs) {
-          String orgName = getJsonProperty(org, "login");
-          if (orgName.equals(targetOrg)) {
-            found = true;
-            break;
+        for (String torg : targetOrgs) {
+          for (JsonNode org : userOrgs) {
+            String orgName = getJsonProperty(org, "login");
+            if (orgName.equals(torg)) {
+              myOrgs.add(torg);
+              orgVerified = true;
+            }
           }
         }
 
-        if (!found)
-          throw new IdentityBrokerException(
-              "User does not belong to the target GitHub Org " + targetOrg);
+        if (targetOrgRequired && !orgVerified)
+          throw new IdentityBrokerException("User does not belong to the target GitHub Org");
       }
 
       JsonNode profile =
           SimpleHttp.doGet(PROFILE_URL, session)
               .header("Authorization", "Bearer " + accessToken)
               .asJson();
+
+      ((ObjectNode) profile).put("org_verified", String.valueOf(orgVerified));
+      ((ObjectNode) profile).put("orgs", String.join(" ", myOrgs));
       BrokeredIdentityContext user = extractIdentityFromProfile(null, profile);
 
       if (user.getEmail() == null) {
@@ -84,7 +94,7 @@ public class CustomGitHubIdentityProvider extends GitHubIdentityProvider {
 
       return user;
     } catch (Exception e) {
-      throw new IdentityBrokerException("Could not obtain user profile from github.", e);
+      throw new IdentityBrokerException("Could not obtain user profile from GitHub.", e);
     }
   }
 
@@ -104,9 +114,9 @@ public class CustomGitHubIdentityProvider extends GitHubIdentityProvider {
         }
       }
     } catch (Exception e) {
-      throw new IdentityBrokerException("Could not obtain user email from github.", e);
+      throw new IdentityBrokerException("Could not obtain user email from GitHub.", e);
     }
-    throw new IdentityBrokerException("Primary email from github is not found.");
+    throw new IdentityBrokerException("Primary email from GitHub is not found.");
   }
 
   @Override
