@@ -15,6 +15,9 @@ postgres:
     usernameKey: app-db-username
     passwordKey: app-db-password
 
+annotations:
+  timeout: 60s
+
 tls:
   enabled: true
 
