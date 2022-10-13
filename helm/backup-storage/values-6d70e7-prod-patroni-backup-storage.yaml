@@ -13,7 +13,7 @@ db:
 
 persistence:
   backup:
-    size: 42Gi
+    size: 45Gi
   verification:
     size: 10Gi
 env:
