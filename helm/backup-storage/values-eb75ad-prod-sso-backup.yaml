@@ -23,3 +23,10 @@ env:
   WEBHOOK_URL:
     value: <<Insert value>>
     secure: true
+
+  DAILY_BACKUPS:
+    value: "7"
+  WEEKLY_BACKUPS:
+    value: "4"
+  MONTHLY_BACKUPS:
+    value: "1"
