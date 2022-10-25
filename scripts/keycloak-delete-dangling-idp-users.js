@@ -35,9 +35,10 @@ async function main() {
 
     while (true) {
       let users = await adminClient.users.find({ realm, username: idpSuffix, first, max });
-      users = users.filter(({ username }) => username.endsWith(idpSuffix));
       const count = users.length;
       if (count === 0) break;
+
+      users = users.filter(({ username }) => username.endsWith(idpSuffix));
 
       for (let x = 0; x < users.length; x++) {
         const { id, username } = users[x];
@@ -45,7 +46,7 @@ async function main() {
         const links = await adminClient.users.listFederatedIdentities({ realm, id });
         if (links.length === 0) {
           await adminClient.users.del({ realm, id });
-          console.log(`username ${username} deleted.`);
+          console.log(`user ${username} deleted.`);
           deleted++;
         }
 
