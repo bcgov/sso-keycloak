@@ -45,7 +45,7 @@ jobs:
           node-version: 16
       - name: Generate env file
         run: |
-          cd ${{ github.workspace }}/siteminder-tests
+          cd ${{ github.workspace }}/cy-siteminder-tests
           echo "${{ secrets.SITEMINDER_TESTS_ENV }}" | base64 --decode > .env
       - name: Set up docker buildx
         uses: docker/setup-buildx-action@v2
@@ -58,7 +58,7 @@ jobs:
       - name: Build docker image
         uses: docker/build-push-action@v3
         with:
-          context: siteminder-tests/
+          context: cy-siteminder-tests/
           push: false
           load: true
           tags: siteminder-tests
@@ -70,7 +70,7 @@ jobs:
           mv /tmp/.buildx-test-cache-new /tmp/.buildx-test-cache
       - name: Run siteminder tests
         run: |
-          cd ${{ github.workspace }}/siteminder-tests
+          cd ${{ github.workspace }}/cy-siteminder-tests
           docker run --rm -e ENVIRONMENT=${{ github.event.inputs.environment }} \
                           -e CLUSTER=${{ github.event.inputs.cluster }} \
                           -v $(pwd)/results:/app/results \
@@ -81,7 +81,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: ${{ github.event.inputs.cluster }}-${{ github.event.inputs.environment }}-${{ matrix.name }}-results
-          path: ${{ github.workspace }}/siteminder-tests/results
+          path: ${{ github.workspace }}/cy-siteminder-tests/results
       - name: Rocket.Chat Notification
         if: failure()
         uses: fjogeleit/http-request-action@master
