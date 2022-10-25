@@ -73,7 +73,7 @@ jobs:
           cd ${{ github.workspace }}/cy-siteminder-tests
           docker run --rm -e ENVIRONMENT=${{ github.event.inputs.environment }} \
                           -e CLUSTER=${{ github.event.inputs.cluster }} \
-                          -v $(pwd)/results:/app/results \
+                          -v $(pwd)/results:/e2e/results \
                           --add-host=${{ needs.matrix-prep.outputs.hostname }}:${{ matrix.ip }} \
                           siteminder-tests
       - name: Upload test results
