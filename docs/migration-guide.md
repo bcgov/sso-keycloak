@@ -114,3 +114,6 @@
   | GitHub Username         | login   | github_username    | github_username                         | github_username                         |
   | BCGov Github Membership |         | org_verified       | org_verified                            | org_verified                            |
   | BCGov Github Orgs       |         | orgs               | orgs                                    | orgs                                    |
+
+  - `org_verified`: `true` if the authenticated user has `bcgov` GitHub org membership, otherwise, `false`.
+  - `orgs`: `space-separated` list of BCGov GitHub org that the authenticated user has a membership of.
