@@ -32,6 +32,3 @@ To restore from the most recent backup, rsh into the backup pod in the namespace
 **prod silver production**:
 
 `./backup.sh -r postgres=sso-pgsql-prod-11-patroni:5432/rhsso`
-
-
-`./backup.sh -r postgres=sso-pgsql-dev-11-patroni:5432/keycloak -f backups/ `
