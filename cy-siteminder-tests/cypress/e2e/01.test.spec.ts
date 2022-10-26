@@ -6,7 +6,7 @@ import {
 } from '../app-config/config'
 
 describe('siteminder tests', () => {
-  it('idir', () => {
+  it('IDIR', () => {
     cy.testsite(fetchSsoUrl('IDIR'), idir_config.username, idir_config.password, 'IDIR')
     cy.get('@samlattributes').then((data: any) => {
       assert.deepEqual(data.guid, idir_config.user_identifier, 'user_identifier')

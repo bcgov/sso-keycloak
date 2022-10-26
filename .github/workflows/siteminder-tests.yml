@@ -82,11 +82,11 @@ jobs:
         with:
           name: ${{ github.event.inputs.cluster }}-${{ github.event.inputs.environment }}-${{ matrix.name }}-results
           path: ${{ github.workspace }}/cy-siteminder-tests/results
-      # - name: Rocket.Chat Notification
-      #   if: failure()
-      #   uses: fjogeleit/http-request-action@master
-      #   with:
-      #     url: ${{ secrets.SSO_ALERTS }}
-      #     method: 'POST'
-      #     customHeaders: '{"Content-Type": "application/json"}'
-      #     data: '{"text": "Siteminder Tests Failed! @junmin.ahn @jsharman  @Marco  @zorin.samji @nithinshekar.kuruba", "attachments": [{"color": "#FF0000","author_name": "${{ github.actor }}", "title": "Failed test", "title_link": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}", "text": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}", "fields": [{"title": "Environment", "value": "${{ github.event.inputs.environment }}", "short": false}, {"title": "Cluster", "value": "${{ github.event.inputs.cluster }}", "short": false}]}]}'
+      - name: Rocket.Chat Notification
+        if: failure()
+        uses: fjogeleit/http-request-action@master
+        with:
+          url: ${{ secrets.SSO_ALERTS }}
+          method: 'POST'
+          customHeaders: '{"Content-Type": "application/json"}'
+          data: '{"text": "Siteminder Tests Failed! @junmin.ahn @jsharman  @Marco  @zorin.samji @nithinshekar.kuruba", "attachments": [{"color": "#FF0000","author_name": "${{ github.actor }}", "title": "Failed test", "title_link": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}", "text": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}", "fields": [{"title": "Environment", "value": "${{ github.event.inputs.environment }}", "short": false}, {"title": "Cluster", "value": "${{ github.event.inputs.cluster }}", "short": false}]}]}'
