@@ -27,7 +27,7 @@
   | IDIR User GUID | useridentifier | idir_user_guid     | idir_user_guid                               | idir_user_guid                               |
   |                |                | preferred_username | preferred_username=`{{useridentifier}}@idir` | preferred_username=`{{useridentifier}}@idir` |
 
-### BCeID Basic
+### Basic BCeID
 
 - In Silver
 
@@ -48,7 +48,7 @@
   | BCeID User GUID | useridentifier | bceid_user_guid    | bceid_user_guid                                    | bceid_user_guid                                    |
   |                 |                | preferred_username | preferred_username=`{{useridentifier}}@bceidbasic` | preferred_username=`{{useridentifier}}@bceidbasic` |
 
-### BCeID Business
+### Business BCeID
 
 - In Silver
 
@@ -68,7 +68,49 @@
   | Email               | email                   | email               | email                                                 | email                                                 |
   | BCeID User Guid     | SMGOV_USERGUID          | bceid_user_guid     | bceid_user_guid                                       | bceid_user_guid                                       |
   |                     |                         | preferred_username  | preferred_username=`{{SMGOV_USERGUID}}@bceidbusiness` | preferred_username=`{{SMGOV_USERGUID}}@bceidbusiness` |
-  | BCeID User Name     | SMGOV_USERDISPLAYNAME   | bceid_user_name     | bceid_user_name                                       | bceid_user_name                                       |
+  | BCeID User Name     | SMGOV_USERDISPLAYNAME   | display_name        | display_name                                          | display_name                                          |
   | BCeID Business Guid | SMGOV_BUSINESSGUID      | bceid_business_guid | bceid_business_guid                                   | bceid_business_guid                                   |
   | BCeID Business Name | SMGOV_BUSINESSLEGALNAME | bceid_business_name | bceid_business_name                                   | bceid_business_name                                   |
   | BCeID Business ID   | username                | bceid_username      | bceid_username                                        | bceid_username                                        |
+
+### GitHub Public
+
+- In Silver
+
+  |                 | IDP     | Parent Realm       | Custom Realm, Standard Realm          | Standard Realm - OIDC Payload         |
+  | --------------- | ------- | ------------------ | ------------------------------------- | ------------------------------------- |
+  | Email           | email   | email              | email                                 | email                                 |
+  | First Name      | name[0] | given_name         | given_name                            | given_name                            |
+  | Last Name       | name[1] | family_name        | family_name                           | family_name                           |
+  | GitHub ID       | id      | github_id          | github_id                             | github_id                             |
+  | GitHub Username | login   | preferred_username | preferred_username=`{{login}}@github` | preferred_username=`{{login}}@github` |
+
+- In Gold
+
+  |                         | IDP     | Parent Realm       | Custom Realm, Standard Realm             | Standard Realm - OIDC Payload            |
+  | ----------------------- | ------- | ------------------ | ---------------------------------------- | ---------------------------------------- |
+  | Email                   | email   | email              | email                                    | email                                    |
+  | First Name              | name[0] | given_name         | given_name                               | given_name                               |
+  | Last Name               | name[1] | family_name        | family_name                              | family_name                              |
+  | Full Name               | name    | display_name       | display_name                             | display_name                             |
+  | GitHub ID               | id      | github_id          | github_id                                | github_id                                |
+  |                         |         | preferred_username | preferred_username=`{{id}}@githubpublic` | preferred_username=`{{id}}@githubpublic` |
+  | GitHub Username         | login   | github_username    | github_username                          | github_username                          |
+  | BCGov Github Membership |         | org_verified       | org_verified                             | org_verified                             |
+  | BCGov Github Orgs       |         | orgs               | orgs                                     | orgs                                     |
+
+### GitHub BCGov
+
+- In Gold
+
+  |                         | IDP     | Parent Realm       | Custom Realm, Standard Realm            | Standard Realm - OIDC Payload           |
+  | ----------------------- | ------- | ------------------ | --------------------------------------- | --------------------------------------- |
+  | Email                   | email   | email              | email                                   | email                                   |
+  | First Name              | name[0] | given_name         | given_name                              | given_name                              |
+  | Last Name               | name[1] | family_name        | family_name                             | family_name                             |
+  | Full Name               | name    | display_name       | display_name                            | display_name                            |
+  | GitHub ID               | id      | github_id          | github_id                               | github_id                               |
+  |                         |         | preferred_username | preferred_username=`{{id}}@githubbcgov` | preferred_username=`{{id}}@githubbcgov` |
+  | GitHub Username         | login   | github_username    | github_username                         | github_username                         |
+  | BCGov Github Membership |         | org_verified       | org_verified                            | org_verified                            |
+  | BCGov Github Orgs       |         | orgs               | orgs                                    | orgs                                    |
