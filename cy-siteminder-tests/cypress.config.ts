@@ -6,12 +6,14 @@ dotenv.config({ path: __dirname + '/.env' })
 export default defineConfig({
   reporter: 'cypress-mochawesome-reporter',
   reporterOptions: {
+    saveJson: true,
     charts: true,
     embeddedScreenshots: true,
     inlineAssets: true,
     saveAllAttempts: false,
     reportDir: 'results',
     reportTitle: 'SSO Siteminder Tests',
+    overwrite: false,
   },
   e2e: {
     screenshotOnRunFailure: true,
