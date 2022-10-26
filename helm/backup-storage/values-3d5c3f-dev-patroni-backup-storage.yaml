@@ -5,8 +5,8 @@ image:
   repository: ghcr.io/bcgov/backup-storage
   tag: postgres-13
   # repository: ghcr.io/bcgov/backup-storage
-  tag: latest
-  # pullPolicy: Always
+  # tag: latest
+  pullPolicy: Always
 
 backupConfig: |
   postgres=sso-pgsql-dev-11-patroni:5432/rhsso
