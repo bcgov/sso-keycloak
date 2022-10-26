@@ -1,0 +1,30 @@
+{
+  "name": "cypress-siteminder-tests",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "cy:open": "cypress open",
+    "cy:run": "cypress run"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/mocha": "^10.0.0",
+    "@types/mochawesome": "^6.2.1",
+    "@types/node": "^18.11.5",
+    "cypress": "^10.10.0",
+    "cypress-mochawesome-reporter": "^3.2.2",
+    "eslint": "^8.26.0",
+    "eslint-plugin-cypress": "^2.12.1",
+    "mocha": "^10.1.0",
+    "prettier": "^2.7.1",
+    "typescript": "^4.8.4"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "lodash": "^4.17.21",
+    "xml2js": "^0.4.23"
+  }
+}
