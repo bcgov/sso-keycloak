@@ -1,11 +1,16 @@
 nameOverride: "sso-backup-storage"
 fullnameOverride: "sso-backup-storage"
 
+image:
+  repository: ghcr.io/bcgov/backup-storage
+  tag: postgres-13
+  pullPolicy: Always
+
 backupConfig: |
   postgres=sso-pgsql-test-11-patroni:5432/keycloak
 
   0 1 * * * default ./backup.sh -s
-  0 4 * * * default ./backup.sh -s -v all
+  # 0 4 * * * default ./backup.sh -s -v all
 
 db:
   secretName: patroni-11-test-secret
