@@ -1,0 +1,10 @@
+name: compliance
+description: |
+  This repository does not contain any production application codebase. When this changes we will update this file.
+spec:
+- name: PIA
+  status: not-required
+  last-updated: '2022-10-31'
+- name: STRA
+  status: not-required
+  last-updated: '2022-10-31'
