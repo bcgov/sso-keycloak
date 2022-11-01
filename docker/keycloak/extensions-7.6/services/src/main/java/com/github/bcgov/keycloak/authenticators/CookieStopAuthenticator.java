@@ -2,18 +2,17 @@ package com.github.bcgov.keycloak.authenticators;
 
 import java.util.Map;
 import javax.ws.rs.core.MultivaluedMap;
-import java.util.ArrayList;
 import org.jboss.logging.Logger;
 import org.keycloak.authentication.AuthenticationFlowContext;
 import org.keycloak.authentication.Authenticator;
 import org.keycloak.constants.AdapterConstants;
 import org.keycloak.models.AuthenticatedClientSessionModel;
+import org.keycloak.models.ClientScopeModel;
+import org.keycloak.models.IdentityProviderModel;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
-import org.keycloak.models.IdentityProviderModel;
 import org.keycloak.models.UserModel;
 import org.keycloak.models.UserSessionProvider;
-import org.keycloak.models.ClientScopeModel;
 import org.keycloak.protocol.LoginProtocol;
 import org.keycloak.services.managers.AuthenticationManager;
 import org.keycloak.sessions.AuthenticationSessionModel;
@@ -51,20 +50,9 @@ public class CookieStopAuthenticator implements Authenticator {
       return;
     }
 
-    String clientUUID = authSession.getClient().getId();
-    AuthenticatedClientSessionModel clientSessionModel =
-        authResult.getSession().getAuthenticatedClientSessionByClient(clientUUID);
-    UserSessionProvider userSessionProvider = context.getSession().sessions();
-
-    // 3. If no Cookie session with the authenticating client, proceed to login process
-    if (clientSessionModel == null) {
-      context.attempted();
-      return;
-    }
-
     MultivaluedMap<String, String> queryParams = context.getUriInfo().getQueryParameters();
 
-    // 4. If a target IDP is passed via "kc_idp_hint" query param, and
+    // 3. If a target IDP is passed via "kc_idp_hint" query param, and
     //      i. the target IDP is enabled;
     //     ii. the target IDP is allowed for the authenticating client;
     //    iii. the target IDP is different one than the one in the user session;
@@ -77,11 +65,24 @@ public class CookieStopAuthenticator implements Authenticator {
       Map<String, ClientScopeModel> scopes =
           context.getAuthenticationSession().getClient().getClientScopes(true);
 
-      if (idp.isEnabled() && (scopes.containsKey(authIdp) || scopes.containsKey(authIdp + "-saml")) && authIdp != sessIdp) {
+      if (idp.isEnabled()
+          && (scopes.containsKey(authIdp) || scopes.containsKey(authIdp + "-saml"))
+          && authIdp != sessIdp) {
+        UserSessionProvider userSessionProvider = context.getSession().sessions();
         userSessionProvider.removeUserSession(context.getRealm(), authResult.getSession());
         context.attempted();
         return;
       }
+    }
+
+    String clientUUID = authSession.getClient().getId();
+    AuthenticatedClientSessionModel clientSessionModel =
+        authResult.getSession().getAuthenticatedClientSessionByClient(clientUUID);
+
+    // 4. If no Cookie session with the authenticating client, proceed to login process
+    if (clientSessionModel == null) {
+      context.attempted();
+      return;
     }
 
     // 5. Otherwise, attach the exisiting session to the user
