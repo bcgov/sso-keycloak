@@ -61,17 +61,20 @@ public class CookieStopAuthenticator implements Authenticator {
       String authIdp = queryParams.getFirst(AdapterConstants.KC_IDP_HINT);
       String sessIdp = authResult.getSession().getNotes().get("identity_provider");
 
-      IdentityProviderModel idp = context.getRealm().getIdentityProviderByAlias(authIdp);
-      Map<String, ClientScopeModel> scopes =
-          context.getAuthenticationSession().getClient().getClientScopes(true);
+      if (authIdp != null && !authIdp.trim().isEmpty()) {
+        IdentityProviderModel idp = context.getRealm().getIdentityProviderByAlias(authIdp);
+        Map<String, ClientScopeModel> scopes =
+            context.getAuthenticationSession().getClient().getClientScopes(true);
 
-      if (idp.isEnabled()
-          && (scopes.containsKey(authIdp) || scopes.containsKey(authIdp + "-saml"))
-          && authIdp != sessIdp) {
-        UserSessionProvider userSessionProvider = context.getSession().sessions();
-        userSessionProvider.removeUserSession(context.getRealm(), authResult.getSession());
-        context.attempted();
-        return;
+        if (idp != null
+            && idp.isEnabled()
+            && (scopes.containsKey(authIdp) || scopes.containsKey(authIdp + "-saml"))
+            && authIdp != sessIdp) {
+          UserSessionProvider userSessionProvider = context.getSession().sessions();
+          userSessionProvider.removeUserSession(context.getRealm(), authResult.getSession());
+          context.attempted();
+          return;
+        }
       }
     }
 
