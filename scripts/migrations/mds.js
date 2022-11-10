@@ -71,10 +71,12 @@ async function main() {
     for (let x = 0; x < baseGroups.length; x++) {
       const group = baseGroups[x];
 
-      const roleMappings = await baseAdminClient.groups.listRealmRoleMappings({
+      let roleMappings = await baseAdminClient.groups.listRealmRoleMappings({
         realm: baseRealm,
         id: group.id,
       });
+
+      roleMappings = roleMappings.filter((mapping) => !rolesToExclude.includes(mapping.name));
 
       masterRoleMappings.push({
         type: 'group',
