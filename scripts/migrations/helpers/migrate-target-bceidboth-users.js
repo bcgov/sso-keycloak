@@ -7,8 +7,8 @@ const dotenv = require('dotenv');
 dotenv.config('../../');
 
 const parseStringSync = promisify(parseString);
-const logPrefix = 'BCEID BOTH: ';
-const log = (msg) => console.log(`${logPrefix}${msg}`);
+const logPrefix = 'MIGRATE SILVER BCEID BOTH TO GOLD STANDARD: ';
+const log = (msg, prefix) => console.log(`${prefix ?? logPrefix}${msg}`);
 
 const defaultHeaders = {
   'Content-Type': 'text/xml;charset=UTF-8',
@@ -184,4 +184,55 @@ const migrateSilverBceidBothToGoldStandard = async (baseAdminClient, targetAdmin
   }
 };
 
-module.exports = { fetchBceidUser, migrateSilverBceidBothToGoldStandard };
+const migrateGoldStandardBceidBothToGoldCustom = async (
+  baseAdminClient,
+  targetAdminClient,
+  targetRealm,
+  bceidUsernames = [],
+  env,
+) => {
+  const logPrefix = 'MIGRATE GOLD STANDARD BCEID BOTH TO GOLD CUSTOM BCEID BOTH: ';
+  if (!baseAdminClient || !targetAdminClient || !env) return;
+
+  for (let x = 0; x < bceidUsernames.length; x++) {
+    const username = bceidUsernames[x];
+
+    try {
+      const baseStandardUsers = await baseAdminClient.users.find({ realm: 'standard', username, max: 1 });
+      if (baseStandardUsers.length === 0) {
+        log(`not found ${username}`);
+        continue;
+      }
+
+      const baseStandardUser = baseStandardUsers[0];
+      if (!baseStandardUser.attributes.bceid_userid) {
+        log(`no user guid ${username}`);
+        continue;
+      }
+
+      const targetCustomUser = await targetAdminClient.users.create({
+        ...baseStandardUser,
+        realm: targetRealm,
+        username: `${baseBceidGuid}@bceidboth`,
+      });
+
+      await targetAdminClient.users.addToFederatedIdentity({
+        realm: targetRealm,
+        id: targetCustomUser.id,
+        federatedIdentityId: 'bceidboth',
+        federatedIdentity: {
+          userId: baseStandardUser.id,
+          userName: baseStandardUser.username,
+          identityProvider: 'bceidboth',
+        },
+      });
+
+      log(`${username} created`);
+    } catch (err) {
+      log(`error with: ${username}`);
+      handleError(err);
+    }
+  }
+};
+
+module.exports = { fetchBceidUser, migrateSilverBceidBothToGoldStandard, migrateGoldStandardBceidBothToGoldCustom };

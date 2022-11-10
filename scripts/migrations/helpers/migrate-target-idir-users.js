@@ -1,9 +1,8 @@
 const _ = require('lodash');
 const { handleError, ignoreError } = require('../../helpers');
 
-const logPrefix = 'MIGRATE SILVER IDIR TO GOLD STANDARD: ';
-
 const migrateSilverIdirToGoldStandard = async (baseAdminClient, targetAdminClient, idirUsernames) => {
+  const logPrefix = 'MIGRATE SILVER IDIR TO GOLD STANDARD: ';
   if (!baseAdminClient || !targetAdminClient) return;
 
   for (let x = 0; x < idirUsernames.length; x++) {
@@ -80,4 +79,63 @@ const migrateSilverIdirToGoldStandard = async (baseAdminClient, targetAdminClien
   }
 };
 
-module.exports = { migrateSilverIdirToGoldStandard };
+const migrateGoldStandardIdirToGoldCustom = async (baseAdminClient, targetAdminClient, targetRealm, idirUsernames) => {
+  const logPrefix = 'MIGRATE GOLD STANDARD IDIR TO GOLD CUSTOM IDIR: ';
+  if (!baseAdminClient || !targetAdminClient) return;
+
+  for (let x = 0; x < idirUsernames.length; x++) {
+    const username = idirUsernames[x];
+
+    try {
+      const baseStandardUsers = await baseAdminClient.users.find({ realm: 'standard', username, max: 1 });
+      if (baseStandardUsers.length === 0) {
+        console.log(`${logPrefix}not found ${username}`);
+        continue;
+      }
+
+      const baseStandardUser = baseStandardUsers[0];
+      if (!baseStandardUser.attributes.idir_userid) {
+        console.log(`${logPrefix}no user guid ${username}`);
+        continue;
+      }
+
+      const baseStandardUserGuid = baseStandardUser.attributes.idir_userid[0];
+
+      const commonUserData = {
+        enabled: true,
+        email: baseStandardUser.email,
+        firstName: baseStandardUser.firstName,
+        lastName: baseStandardUser.lastName,
+        attributes: {
+          display_name: (baseStandardUser.attributes.displayName && baseStandardUser.attributes.displayName[0]) || '',
+          idir_user_guid: baseStandardUserGuid,
+          idir_username: username,
+        },
+      };
+
+      const targetCustomUser = await targetAdminClient.users.create({
+        ...commonUserData,
+        realm: targetRealm,
+        username: `${baseStandardUserGuid}@idir`,
+      });
+
+      await targetAdminClient.users.addToFederatedIdentity({
+        realm: targetRealm,
+        id: targetCustomUser.id,
+        federatedIdentityId: 'idir',
+        federatedIdentity: {
+          userId: baseStandardUser.id,
+          userName: baseStandardUser.username,
+          identityProvider: 'idir',
+        },
+      });
+
+      console.error(`${logPrefix}${username} created`);
+    } catch (err) {
+      console.error(`${logPrefix}error with: ${username}`);
+      handleError(err);
+    }
+  }
+};
+
+module.exports = { migrateSilverIdirToGoldStandard, migrateGoldStandardIdirToGoldCustom };
