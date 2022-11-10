@@ -36,7 +36,7 @@ async function updateStandardBceid(kcAdminClient, idp) {
     first = first + max;
   }
 
-  console.log(`${total} ${idp} users upserted.`);
+  console.log(`${total} ${idp} users updated.`);
 }
 
 async function main() {
