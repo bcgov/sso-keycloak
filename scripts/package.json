@@ -12,6 +12,7 @@
     "jws": "^4.0.0",
     "keycloak-admin": "^1.14.22",
     "lodash": "^4.17.21",
+    "octokit": "^2.0.10",
     "prompt-confirm": "^2.0.4",
     "xml2js": "^0.4.23",
     "yargs": "^17.2.1"

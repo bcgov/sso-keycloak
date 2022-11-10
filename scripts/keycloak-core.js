@@ -3,6 +3,7 @@ const axios = require('axios');
 const jws = require('jws');
 const dotenv = require('dotenv');
 const KcAdminClient = require('keycloak-admin').default;
+const { Octokit, App } = require('octokit');
 
 dotenv.config();
 
@@ -128,4 +129,8 @@ async function getAdminClient(env = 'dev', { totp = '' } = {}) {
   }
 }
 
-module.exports = { getAdminClient, getRealmUrl, getOidcConfiguration };
+const getGitHubClient = () => {
+  return new Octokit({ auth: process.env.GITHUB_PATH });
+};
+
+module.exports = { getAdminClient, getRealmUrl, getOidcConfiguration, getGitHubClient };
