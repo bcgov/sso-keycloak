@@ -42,8 +42,11 @@ const parseAccount = (data) => {
   const userId = _.get(data, 'userId.0.value.0');
   const displayName = _.get(data, 'displayName.0.value.0');
   const type = _.get(data, 'type.0.code.0');
+  const email = _.get(data, 'contact.0.email.0.value.0');
+  const businessGuid = _.get(data, 'business.0.guid.0.value.0');
+  const businessLegalName = _.get(data, 'business.0.legalName.0.value.0');
 
-  return { guid, userId, displayName, type };
+  return { guid, userId, displayName, type, email, businessGuid, businessLegalName };
 };
 
 const fetchBceidUser = async ({ accountType = 'Business', matchKey = '', env = 'dev' }) => {
@@ -132,6 +135,8 @@ const migrateSilverBceidBothToGoldStandard = async (baseAdminClient, targetAdmin
           bceid_user_guid: details.guid,
           bceid_username: details.userId,
           bceid_type: details.type,
+          bceid_business_guid: details.businessGuid,
+          bceid_business_name: details.businessLegalName,
         },
       };
 
@@ -179,4 +184,4 @@ const migrateSilverBceidBothToGoldStandard = async (baseAdminClient, targetAdmin
   }
 };
 
-module.exports = { migrateSilverBceidBothToGoldStandard };
+module.exports = { fetchBceidUser, migrateSilverBceidBothToGoldStandard };
