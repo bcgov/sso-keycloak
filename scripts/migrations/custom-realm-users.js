@@ -1,3 +1,4 @@
+const axios = require('axios');
 const fs = require('fs');
 const path = require('path');
 const _ = require('lodash');
@@ -16,6 +17,31 @@ const {
 const { baseEnv, baseRealm, targetEnv, contextEnv, targetRealm, totp, auto } = argv;
 
 const rolesToExclude = ['admin', 'uma_authorization', 'offline_access'];
+const idpToRealmMap = {
+  idir: 'idir',
+  bceid: '_bceid',
+  github: '_github',
+};
+
+const idpToGuidKeyMap = {
+  idir: 'idir_userid',
+  bceid: 'bceid_userid',
+};
+
+const suffixMap = {
+  idir: 'idir',
+  bceid: 'bceidboth',
+  githu: 'github',
+};
+
+const fetchGithubId = async (username) => {
+  try {
+    const { id: github_id } = await axios.get(`https://api.github.com/users/${username}`).then((res) => res.data);
+    return github_id;
+  } catch {
+    return null;
+  }
+};
 
 async function main() {
   if (!baseEnv || !baseRealm || !targetEnv || !contextEnv || !targetRealm) {
@@ -53,12 +79,102 @@ async function main() {
     console.log('Step 1: list all the users');
     const offset = 500;
     const total = await baseAdminClient.users.count({ realm: baseRealm });
-    let users = [];
+    let allBaseUsers = [];
 
-    for (let i = 0; i <= Math.ceil(total / offset); i++) {
-      users = await baseAdminClient.users.find({ realm: baseRealm, first: offset * i, max: offset * (i + 1) });
-      console.log(users);
+    for (let i = 0; i < Math.ceil(total / offset); i++) {
+      let userList = await baseAdminClient.users.find({ realm: baseRealm, first: offset * i, max: offset * (i + 1) });
+      allBaseUsers = allBaseUsers.concat(userList);
     }
+    console.log('Step 2: find the matching Gold standard users');
+    let idpMap = {};
+    let userReport = {};
+    let validUserMeta = [];
+
+    const generateUserReport = async () => {
+      idpMap = {};
+
+      userReport = {
+        found: [],
+        'no-idp': [],
+        'no-guid': [],
+      };
+
+      validUserMeta = [];
+
+      for (let x = 0; x < allBaseUsers.length; x++) {
+        const buser = allBaseUsers[x];
+        const links = await baseAdminClient.users.listFederatedIdentities({
+          realm: baseRealm,
+          id: buser.id,
+        });
+
+        if (links.length === 0) {
+          userReport['no-idp'].push(buser.username);
+          continue;
+        }
+
+        const { identityProvider, userId } = links[0];
+        const parentRealmName = idpToRealmMap[identityProvider];
+        if (!parentRealmName) continue;
+
+        const parentUser = await baseAdminClient.users.findOne({ realm: parentRealmName, id: userId });
+        let buserGuid = _.get(parentUser, `attributes.${idpToGuidKeyMap[identityProvider]}.0`);
+
+        if (!buserGuid && identityProvider === 'github') {
+          buserGuid = await fetchGithubId(buser.username.split('@')[0]);
+        }
+
+        if (!buserGuid) {
+          userReport['no-guid'].push(buser.username);
+          continue;
+        }
+
+        if (!idpMap[identityProvider]) idpMap[identityProvider] = 0;
+        idpMap[identityProvider]++;
+
+        let tusers = await targetAdminClient.users.find({
+          realm: 'standard',
+          username: `${buserGuid}@${suffixMap[identityProvider]}`,
+          exact: true,
+        });
+
+        if (tusers.length === 0) {
+          const key = `not-found-${identityProvider}`;
+          const keyParent = `not-found-${identityProvider}-parent`;
+          if (!userReport[key]) userReport[key] = [];
+          if (!userReport[keyParent]) userReport[keyParent] = [];
+          userReport[key].push(buser.username);
+          userReport[keyParent].push(parentUser.username);
+        } else {
+          userReport['found'].push(buser.username);
+          validUserMeta.push({ baseUserId: buser.id, targetUserId: tusers[0].id });
+        }
+      }
+      console.log(userReport);
+    };
+    await generateUserReport();
+
+    console.log('Step 3: migrate missing IDIR users');
+    if (userReport['not-found-idir-parent'])
+      await migrateSilverIdirToGoldStandard(baseAdminClient, targetAdminClient, userReport['not-found-idir-parent']);
+
+    console.log('Step 4: migrate missing BCeID Both users');
+    if (userReport['not-found-bceid-parent'])
+      await migrateSilverBceidBothToGoldStandard(
+        baseAdminClient,
+        targetAdminClient,
+        userReport['not-found-bceid-parent'],
+        contextEnv,
+      );
+
+    console.log('Step 4: migrate missing BCeID Both users');
+    if (userReport['not-found-github-parent'])
+      await migrateSilverBceidBothToGoldStandard(
+        baseAdminClient,
+        targetAdminClient,
+        userReport['not-found-bceid-parent'],
+        contextEnv,
+      );
   } catch (err) {
     handleError(err);
     process.exit(1);
