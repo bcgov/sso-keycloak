@@ -29,6 +29,11 @@
             <script src="${url.resourcesPath}/${script}" type="text/javascript"></script>
         </#list>
     </#if>
+    <#if properties.absoluteScripts?has_content>
+        <#list properties.absoluteScripts?split(' ') as script>
+            <script src="${script}" type="text/javascript"></script>
+        </#list>
+    </#if>
     <#if scripts??>
         <#list scripts as script>
             <script src="${script}" type="text/javascript"></script>
@@ -38,6 +43,7 @@
 
 <body class="${properties.kcBodyClass!}">
 
+<#if properties.kcShowHeader == "true">
 <header>
   <div class="banner">
     <span></span>
@@ -45,6 +51,7 @@
   </div>
   <div class="other">&nbsp;</div>
 </header>
+</#if>
 
 <div class="${properties.kcLoginClass!}">
     <div id="kc-header" class="${properties.kcHeaderClass!}">
@@ -162,6 +169,7 @@
       </div>
     </div>
   </div>
+  <#if properties.kcShowFooter == "true">
   <footer class="footer">
     <div class="list">
       <ul>
@@ -172,6 +180,7 @@
       </ul>
     </div>
   </footer>
+  </#if>
 </body>
 </html>
 </#macro>
