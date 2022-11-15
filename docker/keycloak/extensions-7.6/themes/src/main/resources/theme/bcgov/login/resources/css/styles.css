@@ -90,6 +90,10 @@
   padding: 6px;
 }
 
+.login-pf body .login-pf-page .kc-social-links {
+  display: block;
+}
+
 /* HEADER */
 .login-pf body > header {
   background-color: #036;
