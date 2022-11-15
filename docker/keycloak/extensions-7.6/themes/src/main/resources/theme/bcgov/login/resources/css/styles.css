@@ -62,9 +62,7 @@
 .login-pf body .login-pf-page #kc-content #kc-content-wrapper #kc-form-wrapper {
   width: 100%;
   margin-bottom: 20px;
-  border-bottom: 1px solid #b3b1b3;
   border-right: none;
-  padding: 10px 20px;
 }
 
 .login-pf body .login-pf-page #kc-content #kc-content-wrapper #kc-error-message {
@@ -73,6 +71,23 @@
   text-align: center;
   border: 2px solid red;
   border-radius: 5px;
+}
+
+.login-pf body .login-pf-page #kc-content #kc-content-wrapper .kc-social-provider-name {
+  top: 0;
+}
+
+.login-pf body .login-pf-page #kc-content #kc-content-wrapper .kc-social-link {
+  display: flex;
+}
+
+.login-pf body .login-pf-page #kc-content #kc-content-wrapper .kc-social-link > a {
+  width: 100%;
+}
+
+.login-pf body .login-pf-page #kc-content #kc-content-wrapper .kc-social-link > span {
+  width: 40px;
+  padding: 6px;
 }
 
 /* HEADER */
@@ -156,6 +171,8 @@
 }
 
 /* BCGOV PRIMARY BUTTON */
+#kc-form-buttons input,
+#kc-social-providers .kc-social-links a[type='button'],
 .bcgov-primary {
   background-color: #003366;
   border: none;
@@ -172,17 +189,44 @@
   cursor: pointer;
 }
 
+#kc-form-buttons input {
+  padding: 0.4rem 0.5rem;
+}
+
+#kc-form-buttons input:hover,
+#kc-social-providers .kc-social-links a[type='button']:hover,
 .bcgov-primary:hover {
   color: white !important;
   text-decoration-line: none;
+  border: none;
+  border-radius: 4px;
   opacity: 0.8;
 }
 
+#kc-form-buttons input:after,
+#kc-social-providers .kc-social-links a[type='button']:after,
+.bcgov-primary:after {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  pointer-events: none;
+  content: '';
+  border: none;
+  border-color: transparent;
+  border-radius: 4px;
+}
+
+#kc-form-buttons input:focus,
+#kc-social-providers .kc-social-links a[type='button']:focus,
 .bcgov-primary:focus {
   outline: 4px solid #3b99fc;
   outline-offset: 1px;
 }
 
+#kc-form-buttons input:active,
+#kc-social-providers .kc-social-links a[type='button']:active,
 .bcgov-primary:active {
   opacity: 1;
 }

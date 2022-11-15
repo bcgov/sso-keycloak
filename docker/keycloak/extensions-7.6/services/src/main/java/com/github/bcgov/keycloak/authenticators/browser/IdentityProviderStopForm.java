@@ -1,5 +1,8 @@
 package com.github.bcgov.keycloak.authenticators.browser;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.ws.rs.core.MultivaluedMap;
@@ -32,18 +35,37 @@ public class IdentityProviderStopForm extends AbstractUsernameFormAuthenticator 
         context.getAuthenticationSession().getClient().getClientScopes(true);
     String idpkeys = "";
 
+    Map<String, Map<String, String>> idpContext = new HashMap<>();
+
     for (IdentityProviderModel ridp : realmIdps) {
       String oidcAlias = ridp.getAlias();
-      String samlAlias = ridp.getAlias() + "-saml";
+      String samlAlias = oidcAlias + "-saml";
 
       if (ridp.isEnabled() && (scopes.containsKey(oidcAlias) || scopes.containsKey(samlAlias))) {
-        idpkeys += "##" + ridp.getAlias() + "##";
+        Map<String, String> data = new HashMap<>();
+        data.put("enabled", "true");
+
+        String tooltip = ridp.getConfig().get("tooltip");
+        if (tooltip != null && tooltip.length() > 0) {
+          data.put("tooltip", tooltip);
+        }
+
+        idpContext.put(oidcAlias, data);
       }
     }
 
     MultivaluedMap<String, String> formData = new MultivaluedMapImpl<>();
-    formData.add(AuthenticationManager.FORM_USERNAME, idpkeys);
-    log.tracef("allowed idps: %s", idpkeys);
+
+    ObjectMapper objectMapper = new ObjectMapper();
+    try {
+      String json = objectMapper.writeValueAsString(idpContext);
+      log.tracef("idp context: %s", json);
+      formData.add(AuthenticationManager.FORM_USERNAME, json);
+    } catch (JsonProcessingException e) {
+      e.printStackTrace();
+      formData.add(AuthenticationManager.FORM_USERNAME, "{}");
+    }
+
     Response challengeResponse = challenge(context, formData);
     context.challenge(challengeResponse);
   }
