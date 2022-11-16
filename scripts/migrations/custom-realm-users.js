@@ -6,17 +6,11 @@ const { argv } = require('yargs');
 const Confirm = require('prompt-confirm');
 const { getAdminClient } = require('../keycloak-core');
 const { handleError, ignoreError } = require('../helpers');
-const {
-  migrateSilverIdirToGoldStandard,
-  migrateGoldStandardIdirToGoldCustom,
-} = require('./helpers/migrate-target-idir-users');
-const {
-  migrateSilverBceidBothToGoldStandard,
-  migrateGoldStandardBceidBothToGoldCustom,
-} = require('./helpers/migrate-target-bceidboth-users');
+const { migrateSilverIdirToGoldStandard } = require('./helpers/migrate-target-idir-users');
+const { migrateSilverBceidBothToGoldStandard } = require('./helpers/migrate-target-bceidboth-users');
+
 const { baseEnv, baseRealm, targetEnv, contextEnv, targetRealm, totp, auto } = argv;
 
-const rolesToExclude = ['admin', 'uma_authorization', 'offline_access'];
 const idpToRealmMap = {
   idir: 'idir',
   bceid: '_bceid',
@@ -74,7 +68,7 @@ async function main() {
     }
 
     // see if the target realm exists first
-    await targetAdminClient.realms.findOne({ realm: targetRealm });
+    let targetRealmExists = await targetAdminClient.realms.findOne({ realm: targetRealm });
 
     console.log('Step 1: list all the users');
     const offset = 500;
@@ -96,6 +90,7 @@ async function main() {
       userReport = {
         found: [],
         'no-idp': [],
+        'invalid-idp': [],
         'no-guid': [],
       };
 
@@ -115,7 +110,10 @@ async function main() {
 
         const { identityProvider, userId } = links[0];
         const parentRealmName = idpToRealmMap[identityProvider];
-        if (!parentRealmName) continue;
+        if (!parentRealmName) {
+          userReport['invalid-idp'].push(buser.username);
+          continue;
+        }
 
         const parentUser = await baseAdminClient.users.findOne({ realm: parentRealmName, id: userId });
         let buserGuid = _.get(parentUser, `attributes.${idpToGuidKeyMap[identityProvider]}.0`);
@@ -133,7 +131,7 @@ async function main() {
         idpMap[identityProvider]++;
 
         let tusers = await targetAdminClient.users.find({
-          realm: 'standard',
+          realm: targetRealm,
           username: `${buserGuid}@${suffixMap[identityProvider]}`,
           exact: true,
         });
@@ -155,29 +153,222 @@ async function main() {
     await generateUserReport();
 
     console.log('Step 3: migrate missing IDIR users');
-    if (userReport['not-found-idir-parent'])
-      await migrateSilverIdirToGoldStandard(baseAdminClient, targetAdminClient, userReport['not-found-idir-parent']);
+
+    let logPrefix = 'MIGRATE SILVER IDIR TO GOLD CUSTOM: ';
+    const idirUsernames = userReport['not-found-idir-parent'];
+
+    if (idirUsernames) {
+      for (let x = 0; x < idirUsernames.length; x++) {
+        const username = idirUsernames[x];
+
+        try {
+          const baseIdirUsers = await baseAdminClient.users.find({ realm: baseRealm, username, max: 1 });
+          if (baseIdirUsers.length === 0) {
+            console.log(`${logPrefix}not found ${username}`);
+            continue;
+          }
+
+          const baseIdirUser = baseIdirUsers[0];
+          if (!baseIdirUser.attributes || !baseIdirUser.attributes.idir_userid) {
+            console.log(`${logPrefix}no user guid ${username}`);
+            continue;
+          }
+
+          const baseIdirUserGuid = baseIdirUser.attributes.idir_userid[0];
+
+          const commonUserData = {
+            enabled: true,
+            email: baseIdirUser.email,
+            firstName: baseIdirUser.firstName,
+            lastName: baseIdirUser.lastName,
+            attributes: {
+              display_name: (baseIdirUser.attributes.displayName && baseIdirUser.attributes.displayName[0]) || '',
+              idir_user_guid: baseIdirUserGuid,
+              idir_username: username,
+            },
+          };
+
+          const targetIdirCustomUser = await targetAdminClient.users.create({
+            ...commonUserData,
+            realm: targetRealm,
+            username: `${baseIdirUserGuid}@idir`,
+          });
+
+          await targetAdminClient.users.addToFederatedIdentity({
+            realm: targetRealm,
+            id: targetIdirCustomUser.id,
+            federatedIdentityId: 'idir',
+            federatedIdentity: {
+              userId: `${baseIdirUserGuid}@idir`,
+              userName: `${baseIdirUserGuid}@idir`,
+              identityProvider: 'idir',
+            },
+          });
+
+          console.log(`${logPrefix}${username} created`);
+        } catch (err) {
+          console.error(`${logPrefix}error with: ${username}`);
+          handleError(err);
+        }
+      }
+    }
 
     console.log('Step 4: migrate missing BCeID Both users');
-    if (userReport['not-found-bceid-parent'])
-      await migrateSilverBceidBothToGoldStandard(
-        baseAdminClient,
-        targetAdminClient,
-        userReport['not-found-bceid-parent'],
-        contextEnv,
-      );
 
-    console.log('Step 4: migrate missing BCeID Both users');
-    if (userReport['not-found-github-parent'])
-      await migrateSilverBceidBothToGoldStandard(
-        baseAdminClient,
-        targetAdminClient,
-        userReport['not-found-bceid-parent'],
-        contextEnv,
-      );
+    logPrefix = 'MIGRATE SILVER BCEID BOTH TO GOLD CUSTOM: ';
+    const bceidUsernames = userReport['not-found-bceid-parent'];
+
+    if (bceidUsernames) {
+      for (let x = 0; x < bceidUsernames.length; x++) {
+        const username = bceidUsernames[x];
+
+        try {
+          const baseBceidUsers = await baseAdminClient.users.find({ realm: baseRealm, username, max: 1 });
+          if (baseBceidUsers.length === 0) {
+            console.log(`${logPrefix}not found ${username}`);
+            continue;
+          }
+
+          const baseBceidUser = baseBceidUsers[0];
+          if (!baseBceidUser.attributes || !baseBceidUser.attributes.bceid_userid) {
+            console.log(`${logPrefix}no user guid ${username}`);
+            continue;
+          }
+
+          const baseBceidUserGuid = baseBceidUser.attributes.bceid_userid[0];
+
+          const details =
+            (await fetchBceidUser({ accountType: 'Business', matchKey: baseBceidUserGuid, env })) ||
+            (await fetchBceidUser({ accountType: 'Individual', matchKey: baseBceidUserGuid, env }));
+
+          if (!details) {
+            console.log(`${logPrefix}not found in bceid web service ${username}`);
+            continue;
+          }
+
+          const commonUserData = {
+            enabled: true,
+            email: baseBceidUser.email,
+            firstName: '',
+            lastName: '',
+            attributes: {
+              display_name: (baseBceidUser.attributes.displayName && baseBceidUser.attributes.displayName[0]) || '',
+              bceid_user_guid: details.guid,
+              bceid_username: details.userId,
+              bceid_type: details.type,
+              bceid_business_guid: details.businessGuid,
+              bceid_business_name: details.businessLegalName,
+            },
+          };
+
+          const targetBceidCustomUser = await targetAdminClient.users.create({
+            ...commonUserData,
+            realm: targetRealm,
+            username: `${baseBceidUserGuid}@bceid`,
+          });
+
+          await targetAdminClient.users.addToFederatedIdentity({
+            realm: targetRealm,
+            id: targetBceidCustomUser.id,
+            federatedIdentityId: 'bceid',
+            federatedIdentity: {
+              userId: `${baseBceidUserGuid}@bceid`,
+              userName: `${baseBceidUserGuid}@bceid`,
+              identityProvider: 'bceid',
+            },
+          });
+
+          console.log(`${logPrefix}${username} created`);
+        } catch (err) {
+          console.error(`${logPrefix}error with: ${username}`);
+          handleError(err);
+        }
+      }
+    }
+
+    console.log('Step 5: migrate missing GitHub users');
+
+    logPrefix = 'MIGRATE SILVER GITHUB TO GOLD CUSTOM: ';
+    const githubUsernames = userReport['not-found-github-parent'];
+
+    if (githubUsernames) {
+      for (let x = 0; x < githubUsernames.length; x++) {
+        const username = githubUsernames[x];
+        let baseUserDisplayName = '';
+        let baseUserGuid = '';
+        try {
+          const baseGithubUsers = await baseAdminClient.users.find({ realm: baseRealm, username, max: 1 });
+          if (baseGithubUsers.length === 0) {
+            log(`not found ${username}`);
+            continue;
+          }
+
+          const baseGithubUser = baseGithubUsers[0];
+
+          let { github_id: baseGithubUserGuid, display_name: baseGithubUserDisplayName } = await fetchGithubUserDetails(
+            username,
+          );
+
+          if (!baseGithubUserGuid) {
+            console.error(`${logPrefix}github_id not found for user ${username}`);
+            continue;
+          }
+
+          const commonGithubUserData = {
+            enabled: true,
+            email: baseGithubUser.email,
+            firstName: baseGithubUser.firstName,
+            lastName: baseGithubUser.lastName,
+            attributes: {
+              display_name:
+                (baseGithubUser.attributes &&
+                  baseGithubUser.attributes.displayName &&
+                  baseIdirUser.attributes.displayName[0]) ||
+                baseGithubUserDisplayName ||
+                '',
+              github_id: baseGithubUserGuid,
+              github_username: username,
+            },
+          };
+
+          const targetGithubCustomUser = await targetAdminClient.users.create({
+            ...commonGithubUserData,
+            realm: targetRealm,
+            username: `${baseGithubUserGuid}@github`,
+          });
+
+          await targetAdminClient.users.addToFederatedIdentity({
+            realm: targetRealm,
+            id: targetGithubCustomUser.id,
+            federatedIdentityId: 'github',
+            federatedIdentity: {
+              userId: `${baseGithubUserGuid}@github`,
+              userName: `${baseGithubUserGuid}@github`,
+              identityProvider: 'github',
+            },
+          });
+
+          console.log(`${logPrefix}${username} created`);
+        } catch (err) {
+          console.error(`${logPrefix}error with: ${username}`);
+          handleError(err);
+        }
+      }
+    }
   } catch (err) {
     handleError(err);
     process.exit(1);
   }
 }
 main();
+
+const fetchGithubUserDetails = async (username) => {
+  try {
+    const { id: github_id, name: display_name } = await axios
+      .get(`https://api.github.com/users/${username}`)
+      .then((res) => res.data);
+    return { github_id, display_name };
+  } catch {
+    return null;
+  }
+};
