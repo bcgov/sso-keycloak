@@ -6,6 +6,7 @@ const { argv } = require('yargs');
 const Confirm = require('prompt-confirm');
 const { getAdminClient } = require('../keycloak-core');
 const { handleError } = require('../helpers');
+const { fetchBceidUser } = require('./helpers/migrate-target-bceidboth-users');
 
 const { baseEnv, baseRealm, targetEnv, contextEnv, targetRealm, totp, auto } = argv;
 
@@ -18,12 +19,13 @@ const idpToRealmMap = {
 const idpToGuidKeyMap = {
   idir: 'idir_userid',
   bceid: 'bceid_userid',
+  github: 'github_id',
 };
 
 const suffixMap = {
   idir: 'idir',
-  bceid: 'bceidboth',
-  githu: 'github',
+  bceid: 'bceid',
+  github: 'github',
 };
 
 const fetchGithubId = async (username) => {
@@ -77,7 +79,7 @@ async function main() {
       let userList = await baseAdminClient.users.find({ realm: baseRealm, first: offset * i, max: offset * (i + 1) });
       allBaseUsers = allBaseUsers.concat(userList);
     }
-    console.log('Step 2: find the matching Gold standard users');
+    console.log('Step 2: find the matching parent realm users');
     let idpMap = {};
     let userReport = {};
     let validUserMeta = [];
@@ -107,16 +109,24 @@ async function main() {
         }
 
         const { identityProvider, userId } = links[0];
-        const parentRealmName = idpToRealmMap[identityProvider];
+
+        let realmIdpAlias = '';
+        for (let prop in idpToRealmMap) {
+          if (identityProvider.includes(prop)) {
+            realmIdpAlias = prop;
+          }
+        }
+        const parentRealmName = idpToRealmMap[realmIdpAlias];
         if (!parentRealmName) {
           userReport['invalid-idp'].push(buser.username);
           continue;
         }
 
         const parentUser = await baseAdminClient.users.findOne({ realm: parentRealmName, id: userId });
-        let buserGuid = _.get(parentUser, `attributes.${idpToGuidKeyMap[identityProvider]}.0`);
 
-        if (!buserGuid && identityProvider === 'github') {
+        let buserGuid = _.get(parentUser, `attributes.${idpToGuidKeyMap[realmIdpAlias]}.0`);
+
+        if (!buserGuid && realmIdpAlias === 'github') {
           buserGuid = await fetchGithubId(buser.username.split('@')[0]);
         }
 
@@ -125,18 +135,18 @@ async function main() {
           continue;
         }
 
-        if (!idpMap[identityProvider]) idpMap[identityProvider] = 0;
-        idpMap[identityProvider]++;
+        if (!idpMap[realmIdpAlias]) idpMap[realmIdpAlias] = 0;
+        idpMap[realmIdpAlias]++;
 
         let tusers = await targetAdminClient.users.find({
           realm: targetRealm,
-          username: `${buserGuid}@${suffixMap[identityProvider]}`,
+          username: `${buserGuid}@${suffixMap[realmIdpAlias]}`,
           exact: true,
         });
 
         if (tusers.length === 0) {
-          const key = `not-found-${identityProvider}`;
-          const keyParent = `not-found-${identityProvider}-parent`;
+          const key = `not-found-${realmIdpAlias}`;
+          const keyParent = `not-found-${realmIdpAlias}-parent`;
           if (!userReport[key]) userReport[key] = [];
           if (!userReport[keyParent]) userReport[keyParent] = [];
           userReport[key].push(buser.username);
@@ -236,8 +246,8 @@ async function main() {
           const baseBceidUserGuid = baseBceidUser.attributes.bceid_userid[0];
 
           const details =
-            (await fetchBceidUser({ accountType: 'Business', matchKey: baseBceidUserGuid, env })) ||
-            (await fetchBceidUser({ accountType: 'Individual', matchKey: baseBceidUserGuid, env }));
+            (await fetchBceidUser({ accountType: 'Business', matchKey: baseBceidUserGuid, contextEnv })) ||
+            (await fetchBceidUser({ accountType: 'Individual', matchKey: baseBceidUserGuid, contextEnv }));
 
           if (!details) {
             console.log(`${logPrefix}not found in bceid web service ${username}`);
