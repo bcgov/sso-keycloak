@@ -84,7 +84,7 @@ async function main() {
           userReport['no-idp'].push(baseUser.username);
           continue;
         }
-
+        // fetch idp name and user name registered at the idp
         const { identityProvider, userName: ghProviderUsername } = links[0];
 
         let baseUserIdp = '';
@@ -100,12 +100,15 @@ async function main() {
           continue;
         }
 
+        //fetch idir/bceid/github userid from user attributes
         let baseUserGuid = _.get(baseUser, `attributes.${idpGuidMap[baseUserIdp]}.0`, false);
 
+        //fetch idir/bceid/github displayName from user attributes
         let baseUserDisplayName = (baseUser?.attributes?.displayName && baseUser?.attributes?.displayName[0]) || '';
 
+        //if github_id is not found in user attributes
         if (!baseUserGuid && baseUserIdp === 'github') {
-          // get guid and display name from github API
+          // get github_id and display name from github API
           try {
             const ghSearchUsername = githubUsernameRegex.test(baseUser.username)
               ? baseUser.username
@@ -124,11 +127,12 @@ async function main() {
           baseUserDisplayName = ghuser.data.name;
         }
 
-        if (!baseUserGuid && baseUserIdp !== 'github') {
+        if (!baseUserGuid) {
           userReport['no-guid'].push(baseUser.username);
           continue;
         }
 
+        //idps need to exist in gold custom realm to migrate users
         if (!targetRealmIdpSuffix.some((suffix) => suffix.includes(baseUserIdp))) {
           console.error(
             `${logPrefix}cannot migrate ${baseUser.username} before ${baseUserIdp} idp is added to target realm`,
@@ -138,6 +142,7 @@ async function main() {
 
         let targetUsername = '';
 
+        //construnct username by idp (ex.: idir_user_guid@idir)
         if (baseUserIdp === 'bceid') {
           if (baseUser.attributes.bceid_business_guid && baseUser.attributes.bceid_business_guid[0] !== '') {
             if (targetRealmIdpSuffix.includes('bceidboth')) {
@@ -158,6 +163,7 @@ async function main() {
           targetUsername = `${baseUserGuid}@idir`;
         }
 
+        //check if user already exists in gold custom realm
         let targetUsers = await goldKcAdminClient.users.find({
           realm: targetRealm,
           username: targetUsername,
@@ -166,6 +172,7 @@ async function main() {
 
         let targetUser = {};
 
+        // if user does not exist already then create
         if (targetUsers.length === 0) {
           try {
             const commonUserData = {
@@ -207,6 +214,7 @@ async function main() {
                 },
               });
             }
+            //create linkage with the identity provider
             await goldKcAdminClient.users.addToFederatedIdentity({
               realm: targetRealm,
               id: targetUser.id,
