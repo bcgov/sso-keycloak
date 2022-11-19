@@ -6,19 +6,43 @@ const { argv } = require('yargs');
 const Confirm = require('prompt-confirm');
 const { getKeycloakAdminClient, getGitHubClient } = require('./util');
 const githubUsernameRegex = require('github-username-regex');
+const dotenv = require('dotenv');
 
-const { baseEnv, baseRealm, targetEnv, targetRealm, totp, auto } = argv;
+dotenv.config();
+
+const { baseEnv, baseRealm, targetEnv, targetRealm, totp, idirGuidAttrKey, bceidGuidAttrKey, githubIdAttrKey } = argv;
 
 // key value pairs to find guid for an idp. Update if required
-const idpGuidMap = { idir: 'idir_userid', bceid: 'bceid_userid', github: 'github_id' };
+const idpGuidKeyMap = {
+  azureidir: 'idir_userid',
+  idir: 'idir_userid',
+  bceidbasic: 'bceid_userid',
+  bceidbusiness: 'bceid_userid',
+  bceidboth: 'bceid_userid',
+  githubbcgov: 'github_id',
+  githubpublic: 'github_id',
+};
+
+const silvertoGoldIdpsMap = {
+  _azureidir: 'azureidir',
+  idir: 'idir',
+  _bceid: 'bceidboth',
+  _bceidbasic: 'bceidbasic',
+  _bceidbusiness: 'bceidbusiness',
+  _bceidbasicbusiness: 'bceidboth',
+};
 
 const logPrefix = 'MIGRATE SILVER CUSTOM TO GOLD CUSTOM: ';
+
+const baseRealmAliastoIdpMap = {};
+const targetRealmAliastoIdpMap = {};
+let ghClient = '';
 
 async function main() {
   if (!baseEnv || !baseRealm || !targetEnv || !targetRealm) {
     console.info(`
             Usage:
-              node migrations/custom-realm-users --base-env <env> --base-realm <realm> --target-env <env> --context-env <env> --target-realm <realm> [--totp <totp>] [--auto]
+              node migrations/custom-realm-users --base-env <env> --base-realm <realm> --target-env <env> --context-env <env> --target-realm <realm> [--totp <totp>]
 
             Flags:
               --base-env             Base Keycloak environment to migrate users from
@@ -26,34 +50,69 @@ async function main() {
               --target-env           Target Keycloak environment to migrate users to
               --target-realm         Target realm of the target Keycloak environment to migrate users to; Optional, default to 'standard'
               --totp                 Time-based One-time Password (TOTP) passed into the Keycloak auth call of the base environment; Optional
-              --auto                 Skips the confirmation before running the script
+              --idir-guid-attr-key   User attribute key that holds AzureIDIR/IDIR Guid; Optional
+              --bceid-guid-attr-key  User attribute key that holds BCeID Guid; Optional
+              --github-id-attr-key   User attribute key that holds GitHub Id; Optional
             `);
 
     return;
   }
 
   try {
-    const silverKcAdminClient = await getKeycloakAdminClient('silver', baseEnv, baseRealm, { totp });
+    if (idirGuidAttrKey) {
+      idpGuidKeyMap['idir'] = idirGuidAttrKey;
+      idpGuidKeyMap['azureidir'] = idirGuidAttrKey;
+    }
+
+    if (bceidGuidAttrKey) {
+      idpGuidKeyMap['bceidbasic'] = bceidGuidAttrKey;
+      idpGuidKeyMap['bceidbusiness'] = bceidGuidAttrKey;
+      idpGuidKeyMap['bceidboth'] = bceidGuidAttrKey;
+    }
+
+    if (githubIdAttrKey) {
+      idpGuidKeyMap['githubbcgov'] = githubIdAttrKey;
+      idpGuidKeyMap['githubpublic'] = githubIdAttrKey;
+    }
+
+    const silverKcAdminClient = await getKeycloakAdminClient('silver', baseEnv, 'master', { totp });
     const goldKcAdminClient = await getKeycloakAdminClient('gold', targetEnv, targetRealm, { totp });
     if (!silverKcAdminClient || !goldKcAdminClient) return;
 
-    const ghClient = getGitHubClient();
-    if (!ghClient) return;
+    const baseRealmIdps = await silverKcAdminClient.identityProviders.find({ realm: baseRealm });
+
+    baseRealmIdps.map((idp) => {
+      const urlPrefix = `https://${baseEnv === 'prod' ? '' : baseEnv + '.'}oidc.gov.bc.ca/auth/realms/`;
+      const urlSuffix = '/protocol/openid-connect/auth';
+      // only oidc and keycloak-oidc provider types are supported
+      if (['oidc', 'keycloak-oidc'].includes(idp.providerId) && idp.config.authorizationUrl.startsWith(urlPrefix)) {
+        const parentIdp = idp.config.authorizationUrl.substring(
+          urlPrefix.length,
+          idp.config.authorizationUrl.indexOf(urlSuffix),
+        );
+
+        baseRealmAliastoIdpMap[idp.alias] = parentIdp;
+      }
+    });
 
     const targetRealmIdps = await goldKcAdminClient.identityProviders.find();
 
-    const targetRealmIdpSuffixMap = {};
-
     targetRealmIdps.map((idp) => {
-      if (idp.providerId === 'oidc') {
+      // only oidc and keycloak-oidc provider types are supported
+      if (['oidc', 'keycloak-oidc'].includes(idp.providerId)) {
         let url = new URL(idp.config.authorizationUrl);
         if (url.searchParams.get('kc_idp_hint')) {
-          targetRealmIdpSuffixMap[url.searchParams.get('kc_idp_hint')] = idp.alias;
+          targetRealmAliastoIdpMap[idp.alias] = url.searchParams.get('kc_idp_hint');
         }
       }
     });
 
-    const targetRealmIdpSuffix = Object.keys(targetRealmIdpSuffixMap);
+    // if using github then add silver to gold github mapping
+    if (Object.values(targetRealmAliastoIdpMap).some((idp) => idp.startsWith('github'))) {
+      silvertoGoldIdpsMap['_github'] = Object.values(targetRealmAliastoIdpMap).find((idp) => idp.startsWith('github'));
+      ghClient = getGitHubClient();
+      if (!ghClient) return;
+    }
 
     userReport = {
       found: [],
@@ -84,30 +143,25 @@ async function main() {
           userReport['no-idp'].push(baseUser.username);
           continue;
         }
-        // fetch idp name and user name registered at the idp
+
         const { identityProvider, userName: ghProviderUsername } = links[0];
 
-        let baseUserIdp = '';
-
-        for (let prop in idpGuidMap) {
-          if (identityProvider.includes(prop)) {
-            baseUserIdp = prop;
-          }
-        }
-
-        if (baseUserIdp === '') {
+        if (!baseRealmAliastoIdpMap[identityProvider]) {
           userReport['invalid-idp'].push(baseUser.username);
           continue;
         }
 
-        //fetch idir/bceid/github userid from user attributes
-        let baseUserGuid = _.get(baseUser, `attributes.${idpGuidMap[baseUserIdp]}.0`, false);
+        const baseRealmUserParentIdp = baseRealmAliastoIdpMap[identityProvider];
+
+        const targetRealmUserParentIdp = silvertoGoldIdpsMap[baseRealmUserParentIdp];
+
+        let baseUserGuid = getBaseUserGuid(baseUser, targetRealmUserParentIdp);
 
         //fetch idir/bceid/github displayName from user attributes
-        let baseUserDisplayName = (baseUser?.attributes?.displayName && baseUser?.attributes?.displayName[0]) || '';
+        let baseUserDisplayName = getBaseUserDisplayName(baseUser);
 
         //if github_id is not found in user attributes
-        if (!baseUserGuid && baseUserIdp === 'github') {
+        if (!baseUserGuid && targetRealmUserParentIdp.startsWith('github')) {
           // get github_id and display name from github API
           try {
             const ghSearchUsername = githubUsernameRegex.test(baseUser.username)
@@ -133,35 +187,14 @@ async function main() {
         }
 
         //idps need to exist in gold custom realm to migrate users
-        if (!targetRealmIdpSuffix.some((suffix) => suffix.includes(baseUserIdp))) {
+        if (!Object.values(targetRealmAliastoIdpMap).some((idp) => idp.includes(targetRealmUserParentIdp))) {
           console.error(
             `${logPrefix}cannot migrate ${baseUser.username} before ${baseUserIdp} idp is added to target realm`,
           );
           continue;
         }
 
-        let targetUsername = '';
-
-        //construnct username by idp (ex.: idir_user_guid@idir)
-        if (baseUserIdp === 'bceid') {
-          if (baseUser.attributes.bceid_business_guid && baseUser.attributes.bceid_business_guid[0] !== '') {
-            if (targetRealmIdpSuffix.includes('bceidboth')) {
-              targetUsername = `${baseUserGuid}@bceidboth`;
-            } else if (targetRealmIdpSuffix.includes('bceidbusiness')) {
-              targetUsername = `${baseUserGuid}@bceidbusiness`;
-            }
-          } else {
-            if (targetRealmIdpSuffix.includes('bceidboth')) {
-              targetUsername = `${baseUserGuid}@bceidboth`;
-            } else if (targetRealmIdpSuffix.includes('bceidbasic')) {
-              targetUsername = `${baseUserGuid}@bceidbasic`;
-            }
-          }
-        } else if (baseUserIdp === 'github') {
-          targetUsername = `${baseUserGuid}@${targetRealmIdpSuffix.find((suffix) => suffix.includes('github'))}`;
-        } else if (baseUserIdp === 'idir') {
-          targetUsername = `${baseUserGuid}@idir`;
-        }
+        const targetUsername = `${baseUserGuid}@${targetRealmUserParentIdp}`;
 
         //check if user already exists in gold custom realm
         let targetUsers = await goldKcAdminClient.users.find({
@@ -172,7 +205,7 @@ async function main() {
 
         let targetUser = {};
 
-        // if user does not exist already then create
+        //if user does not exist already then create
         if (targetUsers.length === 0) {
           try {
             const commonUserData = {
@@ -183,51 +216,36 @@ async function main() {
               realm: targetRealm,
               username: targetUsername,
             };
-            if (baseUserIdp === 'idir') {
+            if (targetRealmUserParentIdp.startsWith('idir') || targetRealmUserParentIdp.startsWith('azureidir')) {
               targetUser = await goldKcAdminClient.users.create({
                 ...commonUserData,
-                attributes: {
-                  display_name: baseUserDisplayName,
-                  idir_user_guid: baseUserGuid,
-                  idir_username: baseUser.username,
-                },
+                attributes: getUserAttributesForIdir(baseUserGuid, baseUserDisplayName, baseUser),
               });
-            } else if (baseUserIdp === 'bceid') {
+            } else if (targetRealmUserParentIdp.startsWith('bceid')) {
               targetUser = await goldKcAdminClient.users.create({
                 ...commonUserData,
-                attributes: {
-                  display_name: baseUserDisplayName,
-                  bceid_user_guid: baseUserGuid,
-                  bceid_business_guid:
-                    (baseUser.attributes.bceid_business_guid && baseUser.attributes.bceid_business_guid[0]) || '',
-                  bceid_business_name:
-                    (baseUser.attributes.bceid_business_name && baseUser.attributes.bceid_business_name[0]) || '',
-                },
+                attributes: getUserAttributesForBceid(baseUserGuid, baseUserDisplayName, baseUser),
               });
-            } else if (baseUserIdp === 'github') {
+            } else if (targetRealmUserParentIdp.startsWith('github')) {
               targetUser = await goldKcAdminClient.users.create({
                 ...commonUserData,
-                attributes: {
-                  display_name: baseUserDisplayName,
-                  github_id: baseUserGuid,
-                  github_username: baseUser.username,
-                },
+                attributes: getUserAttributesForGithub(baseUserGuid, baseUserDisplayName, baseUser),
               });
             }
             //create linkage with the identity provider
             await goldKcAdminClient.users.addToFederatedIdentity({
               realm: targetRealm,
               id: targetUser.id,
-              federatedIdentityId: targetRealmIdpSuffixMap[targetUsername.split('@')[1]],
+              federatedIdentityId: getObjKey(targetRealmAliastoIdpMap, targetRealmUserParentIdp),
               federatedIdentity: {
                 userId: targetUsername,
                 userName: targetUsername,
-                identityProvider: targetRealmIdpSuffixMap[targetUsername.split('@')[1]],
+                identityProvider: getObjKey(targetRealmAliastoIdpMap, targetRealmUserParentIdp),
               },
             });
             userReport['migrated'].push(baseUser.username);
           } catch (err) {
-            console.log(`${logPrefix}${targetUsername} migration failed`);
+            console.log(`${logPrefix}${targetUsername} migration failed`, err.response.data);
           }
         } else {
           userReport['found'].push(baseUser.username);
@@ -243,3 +261,42 @@ async function main() {
 }
 
 main();
+
+//returns user guid, please modify accordingly if required
+const getBaseUserGuid = (baseUser, targetRealmParentIdp) => {
+  return _.get(baseUser, `attributes.${idpGuidKeyMap[targetRealmParentIdp]}.0`, false);
+};
+
+//returns user display, please modify accordingly if required
+const getBaseUserDisplayName = (baseUser) => {
+  return (baseUser?.attributes?.displayName && baseUser?.attributes?.displayName[0]) || '';
+};
+
+const getObjKey = (obj, value) => {
+  return Object.keys(obj).find((key) => obj[key] === value);
+};
+
+const getUserAttributesForIdir = (guid, name, user) => {
+  return {
+    display_name: name,
+    idir_user_guid: guid,
+    idir_username: user.username,
+  };
+};
+
+const getUserAttributesForBceid = (guid, name, user) => {
+  return {
+    display_name: name,
+    bceid_user_guid: guid,
+    bceid_business_guid: (user.attributes.bceid_business_guid && user.attributes.bceid_business_guid[0]) || '',
+    bceid_business_name: (user.attributes.bceid_business_name && user.attributes.bceid_business_name[0]) || '',
+  };
+};
+
+const getUserAttributesForGithub = (guid, name, user) => {
+  return {
+    display_name: name,
+    github_id: guid,
+    github_username: user.username,
+  };
+};
