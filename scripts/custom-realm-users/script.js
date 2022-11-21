@@ -125,7 +125,7 @@ async function main() {
     });
 
     // fetch github client if github users need to be migrated
-    if (baseRealmAliastoIdpMap['github']) {
+    if (Object.values(baseRealmAliastoIdpMap).includes('_github')) {
       ghClient = getGitHubClient();
       if (!ghClient) return;
     }
