@@ -23,6 +23,7 @@ const idpGuidKeyMap = {
   githubpublic: 'github_id',
 };
 
+// silver parent realm idp to gold parent realm idp mapping
 const silvertoGoldIdpsMap = {
   _azureidir: 'azureidir',
   idir: 'idir',
@@ -45,20 +46,20 @@ async function main() {
               node migrations/custom-realm-users --base-env <env> --base-realm <realm> --target-env <env> --context-env <env> --target-realm <realm> [--totp <totp>]
 
             Flags:
-              --base-env             Base Keycloak environment to migrate users from
+              --base-env             Base Keycloak environment to migrate users from. Available values: (dev, test, prod)
               --base-realm           Base realm of the base Keycloak environment to migrate users from
-              --target-env           Target Keycloak environment to migrate users to
+              --target-env           Target Keycloak environment to migrate users to. Available values: (dev, test, prod)
               --target-realm         Target realm of the target Keycloak environment to migrate users to; Optional, default to 'standard'
               --totp                 Time-based One-time Password (TOTP) passed into the Keycloak auth call of the base environment; Optional
               --idir-guid-attr-key   User attribute key that holds AzureIDIR/IDIR Guid; Optional
               --bceid-guid-attr-key  User attribute key that holds BCeID Guid; Optional
               --github-id-attr-key   User attribute key that holds GitHub Id; Optional
             `);
-
     return;
   }
 
   try {
+    // custom attribute keys that hold user guid
     if (idirGuidAttrKey) {
       idpGuidKeyMap['idir'] = idirGuidAttrKey;
       idpGuidKeyMap['azureidir'] = idirGuidAttrKey;
@@ -75,12 +76,15 @@ async function main() {
       idpGuidKeyMap['githubpublic'] = githubIdAttrKey;
     }
 
-    const silverKcAdminClient = await getKeycloakAdminClient('silver', baseEnv, 'master', { totp });
+    // fetch keycloak admin clients
+    const silverKcAdminClient = await getKeycloakAdminClient('silver', baseEnv, baseRealm, { totp });
     const goldKcAdminClient = await getKeycloakAdminClient('gold', targetEnv, targetRealm, { totp });
     if (!silverKcAdminClient || !goldKcAdminClient) return;
 
+    // find all idps from base realm
     const baseRealmIdps = await silverKcAdminClient.identityProviders.find({ realm: baseRealm });
 
+    // create a mapping between base realm idp alias and parent idp
     baseRealmIdps.map((idp) => {
       const urlPrefix = `https://${baseEnv === 'prod' ? '' : baseEnv + '.'}oidc.gov.bc.ca/auth/realms/`;
       const urlSuffix = '/protocol/openid-connect/auth';
@@ -95,11 +99,16 @@ async function main() {
       }
     });
 
+    // find all idps from target realm
     const targetRealmIdps = await goldKcAdminClient.identityProviders.find();
 
+    // create a mapping between target realm idp alias and parent idp
     targetRealmIdps.map((idp) => {
+      const urlPrefix = `https://${
+        targetEnv === 'prod' ? '' : targetEnv + '.'
+      }loginproxy.gov.bc.ca/auth/realms/standard/protocol/openid-connect/auth?kc_idp_hint=`;
       // only oidc and keycloak-oidc provider types are supported
-      if (['oidc', 'keycloak-oidc'].includes(idp.providerId)) {
+      if (['oidc', 'keycloak-oidc'].includes(idp.providerId) && idp.config.authorizationUrl.startsWith(urlPrefix)) {
         let url = new URL(idp.config.authorizationUrl);
         if (url.searchParams.get('kc_idp_hint')) {
           targetRealmAliastoIdpMap[idp.alias] = url.searchParams.get('kc_idp_hint');
@@ -107,11 +116,15 @@ async function main() {
       }
     });
 
-    // if using github then add silver to gold github mapping
-    if (Object.values(targetRealmAliastoIdpMap).some((idp) => idp.startsWith('github'))) {
-      silvertoGoldIdpsMap['_github'] = Object.values(targetRealmAliastoIdpMap).find((idp) => idp.startsWith('github'));
+    // fetch github client if github users need to be migrated
+    if (baseRealmAliastoIdpMap['github']) {
       ghClient = getGitHubClient();
       if (!ghClient) return;
+    }
+
+    // if using github then add base realm parent github idp to target realm parent github idp mapping
+    if (Object.values(targetRealmAliastoIdpMap).some((idp) => idp.startsWith('github'))) {
+      silvertoGoldIdpsMap['_github'] = Object.values(targetRealmAliastoIdpMap).find((idp) => idp.startsWith('github'));
     }
 
     userReport = {

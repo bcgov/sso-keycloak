@@ -64,6 +64,7 @@ async function getKeycloakAdminClient(ocpCluster = 'silver', environment = 'dev'
 }
 
 const getGitHubClient = () => {
+  if (!process.env.GITHUB_PAT) throw Error('Github PAT required to create github client');
   return new Octokit({ auth: process.env.GITHUB_PAT });
 };
 
