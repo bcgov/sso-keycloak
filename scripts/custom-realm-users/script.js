@@ -49,11 +49,11 @@ async function main() {
               --base-env             Base Keycloak environment to migrate users from. Available values: (dev, test, prod)
               --base-realm           Base realm of the base Keycloak environment to migrate users from
               --target-env           Target Keycloak environment to migrate users to. Available values: (dev, test, prod)
-              --target-realm         Target realm of the target Keycloak environment to migrate users to; Optional, default to 'standard'
+              --target-realm         Target realm of the target Keycloak environment to migrate users to
               --totp                 Time-based One-time Password (TOTP) passed into the Keycloak auth call of the base environment; Optional
-              --idir-guid-attr-key   User attribute key that holds AzureIDIR/IDIR Guid; Optional
-              --bceid-guid-attr-key  User attribute key that holds BCeID Guid; Optional
-              --github-id-attr-key   User attribute key that holds GitHub Id; Optional
+              --idir-guid-attr-key   User attribute key that holds AzureIDIR/IDIR Guid; optional, default to idir_userid
+              --bceid-guid-attr-key  User attribute key that holds BCeID Guid; optional, default to bceid_userid
+              --github-id-attr-key   User attribute key that holds GitHub Id; optional, default to github_id
             `);
     return;
   }
