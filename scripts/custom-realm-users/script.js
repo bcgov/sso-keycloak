@@ -38,9 +38,17 @@ const logPrefix = 'MIGRATE SILVER CUSTOM TO GOLD CUSTOM: ';
 const baseRealmAliastoIdpMap = {};
 const targetRealmAliastoIdpMap = {};
 let ghClient = '';
+const supportedEnvs = ['dev', 'test', 'prod'];
 
 async function main() {
-  if (!baseEnv || !baseRealm || !targetEnv || !targetRealm) {
+  if (
+    !baseEnv ||
+    !baseRealm ||
+    !targetEnv ||
+    !targetRealm ||
+    !supportedEnvs.includes(baseEnv) ||
+    !supportedEnvs.includes(targetEnv)
+  ) {
     console.info(`
             Usage:
               node migrations/custom-realm-users --base-env <env> --base-realm <realm> --target-env <env> --context-env <env> --target-realm <realm> [--totp <totp>]
@@ -276,11 +284,13 @@ async function main() {
 main();
 
 //returns user guid, please modify accordingly if required
+//by default it uses idp specific user attribute to fetch the guid
 const getBaseUserGuid = (baseUser, targetRealmParentIdp) => {
   return _.get(baseUser, `attributes.${idpGuidKeyMap[targetRealmParentIdp]}.0`, false);
 };
 
 //returns user display, please modify accordingly if required
+//by default it uses idp specific user attribute to fetch the displayName
 const getBaseUserDisplayName = (baseUser) => {
   return (baseUser?.attributes?.displayName && baseUser?.attributes?.displayName[0]) || '';
 };
