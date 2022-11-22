@@ -43,13 +43,16 @@ const parseAccount = (data) => {
   const displayName = _.get(data, 'displayName.0.value.0');
   const type = _.get(data, 'type.0.code.0');
   const email = _.get(data, 'contact.0.email.0.value.0');
+  const telephone = _.get(data, 'contact.0.telephone.0.value.0');
+  const firstName = _.get(data, 'individualIdentity.0.name.0.firstname.0.value.0');
+  const lastName = _.get(data, 'individualIdentity.0.name.0.surname.0.value.0');
   const businessGuid = _.get(data, 'business.0.guid.0.value.0');
   const businessLegalName = _.get(data, 'business.0.legalName.0.value.0');
 
-  return { guid, userId, displayName, type, email, businessGuid, businessLegalName };
+  return { guid, userId, displayName, type, email, telephone, firstName, lastName, businessGuid, businessLegalName };
 };
 
-const fetchBceidUser = async ({ accountType = 'Business', matchKey = '', env = 'dev' }) => {
+const fetchBceidUser = async ({ accountType = 'Business', property = 'userGuid', matchKey = '', env = 'dev' }) => {
   let serviceUrl = '';
   let serviceId = '';
   if (env === 'dev') {
@@ -63,7 +66,7 @@ const fetchBceidUser = async ({ accountType = 'Business', matchKey = '', env = '
     serviceId = process.env.BCEID_SERVICE_ID_PROD;
   }
 
-  const xml = generateXML({ accountType, matchKey, serviceId });
+  const xml = generateXML({ accountType, property, matchKey, serviceId });
 
   try {
     const { response } = await soapRequest({

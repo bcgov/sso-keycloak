@@ -9,7 +9,7 @@
                     <#list social.providers as p>
                         <li class="kc-social-link">
                             <a id="social-${p.alias}" class="bcgov-primary mb-2" type="button" href="${p.loginUrl}">
-                                <span class="${properties.kcFormSocialAccountNameClass!}">${p.displayName!}</span>
+                                <span class="kc-social-title ${properties.kcFormSocialAccountNameClass!}">${p.displayName!}</span>
                             </a>
                         </li>
                     </#list>
