@@ -10,12 +10,7 @@
 
 **Note**: The below secrets are used by `siteminder-tests.yml` workflow to run the tests. Make sure these secrets are available as github action secrets before running the github action. These secrets are also stored under a secret `siteminder-tests` at `eb75ad-tools` namespace of gold cluster
 
-- `SITEMINDER_TESTS_DATACENTERS` stores a json payload in below format
-
-  ```json
-  {\"<ENVIRONMENT>\":{\"datacenters\":[{\"name\":\"<DATACENTER>\",\"ip\":\"<DATACENTER-IP>\"},{\"name\":\"<DATACENTER>\",\"ip\":\"<DATACENTER-IP>\"}],\"hostname\":\"<HOSTNAME>\"}}
-  ```
-
+- `SITEMINDER_TESTS_DATACENTERS_HOST_ENTRY` stores datacenter specific hostname and ip address
 - `SITEMINDER_TESTS_ENV` stores all the key-value pairs from `.env.example`
 
 ### Tools
