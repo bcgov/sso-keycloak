@@ -120,6 +120,7 @@ async function getAdminClient(env = 'dev', { totp = '' } = {}) {
 
     kcAdminClient.reauth = auth;
     kcAdminClient.refreshAsNeeded = refreshAsNeeded;
+    kcAdminClient.url = config.url;
 
     await auth();
     return kcAdminClient;
