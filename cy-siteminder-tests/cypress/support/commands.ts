@@ -64,13 +64,22 @@ Cypress.Commands.add(
       const cleanSamlResponse = entries.SAMLResponse.replace(/(\r\n|\n|\r)/gm, '')
       const decodedXML = decodeBase64(cleanSamlResponse)
       const jsonResult = await parseStringSync(decodedXML)
-      const assertion = _.get(jsonResult, 'Response.ns2:Assertion.0')
+      const assertion = _.get(jsonResult, 'ns5:Response.ns2:Assertion.0')
+      const getAttributea = (data: any) => ({})
 
-      const getAttribute = (data: any) => ({
-        [_.get(data, '$.Name')]: _.get(data, 'ns2:AttributeValue.0'),
-      })
+      const getAttribute = (data: any) => {
+        let val
+        if (typeof _.get(data, 'ns2:AttributeValue.0') === 'object') {
+          val = Object.values(_.get(data, 'ns2:AttributeValue.0'))[0]
+        } else {
+          val = _.get(data, 'ns2:AttributeValue.0')
+        }
+        return {
+          [_.get(data, '$.Name')]: val,
+        }
+      }
       const statements = _.get(assertion, 'ns2:AttributeStatement.0.ns2:Attribute')
-
+      cy.log(JSON.stringify(statements))
       const attributes = _.reduce(
         statements,
         (ret: any, data: any) => ({ ...ret, ...getAttribute(data) }),
@@ -102,7 +111,6 @@ const decodeBase64 = (data: any) => {
 
 const updateSiteminderVals = (attributes: any) => {
   const result: any = {}
-
   result.guid = attributes['useridentifier'] ?? attributes['SMGOV_USERGUID'] ?? ''
   result.username = attributes['username']
   result.email = attributes['email']
@@ -115,5 +123,6 @@ const updateSiteminderVals = (attributes: any) => {
   result.lastname = attributes['lastname'] ?? ''
   result.business_guid = attributes['SMGOV_BUSINESSGUID'] ?? ''
   result.business_legalname = attributes['SMGOV_BUSINESSLEGALNAME'] ?? ''
+  cy.log(JSON.stringify(result))
   return result
 }
