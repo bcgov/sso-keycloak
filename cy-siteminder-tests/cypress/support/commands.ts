@@ -64,7 +64,12 @@ Cypress.Commands.add(
       const cleanSamlResponse = entries.SAMLResponse.replace(/(\r\n|\n|\r)/gm, '')
       const decodedXML = decodeBase64(cleanSamlResponse)
       const jsonResult = await parseStringSync(decodedXML)
-      const assertion = _.get(jsonResult, 'ns5:Response.ns2:Assertion.0')
+      let assertion
+      if (_.get(jsonResult, 'Response.ns2:Assertion.0')) {
+        assertion = _.get(jsonResult, 'Response.ns2:Assertion.0')
+      } else {
+        assertion = _.get(jsonResult, 'ns5:Response.ns2:Assertion.0')
+      }
       const getAttributea = (data: any) => ({})
 
       const getAttribute = (data: any) => {
