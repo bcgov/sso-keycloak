@@ -79,7 +79,6 @@ Cypress.Commands.add(
         }
       }
       const statements = _.get(assertion, 'ns2:AttributeStatement.0.ns2:Attribute')
-      cy.log(JSON.stringify(statements))
       const attributes = _.reduce(
         statements,
         (ret: any, data: any) => ({ ...ret, ...getAttribute(data) }),
@@ -123,6 +122,5 @@ const updateSiteminderVals = (attributes: any) => {
   result.lastname = attributes['lastname'] ?? ''
   result.business_guid = attributes['SMGOV_BUSINESSGUID'] ?? ''
   result.business_legalname = attributes['SMGOV_BUSINESSLEGALNAME'] ?? ''
-  cy.log(JSON.stringify(result))
   return result
 }
