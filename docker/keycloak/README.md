@@ -87,11 +87,18 @@ The `configuration` directory contains the pre-defined Keycloak configuration to
 
   1. `IDP Userinfo Mapper`: it inserts the userinfo data, retrieved by the IDP's userinfo endpoint, into the tokens.
 
-- there is one custom `SAML` protocol mapper
+- there are two custom `SAML` protocol mappers
 
   1. `Client Role Mapper`: it includes the client-level roles of the authenticated user into the tokens.
+
      - config `Role attribute name`: the name of the SAML attribute you want to put your roles into. i.e. 'Role', 'memberOf'.
      - see [`ClientRoleListMapper.java`](./extensions-7.6/services/src/main/java/com/github/bcgov/keycloak/protocol/saml/mappers/ClientRoleListMapper.java)
+
+  1. `Omit Statement Attributes By IDPs`: it removes the target SAML satement attributes by the maching IDP aliases; it has two configurations.
+
+     - config `Identity Provider Aliases`: a comma-separated list of the target IDP aliases; if not specified, the mapper will be always applied.
+     - config `Statement Attribute Names`: a comma-separated list of the target statement attribute names
+     - see [`StatementAttributeOmitterMapper.java`](./extensions-7.6/services/src/main/java/com/github/bcgov/keycloak/protocol/saml/mappers/StatementAttributeOmitterMapper.java)
 
 ### Endpoints
 
