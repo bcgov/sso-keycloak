@@ -3,7 +3,7 @@
     <#if section = "header">
         ${msg("loginAccountTitle")}
     <#elseif section = "socialProviders">
-        <#if social.providers??>
+        <#if social.providers?? && (login.username)??>
             <div id="kc-social-providers" class="${properties.kcFormSocialAccountSectionClass!}">
                 <ul class="kc-social-links">
                     <#assign idpContext = login.username?eval_json>
