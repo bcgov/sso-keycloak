@@ -1,4 +1,4 @@
-<#macro registrationLayout bodyClass="" displayInfo=false displayMessage=true displayRequiredFields=false>
+<#macro registrationLayout bodyClass="" displayInfo=false displayMessage=true displayRequiredFields=false displayHeaderTitle=true>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" class="${properties.kcHtmlClass!}">
 
@@ -47,7 +47,9 @@
 <header>
   <div class="banner">
     <span></span>
+    <#if displayHeaderTitle>
       <h1>Pathfinder SSO</h1>
+    </#if>
   </div>
   <div class="other">&nbsp;</div>
 </header>
