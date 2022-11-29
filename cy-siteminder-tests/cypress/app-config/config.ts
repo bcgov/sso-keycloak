@@ -12,11 +12,11 @@ export const fetchSsoUrl = (provider: string) => {
   let realm = Cypress.env(`${cluster}_${provider}_REALM`)
   if (cluster === 'SILVER') {
     return `https://${
-      Cypress.env('ENVIRONMENT') === 'prod' ? '' : Cypress.env('ENVIRONMENT') + '.'
+      environment === 'PROD' ? '' : environment.toLowerCase() + '.'
     }oidc.gov.bc.ca/auth/admin/${realm}/console/`
   } else {
     return `https://${
-      Cypress.env('ENVIRONMENT') === 'prod' ? '' : Cypress.env('ENVIRONMENT') + '.'
+      environment === 'PROD' ? '' : environment.toLowerCase() + '.'
     }loginproxy.gov.bc.ca/auth/admin/${realm}/console/`
   }
 }
