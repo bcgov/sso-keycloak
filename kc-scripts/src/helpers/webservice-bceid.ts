@@ -2,29 +2,27 @@ import { promisify } from 'util';
 import _ from 'lodash';
 import soapRequest from 'easy-soap-request';
 import { parseString } from 'xml2js';
-import {
-  BCEID_SERVICE_BASIC_AUTH,
-  BCEID_REQUESTER_IDIR_GUID,
-  BCEID_SERVICE_ID_DEV,
-  BCEID_SERVICE_ID_TEST,
-  BCEID_SERVICE_ID_PROD,
-} from 'config';
+import { getWebServiceInfo } from './webservice-core';
 
 const parseStringSync = promisify(parseString);
 const logPrefix = 'BCeID: ';
 const log = (msg: string) => console.log(`${logPrefix}${msg}`);
 
-const defaultHeaders = {
-  'Content-Type': 'text/xml;charset=UTF-8',
-  authorization: `Basic ${BCEID_SERVICE_BASIC_AUTH}`,
-};
+type Property = 'userId' | 'userGuid';
+type AccountType = 'Business' | 'Individual';
 
 const generateXML = ({
   property = 'userGuid',
   accountType = 'Business',
   matchKey = '',
   serviceId = '',
-  idirUserGuid = BCEID_REQUESTER_IDIR_GUID,
+  requesterIdirGuid = '',
+}: {
+  property: Property;
+  accountType: AccountType;
+  matchKey: string;
+  serviceId: string;
+  requesterIdirGuid?: string;
 }) => `<?xml version="1.0" encoding="UTF-8"?>
 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
  <soapenv:Header/>
@@ -33,7 +31,7 @@ const generateXML = ({
        <accountDetailRequest>
           <onlineServiceId>${serviceId}</onlineServiceId>
           <requesterAccountTypeCode>Internal</requesterAccountTypeCode>
-          <requesterUserGuid>${idirUserGuid}</requesterUserGuid>
+          <requesterUserGuid>${requesterIdirGuid}</requesterUserGuid>
           <${property}>${matchKey}</${property}>
           <accountTypeCode>${accountType}</accountTypeCode>
        </accountDetailRequest>
@@ -57,25 +55,20 @@ const parseAccount = (data: any) => {
 };
 
 export async function fetchBceidUser({ accountType = 'Business', property = 'userGuid', matchKey = '', env = 'dev' }) {
-  let serviceUrl = '';
-  let serviceId = '';
-  if (env === 'dev') {
-    serviceUrl = 'https://gws2.development.bceid.ca';
-    serviceId = BCEID_SERVICE_ID_DEV || '';
-  } else if (env === 'test') {
-    serviceUrl = 'https://gws2.test.bceid.ca';
-    serviceId = BCEID_SERVICE_ID_TEST || '';
-  } else if (env === 'prod') {
-    serviceUrl = 'https://gws2.bceid.ca';
-    serviceId = BCEID_SERVICE_ID_PROD || '';
-  }
+  const { requestHeaders, requesterIdirGuid, serviceUrl, serviceId } = getWebServiceInfo({ env });
 
-  const xml = generateXML({ accountType, property, matchKey, serviceId });
+  const xml = generateXML({
+    accountType: accountType as AccountType,
+    property: property as Property,
+    matchKey,
+    serviceId,
+    requesterIdirGuid,
+  });
 
   try {
     const { response } = await soapRequest({
       url: `${serviceUrl}/webservices/client/V10/BCeIDService.asmx?WSDL`,
-      headers: defaultHeaders,
+      headers: requestHeaders,
       xml,
       timeout: 1000,
     });
