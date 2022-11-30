@@ -10,7 +10,8 @@ const migrateSilverIdirToGoldStandard = async (baseAdminClient, targetAdminClien
     const username = idirUsernames[x];
 
     try {
-      const baseIdirUsers = await baseAdminClient.users.find({ realm: 'idir', username, max: 1 });
+      let baseIdirUsers = await baseAdminClient.users.find({ realm: 'idir', username, exact: true });
+      baseIdirUsers = baseIdirUsers.filter((v) => v.username === username);
       if (baseIdirUsers.length === 0) {
         console.log(`${logPrefix}not found ${username}`);
         continue;

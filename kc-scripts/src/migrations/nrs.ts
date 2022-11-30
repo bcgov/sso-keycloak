@@ -34,19 +34,19 @@ const { baseEnv, baseRealm, targetEnv, targetRealm, targetClient, contextEnv, to
 
 if (!baseEnv || !baseRealm || !targetEnv || !targetClient || !contextEnv) {
   console.info(`
-  Usage:
-    yarn script migrations/nrs --base-env <env> --base-realm <realm> --target-env <env> --context-env <env> --target-client <client> [--target-realm <realm>] [--totp <totp>] [--auto]
+Usage:
+  yarn script migrations/nrs --base-env <env> --base-realm <realm> --target-env <env> --context-env <env> --target-client <client> [--target-realm <realm>] [--totp <totp>] [--auto]
 
-  Flags:
-    --base-env             Base Keycloak environment to migrate users from
-    --base-realm           Base realm of the base Keycloak environment to migrate users from
-    --target-env           Target Keycloak environment to migrate users to
-    --target-realm         Target realm of the target Keycloak environment to migrate users to; Optional, default to 'standard'
-    --context-env          Contextual Keycloak environment; used to fetch BCeID users from BCeID web service
-    --target-client        Target client of the target realm to migrate users with the associated client roles.
-    --totp                 Time-based One-time Password (TOTP) passed into the Keycloak auth call of the base environment; Optional
-    --auto                 Skips the confirmation before running the script
-  `);
+Flags:
+  --base-env             Base Keycloak environment to migrate users from
+  --base-realm           Base realm of the base Keycloak environment to migrate users from
+  --target-env           Target Keycloak environment to migrate users to
+  --target-realm         Target realm of the target Keycloak environment to migrate users to; Optional, default to 'standard'
+  --context-env          Contextual Keycloak environment; used to fetch BCeID users from BCeID web service
+  --target-client        Target client of the target realm to migrate users with the associated client roles.
+  --totp                 Time-based One-time Password (TOTP) passed into the Keycloak auth call of the base environment; Optional
+  --auto                 Skips the confirmation before running the script
+`);
 
   process.exit(1);
 }

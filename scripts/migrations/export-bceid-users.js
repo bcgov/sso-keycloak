@@ -37,6 +37,7 @@ const fetchData = async (adminClient, csvStream, user) => {
   csvStream.write({
     realm_username: username,
     status: 'found',
+    email: details.email,
     display_name: details.displayName,
     bceid_user_guid: details.guid,
     bceid_username: details.userId,

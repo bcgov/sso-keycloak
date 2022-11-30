@@ -105,7 +105,8 @@ const migrateSilverBceidBothToGoldStandard = async (baseAdminClient, targetAdmin
     const username = bceidUsernames[x];
 
     try {
-      const baseUsers = await baseAdminClient.users.find({ realm: '_bceid', username, max: 1 });
+      let baseUsers = await baseAdminClient.users.find({ realm: '_bceid', username, exact: true });
+      baseUsers = baseUsers.filter((v) => v.username === username);
       if (baseUsers.length === 0) {
         log(`not found ${username}`);
         continue;
@@ -130,11 +131,11 @@ const migrateSilverBceidBothToGoldStandard = async (baseAdminClient, targetAdmin
 
       const commonUserData = {
         enabled: true,
-        email: baseUser.email,
+        email: details.email,
         firstName: '',
         lastName: '',
         attributes: {
-          display_name: (baseUser.attributes.displayName && baseUser.attributes.displayName[0]) || '',
+          display_name: details.displayName,
           bceid_user_guid: details.guid,
           bceid_username: details.userId,
           bceid_type: details.type,
