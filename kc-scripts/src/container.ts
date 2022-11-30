@@ -13,6 +13,7 @@ export const handleError = (error: any) => {
 
 interface EnvMeta {
   env: string;
+  totp?: string;
   allowed?: string[];
   auto?: boolean;
 }
@@ -51,7 +52,7 @@ export function createContainer(arg1: boolean | string | EnvMeta, arg2?: string 
         }
 
         confirmClient1 = arg1.auto !== true;
-        adminClient1 = await getAdminClient(arg1.env as Env);
+        adminClient1 = await getAdminClient(arg1.env as Env, { totp: arg1.totp });
       }
 
       if (!_.isNil(arg2)) {

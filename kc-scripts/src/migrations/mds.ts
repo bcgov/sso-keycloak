@@ -22,7 +22,7 @@ const basePath = path.join(__dirname, 'exports');
 const argv = yargs(process.argv.slice(2))
   .options({
     baseEnv: { type: 'string', default: '' },
-    baseRealm: { type: 'string', default: 'gwells' },
+    baseRealm: { type: 'string', default: 'mds' },
     targetEnv: { type: 'string', default: '' },
     targetRealm: { type: 'string', default: 'standard' },
     targetClient: { type: 'string', default: '' },
@@ -37,7 +37,7 @@ const { baseEnv, baseRealm, targetEnv, targetRealm, targetClient, contextEnv, to
 if (!baseEnv || !baseRealm || !targetEnv || !targetClient || !contextEnv) {
   console.info(`
 Usage:
-  yarn script migrations/nrs --base-env <env> --base-realm <realm> --target-env <env> --context-env <env> --target-client <client> [--target-realm <realm>] [--totp <totp>] [--auto]
+  yarn script migrations/mds --base-env <env> --base-realm <realm> --target-env <env> --context-env <env> --target-client <client> [--target-realm <realm>] [--totp <totp>] [--auto]
 
 Flags:
   --base-env             Base Keycloak environment to migrate users from
@@ -81,7 +81,12 @@ container(async (baseAdminClient?: KeycloakAdminClient, targetAdminClient?: Keyc
   const clientId = clients[0].id as string;
 
   console.log('Step 1: build the role associations');
-  const masterRoleMappings = await buildRoleMappings(baseAdminClient, { realm: baseRealm, excludes: rolesToExclude });
+  const roleMappings = await Promise.all([
+    buildGroupMappings(baseAdminClient, { realm: baseRealm, excludes: rolesToExclude }),
+    buildRoleMappings(baseAdminClient, { realm: baseRealm, excludes: rolesToExclude }),
+  ]);
+
+  const masterRoleMappings = _.flatten(roleMappings);
 
   console.log('Step 2: collect the base user & role mappings');
   const baseUserRolesMap = await buildUserRolesMap(baseAdminClient, {
@@ -144,7 +149,7 @@ container(async (baseAdminClient?: KeycloakAdminClient, targetAdminClient?: Keyc
 
   if (!fs.existsSync(basePath)) fs.mkdirSync(basePath);
   fs.writeFileSync(
-    path.resolve(basePath, `nrs-${baseEnv}-${new Date().getTime()}.json`),
+    path.resolve(basePath, `mds-${baseEnv}-${new Date().getTime()}.json`),
     JSON.stringify({ masterRoleMappings, userReport }, null, 2),
   );
 });

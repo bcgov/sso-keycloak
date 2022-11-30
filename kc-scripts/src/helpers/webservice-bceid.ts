@@ -6,7 +6,6 @@ import { getWebServiceInfo } from './webservice-core';
 
 const parseStringSync = promisify(parseString);
 const logPrefix = 'BCeID: ';
-const log = (msg: string) => console.log(`${logPrefix}${msg}`);
 
 type Property = 'userId' | 'userGuid';
 type AccountType = 'Business' | 'Individual';
@@ -54,7 +53,13 @@ const parseAccount = (data: any) => {
   return { guid, userId, displayName, type, email, telephone, firstName, lastName, businessGuid, businessLegalName };
 };
 
-export async function fetchBceidUser({ accountType = 'Business', property = 'userGuid', matchKey = '', env = 'dev' }) {
+export async function fetchBceidUser({
+  accountType = 'Business',
+  property = 'userGuid',
+  matchKey = '',
+  env = 'dev',
+  logging = (msg: string) => console.log(`${logPrefix}${msg}`),
+}) {
   const { requestHeaders, requesterIdirGuid, serviceUrl, serviceId } = getWebServiceInfo({ env });
 
   const xml = generateXML({
@@ -70,7 +75,7 @@ export async function fetchBceidUser({ accountType = 'Business', property = 'use
       url: `${serviceUrl}/webservices/client/V10/BCeIDService.asmx?WSDL`,
       headers: requestHeaders,
       xml,
-      timeout: 1000,
+      timeout: 5000,
     });
 
     const { headers, body, statusCode } = response;
@@ -82,7 +87,7 @@ export async function fetchBceidUser({ accountType = 'Business', property = 'use
     if (status === 'Failed') {
       const failureCode = _.get(data, 'failureCode.0');
       const message = _.get(data, 'message.0');
-      log(`${failureCode}: ${message}`);
+      logging(`${failureCode}: ${message}`);
       return null;
     }
 
@@ -90,7 +95,7 @@ export async function fetchBceidUser({ accountType = 'Business', property = 'use
     const parsed = parseAccount(account);
     return parsed;
   } catch (error) {
-    log(String(error));
+    logging(String(error));
     return null;
   }
 }
