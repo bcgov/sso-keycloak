@@ -5,7 +5,7 @@ import * as csv from '@fast-csv/format';
 import yargs from 'yargs/yargs';
 import { createContainer } from 'container';
 import KeycloakAdminClient from '@keycloak/keycloak-admin-client';
-import { fetchBceidUser } from 'helpers/webservice-bceid';
+import { fetchIdirUser } from 'helpers/webservice-idir';
 import UserRepresentation from '@keycloak/keycloak-admin-client/lib/defs/userRepresentation';
 
 const basePath = path.join(__dirname, 'exports');
@@ -14,27 +14,26 @@ const argv = yargs(process.argv.slice(2))
   .options({
     env: { type: 'string', default: '' },
     realm: { type: 'string', default: '' },
-    idps: { type: 'array', default: [] },
-    concurrency: { type: 'number', default: 50 },
-    totp: { type: 'string', default: '' },
+    idp: { type: 'string', default: 'idir' },
+    concurrency: { type: 'number', default: 100 },
     auto: { type: 'boolean', default: false },
   })
   .parseSync();
 
-const { env, realm, idps, concurrency, totp, auto } = argv;
+const { env, realm, idp, concurrency, auto } = argv;
 
-if (!env || !realm || !idps || idps.length === 0) {
+if (!env || !realm || !idp) {
   console.info(`
-Export BCeID user data searched with 'BCeID username' value via Web Service.
+Export IDIR user data searched with 'IDIR username' value via Web Service.
 
 Usages:
-  yarn script migrations/export-bceid-users --env <env> --realm <realm> --idps <idps> --concurrency concurrency [--auto]
+  yarn script migrations/export-idir-users --env <env> --realm <realm> --idp <idp> --concurrency concurrency [--auto]
 `);
 
   process.exit(1);
 }
 
-const container = createContainer({ env, totp, auto, allowed: ['dev', 'test', 'prod'] });
+const container = createContainer({ env, auto, allowed: ['dev', 'test', 'prod'] });
 container(async (adminClient?: KeycloakAdminClient) => {
   if (!adminClient) return;
 
@@ -48,18 +47,17 @@ container(async (adminClient?: KeycloakAdminClient) => {
         'realm_username',
         'status',
         'email',
+        'first_name',
+        'last_name',
         'display_name',
-        'bceid_user_guid',
-        'bceid_username',
-        'bceid_type',
-        'bceid_business_guid',
-        'bceid_business_name',
+        'idir_user_guid',
+        'idir_username',
       ],
     });
 
     if (!fs.existsSync(basePath)) fs.mkdirSync(basePath);
     const writableStream = fs.createWriteStream(
-      path.join(basePath, `bceid-export-${realm}-${env}-${idps.join('_')}-${new Date().getTime()}.csv`),
+      path.join(basePath, `idir-export-${realm}-${env}-${idp}-${new Date().getTime()}.csv`),
     );
 
     csvStream.pipe(writableStream).on('end', () => {
@@ -100,13 +98,18 @@ async function fetchData(
   }
 
   const { identityProvider, userId, userName } = links[0];
-  if (!(idps as string[]).includes(identityProvider as string)) {
+  if (identityProvider !== idp) {
     return;
   }
 
-  const details =
-    (await fetchBceidUser({ accountType: 'Business', property: 'userId', matchKey: userName, env, logging: _.noop })) ||
-    (await fetchBceidUser({ accountType: 'Individual', property: 'userId', matchKey: userName, env, logging: _.noop }));
+  const users = await fetchIdirUser({ property: 'userId', matchKey: userName, env });
+  if (users.length === 0) {
+    console.log(`not found in web service; user: ${username}`);
+    csvStream.write({ realm_username: username, status: 'not found' });
+    return;
+  }
+
+  const details = users[0];
 
   if (!details) {
     console.log(`not found in web service; user: ${username}`);
@@ -118,11 +121,10 @@ async function fetchData(
     realm_username: username,
     status: 'found',
     email: details.email,
+    first_name: details.firstName,
+    last_name: details.lastName,
     display_name: details.displayName,
-    bceid_user_guid: details.guid,
-    bceid_username: details.userId,
-    bceid_type: details.type,
-    bceid_business_guid: details.businessGuid,
-    bceid_business_name: details.businessLegalName,
+    idir_user_guid: details.guid,
+    idir_username: details.userId,
   });
 }

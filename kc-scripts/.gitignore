@@ -1,5 +1,5 @@
 .env
 yarn-error.log
 build
-src/migrations/*.json
-src/migrations/*.csv
+src/migrations/**/*.json
+src/migrations/**/*.csv

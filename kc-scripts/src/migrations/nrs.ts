@@ -17,6 +17,8 @@ import {
 } from 'helpers/groups-roles-users';
 import UserRepresentation from '@keycloak/keycloak-admin-client/lib/defs/userRepresentation';
 
+const basePath = path.join(__dirname, 'exports');
+
 const argv = yargs(process.argv.slice(2))
   .options({
     baseEnv: { type: 'string', default: '' },
@@ -140,8 +142,9 @@ container(async (baseAdminClient?: KeycloakAdminClient, targetAdminClient?: Keyc
     baseTargetUserIds: validBaseTargetUsers,
   });
 
+  if (!fs.existsSync(basePath)) fs.mkdirSync(basePath);
   fs.writeFileSync(
-    path.resolve(__dirname, `nrs-${baseEnv}-${new Date().getTime()}.json`),
+    path.resolve(basePath, `nrs-${baseEnv}-${new Date().getTime()}.json`),
     JSON.stringify({ masterRoleMappings, userReport }, null, 2),
   );
 });

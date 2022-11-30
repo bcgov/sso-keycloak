@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import yargs from 'yargs/yargs';
 import { createContainer } from 'container';
 import { fetchBceidUser } from 'helpers/webservice-bceid';
@@ -5,7 +6,7 @@ import { fetchBceidUser } from 'helpers/webservice-bceid';
 const argv = yargs(process.argv.slice(2))
   .options({
     env: { type: 'string', default: null },
-    type: { type: 'string', default: 'Individual' },
+    type: { type: 'string', default: '' },
     property: { type: 'string', default: 'userGuid' },
     search: { type: 'string', default: '' },
     auto: { type: 'boolean', default: false },
@@ -32,6 +33,18 @@ Flags:
 
 const container = createContainer(auto);
 container(async () => {
-  const result = await fetchBceidUser({ accountType: type, property, matchKey: search, env });
+  let result = null;
+  const baseParams = { accountType: type, property, matchKey: search, env, logging: _.noop };
+
+  if (type) {
+    result = await fetchBceidUser(baseParams);
+    console.log('result', result);
+    return;
+  }
+
+  result =
+    (await fetchBceidUser({ ...baseParams, accountType: 'Business' })) ||
+    (await fetchBceidUser({ ...baseParams, accountType: 'Individual' }));
+
   console.log('result', result);
 });
