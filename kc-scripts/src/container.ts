@@ -17,13 +17,14 @@ interface EnvMeta {
   auto?: boolean;
 }
 
+export function createContainer(auto: boolean): (script: () => Promise<void>) => void;
 export function createContainer(env1: string): (script: () => Promise<void>) => void;
 export function createContainer(env1: string, env2: string): (script: () => Promise<void>) => void;
 export function createContainer(env1: EnvMeta): (script: () => Promise<void>) => void;
 export function createContainer(env1: EnvMeta, env2: string): (script: () => Promise<void>) => void;
 export function createContainer(env1: string, env2: EnvMeta): (script: () => Promise<void>) => void;
 export function createContainer(env1: EnvMeta, env2: EnvMeta): (script: () => Promise<void>) => void;
-export function createContainer(arg1: string | EnvMeta, arg2?: string | EnvMeta) {
+export function createContainer(arg1: boolean | string | EnvMeta, arg2?: string | EnvMeta) {
   return (script: (adminClient1?: KeycloakAdminClient, adminClient2?: KeycloakAdminClient) => Promise<void>) => {
     const starttime = new Date().getTime();
 
@@ -39,7 +40,9 @@ export function createContainer(arg1: string | EnvMeta, arg2?: string | EnvMeta)
       let confirmClient1 = true;
       let confirmClient2 = true;
 
-      if (_.isString(arg1)) {
+      if (_.isBoolean(arg1)) {
+        await confirm(`Are you sure to proceed?`);
+      } else if (_.isString(arg1)) {
         adminClient1 = await getAdminClient(arg1 as Env);
       } else {
         if (arg1.allowed && !arg1.allowed.includes(arg1.env)) {
@@ -71,16 +74,7 @@ export function createContainer(arg1: string | EnvMeta, arg2?: string | EnvMeta)
 
       for (let x = 0; x < confirmations.length; x++) {
         const kcClient = confirmations[x];
-        const res = await prompts({
-          type: 'confirm',
-          name: 'value',
-          message: `Are you sure to proceed in ${kcClient?.baseUrl}?`,
-          initial: false,
-        });
-
-        if (!res.value) {
-          process.exit(0);
-        }
+        await confirm(`Are you sure to proceed in ${kcClient?.baseUrl}?`);
       }
 
       script(adminClient1, adminClient2)
@@ -97,4 +91,17 @@ export function createContainer(arg1: string | EnvMeta, arg2?: string | EnvMeta)
 
     run();
   };
+}
+
+async function confirm(message: string) {
+  const res = await prompts({
+    type: 'confirm',
+    name: 'value',
+    message,
+    initial: false,
+  });
+
+  if (!res.value) {
+    process.exit(0);
+  }
 }
