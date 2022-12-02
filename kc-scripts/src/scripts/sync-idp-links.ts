@@ -7,19 +7,20 @@ const argv = yargs(process.argv.slice(2))
   .options({
     env: { type: 'string', default: '' },
     realm: { type: 'string', default: 'standard' },
+    start: { type: 'number', default: 0 },
     concurrency: { type: 'number', default: 500 },
     auto: { type: 'boolean', default: false },
   })
   .parseSync();
 
-const { env, realm, concurrency, auto } = argv;
+const { env, realm, start, concurrency, auto } = argv;
 
 if (!env || !realm) {
   console.info(`
 Updates the standard realm's user IDP links to have Provider IDs as same as the Provider username.
 
 Usages:
-  yarn script scripts/sync-idp-links --env <env> --realm <realm> --concurrency <concurrency> [--auto]
+  yarn script scripts/sync-idp-links --env <env> --realm <realm> --start <start> --concurrency <concurrency> [--auto]
 `);
 
   process.exit(1);
@@ -30,7 +31,7 @@ container(async (adminClient?: KeycloakAdminClient) => {
   if (!adminClient) return;
 
   const max = concurrency;
-  let first = 0;
+  let first = start;
   let total = 0;
 
   const _updateIdpLink = updateIdpLink.bind(null, adminClient, realm);

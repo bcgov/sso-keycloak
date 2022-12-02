@@ -1,4 +1,5 @@
 import KeycloakAdminClient from '@keycloak/keycloak-admin-client';
+import ClientRepresentation from '@keycloak/keycloak-admin-client/lib/defs/clientRepresentation';
 import RoleRepresentation, { RoleMappingPayload } from '@keycloak/keycloak-admin-client/lib/defs/roleRepresentation';
 import UserRepresentation from '@keycloak/keycloak-admin-client/lib/defs/userRepresentation';
 import _ from 'lodash';
@@ -8,6 +9,8 @@ interface RoleMapping {
   id: string;
   name: string;
   children: string[];
+  group?: any;
+  role?: any;
 }
 
 interface UserRoleMap {
@@ -72,6 +75,27 @@ export async function buildRoleMappings(
   return result;
 }
 
+export async function buildGroupRoleMappings(
+  adminClient: KeycloakAdminClient,
+  { realm, excludes }: { realm: string; excludes: string[] } = { realm: '', excludes: [] },
+) {
+  const [groups, roles] = await Promise.all([
+    buildGroupMappings(adminClient, { realm, excludes }),
+    buildRoleMappings(adminClient, { realm, excludes }),
+  ]);
+
+  const duplicates = groups.filter((group) => roles.findIndex((role) => group.name === role.name));
+  if (duplicates.length > 0) {
+    console.log('duplicate role names', JSON.stringify(_.map(duplicates, 'name'), null, 2));
+  }
+
+  const roleMappings: RoleMapping[] = ([] = [...groups, ...roles]);
+
+  const mergedRoleMappings = mergeRoleMappings(roleMappings);
+
+  return { roleMappings, mergedRoleMappings, duplicates };
+}
+
 export async function buildUserRolesMap(
   adminClient: KeycloakAdminClient,
   { realm, roleMappings }: { realm: string; roleMappings: RoleMapping[] } = { realm: '', roleMappings: [] },
@@ -94,6 +118,28 @@ export async function buildUserRolesMap(
   }
 
   return result;
+}
+
+export function mergeRoleMappings(roleMappings: RoleMapping[]) {
+  const mappingsByName = _.groupBy(roleMappings, 'name');
+  const merged = _.mapValues(mappingsByName, (val, key) => {
+    if (val.length > 1) {
+      const group = val.find((v) => v.type === 'group') as RoleMapping;
+      const role = val.find((v) => v.type === 'role') as RoleMapping;
+
+      return {
+        type: 'merged',
+        name: group.name,
+        group,
+        role,
+        children: [...group.children, ...role.children],
+      };
+    }
+
+    return val[0];
+  });
+
+  return _.values(merged) as RoleMapping[];
 }
 
 export async function createClientRoles(
@@ -177,23 +223,56 @@ export async function createCompositeRoles(
   }
 }
 
+export async function assignUserToRealmRole(
+  adminClient: KeycloakAdminClient,
+  {
+    realm,
+    userId,
+    roleName,
+  }: {
+    realm: string;
+    userId: string;
+    roleName: string;
+  } = {
+    realm: '',
+    userId: '',
+    roleName: '',
+  },
+) {
+  let role = await adminClient.roles.findOneByName({ realm, name: roleName });
+
+  if (!role) {
+    await adminClient.roles.create({
+      realm,
+      name: roleName,
+      clientRole: false,
+      containerId: realm,
+    });
+
+    role = await adminClient.roles.findOneByName({ realm, name: roleName });
+  }
+
+  const roleMapping: RoleMappingPayload = { id: role?.id as string, name: role?.name as string };
+  await adminClient.users.addRealmRoleMappings({ realm, id: userId, roles: [roleMapping] });
+}
+
 export async function createTargetUserRoleBindings(
   adminClient: KeycloakAdminClient,
   {
     realm,
-    clientId,
+    client,
     userRolesMap,
     rolesMap,
     baseTargetUserIds,
   }: {
     realm: string;
-    clientId: string;
+    client: ClientRepresentation;
     userRolesMap: UserRoleMap;
     rolesMap: RolesByName;
     baseTargetUserIds: { baseUserId: string; targetUserId: string }[];
   } = {
     realm: '',
-    clientId: '',
+    client: {},
     userRolesMap: {},
     rolesMap: {},
     baseTargetUserIds: [],
@@ -205,7 +284,7 @@ export async function createTargetUserRoleBindings(
     const roleMapping = {
       realm,
       id: targetUserId,
-      clientUniqueId: clientId,
+      clientUniqueId: client.id as string,
     };
 
     const roleNames = userRolesMap[baseUserId].roles;
@@ -217,6 +296,7 @@ export async function createTargetUserRoleBindings(
     const roleMappingUpdate = { ...roleMapping, roles };
 
     await adminClient.users.addClientRoleMappings(roleMappingUpdate);
+    await assignUserToRealmRole(adminClient, { realm, userId: targetUserId, roleName: `client-${client.clientId}` });
   }
 }
 
@@ -228,24 +308,29 @@ export async function matchTargetUsers(
     targetRealm,
     baseUsers,
     getBaseParentRealmName,
-    getBaseParentUserGuid,
     getTargetUserUsername,
   }: {
     baseRealm: string;
     targetRealm: string;
     baseUsers: UserRepresentation[];
     getBaseParentRealmName: Function;
-    getBaseParentUserGuid: Function;
     getTargetUserUsername: Function;
   } = {
     baseRealm: '',
     targetRealm: '',
     baseUsers: [],
     getBaseParentRealmName: () => null,
-    getBaseParentUserGuid: () => null,
     getTargetUserUsername: () => null,
   },
 ) {
+  const parentToGuidKeyMap: { [key: string]: string } = {
+    idir: 'idir_userid',
+    _bceid: 'bceid_userid',
+    _bceidbasic: 'bceid_userid',
+    _bceidbasicbusiness: 'bceid_userid',
+    _bceidbusiness: 'bceid_userid',
+  };
+
   const result: { [key: string]: any[] } = {
     found: [],
     'no-idp': [],
@@ -275,18 +360,20 @@ export async function matchTargetUsers(
       id: userId as string,
     })) as UserRepresentation;
 
-    const buserGuid = getBaseParentUserGuid(parentUser, identityProvider);
+    const buserGuid = _.get(parentUser, `attributes.${parentToGuidKeyMap[parentRealmName]}.0`);
 
     if (!buserGuid) {
       result['no-guid'].push(buser.username);
       continue;
     }
 
-    const tusers = await targetAdminClient.users.find({
+    const targetUsername = getTargetUserUsername(buserGuid, identityProvider);
+    let tusers = await targetAdminClient.users.find({
       realm: targetRealm,
-      username: getTargetUserUsername(buserGuid, identityProvider),
+      username: targetUsername,
       exact: true,
     });
+    tusers = tusers.filter((v) => v.username === targetUsername);
 
     if (tusers.length === 0) {
       const key = `not-found-${identityProvider}`;

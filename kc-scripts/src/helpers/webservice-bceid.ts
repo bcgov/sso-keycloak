@@ -50,7 +50,7 @@ const parseAccount = (data: any) => {
   const businessGuid = _.get(data, 'business.0.guid.0.value.0');
   const businessLegalName = _.get(data, 'business.0.legalName.0.value.0');
 
-  return { guid, userId, displayName, type, email, telephone, firstName, lastName, businessGuid, businessLegalName };
+  return { guid, userId, displayName, type, email, firstName, lastName, businessGuid, businessLegalName };
 };
 
 export async function fetchBceidUser({
