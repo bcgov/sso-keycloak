@@ -113,7 +113,7 @@ export async function fetchIdirUser({ property = 'userId', matchKey = '', env = 
       url: `${serviceUrl}/webservices/client/V10/BCeIDService.asmx?WSDL`,
       headers: requestHeaders,
       xml,
-      timeout: 5000,
+      timeout: 10000,
     });
 
     const { headers, body, statusCode } = response;
@@ -139,7 +139,7 @@ export async function fetchIdirUser({ property = 'userId', matchKey = '', env = 
 
     return parsed;
   } catch (error) {
-    log(String(error));
+    log(`${env}: ${property}: ${matchKey}: ${String(error)})`);
     return [];
   }
 }

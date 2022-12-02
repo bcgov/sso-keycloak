@@ -7,8 +7,7 @@ import KeycloakAdminClient from '@keycloak/keycloak-admin-client';
 import { migrateIdirUsers } from './helpers/migrate-idir-users';
 import { migrateBceidUsers } from './helpers/migrate-bceid-users';
 import {
-  buildGroupMappings,
-  buildRoleMappings,
+  buildGroupRoleMappings,
   buildUserRolesMap,
   matchTargetUsers,
   createClientRoles,
@@ -60,11 +59,6 @@ const idpToRealmMap: { [key: string]: string } = {
   bceid: '_bceid',
 };
 
-const idpToGuidKeyMap: { [key: string]: string } = {
-  idir: 'idir_userid',
-  bceid: 'bceid_userid',
-};
-
 const suffixMap: { [key: string]: string } = {
   idir: 'idir',
   bceid: 'bceidboth',
@@ -78,20 +72,19 @@ container(async (baseAdminClient?: KeycloakAdminClient, targetAdminClient?: Keyc
   const clients = await targetAdminClient.clients.find({ realm: targetRealm, clientId: targetClient, max: 1 });
   if (clients.length === 0) throw Error('client not found');
 
-  const clientId = clients[0].id as string;
+  const client = clients[0];
+  const clientId = client.id as string;
 
   console.log('Step 1: build the role associations');
-  const roleMappings = await Promise.all([
-    buildGroupMappings(baseAdminClient, { realm: baseRealm, excludes: rolesToExclude }),
-    buildRoleMappings(baseAdminClient, { realm: baseRealm, excludes: rolesToExclude }),
-  ]);
-
-  const masterRoleMappings = _.flatten(roleMappings);
+  const { roleMappings, mergedRoleMappings } = await buildGroupRoleMappings(baseAdminClient, {
+    realm: baseRealm,
+    excludes: rolesToExclude,
+  });
 
   console.log('Step 2: collect the base user & role mappings');
   const baseUserRolesMap = await buildUserRolesMap(baseAdminClient, {
     realm: baseRealm,
-    roleMappings: masterRoleMappings,
+    roleMappings,
   });
 
   const baseUsers = Object.values(baseUserRolesMap);
@@ -105,8 +98,6 @@ container(async (baseAdminClient?: KeycloakAdminClient, targetAdminClient?: Keyc
       targetRealm: 'standard',
       baseUsers,
       getBaseParentRealmName: (identityProvider: string) => idpToRealmMap[identityProvider],
-      getBaseParentUserGuid: (parentUser: UserRepresentation, identityProvider: string) =>
-        _.get(parentUser, `attributes.${idpToGuidKeyMap[identityProvider]}.0`),
       getTargetUserUsername: (buserGuid: string, identityProvider: string) =>
         `${buserGuid}@${suffixMap[identityProvider]}`,
     });
@@ -115,12 +106,26 @@ container(async (baseAdminClient?: KeycloakAdminClient, targetAdminClient?: Keyc
   await generateUserReport();
 
   console.log('Step 4: migrate missing IDIR users');
-  if (userReport['not-found-idir-parent'])
-    await migrateIdirUsers(baseAdminClient, targetAdminClient, userReport['not-found-idir-parent']);
+  let idirImports: any = {};
+  if (userReport['not-found-idir-parent']) {
+    idirImports = await migrateIdirUsers(
+      baseAdminClient,
+      targetAdminClient,
+      userReport['not-found-idir-parent'],
+      contextEnv,
+    );
+  }
 
+  let bceidImports: any = {};
   console.log('Step 5: migrate missing BCeID Both users');
-  if (userReport['not-found-bceid-parent'])
-    await migrateBceidUsers(baseAdminClient, targetAdminClient, userReport['not-found-bceid-parent'], contextEnv);
+  if (userReport['not-found-bceid-parent']) {
+    bceidImports = await migrateBceidUsers(
+      baseAdminClient,
+      targetAdminClient,
+      userReport['not-found-bceid-parent'],
+      contextEnv,
+    );
+  }
 
   console.log('Step 6: re-match Gold standard users after migrating missing users');
   await generateUserReport();
@@ -132,24 +137,27 @@ container(async (baseAdminClient?: KeycloakAdminClient, targetAdminClient?: Keyc
   const targetRolesMap = await createClientRoles(targetAdminClient, {
     realm: targetRealm,
     clientId,
-    roleMappings: masterRoleMappings,
+    roleMappings: mergedRoleMappings,
   });
 
   console.log('Step 8: create composite role mappings in the target realm');
-  await createCompositeRoles(targetAdminClient, { realm: targetRealm, clientId, roleMappings: masterRoleMappings });
+  await createCompositeRoles(targetAdminClient, { realm: targetRealm, clientId, roleMappings: mergedRoleMappings });
 
   console.log('Step 9: create user role mappings in the target realm');
   await createTargetUserRoleBindings(targetAdminClient, {
     realm: targetRealm,
-    clientId,
+    client,
     userRolesMap: baseUserRolesMap,
     rolesMap: targetRolesMap,
     baseTargetUserIds: validBaseTargetUsers,
   });
 
+  let userRoles: any = _.mapKeys(baseUserRolesMap, (val) => val.username);
+  userRoles = _.mapValues(userRoles, (val) => val.roles);
+
   if (!fs.existsSync(basePath)) fs.mkdirSync(basePath);
   fs.writeFileSync(
     path.resolve(basePath, `mds-${baseEnv}-${new Date().getTime()}.json`),
-    JSON.stringify({ masterRoleMappings, userReport }, null, 2),
+    JSON.stringify({ mergedRoleMappings, userReport, userRoles, idirImports, bceidImports }, null, 2),
   );
 });

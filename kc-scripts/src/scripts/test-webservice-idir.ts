@@ -16,7 +16,7 @@ const { search, property, env, auto } = argv;
 if (!env || !search) {
   console.info(`
 Usages:
-  yarn script scripts/test-webservice-idir --type <type> --search <search> --env <env> [--auto]
+  yarn script scripts/test-webservice-idir --property <property> --search <search> --env <env> [--auto]
 
 Flags:
   --env            BCeID web service environment; dev | test | prod
