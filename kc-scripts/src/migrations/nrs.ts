@@ -53,16 +53,6 @@ Flags:
 
 const rolesToExclude = ['admin', 'idir', 'uma_authorization', 'offline_access'];
 
-const idpToRealmMap: { [key: string]: string } = {
-  idir: 'idir',
-  bceid: '_bceid',
-};
-
-const suffixMap: { [key: string]: string } = {
-  idir: 'idir',
-  bceid: 'bceidboth',
-};
-
 const container = createContainer({ env: baseEnv, auto, totp }, { env: targetEnv, auto });
 container(async (baseAdminClient?: KeycloakAdminClient, targetAdminClient?: KeycloakAdminClient) => {
   if (!baseAdminClient || !targetAdminClient) return;
@@ -96,9 +86,6 @@ container(async (baseAdminClient?: KeycloakAdminClient, targetAdminClient?: Keyc
       baseRealm,
       targetRealm: 'standard',
       baseUsers,
-      getBaseParentRealmName: (identityProvider: string) => idpToRealmMap[identityProvider],
-      getTargetUserUsername: (buserGuid: string, identityProvider: string) =>
-        `${buserGuid}@${suffixMap[identityProvider]}`,
     });
   };
 
