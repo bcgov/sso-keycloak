@@ -1,8 +1,9 @@
+import _ from 'lodash';
 import KeycloakAdminClient from '@keycloak/keycloak-admin-client';
 import ClientRepresentation from '@keycloak/keycloak-admin-client/lib/defs/clientRepresentation';
 import RoleRepresentation, { RoleMappingPayload } from '@keycloak/keycloak-admin-client/lib/defs/roleRepresentation';
 import UserRepresentation from '@keycloak/keycloak-admin-client/lib/defs/userRepresentation';
-import _ from 'lodash';
+import { getIdpToUpstreamRealmMap } from 'helpers/realm';
 
 interface RoleMapping {
   type: string;
@@ -307,20 +308,14 @@ export async function matchTargetUsers(
     baseRealm,
     targetRealm,
     baseUsers,
-    getBaseParentRealmName,
-    getTargetUserUsername,
   }: {
     baseRealm: string;
     targetRealm: string;
     baseUsers: UserRepresentation[];
-    getBaseParentRealmName: Function;
-    getTargetUserUsername: Function;
   } = {
     baseRealm: '',
     targetRealm: '',
     baseUsers: [],
-    getBaseParentRealmName: () => null,
-    getTargetUserUsername: () => null,
   },
 ) {
   const parentToGuidKeyMap: { [key: string]: string } = {
@@ -330,6 +325,16 @@ export async function matchTargetUsers(
     _bceidbasicbusiness: 'bceid_userid',
     _bceidbusiness: 'bceid_userid',
   };
+
+  const parentToGoldIdpKeyMap: { [key: string]: string } = {
+    idir: 'idir',
+    _bceid: 'bceidboth',
+    _bceidbasic: 'bceidbasic',
+    _bceidbasicbusiness: 'bceidboth',
+    _bceidbusiness: 'bceidbusiness',
+  };
+
+  const idpToUpstreamRealmMap = await getIdpToUpstreamRealmMap(baseAdminClient, baseRealm);
 
   const result: { [key: string]: any[] } = {
     found: [],
@@ -352,7 +357,7 @@ export async function matchTargetUsers(
 
     const { identityProvider, userId } = links[0];
 
-    const parentRealmName = getBaseParentRealmName(identityProvider);
+    const parentRealmName = idpToUpstreamRealmMap[identityProvider as string];
     if (!parentRealmName) continue;
 
     const parentUser = (await baseAdminClient.users.findOne({
@@ -367,7 +372,7 @@ export async function matchTargetUsers(
       continue;
     }
 
-    const targetUsername = getTargetUserUsername(buserGuid, identityProvider);
+    const targetUsername = `${_.toLower(buserGuid)}@${parentToGoldIdpKeyMap[parentRealmName]}`;
     let tusers = await targetAdminClient.users.find({
       realm: targetRealm,
       username: targetUsername,
