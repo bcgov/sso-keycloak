@@ -182,7 +182,7 @@ async function sanityCheck(
     // consider invalid IDIR user account.
     if (_.toLower(details.guid) !== _.toLower(idpLink.userName)) {
       const roles = await targetAdminClient.users.listRoleMappings({ realm: 'standard', id: targetUser.id as string });
-      const noClientRoleAssigned = _.isEmpty(roles.clientMappings);
+      const noClientRoleAssigned = roles && _.isEmpty(roles.clientMappings);
 
       // no client role association, safe to simply delete
       if (noClientRoleAssigned) {
