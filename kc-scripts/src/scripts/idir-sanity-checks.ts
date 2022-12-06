@@ -104,4 +104,16 @@ async function sanityCheck(adminClient: KeycloakAdminClient, realm: string, user
     console.log(`mismatched GUIDs: ${username}`);
     return;
   }
+
+  if (_.keys(attributes).length > 3) {
+    await adminClient.users.update(
+      { realm, id: id as string },
+      {
+        attributes: _.pick(attributes, ['display_name', 'idir_user_guid', 'idir_username']),
+      },
+    );
+
+    console.log(`remove unnecessary attributes: ${username}`);
+    return;
+  }
 }
