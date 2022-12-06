@@ -50,6 +50,7 @@ Cypress.Commands.add('login', (url: string, username: string, password: string) 
   cy.get('[id=password]').click().type(password)
   cy.get('[name=btnSubmit]').click()
 })
+
 Cypress.Commands.add(
   'testsite',
   (url: string, username: string, password: string, idp: string) => {
@@ -89,7 +90,7 @@ Cypress.Commands.add(
         (ret: any, data: any) => ({ ...ret, ...getAttribute(data) }),
         {}
       )
-      cy.wrap(updateSiteminderVals(attributes)).as('samlattributes')
+      cy.wrap(updateSiteminderVals(attributes, idp)).as('samlattributes')
     })
   }
 )
@@ -113,19 +114,53 @@ const decodeBase64 = (data: any) => {
   return buff.toString('ascii')
 }
 
-const updateSiteminderVals = (attributes: any) => {
+const updateSiteminderVals = (attributes: any, idp: string) => {
   const result: any = {}
-  result.guid = attributes['useridentifier'] ?? attributes['SMGOV_USERGUID'] ?? ''
-  result.username = attributes['username']
-  result.email = attributes['email']
-  result.display_name =
-    attributes['displayname'] ??
-    attributes['displayName'] ??
-    attributes['SMGOV_USERDISPLAYNAME'] ??
-    ''
-  result.firstname = attributes['firstname'] ?? ''
-  result.lastname = attributes['lastname'] ?? ''
-  result.business_guid = attributes['SMGOV_BUSINESSGUID'] ?? ''
-  result.business_legalname = attributes['SMGOV_BUSINESSLEGALNAME'] ?? ''
+
+  switch (idp) {
+    case 'IDIR':
+      result.guid = getAttribute('useridentifier', attributes, idp)
+      result.username = getAttribute('username', attributes, idp)
+      result.email = getAttribute('email', attributes, idp)
+      result.display_name = getAttribute('displayname', attributes, idp)
+      result.firstname = getAttribute('firstname', attributes, idp)
+      result.lastname = getAttribute('lastname', attributes, idp)
+      break
+
+    case 'BCEID_BASIC':
+      result.guid = getAttribute('useridentifier', attributes, idp)
+      result.username = getAttribute('username', attributes, idp)
+      result.email = getAttribute('email', attributes, idp)
+      result.display_name = getAttribute('displayName', attributes, idp)
+      break
+
+    case 'BCEID_BUSINESS':
+      result.guid = getAttribute('SMGOV_USERGUID', attributes, idp)
+      result.username = getAttribute('username', attributes, idp)
+      result.email = getAttribute('email', attributes, idp)
+      result.display_name = getAttribute('SMGOV_USERDISPLAYNAME', attributes, idp)
+      result.business_guid = attributes['SMGOV_BUSINESSGUID']
+      result.business_legalname = attributes['SMGOV_BUSINESSLEGALNAME']
+      break
+
+    case 'BCEID_BASIC_BUSINESS':
+      result.guid = getAttribute('useridentifier', attributes, idp)
+      result.username = getAttribute('username', attributes, idp)
+      result.email = getAttribute('email', attributes, idp)
+      result.display_name = getAttribute('displayName', attributes, idp)
+      result.business_guid = attributes['SMGOV_BUSINESSGUID']
+      result.business_legalname = attributes['SMGOV_BUSINESSLEGALNAME']
+      break
+
+    default:
+      throw new Error(`invalid idp ${idp}`)
+  }
+
   return result
+}
+
+const getAttribute = (key: string, attributes: any, idp: string) => {
+  if (!attributes[key])
+    throw new Error(`[${idp}] ${key} not found in the list of attributes`)
+  else return attributes[key]
 }
