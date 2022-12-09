@@ -2,6 +2,7 @@
 
 import { Interception } from 'cypress/types/net-stubbing'
 import { promisify } from 'util'
+import { recurse } from 'cypress-recurse'
 const parseString = require('xml2js').parseString
 const parseStringSync = promisify(parseString)
 const Buffer = require('buffer').Buffer
@@ -129,7 +130,8 @@ Cypress.Commands.add(
         }
       }
       const statements = _.get(assertion, 'ns2:AttributeStatement.0.ns2:Attribute')
-      const attributes = _.reduce(
+      let attributes = {}
+      attributes = _.reduce(
         statements,
         (ret: any, data: any) => ({ ...ret, ...getAttribute(data) }),
         {}
@@ -141,13 +143,19 @@ Cypress.Commands.add(
 )
 
 Cypress.Commands.add('logout', () => {
-  cy.wait(3000)
-  cy.get('body > nav > div.collapse.navbar-collapse.ng-scope > ul')
-    .click()
-    .then(() => {
-      cy.contains('Sign Out').click()
-    })
-
+  recurse(
+    () => cy.get('.dropdown').should(() => {}),
+    ($dropdown: any) => expect($dropdown).to.have.class('open'),
+    {
+      limit: 60,
+      delay: 1000,
+      timeout: 60000,
+      post() {
+        cy.get('.dropdown').click()
+      },
+    }
+  )
+  cy.contains('Sign Out').click()
   cy.clearCookies()
 })
 
