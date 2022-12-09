@@ -9,5 +9,12 @@ declare namespace Cypress {
       password: string,
       idp: string
     ): Chainable<void>
+    recordSamlAttributes(
+      url: string,
+      username: string,
+      password: string,
+      idp: string
+    ): Chainable<void>
+    logout(): Chainable<void>
   }
 }

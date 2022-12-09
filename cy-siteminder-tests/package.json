@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "cy:open": "cypress open",
-    "cy:run": "cypress run"
+    "cy:run": "cypress run --spec \"cypress/e2e/siteminder-tests.spec.ts\"",
+    "cy:run:attrs": "cypress run --spec \"cypress/e2e/get-attributes.spec.ts\""
   },
   "keywords": [],
   "author": "",

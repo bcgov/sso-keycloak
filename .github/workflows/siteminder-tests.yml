@@ -14,7 +14,7 @@ on:
         required: true
         default: 'GOLD'
         type: choice
-        options: ['SILVER', 'GOLD']
+        options: ['GOLD']
 jobs:
   run-siteminder-tests:
     name: ${{ matrix.name }}
