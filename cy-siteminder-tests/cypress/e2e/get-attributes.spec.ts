@@ -39,7 +39,7 @@ describe('saml response attributes', () => {
               `${JSON.stringify({
                 cluster: clusters[x],
                 environment: environments[y],
-                identityProvider: idps[z],
+                idp: idps[z],
                 url,
                 attributes: data,
               })}`
