@@ -14,12 +14,10 @@ describe('saml response attributes', () => {
 
     for (let x = 0; x < clusters.length; x++) {
       for (let y = 0; y < environments.length; y++) {
-        const {
-          idir_config,
-          bceid_basic_config,
-          bceid_business_config,
-          bceid_basic_business_config,
-        } = idp_config(clusters[x], environments[y])
+        const { idir_config, bceid_basic_config, bceid_business_config } = idp_config(
+          clusters[x],
+          environments[y]
+        )
         for (let z = 0; z < idps.length; z++) {
           let idp = idps[z]
           if (clusters[x] === 'GOLD' && idps[z] === 'BCEID') continue
