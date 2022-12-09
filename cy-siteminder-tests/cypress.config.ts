@@ -19,9 +19,15 @@ export default defineConfig({
     screenshotOnRunFailure: true,
     defaultCommandTimeout: 10000,
     requestTimeout: 10000,
-    retries: 1,
+    retries: 0,
     specPattern: 'cypress/e2e/**.spec.ts',
     setupNodeEvents(on, config) {
+      on('task', {
+        log(message) {
+          console.log(message)
+          return null
+        },
+      })
       require('cypress-mochawesome-reporter/plugin')(on)
       config.env = {
         ...process.env,

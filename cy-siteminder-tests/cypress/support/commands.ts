@@ -95,6 +95,62 @@ Cypress.Commands.add(
   }
 )
 
+Cypress.Commands.add(
+  'recordSamlAttributes',
+  (url: string, username: string, password: string, idp: string) => {
+    cy.login(url, username, password)
+    if (idp !== 'IDIR') {
+      cy.get('input[value=Continue]').click()
+    }
+
+    cy.intercept('POST', '**/endpoint').as('samlresponse')
+    cy.wait('@samlresponse').then(async (interception: Interception) => {
+      const entries = parseFormData(interception.request.body)
+      const cleanSamlResponse = entries.SAMLResponse.replace(/(\r\n|\n|\r)/gm, '')
+      const decodedXML = decodeBase64(cleanSamlResponse)
+      const jsonResult = await parseStringSync(decodedXML)
+      let assertion
+      if (_.get(jsonResult, 'Response.ns2:Assertion.0')) {
+        assertion = _.get(jsonResult, 'Response.ns2:Assertion.0')
+      } else {
+        assertion = _.get(jsonResult, 'ns5:Response.ns2:Assertion.0')
+      }
+      const getAttributea = (data: any) => ({})
+
+      const getAttribute = (data: any) => {
+        let val
+        if (typeof _.get(data, 'ns2:AttributeValue.0') === 'object') {
+          val = Object.values(_.get(data, 'ns2:AttributeValue.0'))[0]
+        } else {
+          val = _.get(data, 'ns2:AttributeValue.0')
+        }
+        return {
+          [_.get(data, '$.Name')]: val,
+        }
+      }
+      const statements = _.get(assertion, 'ns2:AttributeStatement.0.ns2:Attribute')
+      const attributes = _.reduce(
+        statements,
+        (ret: any, data: any) => ({ ...ret, ...getAttribute(data) }),
+        {}
+      )
+      console.log(attributes)
+      cy.wrap(Object.keys(attributes)).as('samlattributekeys')
+    })
+  }
+)
+
+Cypress.Commands.add('logout', () => {
+  cy.wait(3000)
+  cy.get('body > nav > div.collapse.navbar-collapse.ng-scope > ul')
+    .click()
+    .then(() => {
+      cy.contains('Sign Out').click()
+    })
+
+  cy.clearCookies()
+})
+
 const parseFormData = (data: any) => {
   const vars = data.split('&')
   const map = Object.create(null)
@@ -116,7 +172,6 @@ const decodeBase64 = (data: any) => {
 
 const updateSiteminderVals = (attributes: any, idp: string) => {
   const result: any = {}
-
   switch (idp) {
     case 'IDIR':
       result.guid = getAttribute('useridentifier', attributes, idp)
