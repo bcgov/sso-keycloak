@@ -5,9 +5,6 @@ image:
   tag: dev
   pullPolicy: Always
 
-imagePullSecrets:
-  - name: gh-registry-config
-
 project: sso-keycloak
 nameOverride: sso-keycloak
 fullnameOverride: sso-keycloak
