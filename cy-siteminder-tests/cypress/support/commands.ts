@@ -182,35 +182,35 @@ const updateSiteminderVals = (attributes: any, idp: string) => {
   const result: any = {}
   switch (idp) {
     case 'IDIR':
-      result.guid = getAttribute('useridentifier', attributes, idp)
-      result.username = getAttribute('username', attributes, idp)
+      result.guid = getAttribute('idir_user_guid', attributes, idp)
+      result.username = getAttribute('idir_username', attributes, idp)
       result.email = getAttribute('email', attributes, idp)
-      result.display_name = getAttribute('displayname', attributes, idp)
-      result.firstname = getAttribute('firstname', attributes, idp)
-      result.lastname = getAttribute('lastname', attributes, idp)
+      result.display_name = getAttribute('display_name', attributes, idp)
+      result.firstname = getAttribute('first_name', attributes, idp)
+      result.lastname = getAttribute('last_name', attributes, idp)
       break
 
     case 'BCEID_BASIC':
-      result.guid = getAttribute('useridentifier', attributes, idp)
-      result.username = getAttribute('username', attributes, idp)
+      result.guid = getAttribute('bceid_user_guid', attributes, idp)
+      result.username = getAttribute('bceid_username', attributes, idp)
       result.email = getAttribute('email', attributes, idp)
-      result.display_name = getAttribute('displayName', attributes, idp)
+      result.display_name = getAttribute('display_name', attributes, idp)
       break
 
     case 'BCEID_BUSINESS':
-      result.guid = getAttribute('SMGOV_USERGUID', attributes, idp)
-      result.username = getAttribute('username', attributes, idp)
+      result.guid = getAttribute('bceid_user_guid', attributes, idp)
+      result.username = getAttribute('bceid_username', attributes, idp)
       result.email = getAttribute('email', attributes, idp)
-      result.display_name = getAttribute('SMGOV_USERDISPLAYNAME', attributes, idp)
+      result.display_name = getAttribute('display_name', attributes, idp)
       result.business_guid = attributes['SMGOV_BUSINESSGUID']
       result.business_legalname = attributes['SMGOV_BUSINESSLEGALNAME']
       break
 
     case 'BCEID_BASIC_BUSINESS':
-      result.guid = getAttribute('useridentifier', attributes, idp)
-      result.username = getAttribute('username', attributes, idp)
+      result.guid = getAttribute('bceid_user_guid', attributes, idp)
+      result.username = getAttribute('bceid_username', attributes, idp)
       result.email = getAttribute('email', attributes, idp)
-      result.display_name = getAttribute('displayName', attributes, idp)
+      result.display_name = getAttribute('display_name', attributes, idp)
       result.business_guid = attributes['SMGOV_BUSINESSGUID']
       result.business_legalname = attributes['SMGOV_BUSINESSLEGALNAME']
       break
