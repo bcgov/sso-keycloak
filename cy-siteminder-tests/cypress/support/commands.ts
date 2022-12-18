@@ -202,8 +202,8 @@ const updateSiteminderVals = (attributes: any, idp: string) => {
       result.username = getAttribute('bceid_username', attributes, idp)
       result.email = getAttribute('email', attributes, idp)
       result.display_name = getAttribute('display_name', attributes, idp)
-      result.business_guid = attributes['bceid_business_guid']
-      result.business_legalname = attributes['bceid_business_name']
+      result.business_guid = attributes['SMGOV_BUSINESSGUID']
+      result.business_legalname = attributes['SMGOV_BUSINESSLEGALNAME']
       break
 
     case 'BCEID_BASIC_BUSINESS':
@@ -211,8 +211,8 @@ const updateSiteminderVals = (attributes: any, idp: string) => {
       result.username = getAttribute('bceid_username', attributes, idp)
       result.email = getAttribute('email', attributes, idp)
       result.display_name = getAttribute('display_name', attributes, idp)
-      result.business_guid = attributes['bceid_business_guid']
-      result.business_legalname = attributes['bceid_business_name']
+      result.business_guid = attributes['SMGOV_BUSINESSGUID']
+      result.business_legalname = attributes['SMGOV_BUSINESSLEGALNAME']
       break
 
     default:
