@@ -47,8 +47,8 @@ const _ = require('lodash')
 
 Cypress.Commands.add('login', (url: string, username: string, password: string) => {
   cy.visit(url)
-  cy.get('[id=user]').click().type(username)
-  cy.get('[id=password]').click().type(password)
+  cy.get('[id=user]').click().type(username, { log: false })
+  cy.get('[id=password]').click().type(password, { log: false })
   cy.get('[name=btnSubmit]').click()
 })
 
