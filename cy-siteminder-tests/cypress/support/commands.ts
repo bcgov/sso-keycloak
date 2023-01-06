@@ -215,6 +215,15 @@ const updateSiteminderVals = (attributes: any, idp: string) => {
       result.business_legalname = attributes['SMGOV_BUSINESSLEGALNAME']
       break
 
+    case 'BCEID':
+      result.guid = getAttribute('bceid_user_guid', attributes, idp)
+      result.username = getAttribute('bceid_username', attributes, idp)
+      result.email = getAttribute('email', attributes, idp)
+      result.display_name = getAttribute('display_name', attributes, idp)
+      result.business_guid = attributes['SMGOV_BUSINESSGUID']
+      result.business_legalname = attributes['SMGOV_BUSINESSLEGALNAME']
+      break
+
     default:
       throw new Error(`invalid idp ${idp}`)
   }

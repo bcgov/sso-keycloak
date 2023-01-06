@@ -98,4 +98,35 @@ describe('siteminder tests', () => {
       )
     })
   })
+
+  if (ocp === 'SILVER') {
+    it('BCeID', () => {
+      cy.testsite(
+        fetchSsoUrl(ocp, env, 'BCEID'),
+        bceid_business_config.username,
+        bceid_business_config.password,
+        'BCEID'
+      )
+      cy.get('@samlattributes').then((data: any) => {
+        assert.deepEqual(
+          data.guid,
+          bceid_business_config.user_identifier,
+          'user_identifier'
+        )
+        assert.deepEqual(
+          data.display_name,
+          bceid_business_config.display_name,
+          'display_name'
+        )
+        assert.deepEqual(data.username, bceid_business_config.username, 'username')
+        assert.deepEqual(data.email, bceid_business_config.email, 'email')
+        assert.equal(data.business_guid, bceid_business_config.guid, 'business guid')
+        assert.deepEqual(
+          data.business_legalname,
+          bceid_business_config.legalname,
+          'business legalname'
+        )
+      })
+    })
+  }
 })
