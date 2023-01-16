@@ -8,7 +8,7 @@
 
 ### Secrets
 
-**Note**: The below secrets are used by `siteminder-tests.yml` workflow to run the tests. Make sure these secrets are available as github action secrets before running the github action. These secrets are also stored under a secret `siteminder-tests` at `eb75ad-tools` namespace of gold cluster
+**Note**: The below secrets are used by `siteminder-tests.yml` workflow to run the tests. Make sure these secrets are available as github action secrets before running the github action. These secrets are also stored in secret `siteminder-tests` under `6d70e7-tools` namespace of silver cluster
 
 - `SITEMINDER_TESTS_DATACENTERS_HOST_ENTRY` stores datacenter specific hostname and ip address
 - `SITEMINDER_TESTS_ENV` stores all the key-value pairs from `.env.example`
@@ -71,6 +71,7 @@ Opens the Cypress application, where tests can be run visually
 ### Docker
 
 - Create `.env`
+
   - from `.env.example` and fill all the values or
   - from a secret [`siteminder-tests`](https://console.apps.gold.devops.gov.bc.ca/k8s/ns/eb75ad-tools/secrets/siteminder-tests/)
 
