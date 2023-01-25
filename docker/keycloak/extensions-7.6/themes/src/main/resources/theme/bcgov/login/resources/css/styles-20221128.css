@@ -79,6 +79,7 @@
 
 .login-pf body .login-pf-page #kc-content #kc-content-wrapper .kc-social-link > a {
   display: flex;
+  position: relative;
 }
 
 .login-pf body .login-pf-page #kc-content #kc-content-wrapper .kc-social-link > a > .kc-social-title {
@@ -87,6 +88,8 @@
 
 .login-pf body .login-pf-page #kc-content #kc-content-wrapper .kc-social-link > a > .kc-social-icon {
   width: 28px;
+  position: absolute;
+  right: 10px;
 }
 
 .login-pf body .login-pf-page .kc-social-links {
