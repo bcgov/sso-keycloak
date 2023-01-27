@@ -1,5 +1,7 @@
 # Backup and Restore Keycloak Database
 
+Restoring a db from a backup in the same namespace it was created is documented in the [Backup Container Documentation](https://developer.gov.bc.ca/Backup-Container).  However if you need to restore a backup in a different namespace or cluster from it's source, the following approach will work.
+
 ## Set the environment
 
 ```sh
