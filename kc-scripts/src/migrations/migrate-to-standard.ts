@@ -109,6 +109,7 @@ container(async (baseAdminClient?: KeycloakAdminClient, targetAdminClient?: Keyc
     let validBaseTargetUsers = userReport[i]['valid-base-target-users'];
     delete userReport[i]['valid-base-target-users'];
 
+    console.log('assign integration level realm role to users for enabling search in css app');
     for (let x = 0; x < validBaseTargetUsers.length; x++) {
       await assignUserToRealmRole(targetAdminClient, {
         realm: targetRealm,
