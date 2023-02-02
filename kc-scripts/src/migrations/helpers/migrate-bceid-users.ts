@@ -55,8 +55,8 @@ export async function migrateBceidUsers(
       const commonUserData = {
         enabled: true,
         email: details.email,
-        firstName: '',
-        lastName: '',
+        firstName: details.displayName,
+        lastName: details.userId,
         attributes: {
           display_name: details.displayName,
           bceid_user_guid: details.guid,
