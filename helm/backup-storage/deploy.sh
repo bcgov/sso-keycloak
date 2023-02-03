@@ -62,4 +62,4 @@ helm repo add bcgov https://bcgov.github.io/helm-charts
 
 helm repo update
 
-helm upgrade --install "${TYPE}-backup-storage" bcgov/backup-storage -n "${NAMESPACE}" -f values.yaml -f "values-${NAMESPACE}-${TYPE}-backup.yaml"
+helm upgrade --install "${TYPE}-backup" bcgov/backup-storage -n "${NAMESPACE}" -f values.yaml -f "values-${NAMESPACE}-${TYPE}-backup.yaml"

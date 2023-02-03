@@ -26,9 +26,9 @@ persistence:
 
 env:
   ENVIRONMENT_FRIENDLY_NAME:
-    value: 'Metabase Gold Production Backup'
+    value: 'Metabase Gold Sandbox Backup'
   ENVIRONMENT_NAME:
-    value: eb75ad-tools
+    value: c6af30-tools
   WEBHOOK_URL:
     value: <<Insert value>>
     secure: true

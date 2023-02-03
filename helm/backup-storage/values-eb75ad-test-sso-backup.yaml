@@ -3,7 +3,7 @@ fullnameOverride: sso-backup-storage
 
 image:
   repository: ghcr.io/bcgov/backup-storage
-  tag: postgres-13
+  tag: v7.6.5-build.27
   pullPolicy: Always
 
 backupConfig: |
@@ -17,7 +17,7 @@ db:
 
 env:
   ENVIRONMENT_FRIENDLY_NAME:
-    value: "SSO Gold Client Test Backup"
+    value: 'SSO Gold Client Test Backup'
   ENVIRONMENT_NAME:
     value: eb75ad-test
   WEBHOOK_URL:
