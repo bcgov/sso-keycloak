@@ -1,4 +1,6 @@
 document.addEventListener('DOMContentLoaded', function (event) {
+  // restart login
+  forceRestartLogin();
   // use gov icon for tab:
   updateFavIcon();
 
@@ -32,5 +34,12 @@ function addTooltips() {
         interactive: true,
       });
     }
+  }
+}
+
+function forceRestartLogin() {
+  var restartLoginLink = document.getElementById('reset-login');
+  if (restartLoginLink) {
+    window.location.href = restartLoginLink.href;
   }
 }
