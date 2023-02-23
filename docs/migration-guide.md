@@ -50,7 +50,6 @@
   | Display Name                          | display_name           | display_name        | display_name                                        | display_name                  |
   | Display Name                          | display_name           | display_name        | given_name                                          | given_name                    |
   | BCeID Username                        | bceid_username         | bceid_username      | bceid_username                                      | bceid_username                |
-  | BCeID Username                        | bceid_username         | bceid_username      | family_name                                         | family_name                   |
   | BCeID User GUID                       | bceid_user_guid        | bceid_user_guid     | bceid_user_guid                                     | bceid_user_guid               |
   | Keycloak Generated Preferred Username | bceid_user_guid        | preferred_username  | preferred_username=`{{bceid_user_guid}}@bceidbasic` | preferred_username            |
 
@@ -75,7 +74,6 @@
   | Display Name                          | display_name            | display_name        | display_name                                           | display_name                  |
   | Display Name                          | display_name            | display_name        | given_name                                             | given_name                    |
   | BCeID Username                        | bceid_username          | bceid_username      | bceid_username                                         | bceid_username                |
-  | BCeID Username                        | bceid_username          | bceid_username      | family_name                                            | family_name                   |
   | BCeID User GUID                       | bceid_user_guid         | bceid_user_guid     | bceid_user_guid                                        | bceid_user_guid               |
   | Keycloak Generated Preferred Username | bceid_user_guid         | preferred_username  | preferred_username=`{{bceid_user_guid}}@bceidbusiness` | preferred_username            |
   | BCeID Business Guid                   | SMGOV_BUSINESSGUID      | bceid_business_guid | bceid_business_guid                                    | bceid_business_guid           |
@@ -102,7 +100,6 @@
   | Display Name                          | display_name            | display_name        | display_name                                       | display_name                  |
   | Display Name                          | display_name            | display_name        | given_name                                         | given_name                    |
   | BCeID Username                        | bceid_username          | bceid_username      | bceid_username                                     | bceid_username                |
-  | BCeID Username                        | bceid_username          | bceid_username      | family_name                                        | family_name                   |
   | BCeID User GUID                       | bceid_user_guid         | bceid_user_guid     | bceid_user_guid                                    | bceid_user_guid               |
   | Keycloak Generated Preferred Username | bceid_user_guid         | preferred_username  | preferred_username=`{{bceid_user_guid}}@bceidboth` | preferred_username            |
   | BCeID Business Guid                   | SMGOV_BUSINESSGUID      | bceid_business_guid | bceid_business_guid                                | bceid_business_guid           |
@@ -127,6 +124,7 @@
   | Email                                 | email                  | email               | email                                    | email                                    |
   | Display Name                          | name                   | display_name        | display_name                             | display_name                             |
   | Display Name                          | name                   | display_name        | display_name                             | name                                     |
+  | Display Name                          | name                   | display_name        | given_name                               | given_name                               |
   | GitHub ID                             | id                     | github_id           | github_id                                | github_id                                |
   | Keycloak Generated Preferred Username | id                     | preferred_username  | preferred_username=`{{id}}@githubpublic` | preferred_username=`{{id}}@githubpublic` |
   | GitHub Username                       | login                  | github_username     | github_username                          | github_username                          |
@@ -142,6 +140,7 @@
   | Email                                 | email                  | email               | email                                   | email                                   |
   | Display Name                          | name                   | display_name        | display_name                            | display_name                            |
   | Display Name                          | name                   | display_name        | display_name                            | name                                    |
+  | Display Name                          | name                   | display_name        | given_name                              | given_name                              |
   | GitHub ID                             | id                     | github_id           | github_id                               | github_id                               |
   | Keycloak Generated Preferred Username | id                     | preferred_username  | preferred_username=`{{id}}@githubbcgov` | preferred_username=`{{id}}@githubbcgov` |
   | GitHub Username                       | login                  | github_username     | github_username                         | github_username                         |
