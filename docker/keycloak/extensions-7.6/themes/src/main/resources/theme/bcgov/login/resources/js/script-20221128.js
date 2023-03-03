@@ -39,7 +39,8 @@ function addTooltips() {
 
 function forceRestartLogin() {
   var restartLoginLink = document.getElementById('reset-login');
-  if (restartLoginLink) {
+  var otpInput = document.getElementById('otp');
+  if (restartLoginLink && !otpInput) {
     window.location.href = restartLoginLink.href;
   }
 }
