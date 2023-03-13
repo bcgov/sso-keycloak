@@ -78,8 +78,8 @@ export async function migrateBceidUsers(
         id: targetStandardUser.id,
         federatedIdentityId: 'bceidboth',
         federatedIdentity: {
-          userId: baseGuid,
-          userName: baseGuid,
+          userId: baseGuid.toLowerCase(),
+          userName: baseGuid.toLowerCase(),
           identityProvider: 'bceidboth',
         },
       });

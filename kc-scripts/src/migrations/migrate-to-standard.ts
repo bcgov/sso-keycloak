@@ -47,7 +47,7 @@ Flags:
 
 const rolesToExclude = ['admin', 'uma_authorization', 'offline_access'];
 
-const container = createContainer({ env: 'prod', auto: true, totp }, { env: 'gamma', auto: true });
+const container = createContainer({ env: baseEnv, auto: true, totp }, { env: targetEnv, auto: true });
 
 container(async (baseAdminClient?: KeycloakAdminClient, targetAdminClient?: KeycloakAdminClient) => {
   if (!baseAdminClient || !targetAdminClient) return;
