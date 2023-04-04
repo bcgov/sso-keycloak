@@ -1,0 +1,4 @@
+namespace: e4ca1d-tools
+
+image:
+  repository: gcr.io/ggl-cas-storage/metabase
