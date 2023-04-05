@@ -20,19 +20,13 @@ function updateFavIcon() {
 }
 
 function addTooltips() {
-  const icons = document.getElementsByClassName('kc-social-icon');
-  for (var x = 0; x < icons.length; x++) {
-    var elem = icons[x];
-    var content = elem.getAttribute('data-tooltip');
+  const tooltips = document.getElementsByClassName('tooltiptext');
+  for (var x = 0; x < tooltips.length; x++) {
+    var elem = tooltips[x];
+    var content = elem.textContent;
 
     if (content) {
-      tippy(elem, {
-        content,
-        allowHTML: true,
-        hideOnClick: false,
-        delay: [100, 100],
-        interactive: true,
-      });
+      elem.innerHTML = content;
     }
   }
 }
