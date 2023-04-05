@@ -260,3 +260,33 @@
     font-size: 1.8rem;
   }
 }
+
+.tooltiptext {
+  visibility: hidden;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  width: 220px;
+  bottom: 100%;
+  left: 50%;
+  margin: 10px -110px;
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+}
+
+.tooltiptext:before {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -8px;
+  border: 8px solid transparent;
+  border-top: 8px solid #333;
+}
+
+.kc-social-icon:hover .tooltiptext {
+  visibility: visible;
+}

@@ -13,7 +13,8 @@
                             <a id="social-${p.alias}" class="bcgov-primary mb-2" type="button" href="${p.loginUrl}">
                                 <span class="kc-social-title ${properties.kcFormSocialAccountNameClass!}">${p.displayName!}</span>
                                 <#if idpContext[p.alias]["tooltip"]?has_content>
-                                <span class="kc-social-icon" data-tooltip="${idpContext[p.alias]["tooltip"]}">
+                                <span class="kc-social-icon">
+                                    <div class="tooltiptext">${idpContext[p.alias]["tooltip"]}</div>
                                     <svg
                                         aria-hidden="true"
                                         focusable="false"
