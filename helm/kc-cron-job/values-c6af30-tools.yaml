@@ -10,8 +10,8 @@ nameOverride: kc-cron-job
 fullnameOverride: kc-cron-job
 
 namespace:
-  eventLogs: "c6af30-prod"
-  activeSessions: "c6af30-tools"
+  eventLogs: 'c6af30-prod'
+  activeSessions: 'c6af30-tools'
 
 pvc:
   name: sso-keycloak-logs
@@ -50,3 +50,5 @@ patroni:
   # additionalCredentials:
   #   - username: rhsso
   #     password:
+
+rocketChatWebhook:

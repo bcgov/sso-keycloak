@@ -80,6 +80,8 @@ spec:
                       key: password-superuser
                 - name: PGDATABASE
                   value: rhsso
+                - name: RC_WEBHOOK
+                  value: {{ .Values.rocketChatWebhook }}
               volumeMounts:
                 - mountPath: /logs
                   name: logs-volume

@@ -2,8 +2,9 @@ const fsPromises = require('fs').promises;
 const fs = require('fs');
 const archiver = require('archiver');
 const { saveFilesToDatabase } = require('./event-logs');
+const axios = require('axios');
 
-const { DIRECTORY = '/var/log/eap', EXPIRY_LENGTH_DAYS = 30, TEMP_DIRECTORY = './tmp' } = process.env;
+const { DIRECTORY = '/var/log/eap', EXPIRY_LENGTH_DAYS = 30, TEMP_DIRECTORY = './tmp', RC_WEBHOOK = '' } = process.env;
 const endsWithDateRegex = /\d{4}-\d{2}-\d{2}$/;
 const endsWithDateZippedRegex = /\d{4}-\d{2}-\d{2}.zip$/;
 
@@ -74,6 +75,23 @@ const deleteOldZipFiles = async (dirname, expiryLengthDays) => {
   return deleteFiles(dirname, filesToDelete);
 };
 
+async function sendRocketChatAlert(message, type) {
+  const headers = {
+    'Content-Type': 'application/json',
+  };
+
+  const payload = { projectName: 'kc-cron-job', message, statusCode: type };
+
+  await axios
+    .post(RC_WEBHOOK, payload, { headers })
+    .then((res) => {
+      console.log('rocket.chat alert triggered successfully');
+    })
+    .catch((err) => {
+      console.error('failed to trigger rocket.chat alert', err);
+    });
+}
+
 async function main(dirname) {
   try {
     const [datedFileNames, uniqueDates] = await getDatedLogFiles(dirname, endsWithDateRegex);
@@ -85,9 +103,15 @@ async function main(dirname) {
     await deleteOldZipFiles(dirname, EXPIRY_LENGTH_DAYS);
   } catch (err) {
     console.log(err);
+    await sendRocketChatAlert(err.message, 'ERROR');
   } finally {
-    await fsPromises.rmdir(TEMP_DIRECTORY, { recursive: true, force: true });
-    console.log('Done');
+    try {
+      await fsPromises.rmdir(TEMP_DIRECTORY, { recursive: true, force: true });
+      console.log('Done');
+    } catch (err) {
+      console.log(err);
+      await sendRocketChatAlert(err.message, 'ERROR');
+    }
   }
 }
 
