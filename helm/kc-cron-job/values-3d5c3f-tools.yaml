@@ -10,8 +10,8 @@ nameOverride: kc-cron-job
 fullnameOverride: kc-cron-job
 
 namespace:
-  eventLogs: "3d5c3f-prod"
-  activeSessions: "3d5c3f-tools"
+  eventLogs: '3d5c3f-prod'
+  activeSessions: '3d5c3f-tools'
 
 pvc:
   name: sso-keycloak-logs
@@ -29,3 +29,5 @@ resources:
   requests:
     cpu: 0.25
     memory: 256M
+
+rocketChatWebhook:
