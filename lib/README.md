@@ -11,7 +11,7 @@
 ### Steps
 
 - Login to the openshift cluster and select the namespace using `oc project <LICENSE_PLATE>`
-- Run `./kc-logs.sh <namespace>` to generate a csv that contains previous day logs from all the pods
+- Run `./kc-logs.sh <namespace> <number_of_days_old>` to generate a csv that contains previous day logs from all the pods
 - Open csv file and under `Data` tab, use `Text to Columns` with delimiter `|` to spread out the logs into different columns
 - Select entire data and use `Sort A to Z` option Under `Data` tab to sort the data by timestamp
 - After sorting, add a header at the first row of the worksheet
