@@ -29,13 +29,21 @@ if [ "$#" -lt 1 ]; then
     exit 1
 fi
 
+getStartDay() {
+  if type gdate &>/dev/null; then
+    echo $(gdate -d "-${1} day" +%F)
+  else
+    echo $(date -d "-${1} day" +%F)
+  fi
+}
+
 if [ -z $2 ] || [ $2 -lt 2 ]; then
-  PRV_DATE=$(date -v-1d +%F)
+  PRV_DATE=$(getStartDay 1)
   CURR_DATE=$(date +%F)
 else
   START_FROM="$(( $2-1 ))"
-  CURR_DATE=$(date -v-"${START_FROM}"d +%F)
-  PRV_DATE=$(date -v-"${2}"d +%F)
+  CURR_DATE=$(getStartDay $START_FROM)
+  PRV_DATE=$(getStartDay ${2})
 fi
 
 NAMESPACE=$1
