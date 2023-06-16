@@ -1,4 +1,0 @@
-namespace: 3d5c3f-tools
-
-image:
-  repository: gcr.io/ggl-cas-storage/metabase
