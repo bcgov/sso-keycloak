@@ -29,9 +29,8 @@ public class CookieStopAuthenticator implements Authenticator {
 
   @Override
   public void authenticate(AuthenticationFlowContext context) {
-    AuthenticationManager.AuthResult authResult =
-        AuthenticationManager.authenticateIdentityCookie(
-            context.getSession(), context.getRealm(), true);
+    AuthenticationManager.AuthResult authResult = AuthenticationManager.authenticateIdentityCookie(
+        context.getSession(), context.getRealm(), true);
 
     // 1. If no Cookie session, proceed to login process
     if (authResult == null) {
@@ -40,8 +39,7 @@ public class CookieStopAuthenticator implements Authenticator {
     }
 
     AuthenticationSessionModel authSession = context.getAuthenticationSession();
-    LoginProtocol protocol =
-        context.getSession().getProvider(LoginProtocol.class, authSession.getProtocol());
+    LoginProtocol protocol = context.getSession().getProvider(LoginProtocol.class, authSession.getProtocol());
     context.setUser(authResult.getUser());
 
     // 2. if re-authentication is required, proceed to login process
@@ -50,12 +48,29 @@ public class CookieStopAuthenticator implements Authenticator {
       return;
     }
 
+    // 3. if user has existing session with a different client in same realm then
+    // attach the existing session to the user
+
+    String sessionIdp = authResult.getSession().getNotes().get("identity_provider");
+    Map<String, ClientScopeModel> currentClientScopes = context.getAuthenticationSession().getClient()
+        .getClientScopes(true);
+
+    for (Map.Entry<String, ClientScopeModel> entry : currentClientScopes.entrySet()) {
+      if (entry.getKey().equalsIgnoreCase(sessionIdp)) {
+        context.getAuthenticationSession().setAuthNote(AuthenticationManager.SSO_AUTH,
+            "true");
+        context.attachUserSession(authResult.getSession());
+        context.success();
+        return;
+      }
+    }
+
     MultivaluedMap<String, String> queryParams = context.getUriInfo().getQueryParameters();
 
-    // 3. If a target IDP is passed via "kc_idp_hint" query param, and
-    //      i. the target IDP is enabled;
-    //     ii. the target IDP is allowed for the authenticating client;
-    //    iii. the target IDP is different one than the one in the user session;
+    // 4. If a target IDP is passed via "kc_idp_hint" query param, and
+    // i. the target IDP is enabled;
+    // ii. the target IDP is allowed for the authenticating client;
+    // iii. the target IDP is different one than the one in the user session;
     // then, logout the user from the current session and proceed to login process
     if (queryParams.containsKey(AdapterConstants.KC_IDP_HINT)) {
       String authIdp = queryParams.getFirst(AdapterConstants.KC_IDP_HINT);
@@ -63,8 +78,7 @@ public class CookieStopAuthenticator implements Authenticator {
 
       if (authIdp != null && !authIdp.trim().isEmpty()) {
         IdentityProviderModel idp = context.getRealm().getIdentityProviderByAlias(authIdp);
-        Map<String, ClientScopeModel> scopes =
-            context.getAuthenticationSession().getClient().getClientScopes(true);
+        Map<String, ClientScopeModel> scopes = context.getAuthenticationSession().getClient().getClientScopes(true);
 
         if (idp != null
             && idp.isEnabled()
@@ -79,24 +93,27 @@ public class CookieStopAuthenticator implements Authenticator {
     }
 
     String clientUUID = authSession.getClient().getId();
-    AuthenticatedClientSessionModel clientSessionModel =
-        authResult.getSession().getAuthenticatedClientSessionByClient(clientUUID);
+    AuthenticatedClientSessionModel clientSessionModel = authResult.getSession()
+        .getAuthenticatedClientSessionByClient(clientUUID);
 
-    // 4. If no Cookie session with the authenticating client, proceed to login process
+    // 5. If no Cookie session with the authenticating client, proceed to login
+    // process
     if (clientSessionModel == null) {
       context.attempted();
       return;
     }
 
-    // 5. Otherwise, attach the exisiting session to the user
-    context.getAuthenticationSession().setAuthNote(AuthenticationManager.SSO_AUTH, "true");
+    // 6. Otherwise, attach the exisiting session to the user
+    context.getAuthenticationSession().setAuthNote(AuthenticationManager.SSO_AUTH,
+        "true");
     context.setUser(authResult.getUser());
     context.attachUserSession(authResult.getSession());
     context.success();
   }
 
   @Override
-  public void action(AuthenticationFlowContext context) {}
+  public void action(AuthenticationFlowContext context) {
+  }
 
   @Override
   public boolean configuredFor(KeycloakSession session, RealmModel realm, UserModel user) {
@@ -104,8 +121,10 @@ public class CookieStopAuthenticator implements Authenticator {
   }
 
   @Override
-  public void setRequiredActions(KeycloakSession session, RealmModel realm, UserModel user) {}
+  public void setRequiredActions(KeycloakSession session, RealmModel realm, UserModel user) {
+  }
 
   @Override
-  public void close() {}
+  public void close() {
+  }
 }
