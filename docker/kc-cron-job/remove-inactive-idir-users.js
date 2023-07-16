@@ -414,12 +414,27 @@ async function removeStaleUsersByEnv(env = 'dev', pgClient, runnerName, startFro
     }
     await pgClient.end();
     log(`[${runnerName}] ${total} users processed.`);
-    callback(null, { name: runnerName, count: deletedUserCount });
+    callback(null, { runnerName, processed: total, deleteCount: deletedUserCount });
   } catch (err) {
     handleError(err);
     callback(err);
   } finally {
     await pgClient.end();
+  }
+}
+
+async function sendRcNotification(message, err) {
+  try {
+    console.log(message);
+    const headers = { Accept: 'application/json' };
+    const statusCode = err ? 'ERROR' : '';
+    await axios.post(
+      process.env.RC_WEBHOOK,
+      { projectName: 'cron-remove-inactive-users', message, statusCode },
+      { headers },
+    );
+  } catch (err) {
+    console.error(err);
   }
 }
 
@@ -448,8 +463,14 @@ function main() {
       //   removeStaleUsersByEnv('prod', getPgClient(), 'prod-05', 40000, cb);
       // },
     ],
-    function (err, results) {
-      // TODO: rocketchat notification
+    async function (err, results) {
+      if (err) {
+        console.log(err.message);
+        await sendRcNotification('**Failed to remove inactive users** \n\n' + err.message, true);
+      } else {
+        const a = results.map((res) => JSON.stringify(res));
+        await sendRcNotification('**Successfully removed inactive users** \n\n' + a.join('\n\n'), false);
+      }
     },
   );
 }
