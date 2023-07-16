@@ -42,6 +42,7 @@ export PGPASSWORD=
 export PGDATABASE=
 export CSS_API_URL=http://localhost:8080/app
 export CSS_API_AUTH_SECRET=
+export RC_WEBHOOK=
 
 # update <namespace> and run to create the secret
 make kc-cron-rm-inactive-users NAMESPACE=<namespace>

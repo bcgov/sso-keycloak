@@ -154,4 +154,9 @@ spec:
                     secretKeyRef:
                       name: kc-cron-rm-inactive-users
                       key: css-api-auth-secret
+                - name: RC_WEBHOOK
+                  valueFrom:
+                    secretKeyRef:
+                      name: kc-cron-rm-inactive-users
+                      key: rc-webhook
           restartPolicy: Never

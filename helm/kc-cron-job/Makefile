@@ -49,4 +49,5 @@ kc-cron-rm-inactive-users:
 		--from-literal=test-kc-client-secret=${TEST_KEYCLOAK_CLIENT_SECRET} \
 		--from-literal=css-api-auth-secret=${CSS_API_AUTH_SECRET} \
 		--from-literal=bceid-service-id-test=${BCEID_SERVICE_ID_TEST} \
-		--from-literal=prod-kc-client-id=${PROD_KEYCLOAK_CLIENT_ID}
+		--from-literal=prod-kc-client-id=${PROD_KEYCLOAK_CLIENT_ID} \
+		--from-literal=rc-webhook=${RC_WEBHOOK}
