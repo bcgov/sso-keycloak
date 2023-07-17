@@ -65,7 +65,7 @@ spec:
               imagePullPolicy: {{ .Values.image.pullPolicy }}
               command:
                 - node
-                - active-sessions.js
+                - remove-inactive-idir-users.js
               env:
                 - name: RELEASE_REVISION
                   value: "{{ .Release.Revision }}"
