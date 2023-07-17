@@ -112,7 +112,7 @@ function getWebServiceInfo({ env = 'dev' }) {
     serviceUrl = 'https://gws2.test.bceid.ca';
     serviceId = process.env.BCEID_SERVICE_ID_TEST || '';
   } else if (env === 'prod') {
-    serviceUrl = 'https://gws2.bceid.ca';
+    serviceUrl = 'https://gws2.test.bceid.ca';
     serviceId = process.env.BCEID_SERVICE_ID_PROD || '';
   }
 
@@ -360,10 +360,11 @@ async function removeUserFromKc(adminClient, id) {
 
 async function removeStaleUsersByEnv(env = 'dev', pgClient, runnerName, startFrom, callback) {
   try {
-    const deletedUserCount = 0;
+    let deletedUserCount = 0;
+    let userDeletedAtCss = false;
     await pgClient.connect();
     const text =
-      'INSERT INTO kc_deleted_users (environment, user_id, username, email, first_name, last_name, attributes, realm_roles, client_roles) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)';
+      'INSERT INTO kc_deleted_users (environment, user_id, username, email, first_name, last_name, attributes, realm_roles, client_roles, css_app_deleted) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)';
     const adminClient = await getAdminClient(env);
     if (!adminClient) throw new Error(`could not get the admin client for ${env}`);
 
@@ -384,8 +385,8 @@ async function removeStaleUsersByEnv(env = 'dev', pgClient, runnerName, startFro
           const userExistsAtWb = await checkUserExistsAtIDIM({ property: 'userGuid', matchKey: idir_user_guid, env });
           if (!userExistsAtWb) {
             const { realmRoles, clientRoles } = await getUserRolesMappings(adminClient, id);
-            // const kcDeleteStatus = await removeUserFromKc(adminClient, id);
-            // const cssAppDeleteStatus = await removeUserFromCssApp(idir_user_guid);
+            // await removeUserFromKc(adminClient, id);
+            // const userDeletedAtCss = await removeUserFromCssApp(idir_user_guid);
             const values = [
               env,
               id,
@@ -396,8 +397,7 @@ async function removeStaleUsersByEnv(env = 'dev', pgClient, runnerName, startFro
               JSON.stringify(users[x].attributes) || '',
               realmRoles,
               clientRoles,
-              kcDeleteStatus,
-              cssAppDeleteStatus,
+              userDeletedAtCss,
             ];
             await pgClient.query({ text, values });
             deletedUserCount++;
@@ -441,27 +441,27 @@ async function sendRcNotification(message, err) {
 function main() {
   async.parallel(
     [
-      // function (cb) {
-      //   removeStaleUsersByEnv('dev', getPgClient(), 'dev', 0, cb);
-      // },
-      // function (cb) {
-      //   removeStaleUsersByEnv('test', getPgClient(), 'test', 0, cb);
-      // },
-      // function (cb) {
-      //   removeStaleUsersByEnv('prod', getPgClient(), 'prod-01', 0, cb);
-      // },
-      // function (cb) {
-      //   removeStaleUsersByEnv('prod', getPgClient(), 'prod-02', 10000, cb);
-      // },
-      // function (cb) {
-      //   removeStaleUsersByEnv('prod', getPgClient(), 'prod-03', 20000, cb);
-      // },
-      // function (cb) {
-      //   removeStaleUsersByEnv('prod', getPgClient(), 'prod-04', 30000, cb);
-      // },
-      // function (cb) {
-      //   removeStaleUsersByEnv('prod', getPgClient(), 'prod-05', 40000, cb);
-      // },
+      function (cb) {
+        removeStaleUsersByEnv('dev', getPgClient(), 'dev', 0, cb);
+      },
+      function (cb) {
+        removeStaleUsersByEnv('test', getPgClient(), 'test', 0, cb);
+      },
+      function (cb) {
+        removeStaleUsersByEnv('prod', getPgClient(), 'prod-01', 0, cb);
+      },
+      function (cb) {
+        removeStaleUsersByEnv('prod', getPgClient(), 'prod-02', 10000, cb);
+      },
+      function (cb) {
+        removeStaleUsersByEnv('prod', getPgClient(), 'prod-03', 20000, cb);
+      },
+      function (cb) {
+        removeStaleUsersByEnv('prod', getPgClient(), 'prod-04', 30000, cb);
+      },
+      function (cb) {
+        removeStaleUsersByEnv('prod', getPgClient(), 'prod-05', 40000, cb);
+      },
     ],
     async function (err, results) {
       if (err) {

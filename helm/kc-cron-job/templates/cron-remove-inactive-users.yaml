@@ -42,7 +42,6 @@ spec:
                         attributes varchar(1000),
                         realm_roles TEXT [],
                         client_roles TEXT [],
-                        kc_deleted BOOLEAN NOT NULL default false,
                         css_app_deleted BOOLEAN NOT NULL default false
                     );
                   EOF
