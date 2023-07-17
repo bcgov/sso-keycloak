@@ -12,6 +12,7 @@ fullnameOverride: kc-cron-job
 namespace:
   eventLogs: 'eb75ad-prod'
   activeSessions: 'eb75ad-tools'
+  rmInactiveUsers: 'eb75ad-tools'
 
 pvc:
   name: sso-keycloak-logs
