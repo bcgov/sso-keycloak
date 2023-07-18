@@ -406,7 +406,8 @@ async function removeStaleUsersByEnv(env = 'dev', pgClient, runnerName, startFro
         }
       }
 
-      if (count < max) break;
+      // each runner can process records up to 10000
+      if (count < max || total === 10000) break;
 
       await adminClient.reauth();
       first = first + max;
