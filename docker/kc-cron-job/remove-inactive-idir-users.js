@@ -259,16 +259,6 @@ function handleError(error) {
   }
 }
 
-function ignoreError(prom, errorValue = null) {
-  return prom.then(
-    (data) => data,
-    (err) => {
-      console.error(err);
-      return errorValue;
-    },
-  );
-}
-
 async function getUserRolesMappings(adminClient, userId) {
   try {
     const clientRoles = [];
@@ -339,9 +329,10 @@ async function removeUserFromCssApp(userGuid) {
       'Content-Type': 'application/json',
       Authorization: process.env.CSS_API_AUTH_SECRET,
     };
-    const a = await axios.delete(`${process.env.CSS_API_URL}/users/${userGuid}`, { headers });
-    return a.status === 204 ? true : false;
+    const deleteRes = await axios.delete(`${process.env.CSS_API_URL}/users/${userGuid}`, { headers });
+    return deleteRes.status === 204 ? true : false;
   } catch (err) {
+    console.error(err);
     return false;
   }
 }
@@ -349,10 +340,8 @@ async function removeUserFromCssApp(userGuid) {
 async function removeUserFromKc(adminClient, id) {
   try {
     await adminClient.users.del({ realm: 'standard', id });
-    return true;
   } catch (err) {
     console.error(err);
-    return false;
   }
 }
 
@@ -386,8 +375,8 @@ async function removeStaleUsersByEnv(env = 'dev', pgClient, runnerName, startFro
           const userExistsAtWb = await checkUserExistsAtIDIM({ property: 'userGuid', matchKey: idir_user_guid, env });
           if (!userExistsAtWb) {
             const { realmRoles, clientRoles } = await getUserRolesMappings(adminClient, id);
-            // await removeUserFromKc(adminClient, id);
-            // const userDeletedAtCss = await removeUserFromCssApp(idir_user_guid);
+            await removeUserFromKc(adminClient, id);
+            const userDeletedAtCss = await removeUserFromCssApp(idir_user_guid);
             const values = [
               env,
               id,
