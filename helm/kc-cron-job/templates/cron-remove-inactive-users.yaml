@@ -9,8 +9,8 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     helm.sh/chart: {{ include "..chart" . }}
 spec:
-  # daily at 1 am
-  schedule: "0 1 * * *"
+  # daily at 1 am pst and 8 am utc
+  schedule: "0 8 * * *"
   jobTemplate:
     spec:
       backoffLimit: 1

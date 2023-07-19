@@ -334,18 +334,16 @@ async function getAdminClient(env = 'dev') {
 }
 
 async function removeUserFromCssApp(userGuid) {
-  const headers = {
-    'Content-Type': 'application/json',
-    Authorization: process.env.CSS_API_AUTH_SECRET,
-  };
-  const status = await axios
-    .delete(`${process.env.CSS_API_URL}/users/${userGuid}`, { headers })
-    .then((res) => res.status);
-
-  if (status === 204) {
-    return true;
+  try {
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: process.env.CSS_API_AUTH_SECRET,
+    };
+    const a = await axios.delete(`${process.env.CSS_API_URL}/users/${userGuid}`, { headers });
+    return a.status === 204 ? true : false;
+  } catch (err) {
+    return false;
   }
-  return false;
 }
 
 async function removeUserFromKc(adminClient, id) {
