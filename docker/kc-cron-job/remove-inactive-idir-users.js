@@ -378,6 +378,9 @@ async function removeStaleUsersByEnv(env = 'dev', pgClient, runnerName, startFro
       for (let x = 0; x < users.length; x++) {
         const { id, username } = users[x];
         const idir_user_guid = String(users[x].attributes.idir_user_guid).toLowerCase();
+        const displayName = String(users[x].attributes.display_name).toLowerCase();
+        // ignore the users with `hold` in their displayname
+        if (displayName && displayName.startsWith('hold -')) continue;
         log(`[${runnerName}] processing user ${username}`);
         if (username.includes('@idir')) {
           const userExistsAtWb = await checkUserExistsAtIDIM({ property: 'userGuid', matchKey: idir_user_guid, env });
