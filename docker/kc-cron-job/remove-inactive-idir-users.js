@@ -332,7 +332,6 @@ async function removeUserFromCssApp(userGuid) {
     const deleteRes = await axios.delete(`${process.env.CSS_API_URL}/users/${userGuid}`, { headers });
     return deleteRes.status === 204 ? true : false;
   } catch (err) {
-    console.error(err);
     return false;
   }
 }
@@ -348,7 +347,6 @@ async function removeUserFromKc(adminClient, id) {
 async function removeStaleUsersByEnv(env = 'dev', pgClient, runnerName, startFrom, callback) {
   try {
     let deletedUserCount = 0;
-    let userDeletedAtCss = false;
     await pgClient.connect();
     const text =
       'INSERT INTO kc_deleted_users (environment, user_id, username, email, first_name, last_name, attributes, realm_roles, client_roles, css_app_deleted) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)';
@@ -436,24 +434,24 @@ function main() {
       function (cb) {
         removeStaleUsersByEnv('dev', getPgClient(), 'dev', 0, cb);
       },
-      // function (cb) {
-      //   removeStaleUsersByEnv('test', getPgClient(), 'test', 0, cb);
-      // },
-      // function (cb) {
-      //   removeStaleUsersByEnv('prod', getPgClient(), 'prod-01', 0, cb);
-      // },
-      // function (cb) {
-      //   removeStaleUsersByEnv('prod', getPgClient(), 'prod-02', 10000, cb);
-      // },
-      // function (cb) {
-      //   removeStaleUsersByEnv('prod', getPgClient(), 'prod-03', 20000, cb);
-      // },
-      // function (cb) {
-      //   removeStaleUsersByEnv('prod', getPgClient(), 'prod-04', 30000, cb);
-      // },
-      // function (cb) {
-      //   removeStaleUsersByEnv('prod', getPgClient(), 'prod-05', 40000, cb);
-      // },
+      function (cb) {
+        removeStaleUsersByEnv('test', getPgClient(), 'test', 0, cb);
+      },
+      function (cb) {
+        removeStaleUsersByEnv('prod', getPgClient(), 'prod-01', 0, cb);
+      },
+      function (cb) {
+        removeStaleUsersByEnv('prod', getPgClient(), 'prod-02', 10000, cb);
+      },
+      function (cb) {
+        removeStaleUsersByEnv('prod', getPgClient(), 'prod-03', 20000, cb);
+      },
+      function (cb) {
+        removeStaleUsersByEnv('prod', getPgClient(), 'prod-04', 30000, cb);
+      },
+      function (cb) {
+        removeStaleUsersByEnv('prod', getPgClient(), 'prod-05', 40000, cb);
+      },
     ],
     async function (err, results) {
       if (err) {
