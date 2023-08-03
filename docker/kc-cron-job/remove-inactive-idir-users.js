@@ -183,14 +183,13 @@ async function checkUserExistsAtIDIM({ property = 'userGuid', matchKey = '', env
   const xml = generateXML({ property, matchKey, serviceId, requesterIdirGuid }, 'getAccountDetail');
 
   try {
-    const { response } = await soapRequest({
-      url: `${serviceUrl}/webservices/client/V10/BCeIDService.asmx?WSDL`,
+    const response = await axios.post(`${serviceUrl}/webservices/client/V10/BCeIDService.asmx?WSDL`, xml, {
       headers: requestHeaders,
-      xml,
       timeout: 10000,
     });
 
-    const { body } = response;
+    const { data: body } = response;
+
     const result = await parseStringSync(body);
     const data = _.get(result, 'soap:Envelope.soap:Body.0.getAccountDetailResponse.0.getAccountDetailResult.0');
     if (!data) throw Error('no data');
@@ -198,56 +197,16 @@ async function checkUserExistsAtIDIM({ property = 'userGuid', matchKey = '', env
     const status = _.get(data, 'code.0');
     const failureCode = _.get(data, 'failureCode.0');
     const failMessage = _.get(data, 'message.0');
-    if (status === 'Success') {
-      return true;
-    } else if (status === 'Failed' && failureCode !== 'NoResults') {
-      throw Error(failMessage);
+    if (status === 'Success' && failureCode === 'Void') {
+      return 'exists';
+    } else if (status === 'Failed' && failureCode === 'NoResults') {
+      return 'notexists';
     } else {
-      return false;
+      log(`${env}: [${status}][${failureCode}] ${property}: ${matchKey}: ${String(failMessage)})`);
     }
+    return 'error';
   } catch (error) {
-    log(`${env}: ${property}: ${matchKey}: ${String(error)})`);
-  }
-}
-
-async function fetchIdirUser({ property = 'userId', matchKey = '', env = 'prod' }) {
-  const { requestHeaders, requesterIdirGuid, serviceUrl, serviceId } = getWebServiceInfo({ env });
-
-  const xml = generateXML({ property, matchKey, serviceId, requesterIdirGuid });
-
-  try {
-    const { response } = await soapRequest({
-      url: `${serviceUrl}/webservices/client/V10/BCeIDService.asmx?WSDL`,
-      headers: requestHeaders,
-      xml,
-      timeout: 10000,
-    });
-
-    const { body } = response;
-    const result = await parseStringSync(body);
-    const data = _.get(
-      result,
-      'soap:Envelope.soap:Body.0.searchInternalAccountResponse.0.searchInternalAccountResult.0',
-    );
-    if (!data) throw Error('no data');
-
-    const status = _.get(data, 'code.0');
-    if (status === 'Failed') {
-      const failureCode = _.get(data, 'failureCode.0');
-      const message = _.get(data, 'message.0');
-      throw Error(`${failureCode}: ${message}`);
-    }
-
-    const message = _.get(data, 'message.0');
-    const count = _.get(data, 'pagination.0.totalItems.0');
-    const pageSize = _.get(data, 'pagination.0.requestedPageSize.0');
-    const pageIndex = _.get(data, 'pagination.0.requestedPageIndex.0');
-    const parsed = _.map(_.get(data, 'accountList.0.BCeIDAccount'), parseAccount);
-
-    return parsed;
-  } catch (error) {
-    log(`${env}: ${property}: ${matchKey}: ${String(error)})`);
-    return [];
+    throw new Error(error);
   }
 }
 
@@ -266,16 +225,16 @@ async function getUserRolesMappings(adminClient, userId) {
     const realmRoles = roleMappings.realmMappings ? roleMappings.realmMappings.map((map) => map.name) : [];
     if (roleMappings.clientMappings) {
       for (let map in roleMappings.clientMappings) {
-        clientRoles.push(
-          `${roleMappings.clientMappings[map].client}(${roleMappings.clientMappings[map].mappings.map(
-            (role) => role.name,
-          )})`,
-        );
+        clientRoles.push({
+          client: roleMappings.clientMappings[map].client,
+          roles: roleMappings.clientMappings[map].mappings.map((role) => role.name),
+        });
       }
     }
     return { realmRoles, clientRoles };
   } catch (err) {
-    throw new Error(`cannot fetch realm roles of user ${userId}`);
+    console.error(err);
+    throw new Error(`cannot fetch roles of user ${userId}`);
   }
 }
 
@@ -323,15 +282,17 @@ async function getAdminClient(env = 'dev') {
   }
 }
 
-async function removeUserFromCssApp(userGuid) {
+async function removeUserFromCssApp(userData, clientData) {
   try {
     const headers = {
       'Content-Type': 'application/json',
       Authorization: process.env.CSS_API_AUTH_SECRET,
     };
-    const deleteRes = await axios.delete(`${process.env.CSS_API_URL}/users/${userGuid}`, { headers });
-    return deleteRes.status === 204 ? true : false;
+    userData.clientData = clientData;
+    const res = await axios.post(`${process.env.CSS_API_URL}/delete-inactive-idir-users`, userData, { headers });
+    return res.status === 200 ? true : false;
   } catch (err) {
+    handleError(err);
     return false;
   }
 }
@@ -372,10 +333,10 @@ async function removeStaleUsersByEnv(env = 'dev', pgClient, runnerName, startFro
         log(`[${runnerName}] processing user ${username}`);
         if (username.includes('@idir')) {
           const userExistsAtWb = await checkUserExistsAtIDIM({ property: 'userGuid', matchKey: idir_user_guid, env });
-          if (!userExistsAtWb) {
+          if (userExistsAtWb === 'notexists') {
             const { realmRoles, clientRoles } = await getUserRolesMappings(adminClient, id);
             await removeUserFromKc(adminClient, id);
-            const userDeletedAtCss = await removeUserFromCssApp(idir_user_guid);
+            const userDeletedAtCss = await removeUserFromCssApp(users[x], clientRoles);
             const values = [
               env,
               id,
@@ -385,7 +346,7 @@ async function removeStaleUsersByEnv(env = 'dev', pgClient, runnerName, startFro
               users[x].lastName || '',
               JSON.stringify(users[x].attributes) || '',
               realmRoles,
-              clientRoles,
+              clientRoles.map((r) => JSON.stringify(r)),
               userDeletedAtCss,
             ];
             await pgClient.query({ text, values });
@@ -397,6 +358,9 @@ async function removeStaleUsersByEnv(env = 'dev', pgClient, runnerName, startFro
 
       // each runner can process records up to 10000
       if (count < max || total === 10000) break;
+
+      // max 50 users can be deleted by a runner at a time
+      if (deletedUserCount > 50) break;
 
       await adminClient.reauth();
       first = first + max;
@@ -415,7 +379,6 @@ async function removeStaleUsersByEnv(env = 'dev', pgClient, runnerName, startFro
 
 async function sendRcNotification(message, err) {
   try {
-    console.log(message);
     const headers = { Accept: 'application/json' };
     const statusCode = err ? 'ERROR' : '';
     await axios.post(
@@ -455,7 +418,7 @@ function main() {
     ],
     async function (err, results) {
       if (err) {
-        console.log(err.message);
+        console.error(err.message);
         await sendRcNotification('**Failed to remove inactive users** \n\n' + err.message, true);
       } else {
         const a = results.map((res) => JSON.stringify(res));
