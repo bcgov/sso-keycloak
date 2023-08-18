@@ -5,7 +5,7 @@ WORKDIR /tmp/
 RUN mvn -B clean package --file pom.xml
 
 # see https://catalog.redhat.com/software/containers/rh-sso-7/sso76-openshift-rhel8/629651e2cddbbde600c0a2ec
-FROM registry.redhat.io/rh-sso-7/sso76-openshift-rhel8:7.6-17
+FROM registry.redhat.io/rh-sso-7/sso76-openshift-rhel8:7.6-25
 
 ENV CONFIGURATION /opt/eap/standalone/configuration
 
