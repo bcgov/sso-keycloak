@@ -13,8 +13,15 @@ const basePath = path.join(__dirname, 'exports');
 const restoreUsers = async () => {
   if (!env || !json) {
     console.info(`
+    Pre-requisites:
+      * Run SELECT * FROM KC_DELETED_USERS WHERE TIMESTAMP > CURRENT_DATE AND ENVIRONMENT = <env>; to fetch deleted user data by environment
+      * Save the output in JSON format and place it under <root>/scripts folder
+
     Usages:
       node restore-idir-users-with-roles.js --env <env> --json <jsonfile>
+
+    Examples:
+      node restore-idir-users-with-roles.js --env dev --json dev-users.json
     `);
 
     return;
