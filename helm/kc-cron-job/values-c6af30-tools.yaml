@@ -9,9 +9,15 @@ imagePullSecrets:
 nameOverride: kc-cron-job
 fullnameOverride: kc-cron-job
 
+enableRemoveInactiveUsersJob: false
+
 namespace:
-  eventLogs: 'c6af30-prod'
+  eventLogs:
+    - 'c6af30-dev'
+    - 'c6af30-test'
+    - 'c6af30-prod'
   activeSessions: 'c6af30-tools'
+  rmInactiveUsers: 'c6af30-tools'
 
 pvc:
   name: sso-keycloak-logs

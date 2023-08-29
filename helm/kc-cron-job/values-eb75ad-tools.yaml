@@ -9,8 +9,13 @@ imagePullSecrets:
 nameOverride: kc-cron-job
 fullnameOverride: kc-cron-job
 
+enableRemoveInactiveUsersJob: false
+
 namespace:
-  eventLogs: 'eb75ad-prod'
+  eventLogs:
+    - 'eb75ad-dev'
+    - 'eb75ad-test'
+    - 'eb75ad-prod'
   activeSessions: 'eb75ad-tools'
   rmInactiveUsers: 'eb75ad-tools'
 

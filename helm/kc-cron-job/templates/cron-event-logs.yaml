@@ -1,8 +1,9 @@
+{{- range .Values.namespace.eventLogs }}
 apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: {{ include "..fullname" . }}-event-logs
-  namespace: {{ .Values.namespace.eventLogs }}
+  namespace: {{ . }}
   labels:
     app.kubernetes.io/name: {{ include "..name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
@@ -90,3 +91,4 @@ spec:
               persistentVolumeClaim:
                 claimName: {{ .Values.pvc.name }}
           restartPolicy: Never
+{{- end }}
