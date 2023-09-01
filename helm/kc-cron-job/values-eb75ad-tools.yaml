@@ -40,6 +40,13 @@ patroni:
   nameOverride: kc-cron-patroni
   fullnameOverride: kc-cron-patroni
   replicaCount: 2
+  resources:
+    requests:
+      cpu: 100m
+      memory: 400Mi
+    limits:
+      cpu: 200m
+      memory: 600Mi
   ## Only uncoment on a first install
   # credentials:
   #   existingSecret: false
