@@ -4,6 +4,11 @@ URL=''
 CLIENTSECRET=''
 CLIENTNAME=''
 
+.PHONY: create-postgres-db-secret
+create-postgres-db-secret:
+	kubectl create secret generic "${NAME}" -n "${NAMESPACE}" \
+		--from-literal=password-superuser=${SECRET} \
+
 .PHONY: install
 install:
 	helm install kc-cron-job . -n "${NAMESPACE}" -f values-${NAMESPACE}.yaml
