@@ -126,7 +126,7 @@ const clearOldLogs = async (retentionPeriodDays) => {
   try {
     client = getClient();
     await client.connect();
-    const query = `DELETE from sso_logs where timestamp < NOW() - INTERVAL '${retentionPeriodDays} DAYS';`;
+    const query = `DELETE from sso_logs where timestamp < NOW() - INTERVAL '${retentionPeriodDays} DAYS' and namespace = '${process.env.NAMESPACE}';`;
     console.info(`Running delete query: ${query}`);
     await client.query(query);
   } catch (e) {
