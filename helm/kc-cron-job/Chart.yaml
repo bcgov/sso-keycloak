@@ -1,7 +1,7 @@
 apiVersion: v1
 name: kc-cron-job
 description: 'Helm chart for CronJob to collect Keycloak active sessions'
-version: 0.2.0
+version: 0.3.0
 dependencies:
   - name: patroni
     version: 1.5.1

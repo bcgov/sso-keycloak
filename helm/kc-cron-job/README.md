@@ -8,16 +8,9 @@ The two jobs preserve the number of active sessions in the application and the e
 
 The deployment steps for a new namespace follow:
 
-## 1. Create the patroni secret.
+## 1. Create `kc-cron-rm-inactive-users` secret
 
-Create the secret in the relevant tools namespace: `kc-cron-patroni` look up the patroni requirements on the script
-in the folder `helm/patroni` run:
-
-```sh
-make create-random-db-secret NAME=kc-cron-patroni NAMESPACE=<namespace>
-```
-
-## 2. Create `kc-cron-rm-inactive-users` secret
+- **This step is optional and can be ignored if not installing `cron-remove-inactive-users.yaml`**
 
 ```sh
 # update rest of the values
@@ -48,19 +41,11 @@ export RC_WEBHOOK=
 make kc-cron-rm-inactive-users NAMESPACE=<namespace>
 ```
 
-## 3. Expand the resources in the namespace
+## 2. Expand the resources in the namespace
 
 If there is not enough space in the tools namespace for the logs you may need to request more. This can be done through the (Platform Services Registry)[https://registry.developer.gov.bc.ca/]
 
-## 4. Create the database in the tools namespace
-
-In the `helm/patroni` folder, run:
-
-```sh
-make install NAME=kc-cron-patroni NAMESPACE=<namespace>
-```
-
-## 5. Create a service account
+## 3. Create a service account
 
 Create a service account in key cloak. This should eventually be set up in terraform, but for now do it manually. In the `master` realm create the following client if it does not exist:
 
@@ -75,13 +60,14 @@ The credential key will be added to the `kc-cron-service-account` secret for the
 
 ```sh
 make service-acount-secret \
-NAME=kc-cron-patroni \
+NAME=kc-cron-service-account \
 NAMESPACE=<namespace> \
 URL=<keycloak_url> \
+CLIENTNAME=<client_name> \
 CLIENTSECRET=<credential_secret>
 ```
 
-## 6. Install the helm chart for `kc-cron-job`
+## 4. Install the helm chart for `kc-cron-job`
 
 In the `helm/kc-cron-job` folder you will need to run:
 
@@ -103,7 +89,16 @@ make uninstall NAMESPACE=<namespace>
 
 Note, unistall process may be slightly buggy and will not remove the helm patroni deployments.
 
-## 7. Add the db to metabase
+## 5. Create the patroni secret in other namespaces.
+
+- `cron-event-logs.yaml` expects `kc-cron-patroni` secret to be available in the namespace so repeat below step in all the namespaces where the `cron-event-logs.yaml` has to run
+- To create the secret in the relevant namespace: `kc-cron-patroni` run:
+
+```sh
+make create-postgres-db-secret NAME=kc-cron-patroni NAMESPACE=<namespace> SECRET=<postgres-superuser-secret>
+```
+
+## 6. Add the db to metabase
 
 Once the cron job is running and the database is set up we can connect to the metabase instance. See the folder `helm/metabase/README.md` for details on connecting to metabase instances and setting network policies.
 
