@@ -1,0 +1,67 @@
+image:
+  repository: ghcr.io/bcgov/kc-cron-job
+  tag: dev
+  pullPolicy: Always
+
+imagePullSecrets:
+  - name: gh-registry-config
+
+nameOverride: kc-cron-job
+fullnameOverride: kc-cron-job
+
+enableRemoveInactiveUsersJob: false
+
+namespace:
+  eventLogs:
+    - 'e4ca1d-dev'
+    - 'e4ca1d-test'
+    - 'e4ca1d-prod'
+  activeSessions: 'e4ca1d-tools'
+  rmInactiveUsers: 'e4ca1d-tools'
+
+pvc:
+  name: sso-keycloak-logs
+
+networkPolicy:
+  environment: tools
+  licensePlate: e4ca1d
+
+pgHost: kc-cron-patroni.e4ca1d-tools.svc.cluster.local
+
+resources:
+  limits:
+    cpu: 0.5
+    memory: 512M
+  requests:
+    cpu: 0.25
+    memory: 256M
+
+patroni:
+  nameOverride: kc-cron-patroni
+  fullnameOverride: kc-cron-patroni
+  replicaCount: 2
+  resources:
+    requests:
+      cpu: 100m
+      memory: 400Mi
+    limits:
+      cpu: 200m
+      memory: 600Mi
+  ## Only uncoment on a first install
+  # credentials:
+  #   existingSecret: false
+  #   admin:
+  #     username: admin
+  #     password:
+  #   standby:
+  #     username: standby
+  #     password:
+  #   superuser:
+  #     username: postgres
+  #     password:
+
+  # additionalCredentials:
+  #   - username: rhsso
+  #     password:
+
+rocketChatWebhook:
