@@ -49,12 +49,15 @@ If there is not enough space in the tools namespace for the logs you may need to
 
 Create a service account in key cloak. This should eventually be set up in terraform, but for now do it manually. In the `master` realm create the following client if it does not exist:
 
-Name: `script-cli`
-Standard Flow Enabled" `OFF`
-Access type: `confidential`
-Service Accounts Enabled: `On`
+### Client Configuration
 
-The `service account roles` will be be configured with a custom `viewer` role.
+- Name: `script-cli`
+- Client Protocol: `Openid-Connect`
+- Standard Flow Enabled: `False`
+- Access Type: `Confidential`
+- Service Accounts Enabled: `True`
+- Service Account Roles:
+  - Realm Roles: `viewer` and `master-viewer`
 
 The credential key will be added to the `kc-cron-service-account` secret for the cron job to access. To create this secret in the tools namespace, run the following command in the `helm/kc-cron-job` folder.
 
