@@ -1,4 +1,5 @@
 namespace: e4ca1d-tools
 
 image:
-  repository: gcr.io/ggl-cas-storage/metabase
+  repository: ghcr.io/bcgov/sso-keycloak/metabase
+  tag: v0.47.1

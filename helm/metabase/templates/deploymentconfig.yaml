@@ -162,7 +162,7 @@ spec:
         terminationMessagePath: /dev/termination-log
       dnsPolicy: ClusterFirst
       imagePullSecrets:
-      - name: artifactory-creds
+      - name: {{ .Values.imagePullSecrets }}
       restartPolicy: Always
       serviceAccount: {{ .Values.metabaseServiceName }}
       serviceAccountName: {{ .Values.metabaseServiceName }}
