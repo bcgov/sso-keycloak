@@ -1,5 +1,17 @@
 # Metabase config docs
 
+## Upgrading the image
+
+The deployed metabase image is stored in the [sso-keycloak](https://github.com/orgs/bcgov/packages?repo_name=sso-keycloak).
+
+Updating this image is done as follows:
+1) Pulling down the metabase image from dockerhub to the developers local machine.
+2) Retagging the image `docker tag metabase/metabase ghcr.io/bcgov/sso-keycloak/metabase:<TAG NAME>`
+3) Pushing the image up to the ghcr: `docker push ghcr.io/bcgov/sso-keycloak/metabase:<TAG NAME>`
+4) Updating the tag in the helm values files.
+5) Run `make upgrade NAMESPACE=<<tools namespace>>`
+6) Running this command will change the database creds which means the database pod must be scaled down to zero and back to one. The same must be done with the metabase pod for the new credentials to take effect.
+
 ## Installing metabase
 
 ### Confirm network policies
@@ -51,7 +63,7 @@ and
 
  `make upgrade NAMESPACE=eb75ad-tools`
 
-This will install and upgrade metabase in the Gold Production Tools namespace.  The sandbox namespace is `c6af30-tools`.  Note this helm chart has not been used to deploy the Silver cluster metabase instance.
+This will install and upgrade metabase in the Gold Production Tools namespace.  The sandbox namespace is `c6af30-tools`.  Note this helm chart has not been used to deploy the Silver cluster metabase instance. Note running the upgrade command generates new db creds and the pods (both db and metabase must be cycled)
 
 ## Adding a databse to metabase:
 
