@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: ghcr.io/bcgov/sso
-  tag: 7.6.5-build.11
+  tag: 7.6.5-build.21
   pullPolicy: IfNotPresent
 
 rollingUpdate:
@@ -16,6 +16,8 @@ configuration:
 project: sso-keycloak
 nameOverride: sso-keycloak-4
 fullnameOverride: sso-keycloak-4
+
+additionalServerOptions: "-Dkeycloak.profile.feature.impersonation=disabled -Djboss.persistent.log.dir=/var/log/eap"
 
 postgres:
   host: sso-patroni

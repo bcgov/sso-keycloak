@@ -6,36 +6,22 @@ on:
       environment:
         description: 'Environment under test'
         required: true
-        default: 'prod'
+        default: 'PROD'
         type: choice
-        options: ['dev', 'test', 'prod']
+        options: ['DEV', 'TEST', 'PROD']
       cluster:
         description: 'OCP'
         required: true
-        default: 'gold'
+        default: 'GOLD'
         type: choice
-        options: ['silver', 'gold']
+        options: ['GOLD', 'SILVER']
 jobs:
-  matrix-prep:
-    name: Generate matrix
-    runs-on: ubuntu-20.04
-    outputs:
-      datacenters: ${{ steps.set-matrix.outputs.datacenters }}
-      hostname: ${{ steps.set-matrix.outputs.hostname }}
-    steps:
-      - name: Fetch environment specific parameters
-        id: set-matrix
-        run: |
-          datacenters=$(echo "${{ secrets.SITEMINDER_TESTS_DATACENTERS }}" | jq '."${{ github.event.inputs.environment }}".datacenters')
-          hostname=$(echo "${{ secrets.SITEMINDER_TESTS_DATACENTERS }}" | jq -r '."${{ github.event.inputs.environment }}".hostname')
-          echo ::set-output name=datacenters::{\"include\":$(echo $datacenters)}
-          echo ::set-output name=hostname::$(echo "$hostname")
-
   run-siteminder-tests:
+    name: ${{ matrix.name }}
     runs-on: ubuntu-20.04
-    needs: matrix-prep
     strategy:
-      matrix: ${{ fromJson(needs.matrix-prep.outputs.datacenters) }}
+      matrix:
+        name: ['KAMLOOPS', 'CALGARY']
       max-parallel: 1
     steps:
       - name: Check out repository
@@ -45,12 +31,12 @@ jobs:
           node-version: 16
       - name: Generate env file
         run: |
-          cd ${{ github.workspace }}/siteminder-tests
+          cd ${{ github.workspace }}/cy-siteminder-tests
           echo "${{ secrets.SITEMINDER_TESTS_ENV }}" | base64 --decode > .env
       - name: Set up docker buildx
         uses: docker/setup-buildx-action@v2
       - name: Cache docker layers
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: /tmp/.buildx-test-cache
           key: ${{ runner.os }}-buildx-test-${{ github.sha }}
@@ -58,7 +44,7 @@ jobs:
       - name: Build docker image
         uses: docker/build-push-action@v3
         with:
-          context: siteminder-tests/
+          context: cy-siteminder-tests/
           push: false
           load: true
           tags: siteminder-tests
@@ -69,19 +55,21 @@ jobs:
           rm -rf /tmp/.buildx-test-cache
           mv /tmp/.buildx-test-cache-new /tmp/.buildx-test-cache
       - name: Run siteminder tests
+        env:
+          HOST_ENTRY: ${{ github.event.inputs.environment }}_IDIM_${{ matrix.name }}_HOST
         run: |
-          cd ${{ github.workspace }}/siteminder-tests
+          cd ${{ github.workspace }}/cy-siteminder-tests
           docker run --rm -e ENVIRONMENT=${{ github.event.inputs.environment }} \
                           -e CLUSTER=${{ github.event.inputs.cluster }} \
-                          -v $(pwd)/results:/app/results \
-                          --add-host=${{ needs.matrix-prep.outputs.hostname }}:${{ matrix.ip }} \
+                          -v $(pwd)/results:/e2e/results \
+                          --add-host=${{ secrets[env.HOST_ENTRY] }} \
                           siteminder-tests
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
-          name: ${{ github.event.inputs.cluster }}-${{ github.event.inputs.environment }}-${{ matrix.name }}-results
-          path: ${{ github.workspace }}/siteminder-tests/results
+          name: ${{ github.event.inputs.cluster }}-${{ github.event.inputs.environment }}-${{ matrix.name }}-RESULTS
+          path: ${{ github.workspace }}/cy-siteminder-tests/results
       - name: Rocket.Chat Notification
         if: failure()
         uses: fjogeleit/http-request-action@master
@@ -89,4 +77,4 @@ jobs:
           url: ${{ secrets.SSO_ALERTS }}
           method: 'POST'
           customHeaders: '{"Content-Type": "application/json"}'
-          data: '{"text": "Siteminder Tests Failed! @junmin.ahn @jsharman  @Marco  @zorin.samji @nithinshekar.kuruba", "attachments": [{"color": "#FF0000","author_name": "${{ github.actor }}", "title": "Failed test", "title_link": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}", "text": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}", "fields": [{"title": "Environment", "value": "${{ github.event.inputs.environment }}", "short": false}, {"title": "Cluster", "value": "${{ github.event.inputs.cluster }}", "short": false}]}]}'
+          data: '{"text": "Siteminder Tests Failed! @jsharman  @jlanglois  @Marco  @zorin.samji @nithinshekar.kuruba", "attachments": [{"color": "#FF0000","author_name": "${{ github.actor }}", "title": "Failed test", "title_link": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}", "text": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}", "fields": [{"title": "Environment", "value": "${{ github.event.inputs.environment }}", "short": false}, {"title": "Cluster", "value": "${{ github.event.inputs.cluster }}", "short": false}]}]}'

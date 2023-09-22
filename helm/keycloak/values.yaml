@@ -5,9 +5,6 @@ image:
   tag: dev
   pullPolicy: Always
 
-imagePullSecrets:
-  - name: gh-registry-config
-
 project: sso-keycloak
 nameOverride: sso-keycloak
 fullnameOverride: sso-keycloak
@@ -39,7 +36,7 @@ postgres:
     max: 20
 
 annotations:
-  timeout: null
+  timeout:
 
 # see https://github.com/keycloak/keycloak-containers/blob/master/server/README.md#start-a-keycloak-instance-with-custom-command-line-options
 additionalServerOptions: "-Dkeycloak.profile.feature.authorization=enabled -Djboss.persistent.log.dir=/var/log/eap"

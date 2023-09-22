@@ -2,8 +2,13 @@
 # ./backup.sh -r metabase-postgresql:5432/metabase
 # The command to update the backup in sandbox dev is:
 # make install NAME=metabase-backup NAMESPACE=eb75ad-tools
-nameOverride: "metabase-backup-storage"
-fullnameOverride: "metabase-backup-storage"
+nameOverride: 'metabase-backup-storage'
+fullnameOverride: 'metabase-backup-storage'
+
+image:
+  repository: ghcr.io/bcgov/backup-storage
+  tag: v7.6.5-build.27
+  pullPolicy: Always
 
 backupConfig: |
   postgres=metabase-postgresql:5432/metabase
@@ -18,3 +23,12 @@ db:
 persistence:
   backup:
     size: 1Gi
+
+env:
+  ENVIRONMENT_FRIENDLY_NAME:
+    value: 'Metabase Gold Production Backup'
+  ENVIRONMENT_NAME:
+    value: eb75ad-tools
+  WEBHOOK_URL:
+    value: <<Insert value>>
+    secure: true

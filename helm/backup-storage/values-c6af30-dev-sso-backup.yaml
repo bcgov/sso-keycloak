@@ -3,7 +3,7 @@ fullnameOverride: sso-backup-storage
 
 image:
   repository: ghcr.io/bcgov/backup-storage
-  tag: postgres-13
+  tag: v7.6.5-build.27
   pullPolicy: Always
 
 backupConfig: |
@@ -11,6 +11,6 @@ backupConfig: |
   0 1 * * * default ./backup.sh -s
 
 db:
-  secretName: sso-patroni
-  usernameKey: username-appuser
-  passwordKey: password-appuser
+  secretName: sso-patroni-appusers
+  usernameKey: username-appuser1
+  passwordKey: password-appuser1

@@ -1,8 +1,10 @@
 const _ = require('lodash');
 const axios = require('axios');
 const jws = require('jws');
+const Confirm = require('prompt-confirm');
 const dotenv = require('dotenv');
 const KcAdminClient = require('keycloak-admin').default;
+const { Octokit, App } = require('octokit');
 
 dotenv.config();
 
@@ -117,8 +119,16 @@ async function getAdminClient(env = 'dev', { totp = '' } = {}) {
       if (expiresIn < ONE_MIN) await auth();
     };
 
+    const confirm = async () => {
+      const prompt = new Confirm(`Are you sure to proceed in ${config.url}?`);
+      const answer = await prompt.run();
+      if (!answer) process.exit(0);
+    };
+
     kcAdminClient.reauth = auth;
     kcAdminClient.refreshAsNeeded = refreshAsNeeded;
+    kcAdminClient.confirm = confirm;
+    kcAdminClient.url = config.url;
 
     await auth();
     return kcAdminClient;
@@ -128,4 +138,8 @@ async function getAdminClient(env = 'dev', { totp = '' } = {}) {
   }
 }
 
-module.exports = { getAdminClient, getRealmUrl, getOidcConfiguration };
+const getGitHubClient = () => {
+  return new Octokit({ auth: process.env.GITHUB_PATH });
+};
+
+module.exports = { getAdminClient, getRealmUrl, getOidcConfiguration, getGitHubClient };

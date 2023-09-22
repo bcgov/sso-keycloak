@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  keycloak:
+    container_name: keycloak
+    image: keycloak:9.0.3
+    depends_on:
+      - postgres
+    ports:
+      - 8080:8080
+    environment:
+      DB_VENDOR: POSTGRES
+      DB_PORT: 5432
+      DB_USER: keycloak
+      DB_PASSWORD: keycloak
+      DB_ADDR: postgres:5432
+      DB_DATABASE: keycloak
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+      KEYCLOAK_LOGLEVEL: INFO
+      ROOT_LOGLEVEL: INFO
+
+  postgres:
+    image: postgres:13
+    container_name: postgres
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: keycloak
+    restart: on-failure
+    tty: true
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
+    driver: local

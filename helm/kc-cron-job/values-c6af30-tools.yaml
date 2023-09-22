@@ -9,9 +9,15 @@ imagePullSecrets:
 nameOverride: kc-cron-job
 fullnameOverride: kc-cron-job
 
+enableRemoveInactiveUsersJob: false
+
 namespace:
-  eventLogs: "c6af30-prod"
-  activeSessions: "c6af30-tools"
+  eventLogs:
+    - 'c6af30-dev'
+    - 'c6af30-test'
+    - 'c6af30-prod'
+  activeSessions: 'c6af30-tools'
+  rmInactiveUsers: 'c6af30-tools'
 
 pvc:
   name: sso-keycloak-logs
@@ -34,6 +40,13 @@ patroni:
   nameOverride: kc-cron-patroni
   fullnameOverride: kc-cron-patroni
   replicaCount: 2
+  resources:
+    requests:
+      cpu: 100m
+      memory: 400Mi
+    limits:
+      cpu: 200m
+      memory: 600Mi
   ## Only uncoment on a first install
   # credentials:
   #   existingSecret: false
@@ -50,3 +63,5 @@ patroni:
   # additionalCredentials:
   #   - username: rhsso
   #     password:
+
+rocketChatWebhook:

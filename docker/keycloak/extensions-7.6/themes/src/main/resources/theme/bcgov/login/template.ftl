@@ -38,13 +38,17 @@
 
 <body class="${properties.kcBodyClass!}">
 
+<#if properties.kcShowHeader == "true">
 <header>
   <div class="banner">
     <span></span>
+    <#if properties.kcShowHeaderTitle == "true">
       <h1>Pathfinder SSO</h1>
+    </#if>
   </div>
   <div class="other">&nbsp;</div>
 </header>
+</#if>
 
 <div class="${properties.kcLoginClass!}">
     <div id="kc-header" class="${properties.kcHeaderClass!}">
@@ -162,6 +166,7 @@
       </div>
     </div>
   </div>
+  <#if properties.kcShowFooter == "true">
   <footer class="footer">
     <div class="list">
       <ul>
@@ -172,6 +177,7 @@
       </ul>
     </div>
   </footer>
+  </#if>
 </body>
 </html>
 </#macro>

@@ -30,7 +30,8 @@ const getQuery = (logs) => {
         process_name,
         process_id,
         timestamp,
-        version
+        version,
+        namespace
       ) VALUES %L`,
     logs,
   );
@@ -100,7 +101,7 @@ const formatLog = (log) => {
       const [key, val] = field.split(/=(.+)/);
       json[key] = val;
     }
-    return Object.values({ ...log, message: json });
+    return Object.values({ ...log, message: json, namespace: process.env.NAMESPACE });
   } catch (e) {
     console.log('failed', message);
     return [];
@@ -125,7 +126,7 @@ const clearOldLogs = async (retentionPeriodDays) => {
   try {
     client = getClient();
     await client.connect();
-    const query = `DELETE from sso_logs where timestamp < NOW() - INTERVAL '${retentionPeriodDays} DAYS';`;
+    const query = `DELETE from sso_logs where timestamp < NOW() - INTERVAL '${retentionPeriodDays} DAYS' and namespace = '${process.env.NAMESPACE}';`;
     console.info(`Running delete query: ${query}`);
     await client.query(query);
   } catch (e) {

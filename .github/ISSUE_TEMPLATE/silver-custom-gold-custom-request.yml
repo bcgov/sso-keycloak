@@ -39,25 +39,9 @@ body:
       label: Silver custom realm name
       description: Please pick your SILVER custom realm name from the list below
       options:
-        - ff09qn3f
-        - 4qjrpzzl
-        - v4mbqqas
-        - jxoe2o46
-        - umafubc9 & tml5tvs
-        - cp1qly2d
-        - 5k8dbl4h
-        - gzyg46lx
-        - 8gyaubg & devhub& kq56c126
-        - fcf0kpqr & fygf50pt
-        - vtkayq4c
-        - kmas316h
-        - 3nwwef1
-        - 4piqfpfu
-        - gde0rjxl & secimg
-        - digitaltrust
-        - g7v0xlf4
-        - jbd6rnxw
-        - rzh2zkjq
+        - tz0e228w
+        - sbtyffu4
+        - ezb8kej4
     validations:
       required: true
   - type: input

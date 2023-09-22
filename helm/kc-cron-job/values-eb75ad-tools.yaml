@@ -9,9 +9,15 @@ imagePullSecrets:
 nameOverride: kc-cron-job
 fullnameOverride: kc-cron-job
 
+enableRemoveInactiveUsersJob: true
+
 namespace:
-  eventLogs: "eb75ad-prod"
-  activeSessions: "eb75ad-tools"
+  eventLogs:
+    - 'eb75ad-dev'
+    - 'eb75ad-test'
+    - 'eb75ad-prod'
+  activeSessions: 'eb75ad-tools'
+  rmInactiveUsers: 'eb75ad-tools'
 
 pvc:
   name: sso-keycloak-logs
@@ -34,6 +40,13 @@ patroni:
   nameOverride: kc-cron-patroni
   fullnameOverride: kc-cron-patroni
   replicaCount: 2
+  resources:
+    requests:
+      cpu: 100m
+      memory: 400Mi
+    limits:
+      cpu: 200m
+      memory: 600Mi
   ## Only uncoment on a first install
   # credentials:
   #   existingSecret: false
@@ -50,3 +63,5 @@ patroni:
   # additionalCredentials:
   #   - username: rhsso
   #     password:
+
+rocketChatWebhook:
