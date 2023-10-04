@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  keycloak:
+    container_name: keycloak
+    image: ghcr.io/bcgov/sso:7.6.25-build.1
+    depends_on:
+      - postgres
+    ports:
+      - 8080:8080
+    environment:
+      DB_POSTGRESQL_SERVICE_HOST: postgres
+      DB_POSTGRESQL_SERVICE_PORT: 5432
+      # DB Credentials
+      DB_USERNAME: keycloak
+      DB_PASSWORD: keycloak
+      DB_DATABASE: keycloak
+      SSO_ADMIN_USERNAME: admin
+      SSO_ADMIN_PASSWORD: admin
+      DB_MIN_POOL_SIZE: 1
+      # Do not make the max pool size too small, or keycloak will fail to open enough connections to the DB. 
+      # If the SSO image exits with a FATAL DB conection error it is likely too small.
+      DB_MAX_POOL_SIZE: 5
+      JGROUPS_CLUSTER_PASSWORD: password
+      JAVA_OPTS_APPEND: '-Dkeycloak.profile.feature.impersonation=disabled -Djboss.persistent.log.dir=/var/log/eap'   
+      OPENSHIFT_DNS_PING_SERVICE_NAME: pinger
+      OPENSHIFT_DNS_PING_SERVICE_PORT: 8008
+      DB_JNDI: java:jboss/datasources/KeycloakDS
+      DB_SERVICE_PREFIX_MAPPING: db-postgresql=DB
+      TX_DATABASE_PREFIX_MAPPING: db-postgresql=DB
+      JGROUPS_PING_PROTOCOL: dns.DNS_PING
+      TZ: America/Vancouver
+    volumes:
+      - logs_data:/var/log/eap
+
+  postgres:
+    image: docker.io/postgres:13
+    container_name: postgres
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: keycloak
+    tty: true
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
+    driver: local
+  logs_data:
+    driver: local
