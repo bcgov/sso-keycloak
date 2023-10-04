@@ -5,6 +5,7 @@ import { username, password, clientId } from './env.js';
 const CONCURRENT_LOOPS = 1;
 const ITERATIONS_PER_LOOP = 100;
 const LOOP_DELAY = 0.1;
+const MAX_ALLOWED_FAILURE_RATE = '0.01'
 
 export const options = {
     scenarios: {
