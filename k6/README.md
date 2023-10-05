@@ -8,7 +8,7 @@ This folder contains load tests for our sso application
 
 - `podman-compose up`
 
-**Note**: _You will need to have installed podman and podman-compose_
+**Note**: _You will need to have installed podman and podman-compose. Alternatively, you can use the same commands with docker compose, just specify the file with the -f flag._
 
 This will start our custom keycloak image on localhost:8080, you can login with credentials username=admin, password=admin. To stop the image, you can ctrl+c out (alternatively, add the -d flag to run detached), and run `podman-compose down`. To clear out the volumes, with the image stopped, run `podman volume prune` (or specify the volumes if you have additional ones to keep). The image is currently set to use `ghcr.io/bcgov/sso:7.6.25-build.1`, this can be updated as later builds come up.
 
@@ -65,3 +65,16 @@ The test run can be configured with the following variables at the top of the fi
 **CONCURRENT_LOOPS**: The number of loops to run concurrently. Increasing this number will allow the test to fire more requests at the same time. E.g running 3 concurrent loops would send 3 requests to the user info endpoint at once, and then wait the **LOOP_DELAY**, then fire all three again in the next realm.
 **ITERATIONS_PER_LOOP**: The number of times each loop will run. Each loop will hit the user info endpoint this number of times, waiting a small delay between requests set by the **LOOP_DELAY** variable.
 **LOOP_DELAY**: The amount of time to wait between requests in each loop, in seconds. e.g 0.1 is 100ms. Set to 0 to fire as soon as possible.
+
+### [Constant Rate all Flows](./constantRateAllFlows.js)
+
+Run this test to simulate fetching an access token, grabbing user info, and introspecting the token all together. This test has two scenarios, `peakProfile` and `stress`. The peak profile test is used to imitate our peak traffic running against the application for a two hour period. The stress test will ramp up traffic linearly over a 1 hour period until API requests start to fail, and then abort.
+
+When stress testing, the application may get saturated with requests which prevents the teardown logic from succeeding, since it depends on the keycloak API being able to receive and act on requests. In this case, the test realms will not delete properly. These realms are all prefixed with "newrealm" and will need to be deleted manually.
+
+The test run can be configured with the following variables at the top of the file:
+
+**TOTAL_REALMS** = The number of realms to create.
+**MAX_ALLOWED_FAILURE_RATE**: The percentage of requests to allow to fail before counting the test as failed. Enter as a string of a decimal number, e.g `'0.01'` is 1%.
+**OFFLINE** Set true to request offline_access tokens.
+**BASELINE_RATE**: If running the peakProfile scenario, this is the peak rate per minute of requests to use. It will also determine the start rate of the stress test.

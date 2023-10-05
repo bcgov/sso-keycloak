@@ -17,7 +17,7 @@ export const options = {
       executor: 'per-vu-iterations',
       vus: CONCURRENT_LOOPS,
       iterations: ITERATIONS_PER_LOOP,
-    }
+    },
   },
   thresholds: {
     http_req_failed: [

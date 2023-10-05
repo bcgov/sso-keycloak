@@ -1,6 +1,6 @@
 import http, { head } from 'k6/http';
 import { baseUrl, clientId, clientSecret } from './env.js';
-import { realm } from './constants.js';
+import { realm, client } from './constants.js';
 import encoding from 'k6/encoding';
 
 const getHeaders = (accessToken) => ({
@@ -18,7 +18,22 @@ function deleteRealm(realm, accessToken) {
   return http.del(`${baseUrl}/admin/realms/${realm}`, {}, { headers });
 }
 
-function getAccessToken({username, password, clientId, confidential, realm = 'master', offline = false}) {
+function createClient(realm, accessToken) {
+  const headers = getHeaders(accessToken);
+  const result = http.post(`${baseUrl}/admin/realms/${realm}/clients`, JSON.stringify(client), { headers });
+
+  // Clien internal id is returned in the location header as the trailing piece or the URL.
+  const locationURIParts = result.headers.Location.split('/')
+  const clientInternalId = locationURIParts[locationURIParts.length - 1]
+  return clientInternalId
+}
+
+function deleteClient(realm, clientId, accessToken) {
+  const headers = getHeaders(accessToken);
+  http.del(`${baseUrl}/admin/realms/${realm}/clients/${clientId}`, {}, { headers });
+}
+
+function getAccessToken({username, password, clientId, confidential, realm = 'master', offline = false, secret = clientSecret}) {
   const body = {
     grant_type: 'password',
     client_id: clientId,
@@ -26,7 +41,7 @@ function getAccessToken({username, password, clientId, confidential, realm = 'ma
     password,
   }
   if (confidential) {
-    body['client_secret'] = clientSecret
+    body['client_secret'] = secret
   }
   if (offline) {
     body['scope'] = 'email profile offline_access'
@@ -77,7 +92,7 @@ function hitUserInfoRoute(accessToken, realmName) {
   const result = http.get(url, { headers });
 }
 
-export function hitIntrospectionRoute(accessToken, realmName) {
+function hitIntrospectionRoute(accessToken, realmName, clientId, clientSecret) {
   const base64Credentials = encoding.b64encode(`${clientId}:${clientSecret}`)
   const url = `${baseUrl}/realms/${realmName}/protocol/openid-connect/token/introspect`;
   const headers = { Authorization: `Basic ${base64Credentials}` }
@@ -94,4 +109,6 @@ module.exports = {
   generateRealms,
   hitUserInfoRoute,
   hitIntrospectionRoute,
+  createClient,
+  deleteClient,
 };

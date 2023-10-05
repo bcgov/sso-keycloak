@@ -23,9 +23,14 @@ app.whenReady().then(() => {
 
     // Handle data from the child process and send it to the renderer process
     stats.stdout.on('data', (data) => {
-        const dataLine = data.toString().split('\n')[1]
-        const [cpuPercent, memoryPercent] = dataLine.split(',')
-        // Send data to the renderer process for graphing
-        win.webContents.send('podmanData', {cpuPercent, memoryPercent});
+        try {
+            const dataLine = data.toString().split('\n')[1]
+            const [cpuPercent, memoryPercent] = dataLine.split(',')
+            // Send data to the renderer process for graphing
+            win.webContents.send('podmanData', {cpuPercent, memoryPercent});
+        } catch (e) {
+            console.error('Error while parsing podman stats', e);
+            return
+        }
     });
 })
