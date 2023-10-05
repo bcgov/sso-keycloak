@@ -21,7 +21,15 @@ const user = {
   credentials: [{ type: 'password', value: 'password', temporary: false }],
 };
 
+const client = {
+  secret: 'secret',
+  serviceAccountsEnabled: true,
+  clientId: 'test_privateClient',
+  directAccessGrantsEnabled: true,
+}
+
 module.exports = {
   user,
   realm,
+  client,
 }
