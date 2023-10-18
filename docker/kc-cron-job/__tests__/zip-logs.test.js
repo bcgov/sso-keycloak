@@ -28,6 +28,7 @@ jest.mock('pg', () => {
  * Create some fixture data with usable dates
  */
 const setupFixtures = async (fileData) => {
+  console.log('current dir', __dirname);
   await fsPromises.mkdir(dir);
   await fsPromises.writeFile(path.join(`${dir}/test`), fileData);
 };
