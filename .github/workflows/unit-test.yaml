@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-20.04
     defaults:
       run:
-        working-directory: docker/kc-cron-job
+        working-directory: ./docker/kc-cron-job
     steps:
     # Matching docker version
     - name: Use Node.js 14
