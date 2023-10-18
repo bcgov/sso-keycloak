@@ -21,5 +21,6 @@ jobs:
         node-version: 14
     - name: unit test
       run: |
+        ls
         yarn
         yarn test
