@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - "docker/kc-cron-job/**"
+      - ".github/workflows/unit-test.yml"
 
 jobs:
   unit_test:
