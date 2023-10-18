@@ -13,7 +13,7 @@ const unexpectedLogs = `
 {"@timestamp":"a","sequence":1001,"loggerClassName":"a","loggerName":"a","level":"a","message":"type=USER_INFO_REQUEST","threadName":"a","threadId":1,"mdc":{},"ndc":"","hostName":"a","processName":"a","processId":1,"@version":"1"}`;
 
 const fileDir = getDate(2);
-const dir = `__tests__/fixtures/${fileDir}`;
+const dir = path.join(__dirname, `fixtures/${fileDir}`);
 
 jest.mock('pg', () => {
   const mockClient = {
@@ -28,7 +28,6 @@ jest.mock('pg', () => {
  * Create some fixture data with usable dates
  */
 const setupFixtures = async (fileData) => {
-  console.log('current dir', __dirname);
   await fsPromises.mkdir(dir);
   await fsPromises.writeFile(path.join(`${dir}/test`), fileData);
 };
