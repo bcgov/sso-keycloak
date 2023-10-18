@@ -5,7 +5,8 @@
   "author": "First Last <first.last@example.com>",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "test": "jest"
   },
   "dependencies": {
     "archiver": "^5.3.0",
@@ -20,6 +21,7 @@
     "xml2js": "^0.6.0"
   },
   "devDependencies": {
-    "dotenv": "^16.3.1"
+    "dotenv": "^16.3.1",
+    "jest": "^29.7.0"
   }
 }

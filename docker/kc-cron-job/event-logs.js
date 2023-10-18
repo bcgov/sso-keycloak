@@ -14,6 +14,23 @@ const LOG_BATCH_SIZE = process.env.LOG_BATCH_SIZE || 1000;
 const RETENTION_PERIOD_DAYS = process.env.RETENTION_PERIOD_DAYS || 30;
 const SAVE_LOGS_N_DAYS_AGO = process.env.SAVE_LOGS_N_DAYS_AGO || 2;
 
+const logFields = [
+  'sequence',
+  'loggerClassName',
+  'loggerName',
+  'level',
+  'message',
+  'threadName',
+  'threadId',
+  'mdc',
+  'ndc',
+  'hostName',
+  'processName',
+  'processId',
+  'timestamp',
+  'version',
+];
+
 const getQuery = (logs) => {
   const query = format(
     `INSERT INTO sso_logs (
@@ -42,9 +59,16 @@ const saveLogsForFile = async (lineReader, client) => {
   let i = 0;
   let logs = [];
   lineReader.on('line', async function (line) {
+    try {
+      // If cannot format or parse the log, move to next log without incrementing the batch size.
+      const formattedLog = formatLog(JSON.parse(line));
+      if (!formattedLog) return;
+      logs.push(formattedLog);
+    } catch (e) {
+      return console.info('Error trying to JSON parse line', e, line);
+    }
+
     i++;
-    const formattedLog = formatLog(JSON.parse(line));
-    logs.push(formattedLog);
     if (i === LOG_BATCH_SIZE) {
       i = 0;
       const queryLogs = [...logs];
@@ -55,8 +79,13 @@ const saveLogsForFile = async (lineReader, client) => {
 
   return new Promise((resolve, reject) => {
     lineReader.on('close', async () => {
-      await client.query(getQuery(logs));
-      resolve();
+      try {
+        await client.query(getQuery(logs));
+        resolve();
+      } catch (err) {
+        console.info('Error when inserting log data', err, logs);
+        reject(err);
+      }
     });
   });
 };
@@ -94,6 +123,15 @@ const formatLog = (log) => {
   delete log['@timestamp'];
   delete log['@version'];
   try {
+    const logKeys = Object.keys(log);
+    const logHasAllExpectedFields = logFields.every((field) => logKeys.includes(field));
+    const logHasUnexpectedFields = logKeys.some((key) => !logFields.includes(key));
+
+    if (!logHasAllExpectedFields || logHasUnexpectedFields) {
+      console.info('Log does not have expected format: ', log);
+      return null;
+    }
+
     let { message } = log;
     const json = {};
     const fields = message.split(', ');
@@ -103,7 +141,7 @@ const formatLog = (log) => {
     }
     return Object.values({ ...log, message: json, namespace: process.env.NAMESPACE });
   } catch (e) {
-    console.log('failed', message);
+    console.log('failed to format log', log);
     return [];
   }
 };
@@ -171,4 +209,4 @@ async function saveFilesToDatabase(dirname) {
   }
 }
 
-module.exports = { saveFilesToDatabase };
+module.exports = { saveFilesToDatabase, getDate };

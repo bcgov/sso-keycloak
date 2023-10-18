@@ -1,0 +1,26 @@
+name: Run unit tests
+
+on:
+  push:
+    paths:
+      - "docker/kc-cron-job/**"
+      - ".github/workflows/unit-test.yml"
+
+jobs:
+  unit_test:
+    runs-on: ubuntu-20.04
+    defaults:
+      run:
+        working-directory: ./docker/kc-cron-job
+    steps:
+    # Matching docker version
+    - uses: actions/checkout@v3
+    - name: Use Node.js 14
+      uses: actions/setup-node@v3
+      with:
+        node-version: 14
+    - name: unit test
+      run: |
+        ls
+        yarn
+        yarn test
