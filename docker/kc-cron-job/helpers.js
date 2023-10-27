@@ -11,18 +11,18 @@ const removeTrailingSlash = (url) => {
 
 const envs = {
   dev: {
-    url: removeTrailingSlash(process.env.DEV_KEYCLOAK_URL || 'https://dev.loginproxy.gov.bc.ca'),
-    clientId: process.env.DEV_KEYCLOAK_CLIENT_ID || 'script-cli',
+    url: removeTrailingSlash(process.env.DEV_KEYCLOAK_URL || ''),
+    clientId: process.env.DEV_KEYCLOAK_CLIENT_ID || '',
     clientSecret: process.env.DEV_KEYCLOAK_CLIENT_SECRET
   },
   test: {
-    url: removeTrailingSlash(process.env.TEST_KEYCLOAK_URL || 'https://test.loginproxy.gov.bc.ca'),
-    clientId: process.env.TEST_KEYCLOAK_CLIENT_ID || 'script-cli',
+    url: removeTrailingSlash(process.env.TEST_KEYCLOAK_URL || ''),
+    clientId: process.env.TEST_KEYCLOAK_CLIENT_ID || '',
     clientSecret: process.env.TEST_KEYCLOAK_CLIENT_SECRET
   },
   prod: {
-    url: removeTrailingSlash(process.env.PROD_KEYCLOAK_URL || 'https://loginproxy.gov.bc.ca'),
-    clientId: process.env.PROD_KEYCLOAK_CLIENT_ID || 'script-cli',
+    url: removeTrailingSlash(process.env.PROD_KEYCLOAK_URL || ''),
+    clientId: process.env.PROD_KEYCLOAK_CLIENT_ID || '',
     clientSecret: process.env.PROD_KEYCLOAK_CLIENT_SECRET
   }
 };

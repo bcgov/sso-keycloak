@@ -29,7 +29,7 @@ async function removeVcUsers(runnerName, pgClient, env = 'dev', callback) {
 
         if (userSessions.length === 0) {
           // delete user from standard realm
-          //await adminClient.users.del({ realm: STANDARD_REALM, id });
+          await adminClient.users.del({ realm: STANDARD_REALM, id });
 
           const parentRealmUsers = await adminClient.users.find({
             realm: VC_REALM,
@@ -39,7 +39,7 @@ async function removeVcUsers(runnerName, pgClient, env = 'dev', callback) {
 
           if (parentRealmUsers.length > 0) {
             // delete user from verifiable credential realm
-            //await adminClient.users.del({ realm: VC_REALM, id: parentRealmUsers[0]?.id });
+            await adminClient.users.del({ realm: VC_REALM, id: parentRealmUsers[0]?.id });
           }
 
           const values = [env, username, STANDARD_REALM, users[x].attributes || {}];

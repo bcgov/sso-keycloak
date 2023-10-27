@@ -1,5 +1,4 @@
 const _ = require('lodash');
-
 const { promisify } = require('util');
 const { parseString } = require('xml2js');
 const async = require('async');

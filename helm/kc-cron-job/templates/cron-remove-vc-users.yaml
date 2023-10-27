@@ -78,7 +78,10 @@ spec:
                 - name: PGDATABASE
                   value: rhsso
                 - name: DEV_KEYCLOAK_URL
-                  value: https://dev.loginproxy.gov.bc.ca
+                  valueFrom:
+                    secretKeyRef:
+                      name: kc-cron-job-secret
+                      key: dev-kc-url
                 - name: DEV_KEYCLOAK_CLIENT_ID
                   valueFrom:
                     secretKeyRef:
@@ -90,7 +93,10 @@ spec:
                       name: kc-cron-job-secret
                       key: dev-kc-client-secret
                 - name: TEST_KEYCLOAK_URL
-                  value: https://test.loginproxy.gov.bc.ca
+                  valueFrom:
+                    secretKeyRef:
+                      name: kc-cron-job-secret
+                      key: test-kc-url
                 - name: TEST_KEYCLOAK_CLIENT_ID
                   valueFrom:
                     secretKeyRef:
@@ -102,7 +108,10 @@ spec:
                       name: kc-cron-job-secret
                       key: test-kc-client-secret
                 - name: PROD_KEYCLOAK_URL
-                  value: https://loginproxy.gov.bc.ca
+                  valueFrom:
+                    secretKeyRef:
+                      name: kc-cron-job-secret
+                      key: prod-kc-url
                 - name: PROD_KEYCLOAK_CLIENT_ID
                   valueFrom:
                     secretKeyRef:
