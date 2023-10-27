@@ -39,9 +39,9 @@ service-acount-secret:
 		--from-literal=client-id=${CLIENTNAME} \
 		--from-literal=client-secret=${CLIENTSECRET}
 
-.PHONY: kc-cron-rm-inactive-users
-kc-cron-rm-inactive-users:
-	kubectl create secret generic kc-cron-rm-inactive-users -n "${NAMESPACE}" \
+.PHONY: kc-cron-job-secret
+kc-cron-job-secret:
+	kubectl create secret generic kc-cron-job-secret -n "${NAMESPACE}" \
 		--from-literal=dev-kc-client-id=${DEV_KEYCLOAK_CLIENT_ID} \
 		--from-literal=bceid-service-id-prod=${BCEID_SERVICE_ID_PROD} \
 		--from-literal=test-kc-client-id=${TEST_KEYCLOAK_CLIENT_ID} \
@@ -55,4 +55,9 @@ kc-cron-rm-inactive-users:
 		--from-literal=css-api-auth-secret=${CSS_API_AUTH_SECRET} \
 		--from-literal=bceid-service-id-test=${BCEID_SERVICE_ID_TEST} \
 		--from-literal=prod-kc-client-id=${PROD_KEYCLOAK_CLIENT_ID} \
-		--from-literal=rc-webhook=${RC_WEBHOOK}
+		--from-literal=rc-webhook=${RC_WEBHOOK} \
+		--from-literal=vc-users-retention-days=${VC_USERS_RETENTION_DAYS} \
+		--from-literal=inactive-idir-users-retention-days=${INACTIVE_IDIR_USERS_RETENTION_DAYS} \
+		--from-literal=dev-kc-url=${DEV_KEYCLOAK_URL} \
+		--from-literal=test-kc-url=${TEST_KEYCLOAK_URL} \
+		--from-literal=prod-kc-url=${PROD_KEYCLOAK_URL}

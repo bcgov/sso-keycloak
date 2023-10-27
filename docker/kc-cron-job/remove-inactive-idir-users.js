@@ -1,104 +1,18 @@
 const _ = require('lodash');
-const { Client } = require('pg');
-const format = require('pg-format');
-const KcAdminClient = require('keycloak-admin').default;
 const { promisify } = require('util');
 const { parseString } = require('xml2js');
-const jws = require('jws');
-const soapRequest = require('easy-soap-request');
 const async = require('async');
 const axios = require('axios');
+const { getAdminClient, log, getPgClient, sendRcNotification, handleError, deleteLegacyData } = require('./helpers');
 
 require('dotenv').config();
 
-const removeTrailingSlash = (url) => (url.endsWith('/') ? url.slice(0, -1) : url);
-
-const envs = {
-  dev: {
-    url: removeTrailingSlash(process.env.DEV_KEYCLOAK_URL || 'https://dev.loginproxy.gov.bc.ca'),
-    clientId: process.env.DEV_KEYCLOAK_CLIENT_ID || 'script-cli',
-    clientSecret: process.env.DEV_KEYCLOAK_CLIENT_SECRET,
-  },
-  test: {
-    url: removeTrailingSlash(process.env.TEST_KEYCLOAK_URL || 'https://test.loginproxy.gov.bc.ca'),
-    clientId: process.env.TEST_KEYCLOAK_CLIENT_ID || 'script-cli',
-    clientSecret: process.env.TEST_KEYCLOAK_CLIENT_SECRET,
-  },
-  prod: {
-    url: removeTrailingSlash(process.env.PROD_KEYCLOAK_URL || 'https://loginproxy.gov.bc.ca'),
-    clientId: process.env.PROD_KEYCLOAK_CLIENT_ID || 'script-cli',
-    clientSecret: process.env.PROD_KEYCLOAK_CLIENT_SECRET,
-  },
-};
-
-const ONE_MIN = 60 * 1000;
-
-const log = (msg) => console.log(`[${new Date().toLocaleString()}] ${msg}`);
-
-const getPgClient = () => {
-  return new Client({
-    host: process.env.PGHOST,
-    port: parseInt(process.env.PGPORT || '5432'),
-    user: process.env.PGUSER,
-    password: process.env.PGPASSWORD,
-    database: process.env.PGDATABASE,
-    //ssl: { rejectUnauthorized: false },
-  });
-};
-
 const parseStringSync = promisify(parseString);
-
-const parseAccount = (data) => {
-  const guid = _.get(data, 'guid.0.value.0');
-  const userId = _.get(data, 'userId.0.value.0');
-  const displayName = _.get(data, 'displayName.0.value.0');
-
-  const baseContact = _.get(data, 'contact.0');
-  const contact = {
-    email: _.get(baseContact, 'email.0.value.0'),
-    telephone: _.get(baseContact, 'telephone.0.value.0'),
-    preference: _.get(baseContact, 'preference.0.value.0'),
-  };
-
-  const baseIndividualIdentity = _.get(data, 'individualIdentity.0');
-  const baseName = _.get(baseIndividualIdentity, 'name.0');
-
-  const individualIdentity = {
-    name: {
-      firstname: _.get(baseName, 'firstname.0.value.0'),
-      middleName: _.get(baseName, 'middleName.0.value.0'),
-      otherMiddleName: _.get(baseName, 'otherMiddleName.0.value.0'),
-      surname: _.get(baseName, 'surname.0.value.0'),
-      initials: _.get(baseName, 'initials.0.value.0'),
-    },
-    dateOfBirth: _.get(baseIndividualIdentity, 'dateOfBirth.0.value.0'),
-  };
-
-  const baseInternalIdentity = _.get(data, 'internalIdentity.0');
-  const internalIdentity = {
-    title: _.get(baseInternalIdentity, 'title.0.value.0'),
-    company: _.get(baseInternalIdentity, 'company.0.value.0'),
-    organizationCode: _.get(baseInternalIdentity, 'organizationCode.0.value.0'),
-    department: _.get(baseInternalIdentity, 'department.0.value.0'),
-    office: _.get(baseInternalIdentity, 'office.0.value.0'),
-    description: _.get(baseInternalIdentity, 'description.0.value.0'),
-    employeeId: _.get(baseInternalIdentity, 'employeeId.0.value.0'),
-  };
-
-  return {
-    guid,
-    userId,
-    displayName,
-    email: contact.email,
-    firstName: individualIdentity.name.firstname,
-    lastName: individualIdentity.name.surname,
-  };
-};
 
 function getWebServiceInfo({ env = 'dev' }) {
   const requestHeaders = {
     'Content-Type': 'text/xml;charset=UTF-8',
-    authorization: `Basic ${process.env.BCEID_SERVICE_BASIC_AUTH}`,
+    authorization: `Basic ${process.env.BCEID_SERVICE_BASIC_AUTH}`
   };
 
   const requesterIdirGuid = process.env.BCEID_REQUESTER_IDIR_GUID || '';
@@ -127,11 +41,11 @@ const generateXML = (
     serviceId = '',
     requesterIdirGuid = '',
     page = 1,
-    limit = 1,
+    limit = 1
   },
-  requestType = 'searchInternalAccount',
+  requestType = 'searchInternalAccount'
 ) => {
-  if (requestType === 'getAccountDetail')
+  if (requestType === 'getAccountDetail') {
     return `<?xml version="1.0" encoding="UTF-8"?>
     <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:V10="http://www.bceid.ca/webservices/Client/V10/">
         <soapenv:Header />
@@ -147,7 +61,7 @@ const generateXML = (
           </V10:getAccountDetail>
         </soapenv:Body>
     </soapenv:Envelope>`;
-  else
+  } else {
     return `<?xml version="1.0" encoding="UTF-8"?>
 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:V10="http://www.bceid.ca/webservices/Client/V10/">
     <soapenv:Header />
@@ -176,6 +90,7 @@ const generateXML = (
         </V10:searchInternalAccount>
     </soapenv:Body>
 </soapenv:Envelope>`;
+  }
 };
 
 async function checkUserExistsAtIDIM({ property = 'userGuid', matchKey = '', env = 'prod' }) {
@@ -185,7 +100,7 @@ async function checkUserExistsAtIDIM({ property = 'userGuid', matchKey = '', env
   try {
     const response = await axios.post(`${serviceUrl}/webservices/client/V10/BCeIDService.asmx?WSDL`, xml, {
       headers: requestHeaders,
-      timeout: 10000,
+      timeout: 10000
     });
 
     const { data: body } = response;
@@ -210,24 +125,16 @@ async function checkUserExistsAtIDIM({ property = 'userGuid', matchKey = '', env
   }
 }
 
-function handleError(error) {
-  if (error.isAxiosError) {
-    console.error((error.response && error.response.data) || error);
-  } else {
-    console.error(error);
-  }
-}
-
 async function getUserRolesMappings(adminClient, userId) {
   try {
     const clientRoles = [];
     const roleMappings = await adminClient.users.listRoleMappings({ realm: 'standard', id: userId });
     const realmRoles = roleMappings.realmMappings ? roleMappings.realmMappings.map((map) => map.name) : [];
     if (roleMappings.clientMappings) {
-      for (let map in roleMappings.clientMappings) {
+      for (const map in roleMappings.clientMappings) {
         clientRoles.push({
           client: roleMappings.clientMappings[map].client,
-          roles: roleMappings.clientMappings[map].mappings.map((role) => role.name),
+          roles: roleMappings.clientMappings[map].mappings.map((role) => role.name)
         });
       }
     }
@@ -238,59 +145,15 @@ async function getUserRolesMappings(adminClient, userId) {
   }
 }
 
-async function getAdminClient(env = 'dev') {
-  try {
-    const config = envs[env];
-    if (!config) throw Error(`invalid env ${env}`);
-
-    const kcAdminClient = new KcAdminClient({
-      baseUrl: `${config.url}/auth`,
-      realmName: 'master',
-      requestConfig: {
-        /* Axios request config options https://github.com/axios/axios#request-config */
-        timeout: 60000,
-      },
-    });
-
-    let decodedToken;
-
-    const auth = async () => {
-      await kcAdminClient.auth({
-        grantType: 'client_credentials',
-        clientId: config.clientId,
-        clientSecret: config.clientSecret,
-      });
-
-      decodedToken = jws.decode(kcAdminClient.accessToken);
-    };
-
-    const refreshAsNeeded = async () => {
-      const expiresIn = decodedToken.payload.exp * 1000 - Date.now();
-      log(expiresIn < ONE_MIN);
-      if (expiresIn < ONE_MIN) await auth();
-    };
-
-    kcAdminClient.reauth = auth;
-    kcAdminClient.refreshAsNeeded = refreshAsNeeded;
-    kcAdminClient.url = config.url;
-
-    await auth();
-    return kcAdminClient;
-  } catch (err) {
-    console.error(err);
-    return null;
-  }
-}
-
 async function removeUserFromCssApp(userData, clientData) {
   try {
     const headers = {
       'Content-Type': 'application/json',
-      Authorization: process.env.CSS_API_AUTH_SECRET,
+      Authorization: process.env.CSS_API_AUTH_SECRET
     };
     userData.clientData = clientData;
     const res = await axios.post(`${process.env.CSS_API_URL}/delete-inactive-idir-users`, userData, { headers });
-    return res.status === 200 ? true : false;
+    return res.status === 200;
   } catch (err) {
     handleError(err);
     return false;
@@ -325,14 +188,14 @@ async function removeStaleUsersByEnv(env = 'dev', pgClient, runnerName, startFro
 
       for (let x = 0; x < users.length; x++) {
         const { id, username } = users[x];
-        const idir_user_guid = String(users[x]?.attributes?.idir_user_guid || '').toLowerCase();
-        if (!idir_user_guid) continue;
+        const idirUserGuid = String(users[x]?.attributes?.idir_user_guid || '').toLowerCase();
+        if (!idirUserGuid) continue;
         const displayName = String(users[x]?.attributes?.display_name || '').toLowerCase();
         // ignore the users with `hold` in their displayname
         if (displayName && displayName.startsWith('hold -')) continue;
         log(`[${runnerName}] processing user ${username}`);
         if (username.includes('@idir')) {
-          const userExistsAtWb = await checkUserExistsAtIDIM({ property: 'userGuid', matchKey: idir_user_guid, env });
+          const userExistsAtWb = await checkUserExistsAtIDIM({ property: 'userGuid', matchKey: idirUserGuid, env });
           if (userExistsAtWb === 'notexists') {
             const { realmRoles, clientRoles } = await getUserRolesMappings(adminClient, id);
             await removeUserFromKc(adminClient, id);
@@ -347,7 +210,7 @@ async function removeStaleUsersByEnv(env = 'dev', pgClient, runnerName, startFro
               JSON.stringify(users[x].attributes) || '',
               realmRoles,
               clientRoles.map((r) => JSON.stringify(r)),
-              userDeletedAtCss,
+              userDeletedAtCss
             ];
             await pgClient.query({ text, values });
             deletedUserCount++;
@@ -377,21 +240,7 @@ async function removeStaleUsersByEnv(env = 'dev', pgClient, runnerName, startFro
   }
 }
 
-async function sendRcNotification(message, err) {
-  try {
-    const headers = { Accept: 'application/json' };
-    const statusCode = err ? 'ERROR' : '';
-    await axios.post(
-      process.env.RC_WEBHOOK,
-      { projectName: 'cron-remove-inactive-users', message, statusCode },
-      { headers },
-    );
-  } catch (err) {
-    console.error(err);
-  }
-}
-
-function main() {
+async function main() {
   async.parallel(
     [
       function (cb) {
@@ -414,18 +263,27 @@ function main() {
       },
       function (cb) {
         removeStaleUsersByEnv('prod', getPgClient(), 'prod-05', 40000, cb);
-      },
+      }
     ],
     async function (err, results) {
       if (err) {
         console.error(err.message);
-        await sendRcNotification('**Failed to remove inactive users** \n\n' + err.message, true);
+        await sendRcNotification(
+          'cron-remove-inactive-users',
+          '**Failed to remove inactive users** \n\n' + err.message,
+          true
+        );
       } else {
         const a = results.map((res) => JSON.stringify(res));
-        await sendRcNotification('**Successfully removed inactive users** \n\n' + a.join('\n\n'), false);
+        await sendRcNotification(
+          'cron-remove-inactive-users',
+          '**Successfully removed inactive users** \n\n' + a.join('\n\n'),
+          false
+        );
       }
-    },
+    }
   );
+  await deleteLegacyData('kc_deleted_users', process.env.INACTIVE_IDIR_USERS_RETENTION_DAYS || 60);
 }
 
 main();

@@ -1,15 +1,9 @@
-const _ = require('lodash');
-const { Client } = require('pg');
 const format = require('pg-format');
 const fsPromises = require('fs').promises;
 const fs = require('fs');
 const readline = require('readline');
+const { deleteLegacyData, getPgClient } = require('./helpers');
 
-const PGHOST = process.env.PGHOST || 'localhost';
-const PGPORT = process.env.PGPORT || '5432';
-const PGUSER = process.env.PGUSER || 'postgres';
-const PGPASSWORD = process.env.PGPASSWORD || 'postgres';
-const PGDATABASE = process.env.PGDATABASE || 'postgres';
 const LOG_BATCH_SIZE = process.env.LOG_BATCH_SIZE || 1000;
 const RETENTION_PERIOD_DAYS = process.env.RETENTION_PERIOD_DAYS || 30;
 const SAVE_LOGS_N_DAYS_AGO = process.env.SAVE_LOGS_N_DAYS_AGO || 2;
@@ -28,7 +22,7 @@ const logFields = [
   'processName',
   'processId',
   'timestamp',
-  'version',
+  'version'
 ];
 
 const getQuery = (logs) => {
@@ -50,7 +44,7 @@ const getQuery = (logs) => {
         version,
         namespace
       ) VALUES %L`,
-    logs,
+    logs
   );
   return query;
 };
@@ -95,7 +89,7 @@ const reduceDataFromFiles = async (dirname) => {
   let client;
 
   try {
-    client = getClient();
+    client = getPgClient();
     await client.connect();
     if (!fs.existsSync(dirname)) {
       console.info(`Directory ${dirname} does not exist.`);
@@ -105,7 +99,7 @@ const reduceDataFromFiles = async (dirname) => {
     const files = await fsPromises.readdir(dirname);
     for (const filename of files) {
       const lineReader = readline.createInterface({
-        input: fs.createReadStream(`${dirname}/${filename}`),
+        input: fs.createReadStream(`${dirname}/${filename}`)
       });
       promises.push(saveLogsForFile(lineReader, client));
     }
@@ -118,8 +112,8 @@ const reduceDataFromFiles = async (dirname) => {
 };
 
 const formatLog = (log) => {
-  log['timestamp'] = log['@timestamp'];
-  log['version'] = log['@version'];
+  log.timestamp = log['@timestamp'];
+  log.version = log['@version'];
   delete log['@timestamp'];
   delete log['@version'];
   try {
@@ -132,10 +126,10 @@ const formatLog = (log) => {
       return null;
     }
 
-    let { message } = log;
+    const { message } = log;
     const json = {};
     const fields = message.split(', ');
-    for (field of fields) {
+    for (const field of fields) {
       const [key, val] = field.split(/=(.+)/);
       json[key] = val;
     }
@@ -146,42 +140,14 @@ const formatLog = (log) => {
   }
 };
 
-const getClient = () => {
-  const client = new Client({
-    host: PGHOST,
-    port: parseInt(PGPORT),
-    user: PGUSER,
-    password: PGPASSWORD,
-    database: PGDATABASE,
-    ssl: { rejectUnauthorized: false },
-  });
-  return client;
-};
-
-const clearOldLogs = async (retentionPeriodDays) => {
-  console.info('Removing old logs from database...');
-  let client;
-  try {
-    client = getClient();
-    await client.connect();
-    const query = `DELETE from sso_logs where timestamp < NOW() - INTERVAL '${retentionPeriodDays} DAYS' and namespace = '${process.env.NAMESPACE}';`;
-    console.info(`Running delete query: ${query}`);
-    await client.query(query);
-  } catch (e) {
-    console.error(e);
-  } finally {
-    await client.end();
-  }
-};
-
 const parseLogStats = async () => {
   console.info('Collecting log stats...');
   let client;
   try {
-    client = getClient();
+    client = getPgClient();
     await client.connect();
     console.info('running save_log_types function...');
-    const saveStatsQuery = `SELECT save_log_types();`;
+    const saveStatsQuery = 'SELECT save_log_types();';
     await client.query(saveStatsQuery);
   } catch (e) {
     console.error(e);
@@ -201,7 +167,7 @@ async function saveFilesToDatabase(dirname) {
   try {
     const dateToSave = getDate(SAVE_LOGS_N_DAYS_AGO);
     const previousDayLogsFolder = `${dirname}/${dateToSave}`;
-    await clearOldLogs(RETENTION_PERIOD_DAYS);
+    await deleteLegacyData('sso_logs', RETENTION_PERIOD_DAYS);
     await reduceDataFromFiles(previousDayLogsFolder);
     await parseLogStats();
   } catch (err) {
