@@ -2,7 +2,6 @@ const { saveFilesToDatabase, getDate } = require('../event-logs');
 const { getPgClient } = require('../helpers.js');
 const fsPromises = require('fs').promises;
 const path = require('path');
-const { Client } = require('pg');
 
 /**
  * First log is an empty line
