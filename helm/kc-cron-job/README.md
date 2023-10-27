@@ -8,7 +8,7 @@ The two jobs preserve the number of active sessions in the application and the e
 
 The deployment steps for a new namespace follow:
 
-## 1. Create `kc-cron-rm-inactive-users` secret
+## 1. Create `kc-cron-job-secret` secret
 
 - **This step is optional and can be ignored if not installing `cron-remove-inactive-users.yaml`**
 
@@ -36,9 +36,11 @@ export PGDATABASE=
 export CSS_API_URL=http://localhost:8080/app
 export CSS_API_AUTH_SECRET=
 export RC_WEBHOOK=
+export VC_USERS_RETENTION_DAYS=
+export INACTIVE_IDIR_USERS_RETENTION_DAYS=
 
 # update <namespace> and run to create the secret
-make kc-cron-rm-inactive-users NAMESPACE=<namespace>
+make kc-cron-job-secret NAMESPACE=<namespace>
 ```
 
 ## 2. Expand the resources in the namespace

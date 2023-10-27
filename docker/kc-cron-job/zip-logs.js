@@ -53,7 +53,7 @@ const zipFolders = async (srcDir, destDir) => {
         stream.on('close', () => resolve());
         archive.finalize();
       });
-    }),
+    })
   );
 };
 
@@ -77,7 +77,7 @@ const deleteOldZipFiles = async (dirname, expiryLengthDays) => {
 
 async function sendRocketChatAlert(message, type) {
   const headers = {
-    'Content-Type': 'application/json',
+    'Content-Type': 'application/json'
   };
 
   const payload = { projectName: 'kc-cron-job', message, statusCode: type };
