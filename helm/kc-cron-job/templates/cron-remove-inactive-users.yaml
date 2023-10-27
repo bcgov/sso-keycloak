@@ -173,5 +173,7 @@ spec:
                     secretKeyRef:
                       name: kc-cron-job-secret
                       key: inactive-idir-users-retention-days
+                - name: NAMESPACE
+                  value: {{ .Values.namespace.rmInactiveUsers }}
           restartPolicy: Never
 {{- end }}

@@ -82,10 +82,18 @@ async function main() {
     async function (err, results) {
       if (err) {
         console.error(err.message);
-        await sendRcNotification('vc-remove-users', '**Failed to remove vc users** \n\n' + err.message, true);
+        await sendRcNotification(
+          'vc-remove-users',
+          `**[${process.env.NAMESPACE}] Failed to remove vc users** \n\n` + err.message,
+          true
+        );
       } else {
         const a = results.map((res) => JSON.stringify(res));
-        await sendRcNotification('vc-remove-users', '**Successfully removed vc users** \n\n' + a.join('\n\n'), false);
+        await sendRcNotification(
+          'vc-remove-users',
+          `**[${process.env.NAMESPACE}] Successfully removed vc users** \n\n` + a.join('\n\n'),
+          false
+        );
       }
     }
   );

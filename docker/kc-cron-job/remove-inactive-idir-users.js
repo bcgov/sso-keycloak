@@ -270,14 +270,14 @@ async function main() {
         console.error(err.message);
         await sendRcNotification(
           'cron-remove-inactive-users',
-          '**Failed to remove inactive users** \n\n' + err.message,
+          `**[${process.env.NAMESPACE}] Failed to remove inactive users** \n\n` + err.message,
           true
         );
       } else {
         const a = results.map((res) => JSON.stringify(res));
         await sendRcNotification(
           'cron-remove-inactive-users',
-          '**Successfully removed inactive users** \n\n' + a.join('\n\n'),
+          `**[${process.env.NAMESPACE}] Successfully removed inactive users** \n\n` + a.join('\n\n'),
           false
         );
       }

@@ -132,5 +132,7 @@ spec:
                     secretKeyRef:
                       name: kc-cron-job-secret
                       key: vc-users-retention-days
+                - name: NAMESPACE
+                  value: {{ .Values.namespace.rmVcUsers }}
           restartPolicy: Never
 {{- end }}
