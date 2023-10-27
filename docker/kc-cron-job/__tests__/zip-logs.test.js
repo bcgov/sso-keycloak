@@ -1,4 +1,5 @@
-const { saveFilesToDatabase, getDate, getClient } = require('../event-logs');
+const { saveFilesToDatabase, getDate } = require('../event-logs');
+const { getPgClient } = require('../helpers.js');
 const fsPromises = require('fs').promises;
 const path = require('path');
 const { Client } = require('pg');
@@ -19,7 +20,7 @@ jest.mock('pg', () => {
   const mockClient = {
     connect: jest.fn(),
     query: jest.fn(),
-    end: jest.fn(),
+    end: jest.fn()
   };
   return { Client: jest.fn(() => mockClient) };
 });
@@ -37,7 +38,7 @@ const clearFiles = () => fsPromises.rmdir(dir, { force: true, recursive: true })
 describe('Save Files to Database', () => {
   let client;
   beforeEach(() => {
-    client = new Client();
+    client = getPgClient();
   });
 
   afterAll(async () => {
@@ -52,13 +53,13 @@ describe('Save Files to Database', () => {
 
     // Empty line in logs should log a message indicating could not be parsed
     const jsonParseError = console.info.mock.calls.find((call) =>
-      call[0].startsWith('Error trying to JSON parse line'),
+      call[0].startsWith('Error trying to JSON parse line')
     );
     expect(jsonParseError).not.toBe(undefined);
 
     // Log with missing sequence should log a message indicating could not be uploaded
     const unexpectedFormatError = console.info.mock.calls.find((call) =>
-      call[0].startsWith('Log does not have expected format'),
+      call[0].startsWith('Log does not have expected format')
     );
     expect(unexpectedFormatError).not.toBe(undefined);
 
