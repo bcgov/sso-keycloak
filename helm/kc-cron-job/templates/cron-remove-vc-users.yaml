@@ -1,9 +1,9 @@
-{{- if .Values.enableRemoveInactiveUsersJob }}
+{{- if .Values.enableRemoveVcUsersJob }}
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: {{ include "..fullname" . }}-rm-inactive-users
-  namespace: {{ .Values.namespace.rmInactiveUsers }}
+  name: {{ include "..fullname" . }}-rm-vc-users
+  namespace: {{ .Values.namespace.rmVcUsers }}
   labels:
     app.kubernetes.io/name: {{ include "..name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}

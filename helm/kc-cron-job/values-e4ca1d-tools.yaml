@@ -9,7 +9,13 @@ imagePullSecrets:
 nameOverride: kc-cron-job
 fullnameOverride: kc-cron-job
 
+enableEventLogsJob: true
+
+enableActiveSessionsJob: true
+
 enableRemoveInactiveUsersJob: false
+
+enableRemoveVcUsersJob: true
 
 namespace:
   eventLogs:
@@ -18,6 +24,7 @@ namespace:
     - 'e4ca1d-prod'
   activeSessions: 'e4ca1d-tools'
   rmInactiveUsers: 'e4ca1d-tools'
+  rmVcUsers: 'e4ca1d-tools'
 
 pvc:
   name: sso-keycloak-logs
