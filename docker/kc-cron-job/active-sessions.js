@@ -1,5 +1,5 @@
 const format = require('pg-format');
-const { getPgClient } = require('./helpers');
+const { getPgClient, log } = require('./helpers');
 const KcAdminClient = require('keycloak-admin').default;
 
 const KEYCLOAK_URL = process.env.KEYCLOAK_URL || 'https://dev.oidc.gov.bc.ca';
@@ -12,6 +12,7 @@ const kcAdminClient = new KcAdminClient({
 });
 
 async function main() {
+  let client;
   try {
     await kcAdminClient.auth({
       grantType: 'client_credentials',
@@ -20,7 +21,7 @@ async function main() {
     });
 
     // see https://node-postgres.com/api/client#new-clientconfig-object
-    const client = getPgClient();
+    client = getPgClient();
 
     const realms = await kcAdminClient.realms.find({});
     const dataset = [];
@@ -45,10 +46,13 @@ async function main() {
     );
 
     await client.connect();
-    await client.query(query);
+    if (dataset.length > 0) await client.query(query);
+    else log('no sessions found');
     await client.end();
   } catch (err) {
     console.log(err);
+  } finally {
+    await client.end();
   }
 }
 
