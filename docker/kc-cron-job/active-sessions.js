@@ -48,7 +48,6 @@ async function main() {
     await client.connect();
     if (dataset.length > 0) await client.query(query);
     else log('no sessions found');
-    await client.end();
   } catch (err) {
     console.log(err);
   } finally {
