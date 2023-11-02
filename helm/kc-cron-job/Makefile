@@ -56,7 +56,7 @@ kc-cron-job-secret:
 		--from-literal=bceid-service-id-test=${BCEID_SERVICE_ID_TEST} \
 		--from-literal=prod-kc-client-id=${PROD_KEYCLOAK_CLIENT_ID} \
 		--from-literal=rc-webhook=${RC_WEBHOOK} \
-		--from-literal=vc-users-retention-days=${VC_USERS_RETENTION_DAYS} \
+		--from-literal=dc-users-retention-days=${DC_USERS_RETENTION_DAYS} \
 		--from-literal=inactive-idir-users-retention-days=${INACTIVE_IDIR_USERS_RETENTION_DAYS} \
 		--from-literal=dev-kc-url=${DEV_KEYCLOAK_URL} \
 		--from-literal=test-kc-url=${TEST_KEYCLOAK_URL} \

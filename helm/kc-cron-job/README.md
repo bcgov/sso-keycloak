@@ -36,7 +36,7 @@ export PGDATABASE=
 export CSS_API_URL=http://localhost:8080/app
 export CSS_API_AUTH_SECRET=
 export RC_WEBHOOK=
-export VC_USERS_RETENTION_DAYS=
+export DC_USERS_RETENTION_DAYS=
 export INACTIVE_IDIR_USERS_RETENTION_DAYS=
 
 # update <namespace> and run to create the secret
