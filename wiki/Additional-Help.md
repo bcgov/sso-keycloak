@@ -12,4 +12,3 @@ Within RocketChat if you see someone asking questions or have issues for which y
 <p align="Center">
   <img width="800" height="350" src="https://user-images.githubusercontent.com/87393930/134070649-b9ee5e9b-d838-42da-848a-29e89e45d319.png">
 </p>
-

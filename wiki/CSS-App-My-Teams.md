@@ -1,13 +1,13 @@
 # Overview of My Teams
 We've heard from our clients on the value of our product, the Common Hosted Single Sign On  (CSS) App and a request for a feature to allow others to have access to the integrations you create with our CSS App, so let's talk about the concept of Teams!
 
-Within the CSS App, you can create a team which allows you to add others to your team, manage the integration and manage the CSS API account you've requested. 
+Within the CSS App, you can create a team which allows you to add others to your team, manage the integration and manage the CSS API account you've requested.
 
 ## How do I create a team?
 
-There are two ways to create teams within the CSS app. 
+There are two ways to create teams within the CSS app.
 
-Method 1: Go to my “My Teams” tab, and select the “+Create a New Team” button. 
+Method 1: Go to my “My Teams” tab, and select the “+Create a New Team” button.
 
 Method 2: Go to the “My Projects” tab, select “+Request SSO Integration”, and select “Yes” for creating a project team.
 
@@ -37,11 +37,11 @@ When creating a team, you can assign this team to one integration, or several in
 
 
 #### Managing a team as an Admin
-Users with the **Admin** role can manage teams. 
+Users with the **Admin** role can manage teams.
 
-##### Adding New Team Members: 
+##### Adding New Team Members:
 
-**Admins** can add new users to a Team, and assign users as either Admins or Members. 
+**Admins** can add new users to a Team, and assign users as either Admins or Members.
 
 To add a new Team member, **Admins** must use a government email address, to ensure the user can login to the app. Once an invitation is sent, the new team member have 2 business days to login to the CSS App to be added to the team. If the team member is unable to login within this time period, their invitation link will expire. In this case, Admins can resend the invitation link from the Dashboard, under the “My Teams” tab.
 
@@ -92,4 +92,3 @@ Only an **Admin** can create roles and once the roles are created, Admins and Me
 | Create API Account| **Admin** | N/A |
 | View/Download API Account | **Admin** |  N/A |
 | Delete API Account | **Admin** | N/A |
-

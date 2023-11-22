@@ -7,14 +7,14 @@ Our service, the Pathfinder SSO ensures that our Keycloak server acts as an Open
 
 Specifically, we make use of the Red Hat SSO v 7.6.1.GA
 
-**Other systems we rely on** 
+**Other systems we rely on**
 
 The Pathfinder SSO service is hosted on the Private Cloud Openshift platform in the government data centers in Kamloops and Calgary (DR). There are planned and unplanned outages that impact the infrastructure that our service is hosted in and thus impact the availability of the service.
 
 **Private Cloud Platform as a Service (Platform Services)**
 
 We are a subset of a larger ecosystem of services within BC Government. Our Keycloak server sits on the [BCGov Private Cloud Platform as a Service aka Openshift](https://cloud.gov.bc.ca/private-cloud).
-Planned outages on the Openshift platform have minimal impact on our end user uptime due to the Switchover/GoldDR process (15-30 minutes at most). 
+Planned outages on the Openshift platform have minimal impact on our end user uptime due to the Switchover/GoldDR process (15-30 minutes at most).
 
 The current availability commitments for the Gold/Gold DR Openshift service is 99.95%.
 
@@ -23,7 +23,7 @@ Reference: [Private Cloud Memorandum of Understanding](https://cloud.gov.bc.ca/p
 **BC Government Kamloops and Calgary Data Centers**
 
 It should be noted together with the Private Cloud/Platform Services Team we are reliant on the service levels agreed upon by the
-Province an the Kamloops/Calgary Data Centers. The unplanned outage to the Data Centers are out of our control and impact our Service Level Target. 
+Province an the Kamloops/Calgary Data Centers. The unplanned outage to the Data Centers are out of our control and impact our Service Level Target.
 
 The current availability commitments for the Data Centers are 99.5%.
 
@@ -53,7 +53,7 @@ This is SLA is is based on the highest SLA for the services we rely on.
 #### Service Level Defined
 As of writing (April 2023) we define our service levels as:
 
-•	Our service is available 24/7, except during planned outages within the Kamloops and Calgary data centres. Planned outages are communicated through [RocketChat](https://chat.developer.gov.bc.ca/channel/sso) 
+•	Our service is available 24/7, except during planned outages within the Kamloops and Calgary data centres. Planned outages are communicated through [RocketChat](https://chat.developer.gov.bc.ca/channel/sso)
 
 •	Our regular business hours are weekdays from 9:00 am to 5:00 pm Pacific Time, excluding statutory holidays. Client provisioning questions and requests will be reviewed and handled during normal business hours.  After hours support is provided by the Pathfinder SSO team, and is only available for service outages and other incidents that impact the service
 
@@ -67,11 +67,11 @@ The Pathfinder SSO Team responds to 3 levels or incidents: P1 - Critical, P3 - M
 The team responds to all service incidents through our 24/7 process where our team is alerted of the incident. Our target response times are:
 
 > P1 - Critical - respond within 20mins
-> 
+>
 > P3 - Moderate - respond within 30 mins
-> 
+>
 > P4 - Low - respond within 45 mins
-> 
+>
 
 As a very responsive team, you will see our metrics over the years and that we respond  very quickly [2022 and 2023 Recap of Alerts/Incidents](https://github.com/bcgov/sso-keycloak/wiki/Alerts-and-Us#metrics)
 
@@ -80,11 +80,11 @@ It should be noted that our current version of Redhat SSO does not enable us to 
 
 **Change Communications**
 
-When a change occurs on our service, we will provide notification in advance in these ways: 
+When a change occurs on our service, we will provide notification in advance in these ways:
 
 **Minor changes** are announced 24 hours in advance in the [Rocket.Chat #sso channel.](https://chat.developer.gov.bc.ca/channel/sso) An example of a minor change is tied to small bug fixes or other low-impact changes.
 
-**Emergency change**s are announced as soon as possible in advance in the [Rocket.Chat #sso channel.](https://chat.developer.gov.bc.ca/channel/sso)  channel. An emergency change is performed to recover a failed service, prevent a failure or address a security vulnerability. 
+**Emergency change**s are announced as soon as possible in advance in the [Rocket.Chat #sso channel.](https://chat.developer.gov.bc.ca/channel/sso)  channel. An emergency change is performed to recover a failed service, prevent a failure or address a security vulnerability.
 
 **Medium/Major changes** are announced five (5) business days in advance in the [Rocket.Chat #sso channel.](https://chat.developer.gov.bc.ca/channel/sso)  channel. An example of a medium change is an upgrade to the keycloak version number, with limited impacts.
 
@@ -120,7 +120,7 @@ Uptime will calculate the total downtime for the alert
 ![image](https://github.com/bcgov/sso-keycloak/assets/9705602/7892e68c-8534-4f56-87d9-1a42aac60003)
 
 
-### Gold Keycloak SSO Prod End User Access Uptime 
+### Gold Keycloak SSO Prod End User Access Uptime
 | Month | Downtime |
 | -------- | ------- |
 | January 2023 | 41m 6s |
@@ -134,7 +134,7 @@ Uptime will calculate the total downtime for the alert
 | September 2023 | 0 |
 | October 2023 | 0h27m2s |
 
-### Gold KeyCloak SSO Prod and IDIR siteminder Uptime 
+### Gold KeyCloak SSO Prod and IDIR siteminder Uptime
 | Month | Downtime |
 | -------- | ------- |
 | January 2023 | 1h0m18s |
@@ -152,7 +152,7 @@ Uptime will calculate the total downtime for the alert
 ### Incidents
 #### Priority 1 aka Critical Impact to Service -- no end users can log into their apps connected to keycloak
 Pathfinder Team commits to acknowledging issue within 15 -20 mins and resolving as quickly as possible
-##### P1 Stats 
+##### P1 Stats
 | Month      | Number of Alerts | Acknowledge Time | Resolve Time    | Notes |
 | :---        |     :----:   |   :----:   |          ---: |---: |
 | January      |  6 | 2min 11s       | 45m 26s  |  Jan 25 & Jan 24 - OCP Upgrade |
@@ -182,7 +182,7 @@ Pathfinder Team commits to acknowledging issue within 15 -30 mins and resolving 
 | September |  1 | 21s       | 21s| Not a real alert, call came in|
 | October|  2 | 45m32s       | 46m03s| Not real alerts, came in from the call system |
 
-#### Priority 4 aka Low Impact to Service -- 
+#### Priority 4 aka Low Impact to Service --
 Pathfinder Team commits to acknowledging issue within 15 -30 mins and resolving as quickly as possible
 ##### P4
 | Month      | Number of Alerts | Acknowledge Time | Resolve Time    | Notes |
@@ -238,5 +238,3 @@ TBD
 | Oct   | 4 | 1m 18s | 1m 18s   |
 | Nov   | 5  | 22m 35s | 36m 9s   |
 | Dec   | 14 | 2m 29s |  2m 49s  |
-
-

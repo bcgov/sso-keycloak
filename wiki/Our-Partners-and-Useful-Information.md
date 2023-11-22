@@ -23,13 +23,13 @@
 - **Digital Credential**	These are the digital equivalents of physical credentials and used with a secured digital wallet for managing and storing.[reference](https://digital.gov.bc.ca/digital-trust/about/what-are-digital-credentials/)
 
 
-- **GitHub associated with BC Gov Org**	 Allows login of GitHub BC Gov Org member. At the time of writing, production approval for this requires you to obtain an exemption to the IM/IT standards. [IM/IT Standards Frequently Asked Questions](https://www2.gov.bc.ca/gov/content/governments/services-for-government/policies-procedures/im-it-standards/im-it-standards-faqs) 
+- **GitHub associated with BC Gov Org**	 Allows login of GitHub BC Gov Org member. At the time of writing, production approval for this requires you to obtain an exemption to the IM/IT standards. [IM/IT Standards Frequently Asked Questions](https://www2.gov.bc.ca/gov/content/governments/services-for-government/policies-procedures/im-it-standards/im-it-standards-faqs)
 
 
 ## Azure IDIR and IDIR?
-Using Azure IDIR adds the benefit of MFA (multi-factor authentication). This is a step up security-wise from regular IDIR. 
+Using Azure IDIR adds the benefit of MFA (multi-factor authentication). This is a step up security-wise from regular IDIR.
 
-You may have to educate your end users on MFA and please take note if your IDIR is not tied to a gov.bc.ca email address, please use idir_username@gov.bc.ca when prompted for your email. 
+You may have to educate your end users on MFA and please take note if your IDIR is not tied to a gov.bc.ca email address, please use idir_username@gov.bc.ca when prompted for your email.
 
 You can **learn** [here from our IDIR Partner](https://intranet.gov.bc.ca/thehub/ocio/ocio-enterprise-services/information-security-branch/information-security-mfa/mfa-registration)
 
@@ -40,7 +40,7 @@ Also note if you get an error message similar to the one below, please ensure th
 
 ### IDIR and BCeID in the same browser
 
-As we partner with the BC Gov Identity Partners of IDIR and BCeID please note in the same browser, you cannot have one tab logged in with IDIR and another with BCeID. 
+As we partner with the BC Gov Identity Partners of IDIR and BCeID please note in the same browser, you cannot have one tab logged in with IDIR and another with BCeID.
 
 Please use a private browser by either using incognito or clearing your cache.
 
@@ -50,7 +50,7 @@ Please ensure you have tested with an incognito browser as mentioned above. If i
 
 ## Digital Credential Configuration
 
-This defines which credential (or combinations of credentials) will be requested at user authentication. 
+This defines which credential (or combinations of credentials) will be requested at user authentication.
 
 Please work with the DITP team ditp.support@gov.bc.ca to define whether an existing configuration can be used, or a new one should be created for the specific use-case. Additionally, some best practices that need to be implemented at the application level can be found [here](https://github.com/bcgov/vc-authn-oidc/blob/main/docs/BestPractices.md)
 

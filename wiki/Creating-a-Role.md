@@ -10,7 +10,7 @@ Roles identify a type or category of user. Admin, user, manager, and employee ar
 
 The CSS App provides the ability to add roles to an integration. This concept is also known as Role-based access control (RBAC), a mechanism that restricts system access.
 
-### Why use roles? 
+### Why use roles?
 
 You can use roles to enable access to specific pages or data to only those users who connect, with efficiency, data security and simplicity under consideration.
 
@@ -26,7 +26,7 @@ You can use roles to enable access to specific pages or data to only those users
 [View a quick video of how to create Roles](https://github.com/bcgov/sso-keycloak/assets/56739669/435f502a-aed8-49de-9ff7-f64dd4a38ff0), or continue reading the instructions below.
 
 
-<!-- video from May 2023 
+<!-- video from May 2023
 [View a quick video of how to create Roles](https://user-images.githubusercontent.com/56739669/231529538-0e1efa5a-51df-401a-99c2-dbc964e8cac6.mp4), or continue reading the instructions below. -->
 
 
@@ -49,7 +49,7 @@ You can use roles to enable access to specific pages or data to only those users
 1. You have the ability to create different roles for each of the different environment(s) in your integration
 1. When you select a role, the right hand side will show users assigned to that role
 1. By deleting a role, you are also removing the role from the users assigned to the role....it’s on our backlog to allow to delete one user at a time
-1. Any Team Member within your integration can create OR delete roles * 
+1. Any Team Member within your integration can create OR delete roles *
 1. Any Team Member within your integration can see all users assigned to role
 
 ( * ) we've got it in our backlog to configure team admins to handle role management( create/delete roles) and team members to handle user assignment (add/remove users to roles)
@@ -62,7 +62,7 @@ Some client teams require roles to be created for their service accounts. Exampl
 We've heard from clients the need to create roles on service accounts and as a community member in our SHARED/STANDARD service, please keep in mind, that other teams may use the same role names as you. For this reason and for good security posture, your API end point checks should look at the `aud`. **Audience check is required if you have an API for your application and you have a standard integration.**
 
 
-From the wisest of our team member "One final note which is paramount; securing your API endpoints. If you're using the standard realm then you'll have to use a combination of roles (created in CSS), issuer & audience (as well as the public key) to confirm the token is indeed valid for your API. Otherwise, other teams in the same realm would have the ability to make the same call" 
+From the wisest of our team member "One final note which is paramount; securing your API endpoints. If you're using the standard realm then you'll have to use a combination of roles (created in CSS), issuer & audience (as well as the public key) to confirm the token is indeed valid for your API. Otherwise, other teams in the same realm would have the ability to make the same call"
 
 ***
 

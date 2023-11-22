@@ -3,7 +3,7 @@
 * [Keycloak End User uptime aka can a keycloak user log in to the Gold Service? ](https://uptime.com/s/bcgov-sso-gold/1391032)
 * [Keycloak Service Uptime aka is the Gold Keycloak service up?](https://uptime.com/s/bcgov-sso-gold/1389409)
 * [Keycloak SSO Prod & IDIR Service Uptime aka can an IDIR user log into the Gold Service?](https://uptime.com/s/bcgov-sso-gold/1391029)
-## DNS Checks 
+## DNS Checks
 If one these DNS checks fails while the other uptime checks pass for an environment, then the app may be running in Disaster Recovery mode.
 * [Dev DNS Check aka DNS Dev Passes if dev.loginproxy.gov.bc.ca points to the Gold Cluster ](https://uptime.com/statuspage/bcgov-sso-gold/1719406)
 * [Test DNS Check aka DNS Test Passes if test.loginproxy.gov.bc.ca points to the Gold Cluster ](https://uptime.com/statuspage/bcgov-sso-gold/1719409)
@@ -22,7 +22,7 @@ We know in advance the week Gold work will happen. Will notify community members
 
 ## Incident on Gold
 
-Going from our primary to fail over is something we are prepared for. You can expect us to send an email commuincation blast as well as updates in the appropriate rocketchat channels on our progress. 
+Going from our primary to fail over is something we are prepared for. You can expect us to send an email commuincation blast as well as updates in the appropriate rocketchat channels on our progress.
 
 
 ## Example Messaging

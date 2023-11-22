@@ -1,5 +1,5 @@
 
-As of July 2023 this is archived information that will be ressurected once our gold custom realm registry is created. 
+As of July 2023 this is archived information that will be ressurected once our gold custom realm registry is created.
 
 # Step 0
 Are you the product owner or project admin/team lead?
@@ -21,4 +21,4 @@ Keycloak realm:
 Admin user's Business Email Address:
 
 
-Please note that we will only start processing your request when the you've reached out us. 
+Please note that we will only start processing your request when the you've reached out us.

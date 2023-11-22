@@ -35,4 +35,4 @@ A: No, your CSS API Account is used only to manage your team's gold integrations
 A: When the team is deleted, the associated CSS API Account gets deleted automatically
 
 ### Q: Do I need to create an integration before requesting CSS API Account?
-A: You can request CSS API Account even if there are no integrations associated with your team 
+A: You can request CSS API Account even if there are no integrations associated with your team

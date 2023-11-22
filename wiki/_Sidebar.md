@@ -15,4 +15,3 @@
 [![Semantic description of image](https://user-images.githubusercontent.com/87393930/133819035-4d0444b7-f962-4370-93b5-ac6201a05d0f.png)][2]
 
 [2]:https://github.com/bcgov/sso-keycloak/wiki/Additional-Help
-

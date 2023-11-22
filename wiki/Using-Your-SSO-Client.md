@@ -44,7 +44,7 @@ Visit our [discussions page](https://github.com/bcgov/sso-keycloak/discussions/1
 ### Openshift Clusters
 In mid 2022, we moved our keycloak instance from the Platform Services **Silver Openshift cluster** to their **Gold Openshift cluster**. As of June 15, 2023, all of our services will live in Gold.
 
-As part of the [Private Cloud Platform Openshift community](https://cloud.gov.bc.ca/private-cloud/) our service sits in the Gold Cluster which enables us to ensure our service is up 24/7. [Check out our up-to-date system health](https://uptime.com/s/bcgov-sso-gold) 
+As part of the [Private Cloud Platform Openshift community](https://cloud.gov.bc.ca/private-cloud/) our service sits in the Gold Cluster which enables us to ensure our service is up 24/7. [Check out our up-to-date system health](https://uptime.com/s/bcgov-sso-gold)
 
 #### Redhat SSO Version
 
@@ -58,11 +58,11 @@ For Red Hat SSO & Keycloak version information, please see this link: https://ac
 
 ### Environments and Accounts
 
-You will have a Pathfinder SSO client in each of the DEV, TEST and PROD servers. Assuming you have a DEV, TEST, and PROD environments for your application, this should give you the decoupling you need to set up each environment up with its own login context. 
+You will have a Pathfinder SSO client in each of the DEV, TEST and PROD servers. Assuming you have a DEV, TEST, and PROD environments for your application, this should give you the decoupling you need to set up each environment up with its own login context.
 
 ##### IDIR & GitHub Accounts
 
-For IDIR and GitHub, your users will use "real" credentials in all three environments. 
+For IDIR and GitHub, your users will use "real" credentials in all three environments.
 
 ##### BCeID Accounts
 
@@ -89,7 +89,7 @@ All clients of Pathfinder SSO will use _Authorization Code Flow_. This is the mo
 
 When requesting a new client you can specify whether you want it set up as a _Confidential_ client or you want it set up as a _Public Client with PKCE_.
 
-With a confidential client, the back-end component securely stores an application secret that allows it to communicate with the KeyCloak server to facilitate the OIDC authentication process. 
+With a confidential client, the back-end component securely stores an application secret that allows it to communicate with the KeyCloak server to facilitate the OIDC authentication process.
 
 A public client is slightly less secure because there is no secret, but this configuration is required by some architectures and is supported as well. Public clients can use PKCE (Proof Key for Code Exchange) as a more secure flow.
 
@@ -112,7 +112,7 @@ If not using the adapter, you can use a custom implementation. This will require
 
 For an example of a custom PKCE implementation, see [here](https://github.com/bcgov/sso-requests/blob/dev/app/utils/openid.ts#L20) for generating the authentication URL and [here](https://github.com/bcgov/sso-requests/blob/dev/app/utils/openid.ts#L49) for exchanging the received code for an access token.
 
-#### Usecases 
+#### Usecases
 
 **Browser Login** - A web based application requiring a login component
 
@@ -190,7 +190,7 @@ After having your `Installation JSON`, you can setup your application quickly us
 #### Connecting without an adapter
 
 If you are not using an adapter, you will require some additional information to set up your OpenID connection. Required information
-can be found behind the publicly accessible `provider configuration endpoint` for your environment. 
+can be found behind the publicly accessible `provider configuration endpoint` for your environment.
 
 Based on our integration with us, you will either have your integration connected to our Gold Standard offering. Reach out to us if you have questions.
 
@@ -203,7 +203,7 @@ These are:
 - **Test**: https://test.loginproxy.gov.bc.ca/auth/realms/standard/.well-known/openid-configuration
 - **Prod**: https://loginproxy.gov.bc.ca/auth/realms/standard/.well-known/openid-configuration
 
-##### OpenID Provider Metadata sample 
+##### OpenID Provider Metadata sample
 It gives you `OpenID Provider Metadata` required for the OpenID connect configration:
 
 ```json
@@ -296,8 +296,8 @@ Your redirect URIs should only be resources that you control. Most of the time y
 
 In KeyCloak, if the realm that contains your client has more than one IDP configured, KeyCloak shows a page that prompts the user to select which IDP they want to log in with. Almost all teams have chosen to hide this page from their users by specifying the IDP as a query string parameter in the KeyCloak Authorization URI value behind their login button. The querystring is 'kc_idp_hint'. (The IDPs available will depend on the standard realm in which your client exists.) By specifying the IDP in this way, the user will be redirected directly to the login page for the identity provider and will not see the KeyCloak login choice page at all.
 
-| Display Name       | kc_idp_hint        | 
-| ------------- |:-------------:| 
+| Display Name       | kc_idp_hint        |
+| ------------- |:-------------:|
 | IDIR           | idir |
 | Azure IDIR     | azureidir |
 | Basic BCeID    | bceidbasic |
@@ -307,7 +307,7 @@ In KeyCloak, if the realm that contains your client has more than one IDP config
 | GitHub Public            | githubpublic |
 
 
-We do have a work around for those of you who ABSOLUTELY need the keycloak login page [here](https://github.com/bcgov/sso-keycloak/wiki/Recommend-Skipping-the-Keycloak-Login-Page-and-if-you-ABSOLUTELY-need-it), please talk to us about this. 
+We do have a work around for those of you who ABSOLUTELY need the keycloak login page [here](https://github.com/bcgov/sso-keycloak/wiki/Recommend-Skipping-the-Keycloak-Login-Page-and-if-you-ABSOLUTELY-need-it), please talk to us about this.
 
 #### Do Validate the IDP in the JWT
 

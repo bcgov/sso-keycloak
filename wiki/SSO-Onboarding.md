@@ -14,9 +14,9 @@ Use the [Common hosted Single Sign on
 The Pathfinder SSO team will provision your DEV and TEST clients right away. You will be provided the client name and secret for each environment via a secure channel. The PROD client will be provisioned upon approval from the IDIM team.
 
 (*) Note for Azure IDIR Requests
-Please note the provisioning process is the same as IDIR. 
+Please note the provisioning process is the same as IDIR.
 
-### Need to host your application on the BC Gov Cloud service? 
+### Need to host your application on the BC Gov Cloud service?
 
 Please visit [BCGov Cloud Services](https://digital.gov.bc.ca/cloud/services/)
 
@@ -27,6 +27,3 @@ Once you have your client details, you can configure your application to use the
 #### *Have any questions? We would love to hear from you.* [![Semantic description of image](https://user-images.githubusercontent.com/87393930/133688357-09f82374-ba18-4402-8089-c0a989dde882.png)][2]   <a href="mailto:bcgov.sso@gov.bc.ca?"><img src="https://user-images.githubusercontent.com/87393930/133690650-b706e658-27bf-4066-92ba-3a7d8a4593ef.png"/></a>
 [2]: https://chat.developer.gov.bc.ca/channel/sso
 [3]: https://[mail](mailto:bcgov.sso@gov.bc.ca)[email](mailto:bcgov.sso@gov.bc.ca)
-
-
-
