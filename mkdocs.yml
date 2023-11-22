@@ -1,0 +1,5 @@
+site_name: BC Gov Common Hosted Single Sign-on
+docs_dir: wiki
+
+plugins: 
+- techdocs-core

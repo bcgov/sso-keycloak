@@ -1,0 +1,12 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: "css-docs"
+  description: "A guide to the BC Gov Common Hosted Single Sign-on"
+  annotations:
+    github.com/project-slug: bcgov/sso-keycloak
+    backstage.io/techdocs-ref: dir:./wiki
+spec:
+  type: documentation
+  lifecycle: production
+  owner: "citz"

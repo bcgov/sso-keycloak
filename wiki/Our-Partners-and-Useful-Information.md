@@ -1,0 +1,124 @@
+
+
+## Navigation
+- [What are identity providers, and which are available to BC Government?](#What-are-identity-providers)
+- [Azure IDIR and IDIR - What's the difference?](#Azure-IDIR-and-IDIR)
+- [Common Login Errors](#common-login-errors)
+- [BC Service Card Integration](#BC-service-card-integration)
+- [Identity Provider Attribute Mapping](https://github.com/bcgov/sso-keycloak/wiki/Identity-Provider-Attribute-Mapping)
+- [BC Government Identity Standards aka IM/IT Identity Standards](https://www2.gov.bc.ca/gov/content/governments/services-for-government/policies-procedures/im-it-standards/find-a-standard#id_mgt)
+
+
+## What are identity providers?
+
+[Identity providers](https://github.com/bcgov/sso-keycloak/wiki/Useful-References#identity-provider) are directories of user accounts with details about those users, called attributes. The ones available to Pathfinder SSO Clients are:
+- **IDIR** IDIR accounts are given to individuals who work for the B.C. government. Each account has an IDIR username and password for logging in. [reference](https://www2.gov.bc.ca/gov/content/governments/services-for-government/information-management-technology/identity-and-authentication-services/login-best-practices/language-consistency)
+
+- **Azure IDIR** IDIR accounts with the added the benefit of MFA (multi-factor authentication). This is a step up security-wise from regular IDIR. [reference](https://intranet.gov.bc.ca/thehub/ocio/ocio-enterprise-services/information-security-branch/information-security-mfa/mfa-registration)
+
+- **BCeID** BCeID Accounts enable people to access government services using a single identifier and password.[reference](https://www2.gov.bc.ca/gov/content/governments/services-for-government/information-management-technology/identity-and-authentication-services/bceid-authentication-service)
+
+- **BCSC (BC Services Card)**	The BC Services Card provides access to government services for B.C. residents [reference](https://www2.gov.bc.ca/gov/content/governments/government-id/bc-services-card/log-in-with-card)
+
+- **Digital Credential**	These are the digital equivalents of physical credentials and used with a secured digital wallet for managing and storing.[reference](https://digital.gov.bc.ca/digital-trust/about/what-are-digital-credentials/)
+
+
+- **GitHub associated with BC Gov Org**	 Allows login of GitHub BC Gov Org member. At the time of writing, production approval for this requires you to obtain an exemption to the IM/IT standards. [IM/IT Standards Frequently Asked Questions](https://www2.gov.bc.ca/gov/content/governments/services-for-government/policies-procedures/im-it-standards/im-it-standards-faqs) 
+
+
+## Azure IDIR and IDIR?
+Using Azure IDIR adds the benefit of MFA (multi-factor authentication). This is a step up security-wise from regular IDIR. 
+
+You may have to educate your end users on MFA and please take note if your IDIR is not tied to a gov.bc.ca email address, please use idir_username@gov.bc.ca when prompted for your email. 
+
+You can **learn** [here from our IDIR Partner](https://intranet.gov.bc.ca/thehub/ocio/ocio-enterprise-services/information-security-branch/information-security-mfa/mfa-registration)
+
+Also note if you get an error message similar to the one below, please ensure the end user has an BC Gov Azure IDIR account in order to gain access.
+ <img width="380" height="300" src="https://user-images.githubusercontent.com/56739669/234470765-f3250a0a-7a62-4c42-b532-682351c0e103.png">
+
+## Common Login Errors
+
+### IDIR and BCeID in the same browser
+
+As we partner with the BC Gov Identity Partners of IDIR and BCeID please note in the same browser, you cannot have one tab logged in with IDIR and another with BCeID. 
+
+Please use a private browser by either using incognito or clearing your cache.
+
+### Other issues
+
+Please ensure you have tested with an incognito browser as mentioned above. If it is still an issue, reachout to use on [rocketchat](https://chat.developer.gov.bc.ca/channel/sso)
+
+## Digital Credential Configuration
+
+This defines which credential (or combinations of credentials) will be requested at user authentication. 
+
+Please work with the DITP team ditp.support@gov.bc.ca to define whether an existing configuration can be used, or a new one should be created for the specific use-case. Additionally, some best practices that need to be implemented at the application level can be found [here](https://github.com/bcgov/vc-authn-oidc/blob/main/docs/BestPractices.md)
+
+## BC Service Card Integration
+<br>
+
+*BC Services Card provides an Open ID Connect authentication server. Integration to this service is not available in the *standard* realms.*
+
+The IDIM team that manages BCSC integration is responsible for safeguarding the personal information that is available in a login context. They have a business requirement that integrations to BCSC cannot be shared without IDIM approval. The standard realm is a shared environment -- if we enabled a BCSC integration in a standard realm it would be technically available to all the clients that are configured to use that realm, thus breaking the security model.
+
+---------------------------------
+
+### Options for Teams with BCSC Requirements
+
+<details>
+<summary><b>Join an Existing Dedicated Custom Realm</b></summary>
+<br>
+
+With approval from IDIM, it is possible to join an existing realm that shares the same security context as your application and already has BCSC set up. This generally means that the existing clients are all from the same ministry or sector and have the same requirements for personal information through the login process.
+
+There are very few instances of this pattern at this time, but it is an option that is possible with the help and approval of IDIM.
+
+Be that as it may, if there is a closely related project in your ministry or sector that you think would be a candidate for sharing a BCSC integration, you may wish to start the conversation with IDIM and see if it makes sense for your situation.
+</details>
+
+<details>
+<summary><b>Integrate Directly with BCSC</b></summary>
+<br>
+
+Since IDIM provides an OIDC service for BCSC, your app can integrate directly with that service instead of brokering through Pathfinder SSO. Their security practices usually require a client per application in any case, so your architecture might not require using Pathfinder SSO as a proxy authentication service anyway. In addition, this pattern removes one possible point of failure from the application architecture.
+
+Be mindful however that the SSO (Keycloak) product does offer token and session management; integrating directly with BCSC would require another form of token/session management to be used in your application.
+
+</details>
+
+<details>
+<summary><b>Configure and Manage Your Own Dedicated KeyCloak Server
+</b></summary>
+<br>
+
+
+KeyCloak runs on JBoss quite happily in a Docker container with a PostgreSQL backend. If you really need features provided by KeyCloak and you want to integrate with BCSC, it's possible to run your own KeyCloak server and configure your connection to BCSC by setting up your own OIDC IDP.
+</details>
+
+<details>
+<summary><b>Obtain a Dedicated KeyCloak Realm on the Pathfinder SSO service
+</b></summary>
+<br>
+
+If the service gets to the point where there are "slots" to create new dedicated realms, a BCSC identity provider can be securely configured within a realm dedicated to your team. For now, we are unable to offer new realms while we work to reduce the number down to a manageable size.
+</details>
+
+<details>
+<summary><b>Other?
+</b></summary>
+<br>
+
+Things are always evolving and the BC Government Open Source community is constantly innovating and solving problems together. Don't be afraid to jump into the #SSO RocketChat channel and see what the community recommends if you have an unusual use case or an innovative idea. Thank you for your collaboration!
+
+
+</details>
+
+
+<p align="right">
+  <img width="400" height="200" src="https://user-images.githubusercontent.com/87393930/133848225-13dfcb95-7a2e-46b4-ace7-edc436473905.png">
+</p>
+
+----------------------------
+#### *Have any questions? We would love to hear from you.* [![Semantic description of image](https://user-images.githubusercontent.com/87393930/133688357-09f82374-ba18-4402-8089-c0a989dde882.png)][2]   <a href="mailto:bcgov.sso@gov.bc.ca?"><img src="https://user-images.githubusercontent.com/87393930/133690650-b706e658-27bf-4066-92ba-3a7d8a4593ef.png"/></a>
+[2]: https://chat.developer.gov.bc.ca/channel/sso
+[3]: https://[mail](mailto:bcgov.sso@gov.bc.ca)[email](mailto:bcgov.sso@gov.bc.ca)
