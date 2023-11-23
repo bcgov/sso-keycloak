@@ -38,7 +38,7 @@
 
 The Pathfinder SSO service (also known as "KeyCloak" or "RedHat SSO") consists of two offerings: Standard and Custom.
 
-Over the years, we’ve engaged and learned that the majority of our clients can make use of our standard service, so we created the  [Common hosted Single Sign on (CSS) App](https://bcgov.github.io/sso-requests/). It’s a simple way for application development teams to set up login functionality for their app from approved [identity providers](https://github.com/bcgov/sso-keycloak/wiki/Useful-References#identity-provider) over a standard and secure protocol aka to help you obtain the technical details for your login component. Learn more about [onboarding with us here](https://github.com/bcgov/sso-keycloak/wiki/SSO-Onboarding).
+Over the years, we’ve engaged and learned that the majority of our clients can make use of our standard service, so we created the  [Common hosted Single Sign on (CSS) App](https://bcgov.github.io/sso-requests/). It’s a simple way for application development teams to set up login functionality for their app from approved [identity providers](https://github.com/bcgov/sso-keycloak/wiki/Useful-References#identity-provider) over a standard and secure protocol aka to help you obtain the technical details for your login component. Learn more about [onboarding with us here](https://bcgov.github.io/sso-docs/category/getting-started).
 
 
 ## Our Partners
