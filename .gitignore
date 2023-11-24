@@ -53,3 +53,7 @@ saml_trace
 results
 screenshots
 mds.json
+
+# mkdocs
+__pycache__
+site
