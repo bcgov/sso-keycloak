@@ -1,5 +1,23 @@
 site_name: BC Gov Common Hosted Single Sign-on
 docs_dir: wiki
+edit_uri: edit/main/wiki/
 
+nav:
+  - Home: Home.md
+  - SSO Onboarding: SSO-Onboarding.md
+  - Using Your SSO Client: Using-Your-SSO-Client.md
+  - What is Keycloak @ BC Government: What-is-Keycloak-@-BC-Government?.md
+  - Our Partners and Useful Info: Our-Partners-and-Useful-Information.md
+  - Identity Provider Attribute Mapping: Identity-Provider-Attribute-Mapping.md
+  - Handling Authorization/Create a Role: Creating-a-Role.md
+  - Useful References: Useful-References.md
+  - Pathfinder SSO Uptime: Pathfinder-Uptime-Monitoring.md
+  - Our Service Level: Alerts-and-Us.md#/service-levels
 plugins:
-- techdocs-core
+  - techdocs-core
+  - ezlinks
+markdown_extensions:
+  - markdown_inline_mermaid
+  - md_in_html
+  - mkpatcher:
+      location: patcher.py
