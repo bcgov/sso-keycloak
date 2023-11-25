@@ -13,6 +13,7 @@ nav:
   - Useful References: Useful-References.md
   - Pathfinder SSO Uptime: Pathfinder-Uptime-Monitoring.md
   - Our Service Level: Alerts-and-Us.md#/service-levels
+  - Additional Help: Additional-Help.md
 plugins:
   - techdocs-core
   - ezlinks
