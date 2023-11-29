@@ -1,7 +1,5 @@
 <br>
-We are in a transition, please visit us here https://bcgov.github.io/sso-docs/category/integrating-your-application
 
-The section below will be deleted before December 31 2023
 
 ## Table of Contents
 - [Introduction to key concepts and terms (newbie guide)](#Introduction-to-key-concepts-and-terms)
@@ -10,6 +8,11 @@ The section below will be deleted before December 31 2023
 - [Environments and Accounts](#Environments-and-accounts)
   - [IDIR & GitHub Accounts](https://github.com/bcgov/sso-keycloak/wiki/Using-Your-SSO-Client#idir--github-accounts)
   - [BCeID Accounts](#bceid-accounts)
+
+We are in a transition, please visit us here https://bcgov.github.io/sso-docs/category/integrating-your-application
+
+The section below will be deleted before December 31 2023
+
 - [Technical Details](#technical-details)
   - [OIDC Setup and Keycloak's Authentication Flow](#oidc-setup-and-keycloaks-authentication-flow)
   - [Confidential vs Private Client](#confidential-vs-private-client)
