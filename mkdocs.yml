@@ -3,7 +3,7 @@ docs_dir: wiki
 edit_uri: edit/main/wiki/
 
 nav:
-  - Home: Home.md
+  - Home: index.md
   - SSO Onboarding: SSO-Onboarding.md
   - Using Your SSO Client: Using-Your-SSO-Client.md
   - What is Keycloak at BC Government: What-is-Keycloak-at-BC-Government.md
@@ -12,12 +12,15 @@ nav:
   - Handling Authorization/Create a Role: Creating-a-Role.md
   - Useful References: Useful-References.md
   - Pathfinder SSO Uptime: Pathfinder-Uptime-Monitoring.md
-  - Our Service Level: Alerts-and-Us.md#/service-levels
+  - Alerts and Us: Alerts-and-Us.md
+  - Our Service Level: Alerts-and-Us#service-levels
   - Additional Help: Additional-Help.md
+
 plugins:
   - techdocs-core
   - ezlinks
 markdown_extensions:
+  - attr_list
   - markdown_inline_mermaid
   - md_in_html
   - mkpatcher:

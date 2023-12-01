@@ -1,10 +1,10 @@
-* [Intro to terms](#Intro-to-terms)
+* [Intro to terms](#intro-to-terms)
 * [How we describe Keycloak](#keycloak-how-we-describe-it)
 * [Newbie Guide: Concepts and Terms](#newbie-guide)
-* [Learn about the Open ID connect and OAuth Protocols](#Learn-about-the-Open-ID-connect-and-OAuth-Protocols)
+* [Learn about the Open ID connect and OAuth Protocols](#learn-about-the-open-id-connect-and-oauth-protocols)
 * [Our Youtube videos on OIDC 101](#oidc-101)
-* [Learn about Keycloak and its APIs](#Learn-about-Keycloak-and-its-APIs)
-* [How to set up and use your KeyCloak Client](#How-to-set-up-and-use-your-KeyCloak-Client)
+* [Learn about Keycloak and its APIs](#learn-about-keycloak-and-its-apis)
+* [How to set up and use your KeyCloak Client](#how-to-set-up-and-use-your-keycloak-client)
 * [Q&A with Us](#qa-with-us)
 
 
@@ -26,7 +26,7 @@ An "Identity Provider" is the holder of the identity that is used to log in with
 
 [Visit this FAQ](https://github.com/bcgov/sso-keycloak/discussions/256) on which Identity Provider might be best for you
 
-### [Keycloak how we describe it](https://github.com/bcgov/sso-keycloak/wiki/What-is-Keycloak-@-BC-Government%3F#what-is-keycloak)
+### [Keycloak how we describe it](What-is-Keycloak-at-BC-Government#what-is-keycloak)
 
 ### Newbie Guide
 

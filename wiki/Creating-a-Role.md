@@ -1,6 +1,3 @@
-
-***
-
 You've asked and we've listened, we've created the ability for you to create roles for your SSO integration.
 
 ### What are roles in the Common Hosted Single Sign On (CSS) App?
