@@ -1,6 +1,3 @@
-<br>
-
-
 ## Table of Contents
 - [Introduction to key concepts and terms (newbie guide)](#Introduction-to-key-concepts-and-terms)
 - [Openshift Clusters](#openshift-clusters)
