@@ -34,7 +34,8 @@ You may have to educate your end users on MFA and please take note if your IDIR 
 You can **learn** [here from our IDIR Partner](https://intranet.gov.bc.ca/thehub/ocio/ocio-enterprise-services/information-security-branch/information-security-mfa/mfa-registration)
 
 Also note if you get an error message similar to the one below, please ensure the end user has an BC Gov Azure IDIR account in order to gain access.
- <img width="380" height="300" src="https://user-images.githubusercontent.com/56739669/234470765-f3250a0a-7a62-4c42-b532-682351c0e103.png">
+
+![Azure IDIR error](./img/azureidir-error.png){: style="width:320px;height:400px"}
 
 ## Common Login Errors
 
@@ -55,7 +56,6 @@ This defines which credential (or combinations of credentials) will be requested
 Please work with the DITP team ditp.support@gov.bc.ca to define whether an existing configuration can be used, or a new one should be created for the specific use-case. Additionally, some best practices that need to be implemented at the application level can be found [here](https://github.com/bcgov/vc-authn-oidc/blob/main/docs/BestPractices.md).
 
 ## BC Service Card Integration
-<br>
 
 *BC Services Card provides an Open ID Connect authentication server. Integration to this service is not available in the *standard* realms.*
 
@@ -106,8 +106,8 @@ Things are always evolving and the BC Government Open Source community is consta
 </details>
 
 
-<p align="right">
-  <img width="400" height="200" src="https://user-images.githubusercontent.com/87393930/133848225-13dfcb95-7a2e-46b4-ace7-edc436473905.png">
+<p align="right" markdown>
+  ![Services Card](./img/services-card.png)
 </p>
 
 ----------------------------

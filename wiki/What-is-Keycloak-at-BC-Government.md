@@ -2,7 +2,7 @@
 Keycloak is an open source Identity and Access Management solution aimed at modern applications and services. It makes it easy to secure applications and services with little to no code. [Keycloak - About](https://www.keycloak.org/)
 
 In BC Government, the Pathfinder SSO Keycloak server acts as an Open ID Connect [OIDC](https://openid.net/connect/) based Identity Provider, mediating with an enterprise user directory or 3rd-party SSO providers for identity information and applications via standards-based tokens and identity assertions.
-<img src="https://github.com/bcgov/sso-keycloak/assets/56739669/d71bfba1-b9e9-4efa-b86f-b9e2f3acce02" >
+![Service Overview](./img/css-overview.png)
 
 ## As a digital delivery team, what do i need to know about Keycloak?
 
@@ -15,9 +15,9 @@ The KeyCloak product was not designed to handle an unlimited number of realms an
 
 New customers will now be added to one of the specially configured standard realms to help us continue to offer this great common component.
 
-<img src="https://user-images.githubusercontent.com/56739669/138940137-b8f939e2-3d8b-4083-b492-b96e219153c2.png" width="65%" height="50%">
-
 ![Standard vs Custom Realm](./img/standard-vs-custom.png){: style="width:65%;height:50%"}
+
+![Standard vs Custom Realm](./img/standard-realm.png){: style="width:65%;height:50%"}
 
 
 ## Why a Custom Realm?
