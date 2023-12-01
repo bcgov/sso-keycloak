@@ -9,24 +9,17 @@
 * [More on our Standard Service](#more-on-our-standard-service)
 * [Limitations](#limitations)
 * [History](#history)
-* [For Additional Help](https://github.com/bcgov/sso-keycloak/wiki/Additional-Help)
+* [For Additional Help](Additional-Help)
 * [Placeholder on Custom Realms](#placeholder-on-custom-realms)
 
-<!-- <p align="center">
-  <img width="380" height="300" src="https://user-images.githubusercontent.com/87393930/134059693-3b049537-1f5f-45e4-a31d-f6ab52b0431e.png">
-</p>
--->
- <p align="center">
-  <img width="380" height="300" src="https://user-images.githubusercontent.com/56739669/230499918-0a0f9454-0bb9-4e32-9582-0b47d435b45c.PNG">
+<p style="text-align: center" markdown>
+  ![Laptop](./img/css-app-on-laptop.png){: style="width:380px;height:300px;"}
 </p>
 
-
+<br>
 <br>
 
-<br>
-
-#### *Have any questions? We would love to hear from you.* [![Semantic description of image](https://user-images.githubusercontent.com/87393930/133688357-09f82374-ba18-4402-8089-c0a989dde882.png)][2]   <a href="mailto:bcgov.sso@gov.bc.ca?"><img src="https://user-images.githubusercontent.com/87393930/133690650-b706e658-27bf-4066-92ba-3a7d8a4593ef.png"/></a>
-
+#### *Have any questions? We would love to hear from you.* [![Chat Bubble](https://user-images.githubusercontent.com/87393930/133688357-09f82374-ba18-4402-8089-c0a989dde882.png)][2]   <a href="mailto:bcgov.sso@gov.bc.ca?"><img src="https://user-images.githubusercontent.com/87393930/133690650-b706e658-27bf-4066-92ba-3a7d8a4593ef.png"/></a>
 
 
 [2]: https://chat.developer.gov.bc.ca/channel/sso
@@ -38,12 +31,12 @@
 
 The Pathfinder SSO service (also known as "KeyCloak" or "RedHat SSO") consists of two offerings: Standard and Custom.
 
-Over the years, we’ve engaged and learned that the majority of our clients can make use of our standard service, so we created the  [Common hosted Single Sign on (CSS) App](https://bcgov.github.io/sso-requests/). It’s a simple way for application development teams to set up login functionality for their app from approved [identity providers](https://github.com/bcgov/sso-keycloak/wiki/Useful-References#identity-provider) over a standard and secure protocol aka to help you obtain the technical details for your login component. Learn more about [onboarding with us here](https://bcgov.github.io/sso-docs/category/getting-started).
+Over the years, we’ve engaged and learned that the majority of our clients can make use of our standard service, so we created the  [Common hosted Single Sign on (CSS) App](https://bcgov.github.io/sso-requests/). It’s a simple way for application development teams to set up login functionality for their app from approved [identity providers](Useful-References#identity-provider) over a standard and secure protocol aka to help you obtain the technical details for your login component. Learn more about [onboarding with us here](SSO-Onboarding).
 
 
 ## Our Partners
 
-We provide our service with the support of our Identity Provider Partners. An "Identity Provider" is the holder of the identity that is used to log in with. [Learn more about our partners and relevant identity provider information](https://github.com/bcgov/sso-keycloak/wiki/Our-Partners-and-Useful-Information).
+We provide our service with the support of our Identity Provider Partners. An "Identity Provider" is the holder of the identity that is used to log in with. [Learn more about our partners and relevant identity provider information](Our-Partners-and-Useful-Information).
 
 Note: It is totally possible for your application to integrate with any or all of the identity providers directly instead of using the Pathfinder SSO service.
 
@@ -57,7 +50,7 @@ Here’s some reasons as to why this might work for your digital product:
 
 - **Easy setup.** We've made this the #1 feature of this service. You can get your DEV, TEST, and PROD instances running against most of the available identity providers right away. The Pathfinder SSO service already has integrations to the following identity providers:
   - IDIR (BC Common Logon Page)
-      - [Learn about Azure IDIR ](https://github.com/bcgov/sso-keycloak/wiki/Useful-References#azure-idir-and-idir---whats-the-difference)
+      - [Learn about Azure IDIR ](Our-Partners-and-Useful-Information#azure-idir-and-idir)
   - BCeID Basic (BC Common Logon Page) -- Allows login only with BCeID _Basic_
   - BCeID Business (BC Common Logon Page) -- Allows login only with BCeID _Business_
   - BCeID Basic & Business(BC Common Logon Page) -- Allows login with BCeID _Basic_ or BCeID _Business_
@@ -66,18 +59,18 @@ Here’s some reasons as to why this might work for your digital product:
 - **OIDC protocol.** Where certain identity providers (BCeID in particular) support SAML protocol when used directly, Pathfinder SSO brokers the SAML connection and lets you use OIDC instead. OIDC is more common and simpler to set up in modern programming stacks.
 - **Session Management.** Some identity providers don't offer advanced session management capabilities.
 
-- **High Availability Requirements.** The Pathfinder SSO service is working on a formal published service level agreements (see [BC Government SSO Service Definition](https://digital.gov.bc.ca/common-components/pathfinder-sso/). This service is available 24/7 with questions and answers addressed during business hours only. [Uptime Monitoring](https://github.com/bcgov/sso-keycloak/wiki/Pathfinder-Uptime-Monitoring)
+- **High Availability Requirements.** The Pathfinder SSO service is working on a formal published service level agreements (see [BC Government SSO Service Definition](https://digital.gov.bc.ca/common-components/pathfinder-sso/). This service is available 24/7 with questions and answers addressed during business hours only. [Uptime Monitoring](Pathfinder-Uptime-Monitoring)
 
 #### More on our Standard Service
 
 Our standard service makes use of one "standard" realm. When you complete a request in our [common hosted single sign on app](https://bcgov.github.io/sso-requests), you receive a pre-configured client inside an existing realm.
 
-* If you need authorization ie role based access controls, we allow for client level roles to be created. [Learn more](https://github.com/bcgov/sso-keycloak/wiki/Creating-a-Role)
-* [Are you Part of GitHub BC Gov Org](https://github.com/bcgov/sso-keycloak/wiki/Are-you-part-of-the-GitHub-BC-Gov-Org-%3F)
-* [Situations where you use our service](https://github.com/bcgov/sso-keycloak/wiki/Using-Your-SSO-Client#usecases)
-* [If you need to interact with the CSS App in a RESTful way](https://github.com/bcgov/sso-keycloak/wiki/CSS-API-Account)
-* [CSS APP my Teams](https://github.com/bcgov/sso-keycloak/wiki/CSS-App-My-Teams)
-* [CSS APP valid redirect URI Format](https://github.com/bcgov/sso-keycloak/wiki/CSS-App-Valid-Redirect-URI-Format)
+* If you need authorization ie role based access controls, we allow for client level roles to be created. [Learn more](Creating-a-Role)
+* [Are you Part of GitHub BC Gov Org](Are-you-part-of-the-GitHub-BC-Gov-Org)
+* [Situations where you use our service](Using-Your-SSO-Client#usecases)
+* [If you need to interact with the CSS App in a RESTful way](CSS-API-Account)
+* [CSS APP my Teams](CSS-App-My-Teams)
+* [CSS APP valid redirect URI Format](https://bcgov.github.io/sso-docs/integrating-your-application/redirects#valid-redirect-format)
 * [Gold Migration Q&A](https://github.com/bcgov/sso-keycloak/discussions/categories/gold-q-a)
 
 ### Limitations
@@ -86,17 +79,17 @@ It is technically possible to integrate directly with the various identity provi
 
 - **High Volume Expectations.** The service is shared by many dozens of applications. If one application starts sending millions of login requests, the service itself can experience service degradation which is felt by all the users of all the applications. Pathfinder SSO is managed on the OpenShift Platform and scales fluidly, but there are limits to the resources it can consume.
 - **Unique Configuration Needs.** New customers no longer receive a dedicated realm where they can experiment and invent on top of the platform (see "What's Changed" below).
-- **BC Services Card Integration Requirements.** Because of the high-security nature of the BC Services Card identity and the private information that is available in the context of a login, BCSC is not allowed to be shared between applications. In a dedicated realm the BCSC integration, once approved and configured by IDIM, can be set up. Since we are not offering dedicated realms at this time, teams that need to integrate with BCSC will need to find another solution (see [BC Services Card Integration](https://github.com/bcgov/sso-keycloak/wiki/Our-Partners-and-Useful-Information#bc-service-card-integration) for useful advice).
+- **BC Services Card Integration Requirements.** Because of the high-security nature of the BC Services Card identity and the private information that is available in the context of a login, BCSC is not allowed to be shared between applications. In a dedicated realm the BCSC integration, once approved and configured by IDIM, can be set up. Since we are not offering dedicated realms at this time, teams that need to integrate with BCSC will need to find another solution (see [BC Services Card Integration](Our-Partners-and-Useful-Information#bc-service-card-integration) for useful advice).
 
 
 ## Placeholder on Custom Realms
-[Custom Realm ](https://github.com/bcgov/sso-keycloak/wiki/Understanding-the-Difference-Between-Custom-and-Standard-Realms)
+[Custom Realm ](Understanding-the-Difference-Between-Custom-and-Standard-Realms)
 
 
 ## History
 
 ### 2022
-•	In early 2022, we consulted with teams using our custom service and are working with them to migrate to our new keycloak instance. If you think you need our custom service, please be advised we will ask you a few questions as we do not take provisioning a new custom service lightly. Read more on the way we work with our [Custom Service/Custom Realm community](https://github.com/bcgov/sso-keycloak/wiki/Gold-Custom-Realm-Community-Ways-of-Working)
+•	In early 2022, we consulted with teams using our custom service and are working with them to migrate to our new keycloak instance. If you think you need our custom service, please be advised we will ask you a few questions as we do not take provisioning a new custom service lightly. Read more on the way we work with our [Custom Service/Custom Realm community](Gold-Custom-Realm-Community-Ways-of-Working)
 
 •	In mid 2022, we moved our services from the Platform Services Silver Openshift cluster to their Gold Openshift cluster. We have mechanism in place for disaster recovery and we are an enterprise service. We ensure that clients in our gold service have their service up 24/7.
 
