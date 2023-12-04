@@ -33,6 +33,16 @@ The current availability commitments for the Data Centers are 99.5%.
 We have a healthy relationship with our Access Directory Management Services (ADMS/WAM) team and the Provincial Identity Information Management (IDIM) team who are the identity providers for IDIR and BCeID. Any unplanned outages or impact to these identity services are out of our control and impact our Service Level Target.
 
 
+## Do you think our service (keycloak is down)? 
+
+Here are the X thinkgs you should do to check:
+
+1. Check our uptime status at https://status.loginproxy.gov.bc.ca
+2.  if you see the IDIR/siteminder uptime alert in red, there may be a larger goverment wide issue. We will provide live updates as we learn more in our [rocketchat channel](https://chat.developer.gov.bc.ca/channel/sso)
+3.  if you see the other alerts please know we are working to resolve this. We will post in [rocketchat channel](https://chat.developer.gov.bc.ca/channel/sso) and update the history and incident section
+4. you can always reach a human via our [rocketchat channel](https://chat.developer.gov.bc.ca/channel/sso) or by emailing us at bcgov.sso@gov.bc.ca
+
+![History and Indents Image](img/History_Incidents.png)
 
 ### Our Service Level Target 2023
 
