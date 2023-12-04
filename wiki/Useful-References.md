@@ -1,10 +1,10 @@
-* [Intro to terms](#Intro-to-terms)
+* [Intro to terms](#intro-to-terms)
 * [How we describe Keycloak](#keycloak-how-we-describe-it)
 * [Newbie Guide: Concepts and Terms](#newbie-guide)
-* [Learn about the Open ID connect and OAuth Protocols](#Learn-about-the-Open-ID-connect-and-OAuth-Protocols)
+* [Learn about the Open ID connect and OAuth Protocols](#learn-about-the-open-id-connect-and-oauth-protocols)
 * [Our Youtube videos on OIDC 101](#oidc-101)
-* [Learn about Keycloak and its APIs](#Learn-about-Keycloak-and-its-APIs)
-* [How to set up and use your KeyCloak Client](#How-to-set-up-and-use-your-KeyCloak-Client)
+* [Learn about Keycloak and its APIs](#learn-about-keycloak-and-its-apis)
+* [How to set up and use your KeyCloak Client](#how-to-set-up-and-use-your-keycloak-client)
 * [Q&A with Us](#qa-with-us)
 
 
@@ -26,7 +26,7 @@ An "Identity Provider" is the holder of the identity that is used to log in with
 
 [Visit this FAQ](https://github.com/bcgov/sso-keycloak/discussions/256) on which Identity Provider might be best for you
 
-### [Keycloak how we describe it](https://github.com/bcgov/sso-keycloak/wiki/What-is-Keycloak-@-BC-Government%3F#what-is-keycloak)
+### [Keycloak how we describe it](What-is-Keycloak-at-BC-Government#what-is-keycloak)
 
 ### Newbie Guide
 
@@ -72,8 +72,6 @@ The following links are a good introduction or refresher to the OIDC standard.
 
 [Stackover flow Collection 2 on Custom Realms](https://stackoverflow.developer.gov.bc.ca/search?q=custom+realm)
 
-
-
-#### *Have any questions? We would love to hear from you.* [![Semantic description of image](https://user-images.githubusercontent.com/87393930/133688357-09f82374-ba18-4402-8089-c0a989dde882.png)][2]   <a href="mailto:bcgov.sso@gov.bc.ca?"><img src="https://user-images.githubusercontent.com/87393930/133690650-b706e658-27bf-4066-92ba-3a7d8a4593ef.png"/></a>
+#### *Have any questions? We would love to hear from you.* [![Chat Bubble](./img/chat-bubble.png)][2]   <a href="mailto:bcgov.sso@gov.bc.ca">![Email](./img/email.png)</a>
 [2]: https://chat.developer.gov.bc.ca/channel/sso
 [3]: https://[mail](mailto:bcgov.sso@gov.bc.ca)[email](mailto:bcgov.sso@gov.bc.ca)

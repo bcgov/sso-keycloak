@@ -1,5 +1,6 @@
+# Alerts and Us
 Here's an overview of our Service Levels and Metrics on our acknowledge and response times:
-# Service Levels
+## Service Levels
 We often get questions about our Service Level Agreement and over the years we've come to realize the answer is not that simple. This an attempt to plain language the our Service Levels, other systems that impact our SLA as we are a subset of a larger system, our approach to keeping systems stable and reliable, and our future thinking.
 
 ## What is our Service
@@ -67,7 +68,7 @@ As of writing (April 2023) we define our service levels as:
 
 •	Our regular business hours are weekdays from 9:00 am to 5:00 pm Pacific Time, excluding statutory holidays. Client provisioning questions and requests will be reviewed and handled during normal business hours.  After hours support is provided by the Pathfinder SSO team, and is only available for service outages and other incidents that impact the service
 
-•	To learn more about our service uptime monitoring, please [visit our uptime page on our wiki](https://github.com/bcgov/sso-keycloak/wiki/Pathfinder-Uptime-Monitoring) and join our [newsletter](https://subscribe.developer.gov.bc.ca/) to receive important updates on the service and any outages.
+•	To learn more about our service uptime monitoring, please [visit our uptime page](Pathfinder-Uptime-Monitoring) and join our [newsletter](https://subscribe.developer.gov.bc.ca/) to receive important updates on the service and any outages.
 
 
 **Our approach to stability and reliability (Support Incident Response Times)**
@@ -83,7 +84,7 @@ The team responds to all service incidents through our 24/7 process where our te
 > P4 - Low - respond within 45 mins
 >
 
-As a very responsive team, you will see our metrics over the years and that we respond  very quickly [2022 and 2023 Recap of Alerts/Incidents](https://github.com/bcgov/sso-keycloak/wiki/Alerts-and-Us#metrics)
+As a very responsive team, you will see our metrics over the years and that we respond  very quickly [2022 and 2023 Recap of Alerts/Incidents](Alerts-and-Us.md#metrics)
 
 It should be noted that our current version of Redhat SSO does not enable us to offer zero downtime aka [blue green deployments](https://docs.aws.amazon.com/whitepapers/latest/introduction-devops-aws/blue-green-deployments.html). As a result, when we need to upgrade our Redhat SSO version or need to apply a patch, we advise our clients in advance via [RocketChat](https://chat.developer.gov.bc.ca/channel/sso) with a note that active sessions may be lost ie: end users may have to login again.
 
@@ -125,9 +126,9 @@ Join our monthly open demos as we share where we are going.
 ## Historic Uptime
 
 The uptime for a given alert over a range by using a custom range on the alert screen:
-![image](https://github.com/bcgov/sso-keycloak/assets/9705602/d7c3492b-af1f-451d-bcec-f415d563a0ef)
+![Uptime range](./img/uptime-range.png)
 Uptime will calculate the total downtime for the alert
-![image](https://github.com/bcgov/sso-keycloak/assets/9705602/7892e68c-8534-4f56-87d9-1a42aac60003)
+![image](./img/total-downtime.png)
 
 
 ### Gold Keycloak SSO Prod End User Access Uptime
