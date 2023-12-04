@@ -34,7 +34,7 @@ The current availability commitments for the Data Centers are 99.5%.
 We have a healthy relationship with our Access Directory Management Services (ADMS/WAM) team and the Provincial Identity Information Management (IDIM) team who are the identity providers for IDIR and BCeID. Any unplanned outages or impact to these identity services are out of our control and impact our Service Level Target.
 
 
-## Do you think our service (keycloak is down)? 
+## Do you think our service (keycloak) is down? 
 
 Here are the X thinkgs you should do to check:
 
