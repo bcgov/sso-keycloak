@@ -15,11 +15,22 @@ db:
   usernameKey: username-appuser1
   passwordKey: password-appuser1
 
+persistence:
+  backup:
+    size: 16Gi
+
 env:
   ENVIRONMENT_FRIENDLY_NAME:
     value: 'SSO Gold Client Dev Backup'
   ENVIRONMENT_NAME:
     value: eb75ad-dev
   WEBHOOK_URL:
-    value: <<Insert value>>
+    value: '<<WEBHOOK URL FOR ROCKETCHAT>>'
     secure: true
+
+  DAILY_BACKUPS:
+    value: '7'
+  WEEKLY_BACKUPS:
+    value: '4'
+  MONTHLY_BACKUPS:
+    value: '1'
