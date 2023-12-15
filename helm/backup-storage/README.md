@@ -17,18 +17,13 @@ A side effect of this conflict is that we cannot currently verify the daily back
 
 These charts can be upgraded using make commands:
 
-`make upgrade NAME=patroni-backup-storage NAMESPACE=<<namespace>>`
+`make upgrade NAME=sso-backup NAMESPACE=<<namespace>>`
 
-To restore from the most recent backup, rsh into the backup pod in the namespace in question and run:
+To restore from the most recent backup, follow the docs `sso-keycloak/docs/bkp-and-restore-keycloak-db.md`
+
+
+Deprecated method left as an example: rsh into the backup pod in the namespace in question and run:
 
 **dev silver production**:
 
 `./backup.sh -r postgres=sso-pgsql-dev-11-patroni:5432/rhsso`
-
-**test silver production**:
-
-`./backup.sh -r postgres=sso-pgsql-test-11-patroni:5432/keycloak`
-
-**prod silver production**:
-
-`./backup.sh -r postgres=sso-pgsql-prod-11-patroni:5432/rhsso`
