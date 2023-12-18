@@ -36,7 +36,7 @@ We have a healthy relationship with our Access Directory Management Services (AD
 
 ## Do you think our service (keycloak) is down?
 
-Here are the things to check: 
+Here are the things to check:
 
 1. Check our uptime status at https://status.loginproxy.gov.bc.ca
 2.  if you see the IDIR/siteminder uptime alert in red, there may be a larger goverment wide issue. We will provide live updates as we learn more in our [rocketchat channel](https://chat.developer.gov.bc.ca/channel/sso)

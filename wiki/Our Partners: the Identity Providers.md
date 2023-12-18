@@ -1,5 +1,5 @@
 
-## Our Partners 
+## Our Partners
 We provide our service with the support of our Identity Provider Partners. An "Identity Provider" is the holder of the identity that is used to log in with. Learn more about our partners and relevant identity provider information.
 
 Your technical team may need to know the identity provider attributes provided, [please visit here to learn more on what we get from our Identity Partners](https://github.com/bcgov/sso-keycloak/wiki/Identity-Provider-Attribute-Mapping)
