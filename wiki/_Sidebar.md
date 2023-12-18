@@ -6,7 +6,7 @@
 - [What is Keycloak @ BC Government](https://github.com/bcgov/sso-keycloak/wiki/What-is-Keycloak-@-BC-Government%3F)
 - [Our Partners and Useful Info](https://github.com/bcgov/sso-keycloak/wiki/Our-Partners-and-Useful-Information)
 - [Identity Provider Attribute Mapping](https://github.com/bcgov/sso-keycloak/wiki/Identity-Provider-Attribute-Mapping)
-- [Handling Authorization/Create a Role](https://github.com/bcgov/sso-keycloak/wiki/Creating-a-Role)
+- [Creating and Managing a Role](https://github.com/bcgov/sso-keycloak/wiki/Creating-a-Role)
 - [Useful References](https://github.com/bcgov/sso-keycloak/wiki/Useful-References)
 - [Pathfinder SSO Uptime](https://github.com/bcgov/sso-keycloak/wiki/Pathfinder-Uptime-Monitoring)
 - [Our Service Level](https://github.com/bcgov/sso-keycloak/wiki/Alerts-and-Us#service-levels)
