@@ -32,13 +32,11 @@ Going from our primary to fail over is something we are prepared for. You can ex
 1. The Gold Keycloak _environment_  instance is in the process of failing over to the DR cluster
 
    * The CSS APP is being put in Maintenance mode. Please check our [Uptime](https://uptime.com/statuspage/bcgov-sso-gold) before using our service.
-
 2. The Gold Keycloak  _environment_  instance has failed over to the DR cluster
 
    * DR deployment is complete, end users continue to login to your apps using the Pathfinder SSO Service (standard or custom).
    *  Any changes made to a project's config using the Pathfinder SSO Service (standard or custom realm) while the app is in its failover state will be lost when the app is restored to the Primary cluster. (aka your config changes will be lost).
    * The priority of this service is to maximize availability to the end users and automation.
-
 3. The Gold Keycloak  _environment_  instance has been restored to the Primary cluster (aka back to normal).
 
    *  We are be back to normal operations of the Pathfinder SSO Service (standard and custom).
