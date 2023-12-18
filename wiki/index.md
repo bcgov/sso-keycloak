@@ -72,10 +72,8 @@ Our standard service makes use of one "standard" realm. When you complete a requ
 Our custom service is restricted on a needs only basis. Let’s have a conversation if our Standard (ie a request in  common hosted single sign on app,) doesn't meet your needs. A product owner and technical contact will need to have a chat with us. Please reach out [email](mailto:bcgov.sso@gov.bc.ca)
 
 
-Learn more about the differences between Custom and Standard [here](https://github.com/bcgov/sso-keycloak/wiki/Understanding-the-Difference-Between-Custom-and-Standard-Realms)
-
 ### Some more details on Standard vs Custom Realms
-Why do we promote Standard Realm?
+#### Why do we promote Standard Realm?
 
 90 % of our clients make use of this service. It should be noted the KeyCloak product was not designed to handle an unlimited number of realms and we managed to find the limit (unfortunately!).
 
@@ -83,15 +81,35 @@ New customers will now be added to one of the specially configured standard real
 
 We provide:
 
-* 10 minute self registration
-* 20 minute access toa development, test and production environment
-* Pre-configured default settings
-*** add all the stuff from ticket 1298 ***
+* Self-registration
+* 20-minute access to a developer, test, and production environment
+* Default settings
+* Architecture best practices
+* Access to developer support
+* 24/7 site reliability monitoring
+* Continuous improvement & bug fixes
 
+Your team doesn't need to do any heavy lifting!
+
+
+#### What are the nuances of a Custom Realm?
+If your application has specific needs that don't fit our standard service, we also offer Custom Realms. Your team can configure it themselves to meet your needs.
+
+We will provide you with all the advice and best practices for you to set it up.
+
+Your responsibilities:
+* Developer resources
+* Governance model & decisions
+* Migration of project teams that move ministries
+* Access considerations
+* Site reliability monitoring
+* Bug fixes
+* Any other hidden or overhead costs or resources
+
+
+Learn more about the differences between Custom and Standard [here](https://github.com/bcgov/sso-keycloak/wiki/Understanding-the-Difference-Between-Custom-and-Standard-Realms)
 
 ## History
 Waiting for avneet's stuff
-
-Improved footer...
-
+Also need Improved footer...
 --------------------
