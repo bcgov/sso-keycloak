@@ -1,4 +1,4 @@
-You've asked and we've listened, we've created the ability for you to create roles for your SSO integration.
+This page helps you understand how to create and manage roles in the Common Hosted Single Sign On App.
 
 ### What are roles in the Common Hosted Single Sign On (CSS) App?
 
@@ -12,6 +12,12 @@ The CSS App provides the ability to add roles to an integration. This concept is
 You can use roles to enable access to specific pages or data to only those users who connect, with efficiency, data security and simplicity under consideration.
 
 
+
+### Alternative to using the UI of the CSS App?
+
+The SSO CSS API let's you interact with CSS Application in a RESTful way for both user and role management. To get the access to this API, an admin from a team needs to request CSS API Account through CSS Application
+
+<<insert updated link>>
 
 
 

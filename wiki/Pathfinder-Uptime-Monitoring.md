@@ -1,15 +1,17 @@
 
+On this page we share our service uptime alerts aka the % of time our service is up. There are different ways to analyze our service uptime and provided details below
+
 # Gold Service Uptime
 * [Keycloak End User uptime aka can a keycloak user log in to the Gold Service? ](https://uptime.com/s/bcgov-sso-gold/1391032)
-* [Keycloak Service Uptime aka is the Gold Keycloak service up?](https://uptime.com/s/bcgov-sso-gold/1389409)
-* [Keycloak SSO Prod & IDIR Service Uptime aka can an IDIR user log into the Gold Service?](https://uptime.com/s/bcgov-sso-gold/1391029)
+* [Keycloak Service Uptime aka is the Gold Keycloak service up?](https://status.loginproxy.gov.bc.ca/statuspage/bcgov-sso-gold/1389409)
+* [Keycloak SSO Prod & IDIR Service Uptime aka can an IDIR user log into the Gold Service?](https://status.loginproxy.gov.bc.ca/statuspage/bcgov-sso-gold/1391029)
 ## DNS Checks
 If one these DNS checks fails while the other uptime checks pass for an environment, then the app may be running in Disaster Recovery mode.
-* [Dev DNS Check aka DNS Dev Passes if dev.loginproxy.gov.bc.ca points to the Gold Cluster ](https://uptime.com/statuspage/bcgov-sso-gold/1719406)
-* [Test DNS Check aka DNS Test Passes if test.loginproxy.gov.bc.ca points to the Gold Cluster ](https://uptime.com/statuspage/bcgov-sso-gold/1719409)
-* [Prod DNS Check aka DNS Prod Passes if loginproxy.gov.bc.ca points to the Gold Cluster ](https://uptime.com/statuspage/bcgov-sso-gold/1581586)
+* [Dev DNS Check aka DNS Dev Passes if dev.loginproxy.gov.bc.ca points to the Gold Cluster ](https://status.loginproxy.gov.bc.ca/statuspage/bcgov-sso-gold/1719406)
+* [Test DNS Check aka DNS Test Passes if test.loginproxy.gov.bc.ca points to the Gold Cluster ](https://status.loginproxy.gov.bc.ca/statuspage/bcgov-sso-gold/1719409)
+* [Prod DNS Check aka DNS Prod Passes if loginproxy.gov.bc.ca points to the Gold Cluster ](https://status.loginproxy.gov.bc.ca/statuspage/bcgov-sso-gold/1581586)
 
-[Full Listing of Uptime Monitoring](https://uptime.com/s/bcgov-sso-gold)
+[Full Listing of Uptime Monitoring](https://status.loginproxy.gov.bc.ca/)
 
 [Our Service Level](https://github.com/bcgov/sso-keycloak/wiki/Alerts-and-Us#service-levels)
 

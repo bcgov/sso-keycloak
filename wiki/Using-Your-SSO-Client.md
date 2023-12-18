@@ -1,33 +1,27 @@
+## Using your SSO Client
+
 You can get started by making a request in our Common Hosted Single Sign On application.<embed link>. A few things to consider before making a request
 
 1. The names of your product owner and technical contact
 2. Someone on your team who knows about OpenID connect. You can learn here too [OIDC Explained by Pathfinder SSO](https://www.youtube.com/playlist?list=PL9CV_8JBQHirMRjBk62jeYUE_MpE4unU8)
-3.  rough idea on the identity provider (IDIR or BCeID) that you want to use. Learn more here [Our Partners and Useful Information](https://github.com/bcgov/sso-keycloak/wiki/Our-Partners-and-Useful-Information#what-are-identity-providers)
+3.  rough idea on the identity provider (IDIR or BCeID) that you want to use. Learn more here [Our Partners](https://github.com/bcgov/sso-keycloak/wiki/Our-Partners-and-Useful-Information#what-are-identity-providers)
 4. There are some parts of the request where you may need to work with your developer/technical contact:
+
  a. Which usecase/scenario do you need a request for?
  b. Client type - do you want public or confidential?
  c. which environments and test accounts?
  d. redirects
+
 5. Through the request process, you will get a few emails updating you on the process.
 6. When the request is complete, you can log in to access your installation json file. Your developer/technical contact will take the details in this file and make use of the details within your application code.
+
  a. [GitHub - bcgov/keycloak-example-apps: Example applications for integrating with keycloak ](https://github.com/bcgov/keycloak-example-apps/tree/dev)
  b. You can use roles to enable access to specific pages or data to only those users who connect, with efficiency, data security and simplicity under consideration. [Learn more](https://github.com/bcgov/sso-keycloak/wiki/Creating-a-Role)
  c. TLDR: here’s the [video](https://user-images.githubusercontent.com/56739669/231529538-0e1efa5a-51df-401a-99c2-dbc964e8cac6.mp4)
+ 
 7. Here is a link to our [developer/technical documentation](https://bcgov.github.io/sso-docs/)
 
 
-##  Some more details
-- [Introduction to key concepts and terms (newbie guide)](#Introduction-to-key-concepts-and-terms)
-- [Openshift Clusters](#openshift-clusters)
-  - [RedHat SSO Version](#redhat-sso-version)
-- [Environments and Accounts](#Environments-and-accounts)
-  - [IDIR & GitHub Accounts](https://github.com/bcgov/sso-keycloak/wiki/Using-Your-SSO-Client#idir--github-accounts)
-  - [BCeID Accounts](#bceid-accounts)
-
----
-### Introduction to key concepts and terms
-
-Visit our [discussions page](https://github.com/bcgov/sso-keycloak/discussions/136) to understand key concepts and terms as you make use of our Self Service application to integrate your digital application with a with BC government approved login option.
 
 ### Openshift Clusters
 In mid 2022, we moved our keycloak instance from the Platform Services **Silver Openshift cluster** to their **Gold Openshift cluster**. As of June 15, 2023, all of our services will live in Gold.
@@ -66,33 +60,6 @@ For IDIR and GitHub, your users will use "real" credentials in all three environ
 
 
 ** Note : If you want to point other instances of your application to your clients (such as ephemeral instances that are spun up for pull request validation or something), feel free to use DEV and TEST (but you will have to have valid redirect URIs configured for those instances).
-
-
-#### Usecases
-
-**Browser Login** - A web based application requiring a login component
-
-**Service Account** - A service account is a digital identity used by an application software or service to interact with other applications or the operating system. They are often used for machine to machine communication (M2M), for example for application programming interfaces (API).
-
-**Browser Login and Service Account** - A combination of the above
-
-
-#### Specifying an IDP to bypass the Keycloak login page
-
-If there is more than one IDP in the realm, the Keycloak server directs your users into a login page to let them choose the IDP that they want to authenticate with. It is possible to skip the login page or override the default IDP in Keycloak by passing the optional query param" kc_idp_hint". [List of kc_idp_hints here](https://github.com/bcgov/sso-keycloak/wiki/Using-Your-SSO-Client#do-skip-the-keycloak-login-page)
-
-- If using an adapter, there is an option for providing `idpHint`, and
-- if not, please specify it in the `Authorization URL` in your code or configuration, i.e. `http://localhost:8080/auth?kc_idp_hint=<idp_name>`
-- Please see [here](https://www.keycloak.org/docs/latest/server_admin/index.html#_client_suggested_idp) for more detail.
-
-If the framework you are using prevents you from being able to pass through the _IDP hint_, please reach out to our team through rocket chat or email to ask about alternative options.
-
-#
-### CSS API
-
-Through our engagements with our clients, we listened to your request to have an api so your apps can connect to our CSS App. Please go to [CSS API Account](https://github.com/bcgov/sso-keycloak/wiki/CSS-API-Account) of our wiki to learn more.
-
-Note: Often times, you do not want to be the only person with access to your client details or you may want to create multiple clients. If this the case, please visit [CSS App and My Teams](https://github.com/bcgov/sso-keycloak/wiki/CSS-App-My-Teams) for more info on Team Admins and Team Members
 
 
 

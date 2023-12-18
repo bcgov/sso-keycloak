@@ -1,10 +1,10 @@
 # Alerts and Us
 Here's an overview of our Service Levels and Metrics on our acknowledge and response times:
 ## Service Levels
-We often get questions about our Service Level Agreement and over the years we've come to realize the answer is not that simple. This an attempt to plain language the our Service Levels, other systems that impact our SLA as we are a subset of a larger system, our approach to keeping systems stable and reliable, and our future thinking.
+We often get questions about our Service Level Agreement and over the years we've come to realize the answer is not that simple. This an attempt to plain language  our Service Levels, other systems that impact our SLA as we are a subset of a larger system, our approach to keeping systems stable and reliable, and our future thinking.
 
 ## What is our Service
-Our service, the Pathfinder SSO ensures that our Keycloak server acts as an Open ID Connect [OIDC](https://openid.net/connect/) based Identity Provider, mediating with an enterprise user directory or 3rd-party SSO providers for identity information and applications via standards-based tokens and identity assertions.
+Our service, the Pathfinder SSO ensures that our Keycloak server acts as an [Open ID Connect OIDC](https://openid.net/connect/) based Identity Provider, mediating with an enterprise user directory or 3rd-party SSO providers for identity information and applications via standards-based tokens and identity assertions.
 
 Specifically, we make use of the Red Hat SSO v 7.6.1.GA
 
@@ -36,7 +36,7 @@ We have a healthy relationship with our Access Directory Management Services (AD
 
 ## Do you think our service (keycloak) is down?
 
-Here are the X thinkgs you should do to check:
+Here are the things to check: 
 
 1. Check our uptime status at https://status.loginproxy.gov.bc.ca
 2.  if you see the IDIR/siteminder uptime alert in red, there may be a larger goverment wide issue. We will provide live updates as we learn more in our [rocketchat channel](https://chat.developer.gov.bc.ca/channel/sso)

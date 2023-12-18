@@ -1,12 +1,8 @@
 
+## Our Partners 
+We provide our service with the support of our Identity Provider Partners. An "Identity Provider" is the holder of the identity that is used to log in with. Learn more about our partners and relevant identity provider information.
 
-## Navigation
-- [What are identity providers, and which are available to BC Government?](#what-are-identity-providers)
-- [Azure IDIR and IDIR - What's the difference?](#azure-idir-and-idir)
-- [Common Login Errors](#common-login-errors)
-- [BC Service Card Integration](#bc-service-card-integration)
-- [Identity Provider Attribute Mapping](Identity-Provider-Attribute-Mapping)
-- [BC Government Identity Standards aka IM/IT Identity Standards](https://www2.gov.bc.ca/gov/content/governments/services-for-government/policies-procedures/im-it-standards/find-a-standard#id_mgt)
+Your technical team may need to know the identity provider attributes provided, [please visit here to learn more on what we get from our Identity Partners](https://github.com/bcgov/sso-keycloak/wiki/Identity-Provider-Attribute-Mapping)
 
 
 ## What are Identity Providers?
