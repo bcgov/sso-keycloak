@@ -32,6 +32,10 @@ An "Identity Provider" is the holder of the identity that is used to log in with
 
 Visit [this page](https://github.com/bcgov/sso-keycloak/discussions/136) to understand key concepts and terms as you make use of our Self Service application to integrate your digital application with a with BC government approved login option.
 
+Alternative language:
+Introduction to key concepts and terms
+Visit our discussions page to understand key concepts and terms as you make use of our Self Service application to integrate your digital application with a with BC government approved login option.
+
 
 ## Learn about the Open ID connect and OAuth Protocols
 ### Readings for OAuth 2.0:
