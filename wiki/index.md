@@ -25,7 +25,7 @@ Here’s some reasons as to why this might work for your digital product:
 - **Easy setup.** We've made this the #1 feature of this service. You can get your DEV, TEST, and PROD instances running against most of the available identity providers right away. The Pathfinder SSO service already has integrations to the following identity providers:
   - IDIR (BC Common Logon Page)
 
-      - [Learn about Azure IDIR ](Our-Partners:the-Identity-Providers#azure-idir-and-idir)
+      - [Learn about Azure IDIR ](Our-Partners-the-Identity-Providers#azure-idir-and-idir)
   - BCeID Basic (BC Common Logon Page) -- Allows login only with BCeID _Basic_
   - BCeID Business (BC Common Logon Page) -- Allows login only with BCeID _Business_
   - BCeID Basic & Business(BC Common Logon Page) -- Allows login with BCeID _Basic_ or BCeID _Business_
@@ -44,14 +44,14 @@ It is technically possible to integrate directly with the various identity provi
 
 - **High Volume Expectations.** The service is shared by many dozens of applications. If one application starts sending millions of login requests, the service itself can experience service degradation which is felt by all the users of all the applications. Pathfinder SSO is managed on the OpenShift Platform and scales fluidly, but there are limits to the resources it can consume.
 - **Unique Configuration Needs.** New customers no longer receive a dedicated realm where they can experiment and invent on top of the platform (see "What's Changed" below).
-- **BC Services Card Integration Requirements.** Because of the high-security nature of the BC Services Card identity and the private information that is available in the context of a login, BCSC is not allowed to be shared between applications. In a dedicated realm the BCSC integration, once approved and configured by IDIM, can be set up. Since we are not offering dedicated realms at this time, teams that need to integrate with BCSC will need to find another solution (see [BC Services Card Integration](Our-Partners:the-Identity-Providers#bc-service-card-integration) for useful advice).
+- **BC Services Card Integration Requirements.** Because of the high-security nature of the BC Services Card identity and the private information that is available in the context of a login, BCSC is not allowed to be shared between applications. In a dedicated realm the BCSC integration, once approved and configured by IDIM, can be set up. Since we are not offering dedicated realms at this time, teams that need to integrate with BCSC will need to find another solution (see [BC Services Card Integration](Our-Partners-the-Identity-Providers#bc-service-card-integration) for useful advice).
 
 
 ## Our Partners
 
-We provide our service with the support of our Identity Provider Partners. An "Identity Provider" is the holder of the identity that is used to log in with. [Learn more about our partners and relevant identity provider information](Our-Partners:the-Identity-Providers).
+We provide our service with the support of our Identity Provider Partners. An "Identity Provider" is the holder of the identity that is used to log in with. [Learn more about our partners and relevant identity provider information](Our-Partners-the-Identity-Providers).
 
-Your technical team may need to know the identity provider attributes provided, please visit here to learn more on what we get from our [Identity Partners](https://github.com/bcgov/sso-keycloak/wiki/Identity-Provider-Attribute-Mapping)
+Your technical team may need to know the identity provider attributes provided, [please visit here to learn more on what we get from our Identity Partners](Identity-Provider-Attribute-Mapping)
 
 Note: It is totally possible for your application to integrate with any or all of the identity providers directly instead of using the Pathfinder SSO service.
 
