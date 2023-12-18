@@ -50,7 +50,7 @@ It is technically possible to integrate directly with the various identity provi
 
 We provide our service with the support of our Identity Provider Partners. An "Identity Provider" is the holder of the identity that is used to log in with. [Learn more about our partners and relevant identity provider information](Our-Partners-and-Useful-Information).
 
-Your teachincal team may need to know the identity provider attributes provided, please visit here to learn more on what we get from our [Identity Partners](https://github.com/bcgov/sso-keycloak/wiki/Identity-Provider-Attribute-Mapping) 
+Your technical team may need to know the identity provider attributes provided, please visit here to learn more on what we get from our [Identity Partners](https://github.com/bcgov/sso-keycloak/wiki/Identity-Provider-Attribute-Mapping)
 
 Note: It is totally possible for your application to integrate with any or all of the identity providers directly instead of using the Pathfinder SSO service.
 
