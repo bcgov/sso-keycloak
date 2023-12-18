@@ -1,19 +1,28 @@
-## Table of Contents
+You can get started by making a request in our Common Hosted Single Sign On application.<embed link>. A few things to consider before making a request
+
+1. The names of your product owner and technical contact
+2. Someone on your team who knows about OpenID connect. You can learn here too [OIDC Explained by Pathfinder SSO](https://www.youtube.com/playlist?list=PL9CV_8JBQHirMRjBk62jeYUE_MpE4unU8)
+3.  rough idea on the identity provider (IDIR or BCeID) that you want to use. Learn more here [Our Partners and Useful Information](https://github.com/bcgov/sso-keycloak/wiki/Our-Partners-and-Useful-Information#what-are-identity-providers)
+4. There are some parts of the request where you may need to work with your developer/technical contact:
+ a. Which usecase/scenario do you need a request for 
+ b. Client type - do you want public or confidential
+ c. which environments and test accounts?
+ d. redirects
+5. Through the request process, you will get a few emails updating you on the process.
+6. When the request is complete, you can log in to access your installation json file. Your developer/technical contact will take the details in this file and make use of the details within your application code.
+ a. [GitHub - bcgov/keycloak-example-apps: Example applications for integrating with keycloak ](https://github.com/bcgov/keycloak-example-apps/tree/dev)
+ b. You can use roles to enable access to specific pages or data to only those users who connect, with efficiency, data security and simplicity under consideration. [Learn more](https://github.com/bcgov/sso-keycloak/wiki/Creating-a-Role)
+ c. TLDR: here’s the [video](https://user-images.githubusercontent.com/56739669/231529538-0e1efa5a-51df-401a-99c2-dbc964e8cac6.mp4)
+7. Here is a link to our [developer/technical documentation](https://bcgov.github.io/sso-docs/)
+
+
+##  Some more details
 - [Introduction to key concepts and terms (newbie guide)](#Introduction-to-key-concepts-and-terms)
 - [Openshift Clusters](#openshift-clusters)
   - [RedHat SSO Version](#redhat-sso-version)
 - [Environments and Accounts](#Environments-and-accounts)
   - [IDIR & GitHub Accounts](https://github.com/bcgov/sso-keycloak/wiki/Using-Your-SSO-Client#idir--github-accounts)
   - [BCeID Accounts](#bceid-accounts)
-
-- [Select a Usecase](#usecases)
-
-- [Specifying an IDP to bypass the Keycloak login page](#specifying-an-idp-to-bypass-the-keycloak-login-page)
-
-- [CSS Account API](#css-api)
-
-- [Technical Documentation](https://bcgov.github.io/sso-docs/)
-
 
 ---
 ### Introduction to key concepts and terms
