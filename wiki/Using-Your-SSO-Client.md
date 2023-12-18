@@ -6,18 +6,19 @@ You can get started by making a request in our Common Hosted Single Sign On appl
 2. Someone on your team who knows about OpenID connect. You can learn here too [OIDC Explained by Pathfinder SSO](https://www.youtube.com/playlist?list=PL9CV_8JBQHirMRjBk62jeYUE_MpE4unU8)
 3.  rough idea on the identity provider (IDIR or BCeID) that you want to use. Learn more here [Our Partners](Our-Partners-the-Identity-Providers#what-are-identity-providers)
 4. There are some parts of the request where you may need to work with your developer/technical contact:
-
- a. Which usecase/scenario do you need a request for?
- b. Client type - do you want public or confidential?
- c. which environments and test accounts?
- d. redirects
+    1. Which usecase/scenario do you need a request for?
+    1. Client type - do you want public or confidential?
+    1. which environments and test accounts?
+    1. redirects
 
 5. Through the request process, you will get a few emails updating you on the process.
+
 6. When the request is complete, you can log in to access your installation json file. Your developer/technical contact will take the details in this file and make use of the details within your application code.
 
- a. [GitHub - bcgov/keycloak-example-apps: Example applications for integrating with keycloak ](https://github.com/bcgov/keycloak-example-apps/tree/dev)
- b. You can use roles to enable access to specific pages or data to only those users who connect, with efficiency, data security and simplicity under consideration. [Learn more](Creating-a-Role)
- c. TLDR: here’s the [video](https://user-images.githubusercontent.com/56739669/231529538-0e1efa5a-51df-401a-99c2-dbc964e8cac6.mp4)
+    1. [GitHub - bcgov/keycloak-example-apps: Example applications for integrating with keycloak ](https://github.com/bcgov/keycloak-example-apps/tree/dev)
+
+    1. You can use roles to enable access to specific pages or data to only those users who connect, with efficiency, data security and simplicity under consideration. [Learn more](Creating-a-Role)
+    1. TLDR: here’s the [video](https://user-images.githubusercontent.com/56739669/231529538-0e1efa5a-51df-401a-99c2-dbc964e8cac6.mp4)
 
 7. Here is a link to our [developer/technical documentation](https://bcgov.github.io/sso-docs/)
 
