@@ -85,7 +85,7 @@ Only an **Admin** can create roles and once the roles are created, Admins and Me
 
 #### Managing Access to CSS API Account
 
-**Admins** can also create a CSS API Account for a team, which will allow you to interact with CSS Application in a RESTful way for both user and role management. [Learn more about the CSS API Account in our wiki page.](https://github.com/bcgov/sso-keycloak/wiki/CSS-API-Account)
+**Admins** can also create a CSS API Account for a team, which will allow you to interact with CSS Application in a RESTful way for both user and role management. [Learn more about the CSS API Account in our wiki page.](https://bcgov.github.io/sso-docs/integrating-your-application/css-app-api)
 
 | Managing Access to CSS API Function | Admin Role | Team Member Role |
 | ----------- | ----------- | ----------- |
