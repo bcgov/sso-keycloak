@@ -1,5 +1,6 @@
 # Alerts and Us
 Here's an overview of our Service Levels and Metrics on our acknowledge and response times:
+
 ## Service Levels
 We often get questions about our Service Level Agreement and over the years we've come to realize the answer is not that simple. This an attempt to plain language  our Service Levels, other systems that impact our SLA as we are a subset of a larger system, our approach to keeping systems stable and reliable, and our future thinking.
 
