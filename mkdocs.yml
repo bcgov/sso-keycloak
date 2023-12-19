@@ -15,6 +15,7 @@ nav:
   - Alerts and Us: Alerts-and-Us.md
   - Our Service Level: Alerts-and-Us#service-levels
   - CSS App My Teams: CSS-App-My-Teams.md
+  - Identity Provider Attribute Mapping: Identity-Provider-Attribute-Mapping
   - Additional Help: Additional-Help.md
 
 plugins:
