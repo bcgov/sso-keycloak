@@ -111,6 +111,13 @@ Your responsibilities:
 Learn more about the differences between Custom and Standard [here](https://github.com/bcgov/sso-keycloak/wiki/Understanding-the-Difference-Between-Custom-and-Standard-Realms)
 
 ## History
-Waiting for avneet's stuff
+
+<p style="text-align: center" markdown>
+  ![Laptop](./img/timeline_Dec2023.svg){: style="width:380px;height:300px;"}
+</p>
+
+
+
+
 Also need Improved footer...
 --------------------
