@@ -8,11 +8,8 @@ You can get started by making a request in our Common Hosted Single Sign On appl
 4. There are some parts of the request where you may need to work with your developer/technical contact:
 
     * Which usecase/scenario do you need a request for?
-
     * Client type - do you want public or confidential?
-
     * which environments and test accounts?
-
     * redirects
 
 5. Through the request process, you will get a few emails updating you on the process.
@@ -20,14 +17,9 @@ You can get started by making a request in our Common Hosted Single Sign On appl
 6. When the request is complete, you can log in to access your installation json file. Your developer/technical contact will take the details in this file and make use of the details within your application code.
 
     * [GitHub - bcgov/keycloak-example-apps: Example applications for integrating with keycloak ](https://github.com/bcgov/keycloak-example-apps/tree/dev)
-
     * You can use roles to enable access to specific pages or data to only those users who connect, with efficiency, data security and simplicity under consideration. [Learn more](Creating-a-Role)
-
     * TLDR: here’s the [video](https://user-images.githubusercontent.com/56739669/231529538-0e1efa5a-51df-401a-99c2-dbc964e8cac6.mp4)
-    
 7. Here is a link to our [developer/technical documentation](https://bcgov.github.io/sso-docs/)
-
-
 
 ### Openshift Clusters
 In mid 2022, we moved our keycloak instance from the Platform Services **Silver Openshift cluster** to their **Gold Openshift cluster**. As of June 15, 2023, all of our services will live in Gold.
