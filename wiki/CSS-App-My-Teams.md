@@ -122,6 +122,7 @@ Your CSS App team composition may change and here are some reminders on offboard
 <p style="text-align: center" markdown>
   ![Remove Team Member](./img/delete-team-member-dec2023.svg){: style="width:380px;height:300px;"}
 </p>
+
 2. Add any new individual to your team
 
 
