@@ -8,8 +8,15 @@ Within the CSS App, you can create a team which allows you to add others to your
 There are two ways to create teams within the CSS app.
 
 Method 1: Go to my “My Teams” tab, and select the “+Create a New Team” button.
+<p style="text-align: center" markdown>
+  ![Create Team](./img/create-team-dec2023.svg){: style="width:380px;height:300px;"}
+</p>
 
 Method 2: Go to the “My Projects” tab, select “+Request SSO Integration”, and select “Yes” for creating a project team.
+
+<p style="text-align: center" markdown>
+  ![Create Team Method 2](./img/create-team-2-dec2023.svg){: style="width:380px;height:300px;"}
+</p>
 
 #### Relationship between Teams and Projects
 
@@ -44,6 +51,16 @@ Users with the **Admin** role can manage teams.
 **Admins** can add new users to a Team, and assign users as either Admins or Members.
 
 To add a new Team member, **Admins** must use a government email address, to ensure the user can login to the app. Once an invitation is sent, the new team member have 2 business days to login to the CSS App to be added to the team. If the team member is unable to login within this time period, their invitation link will expire. In this case, Admins can resend the invitation link from the Dashboard, under the “My Teams” tab.
+
+<p style="text-align: center" markdown>
+  ![Add Team Member](./img/add-team-member-dec2023.svg){: style="width:380px;height:300px;"}
+</p>
+
+or
+
+<p style="text-align: center" markdown>
+  ![Add Team Member](./img/add-team-2-member-dec2023.svg){: style="width:380px;height:300px;"}
+</p>
 
 ##### Changing Team Members Roles & Deleting Team Members:
 
@@ -92,3 +109,14 @@ Only an **Admin** can create roles and once the roles are created, Admins and Me
 | Create API Account| **Admin** | N/A |
 | View/Download API Account | **Admin** |  N/A |
 | Delete API Account | **Admin** | N/A |
+
+
+
+#### Offboarding a team member
+
+Your CSS App team composition may change and here are some reminders on offboarding
+
+##### Team member or Teama admin leaves your work area
+
+1. Remove the individual from your team
+2. Add any new individual to your team 
