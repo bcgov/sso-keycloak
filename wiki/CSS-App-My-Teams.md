@@ -119,4 +119,9 @@ Your CSS App team composition may change and here are some reminders on offboard
 ##### Team member or Teama admin leaves your work area
 
 1. Remove the individual from your team
-2. Add any new individual to your team 
+2. Add any new individual to your team
+
+
+##### Last person on a team
+
+If you are the only person left in a team and have no integrations assoicated, please delete your team.
