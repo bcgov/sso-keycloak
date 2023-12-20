@@ -119,9 +119,15 @@ Your CSS App team composition may change and here are some reminders on offboard
 ##### Team member or Teama admin leaves your work area
 
 1. Remove the individual from your team
+<p style="text-align: center" markdown>
+  ![Remove Team Member](./img/delete-team-member-dec2023.svg){: style="width:380px;height:300px;"}
+</p>
 2. Add any new individual to your team
 
 
 ##### Last person on a team
 
 If you are the only person left in a team and have no integrations assoicated, please delete your team.
+<p style="text-align: center" markdown>
+  ![Remove Team](./img/delete-team-dec2023.svg){: style="width:380px;height:300px;"}
+</p>
