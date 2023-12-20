@@ -44,7 +44,11 @@ Here are the things to check:
 3.  if you see the other alerts please know we are working to resolve this. We will post in [rocketchat channel](https://chat.developer.gov.bc.ca/channel/sso) and update the history and incident section
 4. you can always reach a human via our [rocketchat channel](https://chat.developer.gov.bc.ca/channel/sso) or by emailing us at bcgov.sso@gov.bc.ca
 
-![History and Indents Image](img/History_Incidents.png)
+<p style="text-align: center" markdown>
+ ![History and Indents Image](img/History_Incidents.png){: style="width:380px;height:300px;"}
+</p>
+
+
 
 ### Our Service Level Target 2023
 
@@ -127,9 +131,22 @@ Join our monthly open demos as we share where we are going.
 ## Historic Uptime
 
 The uptime for a given alert over a range by using a custom range on the alert screen:
-![Uptime range](./img/uptime-range.png)
+
+
+<p style="text-align: center" markdown>
+ ![Uptime range](./img/uptime-range.png){: style="width:380px;height:300px;"}
+</p>
+
+
 Uptime will calculate the total downtime for the alert
-![image](./img/total-downtime.png)
+
+
+
+<p style="text-align: center" markdown>
+ ![image](./img/total-downtime.png){: style="width:380px;height:300px;"}
+</p>
+
+
 
 
 ### Gold Keycloak SSO Prod End User Access Uptime

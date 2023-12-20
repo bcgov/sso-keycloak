@@ -59,7 +59,7 @@ To add a new Team member, **Admins** must use a government email address, to ens
 or
 
 <p style="text-align: center" markdown>
-  ![Add Team Member](./img/add-team-2-member-dec2023.svg){: style="width:380px;height:300px;"}
+  ![Add Team Member](./img/add-team-member-2-dec2023.svg){: style="width:380px;height:300px;"}
 </p>
 
 ##### Changing Team Members Roles & Deleting Team Members:
