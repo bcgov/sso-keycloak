@@ -7,7 +7,13 @@ Authentication is the process of verifying who someone is.
 
 ### Authorization
 
-Authorization is the process of verifying what specific applications, files, and data a user has access to. Once a user is authenticated, they can be authorized to access resources based on criteria such as roles and attributes.
+Authorization is the process of verifying what specific applications, files, and data an entity has access to. Authorization can be broken into two categories based on the entity being authorized:
+
+- **Client Authorization**: This determines the resources that a client is allowed to access on a user's behalf, and is most often what is meant by Authorization in an OAuth context.
+
+- **User Authorization**: This determines the resources a user is allowed access, and usually applies when the user is interacting directly with the resource server.
+
+User authorization can be implemented in many ways. Our service supports user roles allowing RBAC for robust user authorization.
 
 ### Identity Provider
 
