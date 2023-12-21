@@ -1,6 +1,5 @@
 # Introduction to Terms
 This section covers general terms used throughout this documentation, as well as [resources and links](#more-resources) for learning about and using this service.
-## General Terms
 
 ### Authentication
 
@@ -68,6 +67,4 @@ Custom realms are regular keycloak realms, which may be required by some clients
 - [Stackover flow Collection 1 on Keycloak/RedHat SSO](https://stackoverflow.developer.gov.bc.ca/collections/179)
 - [Stackover flow Collection 2 on Custom Realms](https://stackoverflow.developer.gov.bc.ca/search?q=custom+realm)
 
-#### *Have any questions? We would love to hear from you.* [![Chat Bubble](./img/chat-bubble.png)][2]   <a href="mailto:bcgov.sso@gov.bc.ca">![Email](./img/email.png)</a>
-[2]: https://chat.developer.gov.bc.ca/channel/sso
-[3]: https://[mail](mailto:bcgov.sso@gov.bc.ca)[email](mailto:bcgov.sso@gov.bc.ca)
+_**Have any questions? We would love to hear from you.**_ [![Chat Bubble](./img/chat-bubble.png)]   <a href="mailto:bcgov.sso@gov.bc.ca">![Email](./img/email.png)</a>
