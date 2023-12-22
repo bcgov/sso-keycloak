@@ -5,7 +5,7 @@ You can get started by making a request in our Common Hosted Single Sign On appl
 <ol>
   <li>The names of your product owner and technical contact.</li>
   <li>Someone on your team who knows about OpenID connect. You can learn here too <a href="https://www.youtube.com/playlist?list=PL9CV_8JBQHirMRjBk62jeYUE_MpE4unU8">OIDC Explained by Pathfinder SSO</a>.</li>
-  <li>A rough idea on the identity provider (IDIR or BCeID) that you want to use. Learn more here <a href="Our-Partners-the-Identity-Providers#what-are-identity-providers">Our Partners</a>.
+  <li>A rough idea on the identity provider (IDIR or BCeID) that you want to use. Learn more here <a href="../Our-Partners-the-Identity-Providers#what-are-identity-providers">Our Partners</a>.
   <li>There are some parts of the request where you may need to work with your developer/technical contact:
     <ul>
       <li>Which usecase/scenario do you need a request for?</li>
