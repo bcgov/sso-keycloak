@@ -1,27 +1,28 @@
 ## Using your SSO Client
 
-You can get started by making a request in our Common Hosted Single Sign On application.<embed link>. A few things to consider before making a request
+You can get started by making a request in our Common Hosted Single Sign On application.<embed link>. A few things to consider before making a request:
 
-1. The names of your product owner and technical contact
-2. Someone on your team who knows about OpenID connect. You can learn here too [OIDC Explained by Pathfinder SSO](https://www.youtube.com/playlist?list=PL9CV_8JBQHirMRjBk62jeYUE_MpE4unU8)
-3.  rough idea on the identity provider (IDIR or BCeID) that you want to use. Learn more here [Our Partners](Our-Partners-the-Identity-Providers#what-are-identity-providers)
-4. There are some parts of the request where you may need to work with your developer/technical contact:
-
-<p style="margin-left: 0.625em" markdown>
-* Which usecase/scenario do you need a request for?
-* Client type - do you want public or confidential?
-* which environments and test accounts?
-* redirects
-</p>
-
-5. Through the request process, you will get a few emails updating you on the process.
-
-6. When the request is complete, you can log in to access your installation json file. Your developer/technical contact will take the details in this file and make use of the details within your application code.
-
-  - [GitHub - bcgov/keycloak-example-apps: Example applications for integrating with keycloak ](https://github.com/bcgov/keycloak-example-apps/tree/dev)
-  - You can use roles to enable access to specific pages or data to only those users who connect, with efficiency, data security and simplicity under consideration. [Learn more](Creating-a-Role)
-
-7. Here is a link to our [developer/technical documentation](https://bcgov.github.io/sso-docs/)
+<ol>
+  <li>The names of your product owner and technical contact.</li>
+  <li>Someone on your team who knows about OpenID connect. You can learn here too <a href="https://www.youtube.com/playlist?list=PL9CV_8JBQHirMRjBk62jeYUE_MpE4unU8">OIDC Explained by Pathfinder SSO</a>.</li>
+  <li>A rough idea on the identity provider (IDIR or BCeID) that you want to use. Learn more here <a href="Our-Partners-the-Identity-Providers#what-are-identity-providers">Our Partners</a>.
+  <li>There are some parts of the request where you may need to work with your developer/technical contact:
+    <ul>
+      <li>Which usecase/scenario do you need a request for?</li>
+      <li>Client type - do you want public or confidential?</li>
+      <li>which environments and test accounts?</li>
+      <li>Redirects.</li>
+    </ul>
+  </li>
+  <li>Through the request process, you will get a few emails updating you on the process.</li>
+  <li>When the request is complete, you can log in to access your installation json file. Your developer/technical contact will take the details in this file and make use of the details within your application code.
+    <ul>
+      <li> <a href="https://github.com/bcgov/keycloak-example-apps/tree/dev">GitHub - bcgov/keycloak-example-apps: Example applications for integrating with keycloak</a></li>
+      <li>You can use roles to enable access to specific pages or data to only those users who connect, with efficiency, data security and simplicity under consideration. <a href="#Creating-a-Role">Learn more</a></li>
+    </ul>
+  </li>
+  <li>Here is a link to our <a href="https://bcgov.github.io/sso-docs/">developer/technical documentation</a></li>
+</ol>
 
 ### Openshift Clusters
 In mid 2022, we moved our keycloak instance from the Platform Services **Silver Openshift cluster** to their **Gold Openshift cluster**. As of June 15, 2023, all of our services will live in Gold.
