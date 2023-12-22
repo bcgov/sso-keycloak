@@ -1,7 +1,7 @@
 # SSO Pathfinder Knowledge Base
 Welcome to our wiki for our Single Sign On Service. You are in the right spot if you need to configure/develop a login component (IDIR or BCeID) for your digital product/project. You can learn about [Common Hosted Single Sign On App on The Exchange Youtube channel](https://www.youtube.com/watch?v=JBaGxqykXJQ&list=PL9CV_8JBQHirMRjBk62jeYUE_MpE4unU8&index=3)  or continue to read below.
 
-**>Get started now for your self serve experience to our [common hosted single sign on app](https://bcgov.github.io/sso-requests)**
+**>Get started now for your self serve experience to our [common hosted single sign on app](https://bcgov.github.io/sso-requests).**
 
 <p style="text-align: center" markdown>
   ![Laptop](./img/css-app-on-laptop.png){: style="width:380px;height:300px;"}
