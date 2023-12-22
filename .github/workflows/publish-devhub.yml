@@ -63,7 +63,7 @@ jobs:
       - name: Publish docs to prod bucket
         # Only publish to prod bucket on a push to main
         # This could be changed to some other mechanism (ex: when a release is published)
-        if: ${{ github.ref == 'refs/heads/main' }}
+        if: ${{ github.ref == 'refs/heads/wiki' }}
         run: |
             techdocs-cli publish --publisher-type awsS3 \
             --storage-name $TECHDOCS_S3_BUCKET_NAME \

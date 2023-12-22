@@ -76,7 +76,7 @@ Our custom service is restricted on a needs only basis. Let’s have a conversat
 ### Some more details on Standard vs Custom Realms
 #### Why do we promote Standard Realm?
 
-90 % of our clients make use of this service. It should be noted the KeyCloak product was not designed to handle an unlimited number of realms and we managed to find the limit (unfortunately!).
+90% of our clients make use of this service. It should be noted the KeyCloak product was not designed to handle an unlimited number of realms and we managed to find the limit (unfortunately!).
 
 New customers will now be added to one of the specially configured standard realms to help us continue to offer this great common component.
 
