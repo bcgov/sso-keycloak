@@ -7,10 +7,12 @@ You can get started by making a request in our Common Hosted Single Sign On appl
 3.  rough idea on the identity provider (IDIR or BCeID) that you want to use. Learn more here [Our Partners](Our-Partners-the-Identity-Providers#what-are-identity-providers)
 4. There are some parts of the request where you may need to work with your developer/technical contact:
 
-  - Which usecase/scenario do you need a request for?
-  - Client type - do you want public or confidential?
-  - which environments and test accounts?
-  - redirects
+<p markdown style="margin-left: 0.625em">
+- Which usecase/scenario do you need a request for?
+- Client type - do you want public or confidential?
+- which environments and test accounts?
+- redirects
+</p>
 
 5. Through the request process, you will get a few emails updating you on the process.
 
