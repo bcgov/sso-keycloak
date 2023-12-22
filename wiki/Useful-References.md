@@ -23,15 +23,15 @@ An Identity Provider is the holder of the identity that is used to log in with. 
 
 [Keycloak](https://www.keycloak.org/) is an open source identity and access management tool. Our team runs [Red Hat SSO](https://access.redhat.com/products/red-hat-single-sign-on/), a component built on top of keycloak, and this documentation may use the terms interchangeably. [See here](What-is-Keycloak-at-BC-Government#what-is-keycloak) for a general overview of how we use keycloak.
 
-### Realm
-
-A realm manages a set of users, credentials, roles, and groups. A user belongs to and logs into a realm. Realms are isolated from one another and can only manage and authenticate the users that they control.
-
 ### Client
 
 Clients are entities that can request Keycloak to authenticate a user. Most often, clients are applications and services that want to use Keycloak to secure themselves and provide a single sign-on solution. Clients can also be entities that just want to request identity information or an access token so that they can securely invoke other services on the network that are secured by Keycloak. Clients can be either public or confidential:
 - **Public Clients** are unable to use registered client secrets, for example applications running in the browser.
 - **Confidential Clients** are applications that are able to securely store a client secret, such as server-rendered web applications.
+
+### Realm
+
+A realm manages a set of users, credentials, roles, and groups. A user belongs to and logs into a realm. Realms are isolated from one another and can only manage and authenticate the users that they control.
 
 ### Standard Realm
 

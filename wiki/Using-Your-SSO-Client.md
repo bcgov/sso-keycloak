@@ -18,7 +18,7 @@ You can get started by making a request in our Common Hosted Single Sign On appl
 
   - [GitHub - bcgov/keycloak-example-apps: Example applications for integrating with keycloak ](https://github.com/bcgov/keycloak-example-apps/tree/dev)
   - You can use roles to enable access to specific pages or data to only those users who connect, with efficiency, data security and simplicity under consideration. [Learn more](Creating-a-Role)
-  - TLDR: here’s the [video](https://user-images.githubusercontent.com/56739669/231529538-0e1efa5a-51df-401a-99c2-dbc964e8cac6.mp4)
+
 7. Here is a link to our [developer/technical documentation](https://bcgov.github.io/sso-docs/)
 
 ### Openshift Clusters
@@ -33,7 +33,7 @@ Gold Current Version:  7.6.1.GA
 decommissioned - Silver Current Version: 7.4.9.GA
 
 
-For Red Hat SSO & Keycloak version information, please see this link: https://access.redhat.com/articles/2342881
+For Red Hat SSO & Keycloak version information, please [see here](https://access.redhat.com/articles/2342881).
 
 
 ### Environments and Accounts
@@ -51,9 +51,9 @@ For IDIR and GitHub, your users will use "real" credentials in all three environ
 
 | SSO CSS APP GOLD        | BCeID Env           | Visual Clue          |
 | ------------- |:-------------:| :-----: |
-| DEV     | BCeID DEV| ![image](https://user-images.githubusercontent.com/56739669/182436774-ec4f6853-9bb7-4ad7-bc2d-3422e3b8e1f3.png) |
-| TEST      | BCeID TEST       |   ![image](https://user-images.githubusercontent.com/56739669/182436317-68624f41-3889-4127-9440-20d7ec09da48.png) |
-| PROD | BCeID PROD      |    ![image](https://user-images.githubusercontent.com/56739669/182436489-5e66b419-d3ad-4f33-b38b-92b6db6dd467.png) |
+| DEV     | BCeID DEV| ![bceid dev banner](./img/bceid-dev-banner.png) |
+| TEST      | BCeID TEST       |   ![bceid test banner](./img/bceid-test-banner.png) |
+| PROD | BCeID PROD      |    ![bceid prod banner](./img/bceid-banner.png) |
 
 
 
@@ -61,8 +61,8 @@ For IDIR and GitHub, your users will use "real" credentials in all three environ
 
 
 
-<p align="center">
-  <img width="300" height="300" src="https://user-images.githubusercontent.com/87393930/133833777-8b99fa68-4893-4d72-b5ed-32c8e8692e7d.png">
+<p align="center" markdown>
+  ![Web-Graphic](./img/web-circle.png)
 </p>
 
 ---
