@@ -13,7 +13,7 @@ Authorization is the process of verifying what specific applications, files, and
 
 - **User Authorization**: This determines the resources a user is allowed access, and usually applies when the user is interacting directly with the resource server.
 
-User authorization can be implemented in many ways. Our service supports user roles allowing RBAC for robust user authorization.
+User authorization can be implemented in many ways. Our service supports user roles allowing RBAC for robust user authorization. See [Creating and Managing a Role](./Creating-a-Role.md) for more information on using roles.
 
 ### Identity Provider
 
