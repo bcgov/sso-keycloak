@@ -1,4 +1,4 @@
-name: Publish TechDocs
+name: Publish Tech Docs
 
 on:
   push:
