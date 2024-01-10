@@ -43,11 +43,11 @@ For Red Hat SSO & Keycloak version information, please [see here](https://access
 
 You will have a Pathfinder SSO client in each of the DEV, TEST and PROD servers. Assuming you have a DEV, TEST, and PROD environments for your application, this should give you the decoupling you need to set up each environment up with its own login context.
 
-##### IDIR & GitHub Accounts
+#### IDIR & GitHub Accounts
 
 For IDIR and GitHub, your users will use "real" credentials in all three environments.
 
-##### BCeID Accounts
+#### BCeID Accounts
 
 
 **With our GOLD Service** - please ensure you have BCeID accounts mapped to the correct BCeID environment listed below. For questions on test accounts, please reach out to our IDIM partners at idim.consulting@gov.bc.ca or visit [BC Gov Stack Overflow](https://stackoverflow.developer.gov.bc.ca/questions/704)

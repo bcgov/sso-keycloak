@@ -24,8 +24,7 @@ Here’s some reasons as to why this might work for your digital product:
 
 - **Easy setup.** We've made this the #1 feature of this service. You can get your DEV, TEST, and PROD instances running against most of the available identity providers right away. The Pathfinder SSO service already has integrations to the following identity providers:
   - IDIR (BC Common Logon Page)
-
-      - [Learn about Azure IDIR ](Our-Partners-the-Identity-Providers#azure-idir-and-idir)
+  - [Learn about Azure IDIR ](Our-Partners-the-Identity-Providers#azure-idir-and-idir)
   - BCeID Basic (BC Common Logon Page) -- Allows login only with BCeID _Basic_
   - BCeID Business (BC Common Logon Page) -- Allows login only with BCeID _Business_
   - BCeID Basic & Business(BC Common Logon Page) -- Allows login with BCeID _Basic_ or BCeID _Business_
@@ -61,9 +60,9 @@ Note: It is totally possible for your application to integrate with any or all o
 
 The Pathfinder SSO service (also known as "KeyCloak" or "RedHat SSO") consists of two offerings: Standard and Custom.
 
-Our standard service makes use of one "standard" realm. When you complete a request in our [common hosted single sign on app](https://bcgov.github.io/sso-requests), you receive a pre-configured client inside an existing realm. Some of the features of this service
+Our standard service makes use of one "standard" realm. When you complete a request in our [common hosted single sign on app](https://bcgov.github.io/sso-requests), you receive a pre-configured client inside an existing realm. Some of the features of this service:
 
-* [Role based access control ie authorization]](Creating-a-Role)
+* [Role based access control, ie authorization](Creating-a-Role)
 * [Situations where you use our service](Using-Your-SSO-Client#usecases)
 * [If you need to interact with the CSS App in a RESTful way](CSS-API-Account)
 * [CSS APP my Teams](CSS-App-My-Teams)
@@ -113,7 +112,7 @@ Learn more about the differences between Custom and Standard [here](https://gith
 ## History
 
 <p style="text-align: center" markdown>
-  ![Laptop](./img/timeline_Dec2023.svg){: style="width:380px;height:300px;"}
+  ![Laptop](./img/timeline_Dec2023.svg){: style="width:660px;height:500px;"}
 </p>
 
 

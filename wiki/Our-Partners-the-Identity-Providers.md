@@ -31,7 +31,7 @@ You can **learn** [here from our IDIR Partner](https://intranet.gov.bc.ca/thehub
 
 Also note if you get an error message similar to the one below, please ensure the end user has an BC Gov Azure IDIR account in order to gain access.
 
-![Azure IDIR error](./img/azureidir-error.png){: style="width:320px;height:400px"}
+![Azure IDIR error](./img/azureidir-error.png){: style="width:400px;height:500px"}
 
 ## Common Login Errors
 
@@ -61,48 +61,34 @@ The IDIM team that manages BCSC integration is responsible for safeguarding the 
 
 ### Options for Teams with BCSC Requirements
 
-<details>
-<summary><b>Join an Existing Dedicated Custom Realm</b></summary>
-With approval from IDIM, it is possible to join an existing realm that shares the same security context as your application and already has BCSC set up. This generally means that the existing clients are all from the same ministry or sector and have the same requirements for personal information through the login process.
+??? info "Join an Existing Dedicated Custom Realm"
+    With approval from IDIM, it is possible to join an existing realm that shares the same security context as your application and already has BCSC set up. This generally means that the existing clients are all from the same ministry or sector and have the same requirements for personal information through the login process.
 
-There are very few instances of this pattern at this time, but it is an option that is possible with the help and approval of IDIM.
+    There are very few instances of this pattern at this time, but it is an option that is possible with the help and approval of IDIM.
 
-Be that as it may, if there is a closely related project in your ministry or sector that you think would be a candidate for sharing a BCSC integration, you may wish to start the conversation with IDIM and see if it makes sense for your situation.
-</details>
+    Be that as it may, if there is a closely related project in your ministry or sector that you think would be a candidate for sharing a BCSC integration, you may wish to start the conversation with IDIM and see if it makes sense for your situation.
 
-<details>
-<summary><b>Integrate Directly with BCSC</b></summary>
+??? info "Integrate Directly with BCSC"
 
-Since IDIM provides an OIDC service for BCSC, your app can integrate directly with that service instead of brokering through Pathfinder SSO. Their security practices usually require a client per application in any case, so your architecture might not require using Pathfinder SSO as a proxy authentication service anyway. In addition, this pattern removes one possible point of failure from the application architecture.
+    Since IDIM provides an OIDC service for BCSC, your app can integrate directly with that service instead of brokering through Pathfinder SSO. Their security practices usually require a client per application in any case, so your architecture might not require using Pathfinder SSO as a proxy authentication service anyway. In addition, this pattern removes one possible point of failure from the application architecture.
 
-Be mindful however that the SSO (Keycloak) product does offer token and session management; integrating directly with BCSC would require another form of token/session management to be used in your application.
-
-</details>
-
-<details>
-<summary><b>Configure and Manage Your Own Dedicated KeyCloak Server
-</b></summary>
-KeyCloak runs on JBoss quite happily in a Docker container with a PostgreSQL backend. If you really need features provided by KeyCloak and you want to integrate with BCSC, it's possible to run your own KeyCloak server and configure your connection to BCSC by setting up your own OIDC IDP.
-</details>
-
-<details>
-<summary><b>Obtain a Dedicated KeyCloak Realm on the Pathfinder SSO service
-</b></summary>
-
-If the service gets to the point where there are "slots" to create new dedicated realms, a BCSC identity provider can be securely configured within a realm dedicated to your team. For now, we are unable to offer new realms while we work to reduce the number down to a manageable size.
-</details>
-
-<details>
-<summary><b>Other?
-</b></summary>
-
-Things are always evolving and the BC Government Open Source community is constantly innovating and solving problems together. Don't be afraid to jump into the #SSO RocketChat channel and see what the community recommends if you have an unusual use case or an innovative idea. Thank you for your collaboration!
+    Be mindful however that the SSO (Keycloak) product does offer token and session management; integrating directly with BCSC would require another form of token/session management to be used in your application.
 
 
-</details>
+??? info "Configure and Manage Your Own Dedicated KeyCloak Server"
+
+    KeyCloak runs on JBoss quite happily in a Docker container with a PostgreSQL backend. If you really need features provided by KeyCloak and you want to integrate with BCSC, it's possible to run your own KeyCloak server and configure your connection to BCSC by setting up your own OIDC IDP.
+
+??? info "Obtain a Dedicated KeyCloak Realm on the Pathfinder SSO service"
+
+    If the service gets to the point where there are "slots" to create new dedicated realms, a BCSC identity provider can be securely configured within a realm dedicated to your team. For now, we are unable to offer new realms while we work to reduce the number down to a manageable size.
+
+??? info "Obtain a Dedicated KeyCloak Realm on the Pathfinder SSO service"
+
+    Things are always evolving and the BC Government Open Source community is constantly innovating and solving problems together. Don't be afraid to jump into the #SSO RocketChat channel and see what the community recommends if you have an unusual use case or an innovative idea. Thank you for your collaboration!
 
 
-<p align="right" markdown>
+<p align="center" markdown>
   ![Services Card](./img/services-card.png)
 </p>
 

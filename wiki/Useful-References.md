@@ -73,4 +73,4 @@ Custom realms are regular keycloak realms, which may be required by some clients
 - [Stackover flow Collection 1 on Keycloak/RedHat SSO](https://stackoverflow.developer.gov.bc.ca/collections/179)
 - [Stackover flow Collection 2 on Custom Realms](https://stackoverflow.developer.gov.bc.ca/search?q=custom+realm)
 
-_**Have any questions? We would love to hear from you.**_ [![Chat Bubble](./img/chat-bubble.png)]   <a href="mailto:bcgov.sso@gov.bc.ca">![Email](./img/email.png)</a>
+_**Have any questions? We would love to hear from you.**_ ![Chat Bubble](./img/chat-bubble.png)   <a href="mailto:bcgov.sso@gov.bc.ca">![Email](./img/email.png)</a>

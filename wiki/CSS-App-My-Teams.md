@@ -9,20 +9,20 @@ There are two ways to create teams within the CSS app.
 
 Method 1: Go to my “My Teams” tab, and select the “+Create a New Team” button.
 <p style="text-align: center" markdown>
-  ![Create Team](./img/create-team-dec2023.svg){: style="width:380px;height:300px;"}
+  ![Create Team](./img/create-team-dec2023.svg)
 </p>
 
 Method 2: Go to the “My Projects” tab, select “+Request SSO Integration”, and select “Yes” for creating a project team.
 
 <p style="text-align: center" markdown>
-  ![Create Team Method 2](./img/create-team-2-dec2023.svg){: style="width:380px;height:300px;"}
+  ![Create Team Method 2](./img/create-team-2-dec2023.svg)
 </p>
 
 #### Relationship between Teams and Projects
 
 A team can be associated to one or more projects/integrations.
 
-<img width="400" src="https://user-images.githubusercontent.com/56739669/231294189-a9b0ca94-f0da-4a8e-b077-4b082d978533.png">
+![Create Team Method 2](./img/teams-and-environments.png)
 
 ### I've created a team, now what?
 
@@ -53,13 +53,13 @@ Users with the **Admin** role can manage teams.
 To add a new Team member, **Admins** must use a government email address, to ensure the user can login to the app. Once an invitation is sent, the new team member have 2 business days to login to the CSS App to be added to the team. If the team member is unable to login within this time period, their invitation link will expire. In this case, Admins can resend the invitation link from the Dashboard, under the “My Teams” tab.
 
 <p style="text-align: center" markdown>
-  ![Add Team Member](./img/add-team-member-dec2023.svg){: style="width:380px;height:300px;"}
+  ![Add Team Member](./img/add-team-member-dec2023.svg)
 </p>
 
 or
 
 <p style="text-align: center" markdown>
-  ![Add Team Member](./img/add-team-member-2-dec2023.svg){: style="width:380px;height:300px;"}
+  ![Add Team Member](./img/add-team-member-2-dec2023.svg)
 </p>
 
 ##### Changing Team Members Roles & Deleting Team Members:
@@ -120,7 +120,7 @@ Your CSS App team composition may change and here are some reminders on offboard
 
 1. Remove the individual from your team
 <p style="text-align: center" markdown>
-  ![Remove Team Member](./img/delete-team-member-dec2023.svg){: style="width:380px;height:300px;"}
+  ![Remove Team Member](./img/delete-team-member-dec2023.svg)
 </p>
 
 2. Add any new individual to your team
@@ -130,5 +130,5 @@ Your CSS App team composition may change and here are some reminders on offboard
 
 If you are the only person left in a team and have no integrations assoicated, please delete your team.
 <p style="text-align: center" markdown>
-  ![Remove Team](./img/delete-team-dec2023.svg){: style="width:380px;height:300px;"}
+  ![Remove Team](./img/delete-team-dec2023.svg)
 </p>

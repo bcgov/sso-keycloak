@@ -45,7 +45,7 @@ Here are the things to check:
 4. you can always reach a human via our [rocketchat channel](https://chat.developer.gov.bc.ca/channel/sso) or by emailing us at bcgov.sso@gov.bc.ca
 
 <p style="text-align: center" markdown>
- ![History and Indents Image](img/History_Incidents.png){: style="width:380px;height:300px;"}
+ ![History and Indents Image](img/History_Incidents.png){: style="width:600px;height:372px;"}
 </p>
 
 
@@ -134,7 +134,7 @@ The uptime for a given alert over a range by using a custom range on the alert s
 
 
 <p style="text-align: center" markdown>
- ![Uptime range](./img/uptime-range.png){: style="width:380px;height:300px;"}
+ ![Uptime range](./img/uptime-range.png){: style="width:600px;height:380px;"}
 </p>
 
 
@@ -143,7 +143,7 @@ Uptime will calculate the total downtime for the alert
 
 
 <p style="text-align: center" markdown>
- ![image](./img/total-downtime.png){: style="width:380px;height:300px;"}
+ ![image](./img/total-downtime.png){: style="width:600px;height:325px;"}
 </p>
 
 
