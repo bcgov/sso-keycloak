@@ -44,7 +44,7 @@ The SSO CSS API let's you interact with CSS Application in a RESTful way for bot
 1. Once your integration is in "completed" status, you will have your json details AND you have created at least one Role
 1. Make sure you assign at least one person to this role under the "Assign Users to Role" section
 1. Log in to your Application
-1. Look for the Role you created in the client_roles attribute  View this [video at 1:35](https://user-images.githubusercontent.com/56739669/231529538-0e1efa5a-51df-401a-99c2-dbc964e8cac6.mp4)
+1. The role you created in will be in the client_roles attribute of the user's token
 
 
 ### A couple of notes:

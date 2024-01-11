@@ -114,9 +114,3 @@ Learn more about the differences between Custom and Standard [here](https://gith
 <p style="text-align: center" markdown>
   ![Laptop](./img/timeline_Dec2023.svg){: style="width:660px;height:500px;"}
 </p>
-
-
-
-
-Also need Improved footer...
---------------------
