@@ -8,3 +8,8 @@ repository for keycloak images and helm chart
 
 - GitHub Packages
 - Tag strategies/conventions
+
+## Devhub Docs
+
+Devhub docs are generated using [Techdocs](https://backstage.io/docs/features/techdocs/cli/), a cli tool. To run locally:
+- `npx @techdocs/cli serve --verbose --no-docker`

@@ -1,0 +1,48 @@
+site_name: BC Gov Common Hosted Single Sign-on
+docs_dir: wiki
+# TODO: change branch on dev merge
+edit_uri: https://github.com/bcgov/sso-keycloak/edit/wiki/wiki/
+
+nav:
+  - Home: index.md
+  - SSO Onboarding: SSO-Onboarding.md
+  - Using Your SSO Client: Using-Your-SSO-Client.md
+  - What is Keycloak at BC Government: What-is-Keycloak-at-BC-Government.md
+  - Our Partners the Identity Providers: Our-Partners-the-Identity-Providers.md
+  - Creating and Managing a Role: Creating-a-Role.md
+  - References: Useful-References.md
+  - Pathfinder SSO Uptime: Pathfinder-Uptime-Monitoring.md
+  - Alerts and Us: Alerts-and-Us.md
+  - CSS App My Teams: CSS-App-My-Teams.md
+  - Identity Provider Attribute Mapping: Identity-Provider-Attribute-Mapping
+  - Additional Help: Additional-Help.md
+
+plugins:
+  - techdocs-core
+  - ezlinks
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - attr_list
+  - markdown_inline_mermaid
+  - md_in_html
+  - mkpatcher:
+      location: patcher.py
+
+theme:
+  name: mkdocs
+  icon:
+    admonition:
+      note: octicons/tag-16
+      abstract: octicons/checklist-16
+      info: octicons/info-16
+      tip: octicons/squirrel-16
+      success: octicons/check-16
+      question: octicons/question-16
+      warning: octicons/alert-16
+      failure: octicons/x-circle-16
+      danger: octicons/zap-16
+      bug: octicons/bug-16
+      example: octicons/beaker-16
+      quote: octicons/quote-16
