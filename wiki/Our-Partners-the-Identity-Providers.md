@@ -8,9 +8,14 @@ Your technical team may need to know the identity provider attributes provided, 
 ## What are Identity Providers?
 
 [Identity providers](Useful-References#identity-provider) are directories of user accounts with details about those users, called attributes. The ones available to Pathfinder SSO Clients are:
-- **IDIR** IDIR accounts are given to individuals who work for the B.C. government. Each account has an IDIR username and password for logging in. [reference](https://www2.gov.bc.ca/gov/content/governments/services-for-government/information-management-technology/identity-and-authentication-services/login-best-practices/language-consistency)
+- **IDIR** IDIR accounts are given to individuals who work for the B.C. government. Please note, your end users must have an IDIR account which can make use of the two authentication services we provide based on your application needs:
+  - **IDIR via IWA**  
+    * User Experience: use an IDIR username and password for logging in. 
+    * Architecture/Developer note: Uses integrated windows authentication (IWA). This means if you are on a goverment pc and on the network, you don't have to re-enter your windows credentials for an IDIR based applcation using our service. IWA functionality is not OS dependent. It is only dependent on the browser version, IP and government managed device criteria. [reference](https://www2.gov.bc.ca/gov/content/governments/services-for-government/information-management-technology/identity-and-authentication-services/login-best-practices/language-consistency)
 
-- **Azure IDIR** IDIR accounts with the added the benefit of MFA (multi-factor authentication). This is a step up security-wise from regular IDIR. [reference](https://intranet.gov.bc.ca/thehub/ocio/ocio-enterprise-services/information-security-branch/information-security-mfa/mfa-registration)
+  - **IDIR via Azure** 
+    * User Experience: IDIR account with the added the benefit of MFA (multi-factor authentication). 
+    * Architecture/Developer note: It is a step up security-wise from regular IDIR. [reference](https://intranet.gov.bc.ca/thehub/ocio/ocio-enterprise-services/information-security-branch/information-security-mfa/mfa-registration)
 
 - **BCeID** BCeID Accounts enable people to access government services using a single identifier and password.[reference](https://www2.gov.bc.ca/gov/content/governments/services-for-government/information-management-technology/identity-and-authentication-services/bceid-authentication-service)
 
@@ -22,8 +27,8 @@ Your technical team may need to know the identity provider attributes provided, 
 - **GitHub associated with BC Gov Org**	 Allows login of GitHub BC Gov Org member. At the time of writing, production approval for this requires you to obtain an exemption to the IM/IT standards. [IM/IT Standards Frequently Asked Questions](https://www2.gov.bc.ca/gov/content/governments/services-for-government/policies-procedures/im-it-standards/im-it-standards-faqs)
 
 
-## Azure IDIR and IDIR
-Using Azure IDIR adds the benefit of MFA (multi-factor authentication). This is a step up security-wise from regular IDIR.
+## IDIR via Azure
+We offer integrations with IDIR via Azure and the benefit of MFA (multi-factor authentication). This is a step up security-wise from regular IDIR.
 
 You may have to educate your end users on MFA and please take note if your IDIR is not tied to a gov.bc.ca email address, please use idir_username@gov.bc.ca when prompted for your email.
 
