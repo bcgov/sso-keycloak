@@ -2,7 +2,7 @@
 Here's an overview of our Service Levels and Metrics on our acknowledge and response times:
 
 ## Service Levels
-We often get questions about our Service Level Agreement and over the years we've come to realize the answer is not that simple. This an attempt to plain language  our Service Levels, other systems that impact our SLA as we are a subset of a larger system, our approach to keeping systems stable and reliable, and our future thinking.
+We often get questions about our Service Level Agreement and over the years we've come to realize the answer is not that simple. This an attempt to plain language our Service Levels, other systems that impact our SLA as we are a subset of a larger system, our approach to keeping systems stable and reliable, and our future thinking.
 
 ## What is our Service
 Our service, the Pathfinder SSO ensures that our Keycloak server acts as an [Open ID Connect OIDC](https://openid.net/connect/) based Identity Provider, mediating with an enterprise user directory or 3rd-party SSO providers for identity information and applications via standards-based tokens and identity assertions.
@@ -162,6 +162,8 @@ Uptime will calculate the total downtime for the alert
 | August 2023 | 0 |
 | September 2023 | 0 |
 | October 2023 | 0h27m2s |
+| November 2023| 0s |
+| December 2023| 0s |
 
 ### Gold KeyCloak SSO Prod and IDIR siteminder Uptime
 | Month | Downtime |
@@ -176,9 +178,14 @@ Uptime will calculate the total downtime for the alert
 | August 2023 | 0 |
 | September 2023 | 0 |
 | October 2023 | 0h35m25s |
+| November 2023| 0h25m28s |
+| December 2023| 0h06m18s |
 
 ## 2023
 ### Incidents
+
+Note the piorities of opsgenie alerts were modified in December 2023 to make the alerts more informative. Dev and test uptime alerts were promoted to P3s and many sysdig alerts were downgrader to P2s.
+
 #### Priority 1 aka Critical Impact to Service -- no end users can log into their apps connected to keycloak
 Pathfinder Team commits to acknowledging issue within 15 -20 mins and resolving as quickly as possible
 ##### P1 Stats
@@ -194,6 +201,12 @@ Pathfinder Team commits to acknowledging issue within 15 -20 mins and resolving 
 | August |  1 | 0m39s       | 3m28s| Aug 1: Uptime failed check, carryover from July outage|
 | September|  0 | 0       | 0| NA|
 | October|  3 | 2m12s       | 19m55s| Oct 16 CPU spike causing lag on login (end-users still able to log in, system slow) Oct 18 short uptime misfire in alerting |
+| November|  4 | 5m18s       | 10m0s| Nov 7 had three Sysdig Alerts about CPU spikes/patroni pods low, no outage.  Nov 22 had an IDIR uptime outage (service stayed up) |
+| December | 1 | 0m53s | 6m19s | Production Idir loggin failed, keycloaks itself stayed up |
+
+##### P2 Stats
+
+| December | 0 | 0m0s | 0m00s | NA |
 
 #### Priority 3 aka Moderate Impact to Service --
 Pathfinder Team commits to acknowledging issue within 15 -30 mins and resolving as quickly as possible
@@ -210,6 +223,8 @@ Pathfinder Team commits to acknowledging issue within 15 -30 mins and resolving 
 | August |  0 | 0       | 0| NA|
 | September |  1 | 21s       | 21s| Not a real alert, call came in|
 | October|  2 | 45m32s       | 46m03s| Not real alerts, came in from the call system |
+|  November | 5 | 2m36s | 4m7s | All alerts related to the Nov 7 upgrade, no outage on that day |
+|  December | 5 | 4m53s | 19m35s | All 5 were dev and test idir login failures on the 13th and 14th of December |
 
 #### Priority 4 aka Low Impact to Service --
 Pathfinder Team commits to acknowledging issue within 15 -30 mins and resolving as quickly as possible
@@ -226,8 +241,8 @@ Pathfinder Team commits to acknowledging issue within 15 -30 mins and resolving 
 | August |  0 | 0       | 0| NA|
 | September |  7 | 1m24s       | 1m25s| Backup DB at 60% the other 6 were ready pods low, triggered during a keycloak pod roll over manually triggered|
 | October|  14 | 17m03s       | 17m17s| 8 dev or test uptime alerts, 6 ready pod low alerts for prod (natural part of cycling pods) |
-
-
+| November |  15 | 4m52s       | 5m50s| 2 Uptime idir outages on Nov 22 (service stayed up), 13 from Nov 7 upgrade, no outage  |
+|  December | 1 | 0m59s | 0m59s | December 7 2023, database backup storage hit 60% threshold |
 
 ### Total mins of outages
 TBD
