@@ -1,3 +1,4 @@
+# Patcher is part of the mkdocs build process. See mkdocs.yml for more info.
 import logging
 import re
 

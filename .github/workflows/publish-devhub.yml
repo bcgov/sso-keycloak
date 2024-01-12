@@ -2,12 +2,13 @@ name: Publish Tech Docs
 
 on:
   push:
-    branches: [wiki]
+    branches: [dev]
     paths:
       - "wiki/**"
       - "mkdocs.yml"
       - "catalog-info.yaml"
       - ".github/workflows/publish-devhub.yml"
+
 jobs:
   publish-techdocs-site:
     runs-on: ubuntu-latest
@@ -47,11 +48,6 @@ jobs:
 
       - name: Publish docs to dev bucket
         # Always publish the docs to the dev bucket
-        # Dev is in the awsBucketRootPath
-        # Note: in  GitHub repo Settings -> Actions -> General under "fork pull
-        # request workflows from outside collaborators" select "require approval from
-        # all outside collaborators" to stop PR's from deploying to dev automatically.
-        # PRs will still be deployed automatically by code owners
         run: |
             techdocs-cli publish --publisher-type awsS3 \
             --storage-name $TECHDOCS_S3_BUCKET_NAME \
@@ -61,9 +57,9 @@ jobs:
             --awsBucketRootPath $TECHDOCS_S3_DEV_ROOT_PATH
 
       - name: Publish docs to prod bucket
-        # Only publish to prod bucket on a push to main
-        # This could be changed to some other mechanism (ex: when a release is published)
-        if: ${{ github.ref == 'refs/heads/wiki' }}
+        # Currently syncing the prod/dev publish for our docs similar to the wiki updates.
+        # Separate this out to a different ref to deploy prod on a specific branch only (e.g main).
+        if: ${{ github.ref == 'refs/heads/dev' }}
         run: |
             techdocs-cli publish --publisher-type awsS3 \
             --storage-name $TECHDOCS_S3_BUCKET_NAME \
