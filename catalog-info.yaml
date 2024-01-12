@@ -10,4 +10,4 @@ metadata:
 spec:
   type: documentation
   lifecycle: production
-  owner: "@bcgov/sso-team-admin"
+  owner: "sso-team-admin"
