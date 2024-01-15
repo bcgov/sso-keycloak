@@ -19,5 +19,6 @@ COPY --from=builder /opt/keycloak/ /opt/keycloak/
 # copy the theme directory to `/opt/eap/themes/` for now, but we can consider to archive to be deployed later.
 COPY ./extensions-7.6/themes/src/main/resources/theme ${KC_HOME}/themes
 
+ENV KC_HOSTNAME=localhost
 # change these values to point to a running postgres instance
 ENTRYPOINT ["/opt/keycloak/bin/kc.sh"]
