@@ -11,7 +11,7 @@ Your technical team may need to know the identity provider attributes provided, 
 - **IDIR** IDIR accounts are given to individuals who work for the B.C. government. Please note, your end users must have an IDIR account which can make use of one of the two ways to login based on your application needs:
   - **IDIR**
     * User Experience: use an IDIR username and password for logging in.
-    * Architecture/Developer note: The authentication mechanisim via siteminder. 
+    * Architecture/Developer note: The authentication mechanisim via siteminder.
   - **IDIR with MFA**
     * User Experience: IDIR account with the added the benefit of MFA (multi-factor authentication). i.e use an IDIR username, password and mfa for logging in.
     * Architecture/Developer note: It is a step up security-wise from regular IDIR. The authentication mechanism is azure cloud [More on MFA registration](https://intranet.gov.bc.ca/thehub/ocio/ocio-enterprise-services/information-security-branch/information-security-mfa/mfa-registration)
