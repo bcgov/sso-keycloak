@@ -1,4 +1,4 @@
-FROM maven:3.8.7-openjdk-18-slim AS extensions-builder
+FROM maven:3.8.5-openjdk-17-slim AS extensions-builder
 
 COPY ./extensions-22.0.8 /tmp/
 WORKDIR /tmp/

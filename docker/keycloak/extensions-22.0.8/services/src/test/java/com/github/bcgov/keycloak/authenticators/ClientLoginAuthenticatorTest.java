@@ -1,4 +1,4 @@
-package com.github.bcgov.keycloak.testsuite.authenticators;
+package com.github.bcgov.keycloak.authenticators;
 
 import com.github.bcgov.keycloak.authenticators.ClientLoginAuthenticatorFactory;
 import org.junit.Test;
