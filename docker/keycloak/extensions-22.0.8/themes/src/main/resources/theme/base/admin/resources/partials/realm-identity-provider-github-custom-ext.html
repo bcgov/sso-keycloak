@@ -1,0 +1,14 @@
+<div class="form-group clearfix">
+    <label class="col-md-2 control-label" for="githubOrg">GitHub Org</label>
+    <div class="col-md-6">
+        <input class="form-control" id="githubOrg" type="text" ng-model="identityProvider.config.githubOrg">
+    </div>
+    <kc-tooltip>GitHub Org</kc-tooltip>
+</div>
+<div class="form-group">
+    <label class="col-md-2 control-label" for="githubOrgRequired">GitHub Org Required</label>
+    <div class="col-md-6">
+        <input id="githubOrgRequired" ng-model="identityProvider.config.githubOrgRequired" onoffswitchvalue on-text="{{:: 'onText' | translate}}" off-text="{{:: 'offText' | translate}}">
+    </div>
+    <kc-tooltip>GitHub Org Required</kc-tooltip>
+</div>
