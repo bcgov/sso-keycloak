@@ -1,6 +1,6 @@
 FROM maven:3.8.2-jdk-11-slim AS extensions-builder
 
-COPY ./extensions-7.6 /tmp/
+COPY ./extensions-22.0.8 /tmp/
 WORKDIR /tmp/
 RUN mvn -B clean package --file pom.xml
 
