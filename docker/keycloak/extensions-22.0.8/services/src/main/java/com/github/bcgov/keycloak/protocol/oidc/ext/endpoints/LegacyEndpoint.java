@@ -23,6 +23,8 @@ public class LegacyEndpoint
 
   public static final String PROVIDER_ID = "legacy";
 
+  private EventBuilder event;
+
   private final KeycloakSession session;
 
   public LegacyEndpoint() {
