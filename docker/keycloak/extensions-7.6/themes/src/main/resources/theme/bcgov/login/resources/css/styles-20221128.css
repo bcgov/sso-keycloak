@@ -22,6 +22,10 @@
   padding: 62px 10px 20px;
 }
 
+.login-pf body .login-pf-page #kc-header #kc-header-wrapper.no-transform {
+  text-transform: none;
+}
+
 .login-pf body .login-pf-page .login-pf-accounts,
 .login-pf body .login-pf-page .card-pf {
   margin-bottom: 10px;
