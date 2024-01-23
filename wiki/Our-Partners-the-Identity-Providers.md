@@ -8,7 +8,7 @@ Your technical team may need to know the identity provider attributes provided, 
 ## What are Identity Providers?
 
 [Identity providers](Useful-References#identity-provider) are directories of user accounts with details about those users, called attributes. The ones available to Pathfinder SSO Clients are:
-- **IDIR** IDIR accounts are given to individuals who work for the B.C. government. Please note, your end users must have an IDIR account which can make use of one of the two ways to login based on your application needs:
+- **IDIR:** IDIR accounts are given to individuals who work for the B.C. government. Please note, your end users must have an IDIR account which can make use of one of the two ways to login based on your application needs:
   - **IDIR**
     * User Experience: use an IDIR username and password for logging in.
     * Architecture/Developer note: The authentication mechanisim via siteminder.
