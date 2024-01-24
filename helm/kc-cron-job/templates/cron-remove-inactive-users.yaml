@@ -88,46 +88,46 @@ spec:
                     secretKeyRef:
                       name: kc-cron-job-secret
                       key: dev-kc-url
-                - name: DEV_KEYCLOAK_CLIENT_ID
+                - name: DEV_KEYCLOAK_USERNAME
                   valueFrom:
                     secretKeyRef:
                       name: kc-cron-job-secret
-                      key: dev-kc-client-id
-                - name: DEV_KEYCLOAK_CLIENT_SECRET
+                      key: dev-kc-username
+                - name: DEV_KEYCLOAK_PASSWORD
                   valueFrom:
                     secretKeyRef:
                       name: kc-cron-job-secret
-                      key: dev-kc-client-secret
+                      key: dev-kc-password
                 - name: TEST_KEYCLOAK_URL
                   valueFrom:
                     secretKeyRef:
                       name: kc-cron-job-secret
                       key: test-kc-url
-                - name: TEST_KEYCLOAK_CLIENT_ID
+                - name: TEST_KEYCLOAK_USERNAME
                   valueFrom:
                     secretKeyRef:
                       name: kc-cron-job-secret
-                      key: test-kc-client-id
-                - name: TEST_KEYCLOAK_CLIENT_SECRET
+                      key: test-kc-username
+                - name: TEST_KEYCLOAK_PASSWORD
                   valueFrom:
                     secretKeyRef:
                       name: kc-cron-job-secret
-                      key: test-kc-client-secret
+                      key: test-kc-password
                 - name: PROD_KEYCLOAK_URL
                   valueFrom:
                     secretKeyRef:
                       name: kc-cron-job-secret
                       key: prod-kc-url
-                - name: PROD_KEYCLOAK_CLIENT_ID
+                - name: PROD_KEYCLOAK_USERNAME
                   valueFrom:
                     secretKeyRef:
                       name: kc-cron-job-secret
-                      key: prod-kc-client-id
-                - name: PROD_KEYCLOAK_CLIENT_SECRET
+                      key: prod-kc-username
+                - name: PROD_KEYCLOAK_PASSWORD
                   valueFrom:
                     secretKeyRef:
                       name: kc-cron-job-secret
-                      key: prod-kc-client-secret
+                      key: prod-kc-password
                 - name: BCEID_SERVICE_BASIC_AUTH
                   valueFrom:
                     secretKeyRef:

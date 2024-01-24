@@ -9,29 +9,20 @@ const removeTrailingSlash = (url) => {
   return url.endsWith('/') ? url.slice(0, -1) : url;
 };
 
-const envs = {
-  dev: {
-    url: removeTrailingSlash(process.env.DEV_KEYCLOAK_URL || ''),
-    clientId: process.env.DEV_KEYCLOAK_CLIENT_ID || '',
-    clientSecret: process.env.DEV_KEYCLOAK_CLIENT_SECRET
-  },
-  test: {
-    url: removeTrailingSlash(process.env.TEST_KEYCLOAK_URL || ''),
-    clientId: process.env.TEST_KEYCLOAK_CLIENT_ID || '',
-    clientSecret: process.env.TEST_KEYCLOAK_CLIENT_SECRET
-  },
-  prod: {
-    url: removeTrailingSlash(process.env.PROD_KEYCLOAK_URL || ''),
-    clientId: process.env.PROD_KEYCLOAK_CLIENT_ID || '',
-    clientSecret: process.env.PROD_KEYCLOAK_CLIENT_SECRET
-  }
+const getKcConfig = (environment) => {
+  const env = environment.toUpperCase();
+  return {
+    url: removeTrailingSlash(process.env[`${env}_KEYCLOAK_URL`] || ''),
+    username: process.env[`${env}_KEYCLOAK_USERNAME`] || '',
+    password: process.env[`${env}_KEYCLOAK_PASSWORD`] || ''
+  };
 };
 
 module.exports = {
   oneMin: 60 * 1000,
   getAdminClient: async function (env) {
     try {
-      const config = envs[env];
+      const config = getKcConfig(env);
       if (!config) throw Error(`invalid env ${env}`);
 
       const kcAdminClient = new KcAdminClient({
@@ -47,9 +38,10 @@ module.exports = {
 
       const auth = async () => {
         await kcAdminClient.auth({
-          grantType: 'client_credentials',
-          clientId: config.clientId,
-          clientSecret: config.clientSecret
+          grantType: 'password',
+          clientId: 'admin-cli',
+          username: config.username,
+          password: config.password
         });
 
         decodedToken = jws.decode(kcAdminClient.accessToken);

@@ -233,8 +233,9 @@ async function removeStaleUsersByEnv(env = 'dev', pgClient, runnerName, startFro
     log(`[${runnerName}] ${total} users processed.`);
     callback(null, { runnerName, processed: total, deleteCount: deletedUserCount });
   } catch (err) {
+    const error = { runnerName, err: JSON.stringify(err.message || err.response.data || err) };
     handleError(err);
-    callback(err);
+    callback(JSON.stringify(error));
   } finally {
     await pgClient.end();
   }
@@ -265,22 +266,21 @@ async function main() {
         removeStaleUsersByEnv('prod', getPgClient(), 'prod-05', 40000, cb);
       }
     ],
-    async function (err, results) {
-      if (err) {
-        console.error(err.message);
+    async function (errors, results) {
+      if (errors) {
+        console.error('errors', errors);
         await sendRcNotification(
           'cron-remove-inactive-users',
-          `**[${process.env.NAMESPACE}] Failed to remove inactive users** \n\n` + err.message,
-          true
-        );
-      } else {
-        const a = results.map((res) => JSON.stringify(res));
-        await sendRcNotification(
-          'cron-remove-inactive-users',
-          `**[${process.env.NAMESPACE}] Successfully removed inactive users** \n\n` + a.join('\n\n'),
+          `**[${process.env.NAMESPACE}] Failed to remove inactive users**  \n\n` + errors,
           false
         );
       }
+      const responses = results.map((result) => JSON.stringify(result));
+      await sendRcNotification(
+        'cron-remove-inactive-users',
+        `**[${process.env.NAMESPACE}] Successfully removed inactive users** \n\n` + responses.join('\n\n'),
+        false
+      );
     }
   );
   await deleteLegacyData('kc_deleted_users', process.env.INACTIVE_IDIR_USERS_RETENTION_DAYS || 60);
