@@ -150,36 +150,141 @@ Uptime will calculate the total downtime for the alert
 
 
 ### Gold Keycloak SSO Prod End User Access Uptime
-| Month | Downtime |
-| -------- | ------- |
-| January 2023 | 41m 6s |
-| February 2023 | 36m 21s |
-| March | 0 |
-| April 2023 | 1h5m30s |
-| May 2023 | 51m00s |
-| June 2023 | 0 |
-| July 2023 | 0 |
-| August 2023 | 0 |
+| Month          | Downtime |
+| -------------- | -------  |
+| January   2024 | 0s       |
+| February  2024 |  |
+| March     2024 |  |
+| April     2024 |  |
+| May       2024 |  |
+| June      2024 |  |
+| July      2024 |  |
+| August    2024 |  |
+| September 2024 |  |
+| October   2024 |  |
+| November  2024 |  |
+| December  2024 |  |
+
+| Month          | Downtime |
+| -------------- | ------- |
+| January   2023 | 41m 6s |
+| February  2023 | 36m 21s |
+| March     2023 | 0 |
+| April     2023 | 1h5m30s |
+| May       2023 | 51m00s |
+| June      2023 | 0 |
+| July      2023 | 0 |
+| August    2023 | 0 |
 | September 2023 | 0 |
-| October 2023 | 0h27m2s |
-| November 2023| 0s |
-| December 2023| 0s |
+| October   2023 | 0h27m2s |
+| November  2023 | 0s |
+| December  2023 | 0s |
 
 ### Gold KeyCloak SSO Prod and IDIR siteminder Uptime
-| Month | Downtime |
-| -------- | ------- |
-| January 2023 | 1h0m18s |
-| February 2023 | 38m12 |
-| March | 56m40s |
-| April 2023 | 1h51m46s |
-| May 2023 | 1h38m45s |
-| June 2023 | 0 |
-| July 2023 | 6m 43s |
-| August 2023 | 0 |
+
+| Month          | Downtime  |
+| -------------- | --------- |
+| January   2024 | 1h 3m 19s |
+| February  2024 |  |
+| March     2024 |  |
+| April     2024 |  |
+| May       2024 |  |
+| June      2024 |  |
+| July      2024 |  |
+| August    2024 |  |
+| September 2024 |  |
+| October   2024 |  |
+| November  2024 |  |
+| December  2024 |  |
+
+
+| Month          | Downtime |
+| -------------- | -------- |
+| January   2023 | 1h0m18s  |
+| February  2023 | 38m12 |
+| March     2023 | 56m40s |
+| April     2023 | 1h51m46s |
+| May       2023 | 1h38m45s |
+| June      2023 | 0 |
+| July      2023 | 6m 43s |
+| August    2023 | 0 |
 | September 2023 | 0 |
-| October 2023 | 0h35m25s |
-| November 2023| 0h25m28s |
-| December 2023| 0h06m18s |
+| October   2023 | 0h35m25s |
+| November  2023 | 0h25m28s |
+| December  2023 | 0h06m18s |
+
+## 2024
+
+##### P1 Stats
+| Month      | Number of Alerts | Acknowledge Time | Resolve Time    | Notes |
+| :---        |     :----:   |   :----:   |          ---: |---: |
+| January   | 0 | NA | NA | NA  |
+| February  |  |  |  |   |
+| March     |  |  |  |   |
+| April     |  |  |  |   |
+| May       |  |  |  |   |
+| June      |  |  |  |   |
+| July      |  |  |  |   |
+| August    |  |  |  |   |
+| September |  |  |  |   |
+| October   |  |  |  |   |
+| November  |  |  |  |   |
+| December  |  |  |  |   |
+
+
+##### P2 Stats
+
+| Month      | Number of Alerts | Acknowledge Time | Resolve Time    | Notes |
+| :--- | :----: | :----: | ---: | ---: |
+| January   | 0 | NA | NA | NA |
+| February  |  |  |  |   |
+| March     |  |  |  |   |
+| April     |  |  |  |   |
+| May       |  |  |  |   |
+| June      |  |  |  |   |
+| July      |  |  |  |   |
+| August    |  |  |  |   |
+| September |  |  |  |   |
+| October   |  |  |  |   |
+| November  |  |  |  |   |
+| December  |  |  |  |   |
+
+#### Priority 3 aka Moderate Impact to Service --
+Pathfinder Team commits to acknowledging issue within 15 -30 mins and resolving as quickly as possible
+##### P3 Stats
+| Month      | Number of Alerts | Acknowledge Time | Resolve Time    | Notes |
+| :--- | :----: | :----: | ---: |---: |
+| January   | 5 | 11m 23s | 11m 23s | All dev and test uptime idir issues from a January 21 network outage  |
+| February  |  |  |  |   |
+| March     |  |  |  |   |
+| April     |  |  |  |   |
+| May       |  |  |  |   |
+| June      |  |  |  |   |
+| July      |  |  |  |   |
+| August    |  |  |  |   |
+| September |  |  |  |   |
+| October   |  |  |  |   |
+| November  |  |  |  |   |
+| December  |  |  |  |   |
+
+#### Priority 4 aka Low Impact to Service --
+Pathfinder Team commits to acknowledging issue within 15 -30 mins and resolving as quickly as possible
+##### P4
+| Month      | Number of Alerts | Acknowledge Time | Resolve Time    | Notes |
+| :---        |     :----:   |   :----:   |          ---: |---: |
+| January   | 2 | 1m 58s | 1m 58s | dev db filled to 90% during Jan 21 network issues |
+| February  |  |  |  |   |
+| March     |  |  |  |   |
+| April     |  |  |  |   |
+| May       |  |  |  |   |
+| June      |  |  |  |   |
+| July      |  |  |  |   |
+| August    |  |  |  |   |
+| September |  |  |  |   |
+| October   |  |  |  |   |
+| November  |  |  |  |   |
+| December  |  |  |  |   |
+
 
 ## 2023
 ### Incidents
