@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  keycloak:
+    container_name: keycloak
+    image: keycloak-local
+    build:
+      dockerfile: ./localdevextensions/Dockerfile
+      context: '../'
+    depends_on:
+      - postgres
+    ports:
+      - 8080:8080
+    environment:
+      DB_POSTGRESQL_SERVICE_HOST: postgres
+      DB_POSTGRESQL_SERVICE_PORT: 5433
+      # DB Credentials
+      DB_USERNAME: keycloak
+      DB_PASSWORD: keycloak
+      DB_DATABASE: keycloak
+      SSO_ADMIN_USERNAME: admin
+      SSO_ADMIN_PASSWORD: admin
+      DB_MIN_POOL_SIZE: 1
+      # Do not make the max pool size too small, or keycloak will fail to open enough connections to the DB.
+      # If the SSO image exits with a FATAL DB conection error it is likely too small.
+      DB_MAX_POOL_SIZE: 5
+      JGROUPS_CLUSTER_PASSWORD: password
+      JAVA_OPTS_APPEND: '-Dkeycloak.profile.feature.impersonation=disabled -Djboss.persistent.log.dir=/var/log/eap'
+      OPENSHIFT_DNS_PING_SERVICE_NAME: pinger
+      OPENSHIFT_DNS_PING_SERVICE_PORT: 8008
+      DB_JNDI: java:jboss/datasources/KeycloakDS
+      DB_SERVICE_PREFIX_MAPPING: db-postgresql=DB
+      TX_DATABASE_PREFIX_MAPPING: db-postgresql=DB
+      JGROUPS_PING_PROTOCOL: dns.DNS_PING
+      TZ: America/Vancouver
+    volumes:
+      - logs_data:/var/log/eap
+      - ../docker/keycloak/extensions-7.6/themes/src/main/resources/theme/bcgov:/opt/eap/themes/bcgov
+      - ../docker/keycloak/extensions-7.6/themes/src/main/resources/theme/bcgov-idp-login:/opt/eap/themes/bcgov-idp-login
+      - ../docker/keycloak/extensions-7.6/themes/src/main/resources/theme/bcgov-idp-login-no-brand:/opt/eap/themes/bcgov-idp-login-no-brand
+      - ../docker/keycloak/extensions-7.6/themes/src/main/resources/theme/bcgov-idp-stopper:/opt/eap/themes/bcgov-idp-stopper
+      - ../docker/keycloak/extensions-7.6/themes/src/main/resources/theme/bcgov-idp-stopper-no-header-title:/opt/eap/themes/bcgov-idp-stopper-no-header-title
+      - ../docker/keycloak/extensions-7.6/themes/src/main/resources/theme/bcgov-no-brand:/opt/eap/themes/bcgov-no-brand
+      # Must be a bind mount for changes to get picked up in container
+      - type: bind
+        source: ./bcgov-services-1.0.0.jar
+        target: /opt/eap/standalone/deployments/bcgov-services-1.0.0.jar
+
+  postgres:
+    image: docker.io/postgres:13
+    container_name: postgres
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: keycloak
+    tty: true
+    ports:
+      - 5433:5433
+    command: -p 5433
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
+    driver: local
+  logs_data:
+    driver: local

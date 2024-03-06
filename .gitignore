@@ -57,3 +57,5 @@ mds.json
 # mkdocs
 __pycache__
 site
+
+localdevextensions/bcgov-services-1.0.0.jar
