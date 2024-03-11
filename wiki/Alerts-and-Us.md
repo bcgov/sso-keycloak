@@ -78,15 +78,26 @@ As of writing (April 2023) we define our service levels as:
 
 **Our approach to stability and reliability (Support Incident Response Times)**
 
-The Pathfinder SSO Team responds to 3 levels or incidents: P1 - Critical, P3 - Moderate and P4 - Low.
+The Pathfinder SSO Team responds to 4 levels of incidents:
 
-The team responds to all service incidents through our 24/7 process where our team is alerted of the incident. Our target response times are:
+> P1 - Critical - Production Outage detected by uptime.
+>
+> P2 - High - Sysdig warnings about production stability that may cause an outage if left unaddressed.
+>
+> P3 - Moderate - Dev or Test outage, Low severity production warnings from Sysdig that do not require immediate human intervention.
+>
+> P4 - Low - Any warning from Sysdig alerts that reflects less than perfect system health, but doesn't indicate a dev, test, or production outage in the near future.
+>
 
-> P1 - Critical - respond within 20mins
+The team responds to all service incidents through our 24/7 process where our team is alerted of the incident. Our internal target response times are:
+
+> P1 - Critical - <15 minutes during business hours, <30 minutes after hours.
 >
-> P3 - Moderate - respond within 30 mins
+> P2 - High - <30 minutes during business hours, <60 minutes after hours.
 >
-> P4 - Low - respond within 45 mins
+> P3 - Moderate - <30 minutes during business hours, best effort after hours.
+>
+> P4 - Low - <45 minutes during business hours, best effort after hours.
 >
 
 As a very responsive team, you will see our metrics over the years and that we respond  very quickly [2022 and 2023 Recap of Alerts/Incidents](Alerts-and-Us.md#metrics)
@@ -289,7 +300,7 @@ Pathfinder Team commits to acknowledging issue within 15 -30 mins and resolving 
 ## 2023
 ### Incidents
 
-Note the piorities of opsgenie alerts were modified in December 2023 to make the alerts more informative. Dev and test uptime alerts were promoted to P3s and many sysdig alerts were downgrader to P2s.
+Note the piorities of opsgenie alerts were modified in December 2023 to make the alerts more informative. Dev and test uptime alerts were promoted to P3s and many Sysdig alerts were downgrader to P2s.
 
 #### Priority 1 aka Critical Impact to Service -- no end users can log into their apps connected to keycloak
 Pathfinder Team commits to acknowledging issue within 15 -20 mins and resolving as quickly as possible
