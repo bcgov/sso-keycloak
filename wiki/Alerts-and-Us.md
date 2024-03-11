@@ -78,26 +78,16 @@ As of writing (April 2023) we define our service levels as:
 
 **Our approach to stability and reliability (Support Incident Response Times)**
 
-The Pathfinder SSO Team responds to 4 levels of incidents:
+The Pathfinder SSO Team responds to 4 levels of incidents. The team responds to all service incidents through our 24/7 process where our team is alerted of the incident. Our internal target response times are:
 
-> P1 - Critical - Production Outage detected by uptime.
->
-> P2 - High - Sysdig warnings about production stability that may cause an outage if left unaddressed.
->
-> P3 - Moderate - Dev or Test outage, Low severity production warnings from Sysdig that do not require immediate human intervention.
->
-> P4 - Low - Any warning from Sysdig alerts that reflects less than perfect system health, but doesn't indicate a dev, test, or production outage in the near future.
->
 
-The team responds to all service incidents through our 24/7 process where our team is alerted of the incident. Our internal target response times are:
-
-> P1 - Critical - <15 minutes during business hours, <30 minutes after hours.
+> Critical - P1 - Production Outage detected by uptime.  Response time: <15 minutes during business hours, <30 minutes after hours.
 >
-> P2 - High - <30 minutes during business hours, <60 minutes after hours.
+> High - P2 - Sysdig warnings about production stability that may cause an outage if left unaddressed. Response time: <30 minutes during business hours, <60 minutes after hours.
 >
-> P3 - Moderate - <30 minutes during business hours, best effort after hours.
+> Moderate - P3 - Development or Test outage, or a low severity warning from Sysdig that does not require immediate human intervention. Response time: <30 minutes during business hours, best effort after hours.
 >
-> P4 - Low - <45 minutes during business hours, best effort after hours.
+> Low - P4 - Any warning from Sysdig alerts that reflects less than perfect system health, but doesn't indicate any kind of outage in the near future. Response time: <45 minutes during business hours, best effort after hours.
 >
 
 As a very responsive team, you will see our metrics over the years and that we respond  very quickly [2022 and 2023 Recap of Alerts/Incidents](Alerts-and-Us.md#metrics)
