@@ -81,11 +81,11 @@ As of writing (April 2023) we define our service levels as:
 The Pathfinder SSO Team responds to 4 levels of incidents. The team responds to all service incidents through our 24/7 process where our team is alerted of the incident. Our internal target response times are:
 
 
-> Critical - P1 - Production Outage detected by uptime.  Response time: <15 minutes during business hours, <30 minutes after hours.
+> Critical - P1 - Outage detected by uptime.  Response time: <15 minutes during business hours, <30 minutes after hours.
 >
-> High - P2 - Sysdig warnings about production stability that may cause an outage if left unaddressed. Response time: <30 minutes during business hours, <60 minutes after hours.
+> High - P2 - Sysdig warnings about stability that may cause an outage if left unaddressed. Response time: <30 minutes during business hours, <60 minutes after hours.
 >
-> Moderate - P3 - Development or Test outage, or a low severity warning from Sysdig that does not require immediate human intervention. Response time: <30 minutes during business hours, best effort after hours.
+> Moderate - P3 - Moderate severity warning from Sysdig that does not require immediate human intervention. Response time: <30 minutes during business hours, best effort after hours.
 >
 > Low - P4 - Any warning from Sysdig alerts that reflects less than perfect system health, but doesn't indicate any kind of outage in the near future. Response time: <45 minutes during business hours, best effort after hours.
 >
