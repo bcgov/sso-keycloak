@@ -154,7 +154,7 @@ Uptime will calculate the total downtime for the alert
 | Month          | Downtime |
 | -------------- | -------  |
 | January   2024 | 0s       |
-| February  2024 |  |
+| February  2024 | 0s       |
 | March     2024 |  |
 | April     2024 |  |
 | May       2024 |  |
@@ -186,7 +186,7 @@ Uptime will calculate the total downtime for the alert
 | Month          | Downtime  |
 | -------------- | --------- |
 | January   2024 | 1h 3m 19s |
-| February  2024 |  |
+| February  2024 | 0s        |
 | March     2024 |  |
 | April     2024 |  |
 | May       2024 |  |
@@ -220,7 +220,7 @@ Uptime will calculate the total downtime for the alert
 | Month      | Number of Alerts | Acknowledge Time | Resolve Time    | Notes |
 | :---        |     :----:   |   :----:   |          ---: |---: |
 | January   | 0 | NA | NA | NA  |
-| February  |  |  |  |   |
+| February  | 0 | NA | NA | NA  |
 | March     |  |  |  |   |
 | April     |  |  |  |   |
 | May       |  |  |  |   |
@@ -238,7 +238,7 @@ Uptime will calculate the total downtime for the alert
 | Month      | Number of Alerts | Acknowledge Time | Resolve Time    | Notes |
 | :--- | :----: | :----: | ---: | ---: |
 | January   | 0 | NA | NA | NA |
-| February  |  |  |  |   |
+| February  |  3 | 1m 24s | 1m 58s | 2 Feb 12 1 Feb 21 All 3 for elevated CPU 2 from the gold upgrade, 1 From our production upgrade |
 | March     |  |  |  |   |
 | April     |  |  |  |   |
 | May       |  |  |  |   |
