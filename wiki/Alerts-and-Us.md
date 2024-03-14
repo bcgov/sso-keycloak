@@ -256,7 +256,7 @@ Pathfinder Team commits to acknowledging issue within 15 -30 mins and resolving 
 | Month      | Number of Alerts | Acknowledge Time | Resolve Time    | Notes |
 | :--- | :----: | :----: | ---: |---: |
 | January   | 5 | 11m 23s | 11m 23s | All dev and test uptime idir issues from a January 21 network outage  |
-| February  |  |  |  |   |
+| February  | 0 | NA | NA | NA  |
 | March     |  |  |  |   |
 | April     |  |  |  |   |
 | May       |  |  |  |   |
@@ -274,7 +274,7 @@ Pathfinder Team commits to acknowledging issue within 15 -30 mins and resolving 
 | Month      | Number of Alerts | Acknowledge Time | Resolve Time    | Notes |
 | :---        |     :----:   |   :----:   |          ---: |---: |
 | January   | 2 | 1m 58s | 1m 58s | dev db filled to 90% during Jan 21 network issues |
-| February  |  |  |  |   |
+| February  | 2 | 1m 3s | 1m 43s | 1 on 12 Feb Med CPU spike due to upgrade, 1 on 21st Feb due to production upgrade |
 | March     |  |  |  |   |
 | April     |  |  |  |   |
 | May       |  |  |  |   |
