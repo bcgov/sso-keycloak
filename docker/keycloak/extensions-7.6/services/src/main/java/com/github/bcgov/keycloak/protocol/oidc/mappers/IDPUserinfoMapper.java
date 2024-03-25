@@ -138,14 +138,20 @@ public class IDPUserinfoMapper extends AbstractOIDCProtocolMapper
         if (decode) {
           userinfoString = decodeUserInfoResponse(userinfoString);
         }
-        JsonNode jsonNode = parseJson(userinfoString);
-        if (jsonNode == null) {
-          logger.error("Null response returned from [" + idp + "] userinfo URL");
+        try {
+          JsonNode jsonNode = parseJson(userinfoString);
+          if (jsonNode == null) {
+            logger.error("Null response returned from [" + idp + "] userinfo URL");
+          }
+          Map<String, Object> otherClaims = token.getOtherClaims();
+          otherClaims.put(
+              mappingModel.getConfig().get(OIDCAttributeMapperHelper.TOKEN_CLAIM_NAME),
+              jsonNode.get(mappingModel.getConfig().get(OIDCAttributeMapperHelper.TOKEN_CLAIM_NAME)));
+        } catch (NullPointerException e) {
+          logger.errorf("'%s' returned invalid response", idp);
+        } catch (Exception e) {
+          logger.errorf("unable to fetch attributes from userinfo endpoint '%s'", userInfoUrl);
         }
-        Map<String, Object> otherClaims = token.getOtherClaims();
-        otherClaims.put(
-            mappingModel.getConfig().get(OIDCAttributeMapperHelper.TOKEN_CLAIM_NAME),
-            jsonNode.get(mappingModel.getConfig().get(OIDCAttributeMapperHelper.TOKEN_CLAIM_NAME)));
       } else {
         logger.error("Identity Provider [" + idp + "] does not have userinfo URL.");
       }
