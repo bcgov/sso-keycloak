@@ -141,7 +141,7 @@ public class IDPUserinfoMapper extends AbstractOIDCProtocolMapper
         try {
           JsonNode jsonNode = parseJson(userinfoString);
           if (jsonNode == null) {
-            logger.error("Null response returned from [" + idp + "] userinfo URL");
+            logger.error("null response returned from [" + idp + "] userinfo URL");
           }
           Map<String, Object> otherClaims = token.getOtherClaims();
           otherClaims.put(
