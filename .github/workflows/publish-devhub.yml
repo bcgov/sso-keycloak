@@ -4,10 +4,10 @@ on:
   push:
     branches: [dev]
     paths:
-      - "wiki/**"
-      - "mkdocs.yml"
-      - "catalog-info.yaml"
-      - ".github/workflows/publish-devhub.yml"
+      - 'wiki/**'
+      - 'mkdocs.yml'
+      - 'catalog-info.yaml'
+      - '.github/workflows/publish-devhub.yml'
 
 jobs:
   publish-techdocs-site:
@@ -26,10 +26,10 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v3
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-node@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.9'
 
@@ -49,20 +49,20 @@ jobs:
       - name: Publish docs to dev bucket
         # Always publish the docs to the dev bucket
         run: |
-            techdocs-cli publish --publisher-type awsS3 \
-            --storage-name $TECHDOCS_S3_BUCKET_NAME \
-            --entity $ENTITY_NAMESPACE/$ENTITY_KIND/$ENTITY_NAME \
-            --awsEndpoint $AWS_ENDPOINT \
-            --awsS3ForcePathStyle true \
-            --awsBucketRootPath $TECHDOCS_S3_DEV_ROOT_PATH
+          techdocs-cli publish --publisher-type awsS3 \
+          --storage-name $TECHDOCS_S3_BUCKET_NAME \
+          --entity $ENTITY_NAMESPACE/$ENTITY_KIND/$ENTITY_NAME \
+          --awsEndpoint $AWS_ENDPOINT \
+          --awsS3ForcePathStyle true \
+          --awsBucketRootPath $TECHDOCS_S3_DEV_ROOT_PATH
 
       - name: Publish docs to prod bucket
         # Currently syncing the prod/dev publish for our docs similar to the wiki updates.
         # Separate this out to a different ref to deploy prod on a specific branch only (e.g main).
         if: ${{ github.ref == 'refs/heads/dev' }}
         run: |
-            techdocs-cli publish --publisher-type awsS3 \
-            --storage-name $TECHDOCS_S3_BUCKET_NAME \
-            --entity $ENTITY_NAMESPACE/$ENTITY_KIND/$ENTITY_NAME \
-            --awsEndpoint $AWS_ENDPOINT \
-            --awsS3ForcePathStyle true \
+          techdocs-cli publish --publisher-type awsS3 \
+          --storage-name $TECHDOCS_S3_BUCKET_NAME \
+          --entity $ENTITY_NAMESPACE/$ENTITY_KIND/$ENTITY_NAME \
+          --awsEndpoint $AWS_ENDPOINT \
+          --awsS3ForcePathStyle true \

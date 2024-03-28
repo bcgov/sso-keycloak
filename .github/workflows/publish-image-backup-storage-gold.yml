@@ -5,9 +5,9 @@ on:
   workflow_dispatch:
     inputs:
       postgres_version:
-        description: "The postgres version"
+        description: 'The postgres version'
         required: true
-        options: ["12", "13"]
+        options: ['12', '13']
 
 env:
   GITHUB_REGISTRY: ghcr.io
@@ -22,7 +22,7 @@ jobs:
 
     steps:
       - name: Checkout the sso-repos
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Checkout backup storage repository
         run: git clone https://github.com/BCDevOps/backup-container.git
@@ -32,14 +32,14 @@ jobs:
         run: cp ./docker/backup-container/* ./backup-container/docker
 
       - name: Log in to the GitHub Container registry
-        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+        uses: docker/login-action@v3
         with:
           registry: ${{ env.GITHUB_REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        uses: docker/build-push-action@v5
         with:
           context: backup-container/docker
           push: true
