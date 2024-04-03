@@ -26,6 +26,11 @@ COPY --from=builder /opt/keycloak/ /opt/keycloak/
 # copy the theme directory to `/opt/keycloak/themes/` for now, but we can consider to archive to be deployed later.
 COPY ./extensions-7.6/themes/src/main/resources/theme /opt/keycloak/themes
 
+COPY ./configuration/cache-ispn.xml /opt/keycloak/conf
+
+COPY ./configuration/keycloak.conf /opt/keycloak/conf
+
+COPY ./configuration/quarkus.properties /opt/keycloak/conf
 
 ENV KC_HOSTNAME=localhost
 # change these values to point to a running postgres instance
