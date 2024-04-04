@@ -32,6 +32,5 @@ COPY ./configuration/keycloak.conf /opt/keycloak/conf
 
 COPY ./configuration/quarkus.properties /opt/keycloak/conf
 
-ENV KC_HOSTNAME=localhost
 # change these values to point to a running postgres instance
 ENTRYPOINT ["/opt/keycloak/bin/kc.sh"]
