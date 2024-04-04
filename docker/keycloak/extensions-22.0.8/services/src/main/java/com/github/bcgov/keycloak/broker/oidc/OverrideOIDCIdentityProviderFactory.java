@@ -1,10 +1,14 @@
 package com.github.bcgov.keycloak.broker.oidc;
 
+import java.util.List;
+
 import org.keycloak.broker.oidc.OIDCIdentityProvider;
 import org.keycloak.broker.oidc.OIDCIdentityProviderConfig;
 import org.keycloak.broker.oidc.OIDCIdentityProviderFactory;
 import org.keycloak.models.IdentityProviderModel;
 import org.keycloak.models.KeycloakSession;
+import org.keycloak.provider.ProviderConfigProperty;
+import org.keycloak.provider.ProviderConfigurationBuilder;
 
 /** @author <a href="mailto:junmin@button.is">Junmin Ahn</a> */
 public class OverrideOIDCIdentityProviderFactory extends OIDCIdentityProviderFactory {
@@ -24,5 +28,13 @@ public class OverrideOIDCIdentityProviderFactory extends OIDCIdentityProviderFac
   @Override
   public String getId() {
     return PROVIDER_ID;
+  }
+
+  @Override
+  public List<ProviderConfigProperty> getConfigProperties() {
+    return ProviderConfigurationBuilder.create().property()
+        .name("legacyLogoutRedirectUriSupported").label("Legacy Logout Redirect URI")
+        .helpText("Does the external IDP support legacy logout redirect URI (redirect_uri)?")
+        .type(ProviderConfigProperty.BOOLEAN_TYPE).add().build();
   }
 }
