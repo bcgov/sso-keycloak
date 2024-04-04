@@ -18,11 +18,13 @@ COPY webhook-template.json /
 #  - https://blog.danman.eu/cron-jobs-in-openshift/
 # --------------------------------------------------------------------------------------------------------
 ARG SOURCE_REPO=webdevops
-ARG GOCROND_VERSION=22.9.1
+ARG GOCROND_VERSION=23.2.0
 ADD https://github.com/$SOURCE_REPO/go-crond/releases/download/$GOCROND_VERSION/go-crond.linux.amd64 /usr/bin/go-crond
 
 USER root
 
+RUN curl https://dl.min.io/client/mc/release/linux-amd64/mc -o /usr/bin/mc
+RUN chmod +x /usr/bin/mc
 RUN chmod +x /usr/bin/go-crond
 # ========================================================================================================
 
