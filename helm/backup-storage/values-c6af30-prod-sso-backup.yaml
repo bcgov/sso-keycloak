@@ -3,7 +3,7 @@ fullnameOverride: sso-backup-storage
 
 image:
   repository: ghcr.io/bcgov/backup-storage
-  tag: postgres-13
+  tag: dev
   pullPolicy: Always
 
 backupConfig: |
