@@ -1,7 +1,5 @@
 package com.github.bcgov.keycloak.broker.oidc;
 
-import java.util.HashMap;
-
 import org.keycloak.broker.oidc.OIDCIdentityProvider;
 import org.keycloak.broker.oidc.OIDCIdentityProviderConfig;
 import org.keycloak.broker.oidc.OIDCIdentityProviderFactory;
@@ -20,10 +18,6 @@ public class OverrideOIDCIdentityProviderFactory extends OIDCIdentityProviderFac
 
   @Override
   public OIDCIdentityProvider create(KeycloakSession session, IdentityProviderModel model) {
-    boolean legacyLogoutRedirectUriSupported = Boolean
-        .parseBoolean(model.getConfig().get("legacyLogoutRedirectUriSupported"));
-    model.setConfig(new HashMap<>(model.getConfig()));
-    model.getConfig().put("legacyLogoutRedirectUriSupported", String.valueOf(legacyLogoutRedirectUriSupported));
     return new OverrideOIDCIdentityProvider(session, new OIDCIdentityProviderConfig(model));
   }
 
