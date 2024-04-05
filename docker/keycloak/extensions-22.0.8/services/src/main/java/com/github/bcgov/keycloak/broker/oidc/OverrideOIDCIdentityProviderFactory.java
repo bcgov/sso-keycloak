@@ -30,7 +30,6 @@ public class OverrideOIDCIdentityProviderFactory extends OIDCIdentityProviderFac
     return PROVIDER_ID;
   }
 
-  @Override
   public List<ProviderConfigProperty> getConfigProperties() {
     return ProviderConfigurationBuilder.create().property()
         .name("legacyLogoutRedirectUriSupported").label("Legacy Logout Redirect URI")
