@@ -65,7 +65,7 @@ function onRestoreDatabase(){
     echo -e "Restoring '${_fileName}' to '${_hostname}${_port:+:${_port}}${_database:+/${_database}}' ...\n" >&2
 
     export PGPASSWORD=${_adminPassword}
-        _stopOnErrors="-v ON_ERROR_STOP=1"
+    _stopOnErrors="-v ON_ERROR_STOP=1"
     if ignoreErrors; then
       _stopOnErrors="-v ON_ERROR_STOP=0"
     fi

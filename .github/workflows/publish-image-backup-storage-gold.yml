@@ -43,5 +43,5 @@ jobs:
         with:
           context: backup-container/docker
           push: true
-          tags: ${{ env.GITHUB_REGISTRY }}/${{ env.IMAGE_NAME }}:postgres-${{ github.event.inputs.postgres_version}}
+          tags: ${{ env.GITHUB_REGISTRY }}/${{ env.IMAGE_NAME }}:postgres-14-test
           labels: sso-keycloak-backup
