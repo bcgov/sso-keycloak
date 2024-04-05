@@ -1,5 +1,6 @@
 # This image provides a postgres installation from which to run backups
 FROM --platform=linux/amd64 quay.io/fedora/postgresql-14:14
+
 # Change timezone to PST for convenience
 ENV TZ=PST8PDT
 
@@ -8,8 +9,6 @@ WORKDIR /
 
 # Load the backup scripts into the container (must be executable).
 COPY backup.* /
-
-# COPY webhook-template.json /
 
 # ========================================================================================================
 # Install go-crond (from https://github.com/webdevops/go-crond)
