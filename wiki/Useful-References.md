@@ -71,7 +71,7 @@ Custom realms are regular keycloak realms, which may be required by some clients
 
 
 ### Technical Common Hosted Single Sign On Material
-- [Technical Documentation](https://bcgov.github.io/sso-docs) 
+- [Technical Documentation](https://bcgov.github.io/sso-docs)
 
 ### Q&A with Us:
 
