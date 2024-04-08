@@ -1,5 +1,7 @@
 # Introduction to Terms
-This section covers general terms used throughout this documentation, as well as [resources and links](#more-resources) for learning about and using this service.
+This section covers general terms used throughout this documentation. Note to developers, you can find our [technical documentation here](https://bcgov.github.io/sso-docs) .
+
+Here's a shortcut to additional [resources and links](#more-resources) for learning about and using this service.
 
 ### Authentication
 
@@ -66,6 +68,10 @@ Custom realms are regular keycloak realms, which may be required by some clients
 
 * [Red Hat SSO (Keycloak)](https://access.redhat.com/documentation/en-us/red_hat_single_sign-on/7.6/)
 * [Realm Admin guide](https://access.redhat.com/documentation/en-us/red_hat_single_sign-on/7.6/html/server_administration_guide/index)
+
+
+### Technical Common Hosted Single Sign On Material
+- [Technical Documentation](https://bcgov.github.io/sso-docs)
 
 ### Q&A with Us:
 
