@@ -1,3 +1,5 @@
+BEGIN;
+
 CREATE TABLE IF NOT EXISTS public.sso_logs (
   id serial NOT NULL,
   timestamp timestamp,
@@ -79,3 +81,5 @@ BEGIN
 END;
 $BODY$
 LANGUAGE 'plpgsql';
+
+END;
