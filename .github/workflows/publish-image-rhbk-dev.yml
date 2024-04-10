@@ -52,7 +52,7 @@ jobs:
           context: docker/keycloak
           push: true
           tags: ${{ env.GITHUB_REGISTRY }}/${{env.IMAGE_NAME}}:dev
-          file: docker/keycloak/Dockerfile-22.0.8
+          file: docker/keycloak/Dockerfile-24.0.2
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
 
