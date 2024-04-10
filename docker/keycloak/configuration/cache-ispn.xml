@@ -21,7 +21,7 @@
         xsi:schemaLocation="urn:infinispan:config:14.0 http://www.infinispan.org/schemas/infinispan-config-14.0.xsd"
         xmlns="urn:infinispan:config:14.0">
 
-    <cache-container name="keycloak">
+    <cache-container name="keycloak" statistics="true">
         <transport lock-timeout="60000"/>
         <local-cache name="realms" simple-cache="true">
             <encoding>
@@ -37,24 +37,28 @@
             </encoding>
             <memory max-count="10000"/>
         </local-cache>
-        <distributed-cache name="sessions" owners="2">
+        <!-- see https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/7.4/html/configuration_guide/configuring_high_availability#clustering_modes -->
+        <!-- see https://docs.jboss.org/author/display/ISPN50/What%20is%20the%20difference%20between%20a%20replicated%20cache%20and%20a%20distributed%20cache_.html -->
+        <!-- see https://lists.jboss.org/pipermail/keycloak-user/2018-September/015577.html -->
+        <!-- see https://access.redhat.com/support/cases/#/case/03219599 -->
+        <replicated-cache name="sessions">
             <expiration lifespan="900000000000000000"/>
-        </distributed-cache>
-        <distributed-cache name="authenticationSessions" owners="2">
+        </replicated-cache>
+        <replicated-cache name="authenticationSessions">
             <expiration lifespan="900000000000000000"/>
-        </distributed-cache>
-        <distributed-cache name="offlineSessions" owners="2">
+        </replicated-cache>
+        <replicated-cache name="offlineSessions">
             <expiration lifespan="900000000000000000"/>
-        </distributed-cache>
-        <distributed-cache name="clientSessions" owners="2">
+        </replicated-cache>
+        <replicated-cache name="clientSessions">
             <expiration lifespan="900000000000000000"/>
-        </distributed-cache>
-        <distributed-cache name="offlineClientSessions" owners="2">
+        </replicated-cache>
+        <replicated-cache name="offlineClientSessions">
             <expiration lifespan="900000000000000000"/>
-        </distributed-cache>
-        <distributed-cache name="loginFailures" owners="2">
+        </replicated-cache>
+        <replicated-cache name="loginFailures">
             <expiration lifespan="900000000000000000"/>
-        </distributed-cache>
+        </replicated-cache>
         <local-cache name="authorization" simple-cache="true">
             <encoding>
                 <key media-type="application/x-java-object"/>
@@ -81,58 +85,5 @@
             <expiration max-idle="-1" lifespan="900000000000000000" interval="300000"/>
             <memory max-count="-1"/>
         </distributed-cache>
-    </cache-container>
-    <cache-container name="ejb" default-cache="repl" aliases="sfsb" modules="org.wildfly.clustering.ejb.infinispan">
-        <transport lock-timeout="60000" />
-        <replicated-cache name="repl">
-            <locking isolation="REPEATABLE_READ" />
-            <transaction mode="BATCH" />
-            <heap-memory size="10000" />
-            <file-store />
-        </replicated-cache>
-        <distributed-cache name="dist">
-            <locking isolation="REPEATABLE_READ" />
-            <transaction mode="BATCH" />
-            <file-store />
-        </distributed-cache>
-    </cache-container>
-    <cache-container name="server" default-cache="default" aliases="singleton cluster" modules="org.wildfly.clustering.server">
-        <transport lock-timeout="60000" />
-        <replicated-cache name="default">
-            <transaction mode="BATCH" />
-        </replicated-cache>
-    </cache-container>
-    <cache-container name="web" default-cache="repl" modules="org.wildfly.clustering.web.infinispan">
-        <transport lock-timeout="60000" />
-        <replicated-cache name="repl">
-            <locking isolation="REPEATABLE_READ" />
-            <transaction mode="BATCH" />
-            <file-store />
-        </replicated-cache>
-        <replicated-cache name="sso">
-            <locking isolation="REPEATABLE_READ" />
-            <transaction mode="BATCH" />
-        </replicated-cache>
-        <replicated-cache name="routing" />
-        <distributed-cache name="dist">
-            <locking isolation="REPEATABLE_READ" />
-            <transaction mode="BATCH" />
-            <file-store />
-        </distributed-cache>
-    </cache-container>
-    <cache-container name="hibernate" default-cache="local-query" modules="org.infinispan.hibernate-cache">
-        <transport lock-timeout="60000" />
-        <local-cache name="local-query">
-            <heap-memory size="10000" />
-            <expiration max-idle="100000" />
-        </local-cache>
-        <local-cache name="pending-puts">
-            <expiration max-idle="60000" />
-        </local-cache>
-        <invalidation-cache name="entity">
-            <heap-memory size="10000" />
-            <expiration max-idle="100000" />
-        </invalidation-cache>
-        <replicated-cache name="timestamps" />
     </cache-container>
 </infinispan>
