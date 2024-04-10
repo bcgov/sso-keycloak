@@ -82,4 +82,57 @@
             <memory max-count="-1"/>
         </distributed-cache>
     </cache-container>
+    <cache-container name="ejb" default-cache="repl" aliases="sfsb" modules="org.wildfly.clustering.ejb.infinispan">
+        <transport lock-timeout="60000" />
+        <replicated-cache name="repl">
+            <locking isolation="REPEATABLE_READ" />
+            <transaction mode="BATCH" />
+            <heap-memory size="10000" />
+            <file-store />
+        </replicated-cache>
+        <distributed-cache name="dist">
+            <locking isolation="REPEATABLE_READ" />
+            <transaction mode="BATCH" />
+            <file-store />
+        </distributed-cache>
+    </cache-container>
+    <cache-container name="server" default-cache="default" aliases="singleton cluster" modules="org.wildfly.clustering.server">
+        <transport lock-timeout="60000" />
+        <replicated-cache name="default">
+            <transaction mode="BATCH" />
+        </replicated-cache>
+    </cache-container>
+    <cache-container name="web" default-cache="repl" modules="org.wildfly.clustering.web.infinispan">
+        <transport lock-timeout="60000" />
+        <replicated-cache name="repl">
+            <locking isolation="REPEATABLE_READ" />
+            <transaction mode="BATCH" />
+            <file-store />
+        </replicated-cache>
+        <replicated-cache name="sso">
+            <locking isolation="REPEATABLE_READ" />
+            <transaction mode="BATCH" />
+        </replicated-cache>
+        <replicated-cache name="routing" />
+        <distributed-cache name="dist">
+            <locking isolation="REPEATABLE_READ" />
+            <transaction mode="BATCH" />
+            <file-store />
+        </distributed-cache>
+    </cache-container>
+    <cache-container name="hibernate" default-cache="local-query" modules="org.infinispan.hibernate-cache">
+        <transport lock-timeout="60000" />
+        <local-cache name="local-query">
+            <heap-memory size="10000" />
+            <expiration max-idle="100000" />
+        </local-cache>
+        <local-cache name="pending-puts">
+            <expiration max-idle="60000" />
+        </local-cache>
+        <invalidation-cache name="entity">
+            <heap-memory size="10000" />
+            <expiration max-idle="100000" />
+        </invalidation-cache>
+        <replicated-cache name="timestamps" />
+    </cache-container>
 </infinispan>

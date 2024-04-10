@@ -38,25 +38,27 @@ public class OverrideOIDCIdentityProvider extends OIDCIdentityProvider {
     }
 
     String sessionId = userSession.getId();
-    UriBuilder logoutUri =
-        UriBuilder.fromUri(getConfig().getLogoutUrl()).queryParam("state", sessionId);
-    String redirect =
-        RealmsResource.brokerUrl(uriInfo)
-            .path(IdentityBrokerService.class, "getEndpoint")
-            .path(OIDCEndpoint.class, "logoutResponse")
-            .build(realm.getName(), getConfig().getAlias())
-            .toString();
+    UriBuilder logoutUri = UriBuilder.fromUri(getConfig().getLogoutUrl()).queryParam("state", sessionId);
+    String redirect = RealmsResource.brokerUrl(uriInfo)
+        .path(IdentityBrokerService.class, "getEndpoint")
+        .path(OIDCEndpoint.class, "logoutResponse")
+        .build(realm.getName(), getConfig().getAlias())
+        .toString();
 
     if (idToken != null) {
       logoutUri.queryParam("id_token_hint", idToken);
       logoutUri.queryParam("post_logout_redirect_uri", redirect);
     } else {
-      if (!isLegacyLogoutRedirectUriSupported()) {
-        logger.warn("no id_token found and legacy logout redirect uri not supported: " + redirect);
-        return null;
-      }
+      // commented out as custom UI fields are not supported in KC22
+      // if (!isLegacyLogoutRedirectUriSupported()) {
+      // logger.warn("no id_token found and legacy logout redirect uri not supported:
+      // " + redirect);
+      // return null;
+      // }
+      // logger.warn("no id_token found; use legacy redirect_uri query param: " +
+      // redirect);
 
-      logger.warn("no id_token found; use legacy redirect_uri query param: " + redirect);
+      // if id token is expired or not available then use redirect_uri
       logoutUri.queryParam("redirect_uri", redirect);
     }
 
@@ -82,7 +84,9 @@ public class OverrideOIDCIdentityProvider extends OIDCIdentityProvider {
     }
   }
 
-  public boolean isLegacyLogoutRedirectUriSupported() {
-    return Boolean.valueOf(getConfig().getConfig().get("legacyLogoutRedirectUriSupported"));
-  }
+  // commented out as custom UI fields are not supported in KC22
+  // public boolean isLegacyLogoutRedirectUriSupported() {
+  // return
+  // Boolean.valueOf(getConfig().getConfig().get("legacyLogoutRedirectUriSupported"));
+  // }
 }
