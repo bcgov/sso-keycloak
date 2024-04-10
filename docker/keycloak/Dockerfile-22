@@ -1,10 +1,10 @@
 FROM maven:3.8.5-openjdk-17-slim AS extensions-builder
 
-COPY ./extensions-22.0.8 /tmp/
+COPY ./extensions-22 /tmp/
 WORKDIR /tmp/
 RUN mvn -B clean package --file pom.xml
 
-FROM registry.redhat.io/rhbk/keycloak-rhel9:22-7 as builder
+FROM registry.redhat.io/rhbk/keycloak-rhel9:22-10 as builder
 
 # Enable health and metrics support
 ENV KC_HEALTH_ENABLED=true
@@ -20,11 +20,11 @@ WORKDIR /opt/keycloak
 RUN keytool -genkeypair -storepass password -storetype PKCS12 -keyalg RSA -keysize 2048 -dname "CN=server" -alias server -ext "SAN:c=DNS:localhost,IP:127.0.0.1" -keystore conf/server.keystore
 RUN /opt/keycloak/bin/kc.sh build
 
-FROM registry.redhat.io/rhbk/keycloak-rhel9:22-7
+FROM registry.redhat.io/rhbk/keycloak-rhel9:22-10
 COPY --from=builder /opt/keycloak/ /opt/keycloak/
 
 # copy the theme directory to `/opt/keycloak/themes/` for now, but we can consider to archive to be deployed later.
-COPY ./extensions-7.6/themes/src/main/resources/theme /opt/keycloak/themes
+COPY ./extensions-22/themes/src/main/resources/theme /opt/keycloak/themes
 
 # COPY ./configuration/cache-ispn-custom.xml /opt/keycloak/conf
 
