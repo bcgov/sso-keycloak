@@ -26,7 +26,7 @@ COPY --from=builder /opt/keycloak/ /opt/keycloak/
 # copy the theme directory to `/opt/keycloak/themes/` for now, but we can consider to archive to be deployed later.
 COPY ./extensions-7.6/themes/src/main/resources/theme /opt/keycloak/themes
 
-COPY ./configuration/cache-ispn-custom.xml /opt/keycloak/conf
+# COPY ./configuration/cache-ispn-custom.xml /opt/keycloak/conf
 
 COPY ./configuration/keycloak.conf /opt/keycloak/conf
 
