@@ -37,24 +37,24 @@
             </encoding>
             <memory max-count="10000"/>
         </local-cache>
-        <distributed-cache name="sessions" owners="2">
+        <replicated-cache name="sessions">
             <expiration lifespan="900000000000000000"/>
-        </distributed-cache>
-        <distributed-cache name="authenticationSessions" owners="2">
+        </replicated-cache>
+        <replicated-cache name="authenticationSessions">
             <expiration lifespan="900000000000000000"/>
-        </distributed-cache>
-        <distributed-cache name="offlineSessions" owners="2">
+        </replicated-cache>
+        <replicated-cache name="offlineSessions">
             <expiration lifespan="900000000000000000"/>
-        </distributed-cache>
-        <distributed-cache name="clientSessions" owners="2">
+        </replicated-cache>
+        <replicated-cache name="clientSessions">
             <expiration lifespan="900000000000000000"/>
-        </distributed-cache>
-        <distributed-cache name="offlineClientSessions" owners="2">
+        </replicated-cache>
+        <replicated-cache name="offlineClientSessions">
             <expiration lifespan="900000000000000000"/>
-        </distributed-cache>
-        <distributed-cache name="loginFailures" owners="2">
+        </replicated-cache>
+        <replicated-cache name="loginFailures">
             <expiration lifespan="900000000000000000"/>
-        </distributed-cache>
+        </replicated-cache>
         <local-cache name="authorization" simple-cache="true">
             <encoding>
                 <key media-type="application/x-java-object"/>
