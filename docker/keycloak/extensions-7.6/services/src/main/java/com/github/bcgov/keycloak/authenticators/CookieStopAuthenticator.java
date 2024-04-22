@@ -1,6 +1,8 @@
 package com.github.bcgov.keycloak.authenticators;
 
 import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
 import javax.ws.rs.core.MultivaluedMap;
 import org.jboss.logging.Logger;
 import org.keycloak.authentication.AuthenticationFlowContext;
@@ -48,25 +50,46 @@ public class CookieStopAuthenticator implements Authenticator {
       return;
     }
 
+    // Get the list of allowed IDPs for the authenticating client
+    List<IdentityProviderModel> allowedIdps = new ArrayList<IdentityProviderModel>();
+    List<IdentityProviderModel> realmIdps = context.getRealm().getIdentityProviders();
+    Map<String, ClientScopeModel> scopes =
+        context.getAuthenticationSession().getClient().getClientScopes(true);
+
+    for (IdentityProviderModel ridp : realmIdps) {
+      String oidcAlias = ridp.getAlias();
+      String samlAlias = ridp.getAlias() + "-saml";
+
+      if (ridp.isEnabled() && (scopes.containsKey(oidcAlias) || scopes.containsKey(samlAlias))) {
+        allowedIdps.add(ridp);
+      }
+    }
+
     MultivaluedMap<String, String> queryParams = context.getUriInfo().getQueryParameters();
 
-    // 3. If a target IDP is passed via "kc_idp_hint" query param, and
+    // 3. If there is only one target IDP OR a target IDP is passed via "kc_idp_hint" query param, and
     // i. the target IDP is enabled;
     // ii. the target IDP is allowed for the authenticating client;
     // iii. the target IDP is different one than the one in the user session;
     // then, logout the user from the current session and proceed to login process
-    if (queryParams.containsKey(AdapterConstants.KC_IDP_HINT)) {
-      String authIdp = queryParams.getFirst(AdapterConstants.KC_IDP_HINT);
+    if (queryParams.containsKey(AdapterConstants.KC_IDP_HINT) || allowedIdps.size() == 1) {
       String sessIdp = authResult.getSession().getNotes().get("identity_provider");
+      String authIdp = queryParams.getFirst(AdapterConstants.KC_IDP_HINT);
+
+      if (authIdp == null && allowedIdps.size() == 1) {
+        authIdp = allowedIdps.get(0).getAlias();
+      }
 
       if (authIdp != null && !authIdp.trim().isEmpty()) {
         IdentityProviderModel idp = context.getRealm().getIdentityProviderByAlias(authIdp);
-        Map<String, ClientScopeModel> scopes = context.getAuthenticationSession().getClient().getClientScopes(true);
+
+        // Digital credential is a special case where it requires a new session
+        Boolean requiresNewSession = !authIdp.equals(sessIdp) || authIdp.equals("digitalcredential");
 
         if (idp != null
             && idp.isEnabled()
             && (scopes.containsKey(authIdp) || scopes.containsKey(authIdp + "-saml"))
-            && authIdp != sessIdp) {
+            && requiresNewSession) {
           UserSessionProvider userSessionProvider = context.getSession().sessions();
           userSessionProvider.removeUserSession(context.getRealm(), authResult.getSession());
           context.attempted();
