@@ -156,7 +156,7 @@ Uptime will calculate the total downtime for the alert
 | January   2024 | 0s       |
 | February  2024 | 0s       |
 | March     2024 | 0s       |
-| April     2024 |  |
+| April     2024 | 1h 47m 32s |
 | May       2024 |  |
 | June      2024 |  |
 | July      2024 |  |
@@ -165,6 +165,8 @@ Uptime will calculate the total downtime for the alert
 | October   2024 |  |
 | November  2024 |  |
 | December  2024 |  |
+
+**Note**: April 2024 alerts look like they were due to an uptime false alarm.
 
 | Month          | Downtime |
 | -------------- | ------- |
@@ -188,7 +190,7 @@ Uptime will calculate the total downtime for the alert
 | January   2024 | 1h 3m 19s |
 | February  2024 | 0s        |
 | March     2024 | 14m 5s    |
-| April     2024 |  |
+| April     2024 | 2h 27m 56s |
 | May       2024 |  |
 | June      2024 |  |
 | July      2024 |  |
@@ -198,6 +200,7 @@ Uptime will calculate the total downtime for the alert
 | November  2024 |  |
 | December  2024 |  |
 
+**Note**: April 2024 alerts look like they were due to an uptime false alarm.
 
 | Month          | Downtime |
 | -------------- | -------- |
@@ -222,7 +225,7 @@ Uptime will calculate the total downtime for the alert
 | January   | 0 | NA | NA | NA  |
 | February  | 0 | NA | NA | NA  |
 | March     | 2 |  24s | 7m 2s |  Idir monitoring check failed March 21 and 22.  Communicated it to IDP partner. |
-| April     |  |  |  |   |
+| April     | 3 | 2m 25s | 1h 25m 10s | Uptime was having time out issues on the 20th, could not reproduce even in uptime, suspect false alarm  |
 | May       |  |  |  |   |
 | June      |  |  |  |   |
 | July      |  |  |  |   |
@@ -240,7 +243,7 @@ Uptime will calculate the total downtime for the alert
 | January   | 0 | NA | NA | NA |
 | February  |  3 | 1m 24s | 1m 58s | 2 Feb 12 1 Feb 21 All 3 for elevated CPU 2 from the gold upgrade, 1 From our production upgrade |
 | March     | 0 | NA | NA | NA |
-| April     |  |  |  |   |
+| April     | 0 | NA | NA | NA |
 | May       |  |  |  |   |
 | June      |  |  |  |   |
 | July      |  |  |  |   |
@@ -258,7 +261,7 @@ Pathfinder Team commits to acknowledging issue within 15 -30 mins and resolving 
 | January   | 5 | 11m 23s | 11m 23s | All dev and test uptime idir issues from a January 21 network outage  |
 | February  | 0 | NA | NA | NA |
 | March     | 0 | NA | NA | NA |
-| April     |  |  |  |   |
+| April     | 8 | 1m 27s | 57m 27s |Uptime was having time out issues on the 20th, could not reproduce even in uptime, suspect false alarm |
 | May       |  |  |  |   |
 | June      |  |  |  |   |
 | July      |  |  |  |   |
