@@ -50,7 +50,7 @@ Here are the things to check:
 
 
 
-### Our Service Level Target 2023
+### Our Service Level Target 2024
 
 Working as DevOps Agile team maintaining high system availability and reliability is paramount to our Service Levels.
 
@@ -78,15 +78,16 @@ As of writing (April 2023) we define our service levels as:
 
 **Our approach to stability and reliability (Support Incident Response Times)**
 
-The Pathfinder SSO Team responds to 3 levels or incidents: P1 - Critical, P3 - Moderate and P4 - Low.
+The Pathfinder SSO Team responds to 4 levels of incidents. The team responds to all service incidents through our 24/7 process where our team is alerted of the incident. Our internal target response times are:
 
-The team responds to all service incidents through our 24/7 process where our team is alerted of the incident. Our target response times are:
 
-> P1 - Critical - respond within 20mins
+> Critical - P1 - Outage detected by uptime.  Response time: <15 minutes during business hours, <30 minutes after hours.
 >
-> P3 - Moderate - respond within 30 mins
+> High - P2 - Sysdig warnings about stability that may cause an outage if left unaddressed. Response time: <30 minutes during business hours, <60 minutes after hours.
 >
-> P4 - Low - respond within 45 mins
+> Moderate - P3 - Moderate severity warning from Sysdig that does not require immediate human intervention. Response time: <30 minutes during business hours, best effort after hours.
+>
+> Low - P4 - Any warning from Sysdig alerts that reflects less than perfect system health, but doesn't indicate any kind of outage in the near future. Response time: <45 minutes during business hours, best effort after hours.
 >
 
 As a very responsive team, you will see our metrics over the years and that we respond  very quickly [2022 and 2023 Recap of Alerts/Incidents](Alerts-and-Us.md#metrics)
@@ -150,41 +151,146 @@ Uptime will calculate the total downtime for the alert
 
 
 ### Gold Keycloak SSO Prod End User Access Uptime
-| Month | Downtime |
-| -------- | ------- |
-| January 2023 | 41m 6s |
-| February 2023 | 36m 21s |
-| March | 0 |
-| April 2023 | 1h5m30s |
-| May 2023 | 51m00s |
-| June 2023 | 0 |
-| July 2023 | 0 |
-| August 2023 | 0 |
+| Month          | Downtime |
+| -------------- | -------  |
+| January   2024 | 0s       |
+| February  2024 | 0s       |
+| March     2024 | 0s       |
+| April     2024 |  |
+| May       2024 |  |
+| June      2024 |  |
+| July      2024 |  |
+| August    2024 |  |
+| September 2024 |  |
+| October   2024 |  |
+| November  2024 |  |
+| December  2024 |  |
+
+| Month          | Downtime |
+| -------------- | ------- |
+| January   2023 | 41m 6s |
+| February  2023 | 36m 21s |
+| March     2023 | 0 |
+| April     2023 | 1h5m30s |
+| May       2023 | 51m00s |
+| June      2023 | 0 |
+| July      2023 | 0 |
+| August    2023 | 0 |
 | September 2023 | 0 |
-| October 2023 | 0h27m2s |
-| November 2023| 0s |
-| December 2023| 0s |
+| October   2023 | 0h27m2s |
+| November  2023 | 0s |
+| December  2023 | 0s |
 
 ### Gold KeyCloak SSO Prod and IDIR siteminder Uptime
-| Month | Downtime |
-| -------- | ------- |
-| January 2023 | 1h0m18s |
-| February 2023 | 38m12 |
-| March | 56m40s |
-| April 2023 | 1h51m46s |
-| May 2023 | 1h38m45s |
-| June 2023 | 0 |
-| July 2023 | 6m 43s |
-| August 2023 | 0 |
+
+| Month          | Downtime  |
+| -------------- | --------- |
+| January   2024 | 1h 3m 19s |
+| February  2024 | 0s        |
+| March     2024 | 14m 5s    |
+| April     2024 |  |
+| May       2024 |  |
+| June      2024 |  |
+| July      2024 |  |
+| August    2024 |  |
+| September 2024 |  |
+| October   2024 |  |
+| November  2024 |  |
+| December  2024 |  |
+
+
+| Month          | Downtime |
+| -------------- | -------- |
+| January   2023 | 1h0m18s  |
+| February  2023 | 38m12 |
+| March     2023 | 56m40s |
+| April     2023 | 1h51m46s |
+| May       2023 | 1h38m45s |
+| June      2023 | 0 |
+| July      2023 | 6m 43s |
+| August    2023 | 0 |
 | September 2023 | 0 |
-| October 2023 | 0h35m25s |
-| November 2023| 0h25m28s |
-| December 2023| 0h06m18s |
+| October   2023 | 0h35m25s |
+| November  2023 | 0h25m28s |
+| December  2023 | 0h06m18s |
+
+## 2024
+
+##### P1 Stats
+| Month      | Number of Alerts | Acknowledge Time | Resolve Time    | Notes |
+| :---        |     :----:   |   :----:   |          ---: |---: |
+| January   | 0 | NA | NA | NA  |
+| February  | 0 | NA | NA | NA  |
+| March     | 2 |  24s | 7m 2s |  Idir monitoring check failed March 21 and 22.  Communicated it to IDP partner. |
+| April     |  |  |  |   |
+| May       |  |  |  |   |
+| June      |  |  |  |   |
+| July      |  |  |  |   |
+| August    |  |  |  |   |
+| September |  |  |  |   |
+| October   |  |  |  |   |
+| November  |  |  |  |   |
+| December  |  |  |  |   |
+
+
+##### P2 Stats
+
+| Month      | Number of Alerts | Acknowledge Time | Resolve Time    | Notes |
+| :--- | :----: | :----: | ---: | ---: |
+| January   | 0 | NA | NA | NA |
+| February  |  3 | 1m 24s | 1m 58s | 2 Feb 12 1 Feb 21 All 3 for elevated CPU 2 from the gold upgrade, 1 From our production upgrade |
+| March     | 0 | NA | NA | NA |
+| April     |  |  |  |   |
+| May       |  |  |  |   |
+| June      |  |  |  |   |
+| July      |  |  |  |   |
+| August    |  |  |  |   |
+| September |  |  |  |   |
+| October   |  |  |  |   |
+| November  |  |  |  |   |
+| December  |  |  |  |   |
+
+#### Priority 3 aka Moderate Impact to Service --
+Pathfinder Team commits to acknowledging issue within 15 -30 mins and resolving as quickly as possible
+##### P3 Stats
+| Month      | Number of Alerts | Acknowledge Time | Resolve Time    | Notes |
+| :--- | :----: | :----: | ---: |---: |
+| January   | 5 | 11m 23s | 11m 23s | All dev and test uptime idir issues from a January 21 network outage  |
+| February  | 0 | NA | NA | NA |
+| March     | 0 | NA | NA | NA |
+| April     |  |  |  |   |
+| May       |  |  |  |   |
+| June      |  |  |  |   |
+| July      |  |  |  |   |
+| August    |  |  |  |   |
+| September |  |  |  |   |
+| October   |  |  |  |   |
+| November  |  |  |  |   |
+| December  |  |  |  |   |
+
+#### Priority 4 aka Low Impact to Service --
+Pathfinder Team commits to acknowledging issue within 15 -30 mins and resolving as quickly as possible
+##### P4
+| Month      | Number of Alerts | Acknowledge Time | Resolve Time    | Notes |
+| :---        |     :----:   |   :----:   |          ---: |---: |
+| January   | 2 | 1m 58s | 1m 58s | dev db filled to 90% during Jan 21 network issues |
+| February  | 2 | 1m 3s | 1m 43s | 1 on 12 Feb Med CPU spike due to upgrade, 1 on 21st Feb due to production upgrade |
+| March     | 0 | NA | NA | NA |
+| April     |  |  |  |   |
+| May       |  |  |  |   |
+| June      |  |  |  |   |
+| July      |  |  |  |   |
+| August    |  |  |  |   |
+| September |  |  |  |   |
+| October   |  |  |  |   |
+| November  |  |  |  |   |
+| December  |  |  |  |   |
+
 
 ## 2023
 ### Incidents
 
-Note the piorities of opsgenie alerts were modified in December 2023 to make the alerts more informative. Dev and test uptime alerts were promoted to P3s and many sysdig alerts were downgrader to P2s.
+Note the piorities of opsgenie alerts were modified in December 2023 to make the alerts more informative. Dev and test uptime alerts were promoted to P3s and many Sysdig alerts were downgrader to P2s.
 
 #### Priority 1 aka Critical Impact to Service -- no end users can log into their apps connected to keycloak
 Pathfinder Team commits to acknowledging issue within 15 -20 mins and resolving as quickly as possible
