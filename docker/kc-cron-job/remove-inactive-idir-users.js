@@ -233,9 +233,8 @@ async function removeStaleUsersByEnv(env = 'dev', pgClient, runnerName, startFro
     log(`[${runnerName}] ${total} users processed.`);
     callback(null, { runnerName, processed: total, deleteCount: deletedUserCount });
   } catch (err) {
-    const error = { runnerName, err: JSON.stringify(err.message || err.response.data || err) };
     handleError(err);
-    callback(JSON.stringify(error));
+    callback(JSON.stringify(err?.message || err?.response?.data || err), { runnerName });
   } finally {
     await pgClient.end();
   }
@@ -243,7 +242,7 @@ async function removeStaleUsersByEnv(env = 'dev', pgClient, runnerName, startFro
 
 async function main() {
   async.parallel(
-    [
+    async.reflectAll([
       function (cb) {
         removeStaleUsersByEnv('dev', getPgClient(), 'dev', 0, cb);
       },
@@ -265,21 +264,16 @@ async function main() {
       function (cb) {
         removeStaleUsersByEnv('prod', getPgClient(), 'prod-05', 40000, cb);
       }
-    ],
-    async function (errors, results) {
-      if (errors) {
-        console.error('errors', errors);
-        await sendRcNotification(
-          'cron-remove-inactive-users',
-          `**[${process.env.NAMESPACE}] Failed to remove inactive users**  \n\n` + errors,
-          false
-        );
-      }
-      const responses = results.map((result) => JSON.stringify(result));
+    ]),
+    async function (_, results) {
+      const hasError = results.find((r) => r.error);
+      const textContent = hasError ? 'Failed to remove' : 'Successfully removed';
+
       await sendRcNotification(
         'cron-remove-inactive-users',
-        `**[${process.env.NAMESPACE}] Successfully removed inactive users** \n\n` + responses.join('\n\n'),
-        false
+        `**[${process.env.NAMESPACE}] ${textContent} inactive users** \n\n` +
+          results.map((r) => JSON.stringify(r)).join('\n\n'),
+        hasError
       );
     }
   );
