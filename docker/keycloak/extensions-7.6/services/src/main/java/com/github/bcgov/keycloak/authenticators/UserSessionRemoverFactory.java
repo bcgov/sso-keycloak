@@ -12,12 +12,13 @@ import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.KeycloakSessionFactory;
 import org.keycloak.provider.ProviderConfigProperty;
 
-public class UserSessionRemoverFactory
-    implements AuthenticatorFactory, DisplayTypeAuthenticatorFactory {
+public class UserSessionRemoverFactory implements AuthenticatorFactory {
 
   protected static final Requirement[] REQUIREMENT_CHOICES = {
     Requirement.REQUIRED, Requirement.ALTERNATIVE, Requirement.DISABLED
   };
+
+  private static final Authenticator AUTHENTICATOR_INSTANCE = new UserSessionRemover();
 
   @Override
   public String getId() {
@@ -36,14 +37,7 @@ public class UserSessionRemoverFactory
 
   @Override
   public Authenticator create(KeycloakSession session) {
-    return new UserSessionRemover ();
-  }
-
-  @Override
-  public Authenticator createDisplay(KeycloakSession session, String displayType) {
-    if (displayType == null) return new UserSessionRemover();
-    if (!OAuth2Constants.DISPLAY_CONSOLE.equalsIgnoreCase(displayType)) return null;
-    return AttemptedAuthenticator.SINGLETON; // ignore this authenticator
+    return AUTHENTICATOR_INSTANCE;
   }
 
   @Override
