@@ -1,6 +1,5 @@
 package com.github.bcgov.keycloak.testsuite.authenticators;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.ArgumentMatchers.any;
@@ -12,14 +11,11 @@ import org.mockito.MockedStatic;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 
-import org.jboss.logging.Logger;
 import com.github.bcgov.keycloak.authenticators.UserSessionRemover;
 import org.keycloak.authentication.AuthenticationFlowContext;
-import org.keycloak.authentication.Authenticator;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
 import org.keycloak.services.managers.AuthenticationManager;
-import org.keycloak.models.UserModel;
 import org.keycloak.models.ClientModel;
 import org.keycloak.sessions.AuthenticationSessionModel;
 import org.keycloak.models.UserSessionProvider;
