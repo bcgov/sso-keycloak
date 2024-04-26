@@ -32,7 +32,7 @@ public class UserSessionRemoverFactory implements AuthenticatorFactory {
 
   @Override
   public String getHelpText() {
-    return "Removes the user session.";
+    return "Checks if the user session is realted to any other client, and removes it if so.";
   }
 
   @Override
