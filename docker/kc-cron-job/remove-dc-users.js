@@ -3,9 +3,7 @@ const async = require('async');
 
 const STANDARD_REALM = 'standard';
 
-const DC_REALM = 'digitalcredential';
-
-async function removeVcUsers(runnerName, pgClient, env = 'dev', callback) {
+async function removeDcUsers(runnerName, pgClient, env = 'dev', callback) {
   try {
     let deletedUserCount = 0;
     const adminClient = await getAdminClient(env);
@@ -31,17 +29,6 @@ async function removeVcUsers(runnerName, pgClient, env = 'dev', callback) {
           // delete user from standard realm
           await adminClient.users.del({ realm: STANDARD_REALM, id });
 
-          const parentRealmUsers = await adminClient.users.find({
-            realm: DC_REALM,
-            username: username.split('@')[0],
-            max: 1
-          });
-
-          if (parentRealmUsers.length > 0) {
-            // delete user from digital credential realm
-            await adminClient.users.del({ realm: DC_REALM, id: parentRealmUsers[0]?.id });
-          }
-
           const values = [env, username, STANDARD_REALM, users[x].attributes || {}];
           await pgClient.query({ text, values });
           deletedUserCount++;
@@ -61,40 +48,34 @@ async function removeVcUsers(runnerName, pgClient, env = 'dev', callback) {
     callback(null, { runnerName, processed: total, deleteCount: deletedUserCount });
   } catch (err) {
     handleError(err);
-    callback(err);
+    callback(JSON.stringify(err?.message || err?.response?.data || err), { runnerName });
   } finally {
     await pgClient.end();
   }
 }
 async function main() {
   async.parallel(
-    [
+    async.reflectAll([
       function (cb) {
-        removeVcUsers('dev', getPgClient(), 'dev', cb);
+        removeDcUsers('dev', getPgClient(), 'dev', cb);
       },
       function (cb) {
-        removeVcUsers('test', getPgClient(), 'test', cb);
+        removeDcUsers('test', getPgClient(), 'test', cb);
       },
       function (cb) {
-        removeVcUsers('prod', getPgClient(), 'prod', cb);
+        removeDcUsers('prod', getPgClient(), 'prod', cb);
       }
-    ],
-    async function (err, results) {
-      if (err) {
-        console.error(err.message);
-        await sendRcNotification(
-          'dc-remove-users',
-          `**[${process.env.NAMESPACE}] Failed to remove digital credential users** \n\n` + err.message,
-          true
-        );
-      } else {
-        const a = results.map((res) => JSON.stringify(res));
-        await sendRcNotification(
-          'dc-remove-users',
-          `**[${process.env.NAMESPACE}] Successfully removed digital credential users** \n\n` + a.join('\n\n'),
-          false
-        );
-      }
+    ]),
+    async function (_, results) {
+      const hasError = results.find((r) => r.error);
+      const textContent = hasError ? 'Failed to remove' : 'Successfully removed';
+
+      await sendRcNotification(
+        'dc-remove-users',
+        `**[${process.env.NAMESPACE}] ${textContent} digital credential users** \n\n` +
+          results.map((r) => JSON.stringify(r)).join('\n\n'),
+        hasError
+      );
     }
   );
 

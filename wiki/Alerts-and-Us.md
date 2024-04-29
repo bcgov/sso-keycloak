@@ -50,7 +50,7 @@ Here are the things to check:
 
 
 
-### Our Service Level Target 2023
+### Our Service Level Target 2024
 
 Working as DevOps Agile team maintaining high system availability and reliability is paramount to our Service Levels.
 
@@ -155,7 +155,7 @@ Uptime will calculate the total downtime for the alert
 | -------------- | -------  |
 | January   2024 | 0s       |
 | February  2024 | 0s       |
-| March     2024 |  |
+| March     2024 | 0s       |
 | April     2024 |  |
 | May       2024 |  |
 | June      2024 |  |
@@ -187,7 +187,7 @@ Uptime will calculate the total downtime for the alert
 | -------------- | --------- |
 | January   2024 | 1h 3m 19s |
 | February  2024 | 0s        |
-| March     2024 |  |
+| March     2024 | 14m 5s    |
 | April     2024 |  |
 | May       2024 |  |
 | June      2024 |  |
@@ -221,7 +221,7 @@ Uptime will calculate the total downtime for the alert
 | :---        |     :----:   |   :----:   |          ---: |---: |
 | January   | 0 | NA | NA | NA  |
 | February  | 0 | NA | NA | NA  |
-| March     |  |  |  |   |
+| March     | 2 |  24s | 7m 2s |  Idir monitoring check failed March 21 and 22.  Communicated it to IDP partner. |
 | April     |  |  |  |   |
 | May       |  |  |  |   |
 | June      |  |  |  |   |
@@ -239,7 +239,7 @@ Uptime will calculate the total downtime for the alert
 | :--- | :----: | :----: | ---: | ---: |
 | January   | 0 | NA | NA | NA |
 | February  |  3 | 1m 24s | 1m 58s | 2 Feb 12 1 Feb 21 All 3 for elevated CPU 2 from the gold upgrade, 1 From our production upgrade |
-| March     |  |  |  |   |
+| March     | 0 | NA | NA | NA |
 | April     |  |  |  |   |
 | May       |  |  |  |   |
 | June      |  |  |  |   |
@@ -256,8 +256,8 @@ Pathfinder Team commits to acknowledging issue within 15 -30 mins and resolving 
 | Month      | Number of Alerts | Acknowledge Time | Resolve Time    | Notes |
 | :--- | :----: | :----: | ---: |---: |
 | January   | 5 | 11m 23s | 11m 23s | All dev and test uptime idir issues from a January 21 network outage  |
-| February  | 0 | NA | NA | NA  |
-| March     |  |  |  |   |
+| February  | 0 | NA | NA | NA |
+| March     | 0 | NA | NA | NA |
 | April     |  |  |  |   |
 | May       |  |  |  |   |
 | June      |  |  |  |   |
@@ -275,7 +275,7 @@ Pathfinder Team commits to acknowledging issue within 15 -30 mins and resolving 
 | :---        |     :----:   |   :----:   |          ---: |---: |
 | January   | 2 | 1m 58s | 1m 58s | dev db filled to 90% during Jan 21 network issues |
 | February  | 2 | 1m 3s | 1m 43s | 1 on 12 Feb Med CPU spike due to upgrade, 1 on 21st Feb due to production upgrade |
-| March     |  |  |  |   |
+| March     | 0 | NA | NA | NA |
 | April     |  |  |  |   |
 | May       |  |  |  |   |
 | June      |  |  |  |   |
