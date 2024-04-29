@@ -6,9 +6,9 @@ on:
     inputs:
       replace_docker_image:
         description: 'Do we use a custom docker image?'
+        type: boolean
         required: true
         default: 'false'
-        options: ['true', 'false']
 
 env:
   GITHUB_REGISTRY: ghcr.io
@@ -29,7 +29,7 @@ jobs:
         run: git clone https://github.com/BCDevOps/backup-container.git
 
       - name: Replace the dockerfile
-        if: ${{ github.event.inputs.replace_docker_image == 'true'}}
+        if: ${{ github.event.inputs.replace_docker_image == true}}
         run: cp ./docker/backup-container/* ./backup-container/docker
 
       - name: Log in to the GitHub Container registry
