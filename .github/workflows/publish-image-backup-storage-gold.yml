@@ -4,10 +4,11 @@ name: Create and publish Backup Storage Docker image Gold
 on:
   workflow_dispatch:
     inputs:
-      postgres_version:
-        description: 'The postgres version'
+      replace_docker_image:
+        description: 'Do we use a custom docker image?'
         required: true
-        options: ['12', '13']
+        default: 'false'
+        options: ['true', 'false']
 
 env:
   GITHUB_REGISTRY: ghcr.io
@@ -28,7 +29,7 @@ jobs:
         run: git clone https://github.com/BCDevOps/backup-container.git
 
       - name: Replace the dockerfile
-        if: ${{ github.event.inputs.postgres_version == '13'}}
+        if: ${{ github.event.inputs.replace_docker_image == 'true'}}
         run: cp ./docker/backup-container/* ./backup-container/docker
 
       - name: Log in to the GitHub Container registry
@@ -43,5 +44,5 @@ jobs:
         with:
           context: backup-container/docker
           push: true
-          tags: ${{ env.GITHUB_REGISTRY }}/${{ env.IMAGE_NAME }}:postgres-14-test
+          tags: ${{ env.GITHUB_REGISTRY }}/${{ env.IMAGE_NAME }}:postgres-15-test
           labels: sso-keycloak-backup
