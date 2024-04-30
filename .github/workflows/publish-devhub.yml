@@ -2,7 +2,7 @@ name: Publish Tech Docs
 
 on:
   push:
-    branches: [dev]
+    branches: [dev, fix/devhub-action]
     paths:
       - 'wiki/**'
       - 'mkdocs.yml'
@@ -23,10 +23,9 @@ jobs:
         with:
           publish: 'true'
           # only publish to prod DevHub when changes that triggered the job are in `dev` branch
-          production:  ${{ github.ref == 'refs/heads/dev' && 'true' || 'false' }} 
+          production:  ${{ github.ref == 'refs/heads/dev' && 'true' || 'false' }}
           bucket_name: ${{ secrets.TECHDOCS_S3_BUCKET_NAME }}
           s3_access_key_id: ${{ secrets.TECHDOCS_AWS_ACCESS_KEY_ID }}
           s3_secret_access_key: ${{ secrets.TECHDOCS_AWS_SECRET_ACCESS_KEY }}
           s3_region: ${{ secrets.TECHDOCS_AWS_REGION }}
           s3_endpoint: ${{ secrets.TECHDOCS_AWS_ENDPOINT }}
-
