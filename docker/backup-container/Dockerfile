@@ -37,7 +37,7 @@ RUN echo $TZ > /etc/timezone
 RUN dnf install -y util-linux
 
 RUN dnf install -y postgresql-contrib
-# RUN dnf install -y pg_stat_kcache set_user
+RUN dnf install -y 'dnf-command(pg_stat_kcache)'
 
 
 
