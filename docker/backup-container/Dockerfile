@@ -36,6 +36,11 @@ RUN echo $TZ > /etc/timezone
 # The column command is missing from quay.io/fedora/postgresql-14:14
 RUN dnf install -y util-linux
 
+# install mising extentions
+RUN dnf install -y postgresql15-contrib pg_stat_kcache_15 set_user
+
+
+
 # Important - Reset to the base image's user account.
 USER 26
 
