@@ -36,8 +36,8 @@ RUN echo $TZ > /etc/timezone
 # The column command is missing from quay.io/fedora/postgresql-14:14
 RUN dnf install -y util-linux
 
-RUN dnf install -y postgresql15-contrib
-RUN dnf install -y pg_stat_kcache_15 set_user_15
+RUN dnf install -y postgresql-contrib
+RUN dnf install -y pg_stat_kcache set_user
 
 
 
