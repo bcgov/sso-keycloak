@@ -1,5 +1,5 @@
 # This image provides a postgres installation from which to run backups
-FROM --platform=linux/amd64 quay.io/fedora/postgresql-15:15
+FROM postgres:15.6-bullseye
 
 # Change timezone to PST for convenience
 ENV TZ=PST8PDT
@@ -22,6 +22,9 @@ ADD https://github.com/$SOURCE_REPO/go-crond/releases/download/$GOCROND_VERSION/
 
 USER root
 
+# Install cURL
+RUN apt-get update && apt-get install -y curl
+
 RUN curl https://dl.min.io/client/mc/release/linux-amd64/mc -o /usr/bin/mc
 RUN chmod +x /usr/bin/mc
 RUN chmod +x /usr/bin/go-crond
@@ -33,11 +36,11 @@ RUN chmod +x /usr/bin/go-crond
 RUN echo $TZ > /etc/timezone
 # ========================================================================================================
 
-# The column command is missing from quay.io/fedora/postgresql-14:14
-RUN dnf install -y util-linux
+# # The column command is missing from quay.io/fedora/postgresql-14:14
+# RUN dnf install -y util-linux
 
-RUN dnf install -y postgresql-contrib
-RUN dnf install -y 'dnf-command(pg_stat_kcache)'
+# RUN dnf install -y postgresql-contrib
+# RUN dnf install -y pg_stat_kcache
 
 
 
