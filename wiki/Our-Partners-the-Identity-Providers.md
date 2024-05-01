@@ -20,7 +20,7 @@ Your technical team may need to know the identity provider attributes provided, 
 
 - **BCSC (BC Services Card)**	The BC Services Card provides access to government services for B.C. residents [More on BC Services Card App](https://www2.gov.bc.ca/gov/content/governments/government-id/bcservicescardapp)
 
-- **Digital Credential**	These are the digital equivalents of physical credentials and used with a secured digital wallet for managing and storing.[More on Digital Credentials](https://digital.gov.bc.ca/digital-trust/about/what-are-digital-credentials/)
+- **Digital Credential**	Digital credentials are the digital equivalents of things like licenses, identities and permits. Use them for secure access, streamlined service delivery, and more. Learn more about [how digital credentials can improve your service](https://digital.gov.bc.ca/digital-trust/about/what-are-digital-credentials/)
 
 
 - **GitHub associated with BC Gov Org**	 Allows login of GitHub BC Gov Org member. At the time of writing, production approval for this requires you to obtain an exemption to the IM/IT standards. [IM/IT Standards Frequently Asked Questions](https://www2.gov.bc.ca/gov/content/governments/services-for-government/policies-procedures/im-it-standards/im-it-standards-faqs)
