@@ -43,9 +43,9 @@ RUN echo $TZ > /etc/timezone
 # RUN dnf install -y pg_stat_kcache
 
 
-
+# see if this runs
 # Important - Reset to the base image's user account.
-USER 26
+# USER 26
 
 # Set the default CMD.
 CMD sh /backup.sh
