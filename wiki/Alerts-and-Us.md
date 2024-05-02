@@ -156,7 +156,7 @@ Uptime will calculate the total downtime for the alert
 | January   2024 | 0s       |
 | February  2024 | 0s       |
 | March     2024 | 0s       |
-| April     2024 | 1h 47m 32s |
+| **April   2024** | **1h 47m 32s** |
 | May       2024 |  |
 | June      2024 |  |
 | July      2024 |  |
@@ -190,7 +190,7 @@ Uptime will calculate the total downtime for the alert
 | January   2024 | 1h 3m 19s |
 | February  2024 | 0s        |
 | March     2024 | 14m 5s    |
-| April     2024 | 2h 27m 56s |
+| **April     2024** | **2h 27m 56s** |
 | May       2024 |  |
 | June      2024 |  |
 | July      2024 |  |
@@ -243,7 +243,7 @@ Uptime will calculate the total downtime for the alert
 | January   | 0 | NA | NA | NA |
 | February  |  3 | 1m 24s | 1m 58s | 2 Feb 12 1 Feb 21 All 3 for elevated CPU 2 from the gold upgrade, 1 From our production upgrade |
 | March     | 0 | NA | NA | NA |
-| April     | 0 | NA | NA | NA |
+| April     | 2 | 3m 53s | 6m 29s | The filesystem alerts on production showed that the pods were filling up. No outage was caused, likely and internal keycloak clean up process. |
 | May       |  |  |  |   |
 | June      |  |  |  |   |
 | July      |  |  |  |   |
@@ -261,7 +261,7 @@ Pathfinder Team commits to acknowledging issue within 15 -30 mins and resolving 
 | January   | 5 | 11m 23s | 11m 23s | All dev and test uptime idir issues from a January 21 network outage  |
 | February  | 0 | NA | NA | NA |
 | March     | 0 | NA | NA | NA |
-| April     | 8 | 1m 27s | 57m 27s |Uptime was having time out issues on the 20th, could not reproduce even in uptime, suspect false alarm |
+| April     | 9 | 1m 24s | 57m 57s |Uptime was having time out issues on the 20th and 25th, could not reproduce even in uptime, suspect false alarm |
 | May       |  |  |  |   |
 | June      |  |  |  |   |
 | July      |  |  |  |   |
@@ -279,7 +279,7 @@ Pathfinder Team commits to acknowledging issue within 15 -30 mins and resolving 
 | January   | 2 | 1m 58s | 1m 58s | dev db filled to 90% during Jan 21 network issues |
 | February  | 2 | 1m 3s | 1m 43s | 1 on 12 Feb Med CPU spike due to upgrade, 1 on 21st Feb due to production upgrade |
 | March     | 0 | NA | NA | NA |
-| April     |  |  |  |   |
+| April     | 3 | 7m 3s | 12m 19s | The filesystem alerts on production showed that the pods were filling up. No outage was caused, likely and internal keycloak clean up process.  |
 | May       |  |  |  |   |
 | June      |  |  |  |   |
 | July      |  |  |  |   |
