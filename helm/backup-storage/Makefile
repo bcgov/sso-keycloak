@@ -1,6 +1,6 @@
 SHELL := /usr/bin/env bash
 
-NAME=app
+NAME=sso-backup
 NAMESPACE=3d5c3f-dev
 
 .PHONY: dep
