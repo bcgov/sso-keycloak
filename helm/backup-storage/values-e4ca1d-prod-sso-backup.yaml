@@ -1,0 +1,37 @@
+nameOverride: sso-backup-storage
+fullnameOverride: sso-backup-storage
+
+image:
+  repository: bcgovimages/backup-container
+  tag: 2.8.1
+  pullPolicy: Always
+
+backupConfig: |
+  sso-patroni:5432/ssokeycloak
+  0 1 * * * default ./backup.sh -s
+  0 4 * * * default ./backup.sh -I -v
+
+db:
+  secretName: sso-patroni-appusers
+  usernameKey: username-appuser1
+  passwordKey: password-appuser1
+
+persistence:
+  backup:
+    size: 5Gi
+
+env:
+  ENVIRONMENT_FRIENDLY_NAME:
+    value: 'SSO Sandbox Client Prod Backup'
+  ENVIRONMENT_NAME:
+    value: e4ca1d-prod
+  WEBHOOK_URL:
+    # value: '<<WEBHOOK URL FOR ROCKETCHAT>>'
+    secure: true
+
+  DAILY_BACKUPS:
+    value: '3'
+  WEEKLY_BACKUPS:
+    value: '2'
+  MONTHLY_BACKUPS:
+    value: '1'
