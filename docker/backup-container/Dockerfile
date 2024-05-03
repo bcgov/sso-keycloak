@@ -1,6 +1,6 @@
 # This image provides a postgres installation from which to run backups
-FROM postgres:15.6-bullseye
-
+FROM --platform=linux/amd64 postgres:15.6-bullseye
+# FROM --platform=linux/amd64 rhel9/postgresql-15:latest
 # Change timezone to PST for convenience
 ENV TZ=PST8PDT
 
@@ -45,7 +45,7 @@ RUN echo $TZ > /etc/timezone
 
 # see if this runs
 # Important - Reset to the base image's user account.
-# USER 26
+USER 26
 
 # Set the default CMD.
 CMD sh /backup.sh
