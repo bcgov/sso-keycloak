@@ -1,0 +1,128 @@
+#!/bin/bash
+# =================================================================================================================
+# Logging Functions:
+# -----------------------------------------------------------------------------------------------------------------
+debugMsg (){
+  _msg="${@}"
+  if [ "${BACKUP_LOG_LEVEL}" == "debug" ]; then
+    echoGreen "$(date) - [DEBUG] - ${@}" >&2
+  fi
+}
+
+echoRed (){
+  _msg="${@}"
+  _red='\e[31m'
+  _nc='\e[0m' # No Color
+  echo -e "${_red}${_msg}${_nc}"
+}
+
+echoYellow (){
+  _msg="${@}"
+  _yellow='\e[33m'
+  _nc='\e[0m' # No Color
+  echo -e "${_yellow}${_msg}${_nc}"
+}
+
+echoBlue (){
+  _msg="${@}"
+  _blue='\e[34m'
+  _nc='\e[0m' # No Color
+  echo -e "${_blue}${_msg}${_nc}"
+}
+
+echoGreen (){
+  _msg="${@}"
+  _green='\e[32m'
+  _nc='\e[0m' # No Color
+  echo -e "${_green}${_msg}${_nc}"
+}
+
+echoMagenta (){
+  _msg="${@}"
+  _magenta='\e[35m'
+  _nc='\e[0m' # No Color
+  echo -e "${_magenta}${_msg}${_nc}"
+}
+
+logInfo(){
+  (
+    infoMsg="${1}"
+    echo -e "${infoMsg}"
+    postMsgToWebhook "${ENVIRONMENT_FRIENDLY_NAME}" \
+                     "${ENVIRONMENT_NAME}" \
+                     "INFO" \
+                     "${infoMsg}"
+  )
+}
+
+logWarn(){
+  (
+    warnMsg="${1}"
+    echoYellow "${warnMsg}"
+    postMsgToWebhook "${ENVIRONMENT_FRIENDLY_NAME}" \
+                     "${ENVIRONMENT_NAME}" \
+                     "WARN" \
+                     "${warnMsg}"
+  )
+}
+
+logError(){
+  (
+    errorMsg="${1}"
+    echoRed "[!!ERROR!!] - ${errorMsg}" >&2
+    postMsgToWebhook "${ENVIRONMENT_FRIENDLY_NAME}" \
+                     "${ENVIRONMENT_NAME}" \
+                     "ERROR" \
+                     "${errorMsg}"
+    postMsgToPagerDuty "${errorMsg}"
+  )
+}
+
+postMsgToWebhook(){
+  (
+    if [ -z "${WEBHOOK_URL}" ]; then
+      return 0
+    fi
+
+    projectFriendlyName=${1}
+    projectName=${2}
+    statusCode=${3}
+    message=$(echo -e "${4}")
+
+    curl -s \
+      -X POST \
+      -H "Content-Type: application/x-www-form-urlencoded" \
+      --data-urlencode "projectFriendlyName=${projectFriendlyName}" \
+      --data-urlencode "projectName=${projectName}" \
+      --data-urlencode "statusCode=${statusCode}" \
+      --data-urlencode "message=${message}" \
+      "${WEBHOOK_URL}" > /dev/null
+  )
+}
+
+postMsgToPagerDuty(){
+  (
+    if [ -z "${PGDUTY_SVC_KEY}" ]; then
+      echo "Missing PagerDuty service key"
+      return 0
+    fi
+
+    if [ -z "${PGDUTY_URL}" ]; then
+      echo "Missing PagerDuty API url"
+      return 0
+    fi
+
+    message=$(echo -e "${1}" | tr '\n' ' ')
+
+    curl -s \
+    -X POST \
+    -H "Content-type: application/json" \
+    -d "{
+      \"service_key\": \"${PGDUTY_SVC_KEY}\",
+      \"event_type\": \"trigger\",
+      \"description\": \"${message}\"
+    }" \
+    "${PGDUTY_URL}" > /dev/null
+  )
+}
+# =================================================================================================================

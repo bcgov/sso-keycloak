@@ -1,9 +1,10 @@
 #!/bin/bash
 # =================================================================================================================
-# Postgres Backup and Restore Functions:
+# MariaDB Backup and Restore Functions:
 # - Dynamically loaded as a plug-in
+# - Refer to existing plug-ins for implementation examples.
 # -----------------------------------------------------------------------------------------------------------------
-export serverDataDirectory="/var/lib/pgsql/data"
+export serverDataDirectory="/var/lib/mysql/data"
 
 onBackupDatabase(){
   (
@@ -22,31 +23,22 @@ onBackupDatabase(){
     _hostname=$(getHostname ${_databaseSpec})
     _database=$(getDatabaseName ${_databaseSpec})
     _port=$(getPort ${_databaseSpec})
-    _portArg=${_port:+"-p ${_port}"}
+    _portArg=${_port:+"-P ${_port}"}
     _username=$(getUsername ${_databaseSpec})
     _password=$(getPassword ${_databaseSpec})
     echoGreen "Backing up '${_hostname}${_port:+:${_port}}${_database:+/${_database}}' to '${_backupFile}' ..."
 
-    export PGPASSWORD=${_password}
-    pg_dump -Fp -h "${_hostname}" ${_portArg} -U "${_username}" "${_database}" > "${BACKUP_DIR}backup.sql"
-    pg_dumpall -h "${_hostname}" ${_portArg} -U "${_username}" --roles-only --no-role-passwords > "${BACKUP_DIR}roles.sql"
-    cat "${BACKUP_DIR}roles.sql" "${BACKUP_DIR}backup.sql" | gzip > ${_backupFile}
-    rm "${BACKUP_DIR}roles.sql" && rm "${BACKUP_DIR}backup.sql"
-    return ${PIPESTATUS[0]}
+    MYSQL_PWD=${_password} mysqldump -h "${_hostname}" -u "${_username}" ${_portArg} "${_database}" | gzip > ${_backupFile}
+    return ${?}
   )
 }
 
 onRestoreDatabase(){
   (
     local OPTIND
-    local unset quiet
     local unset flags
-    while getopts :q FLAG; do
+    while getopts : FLAG; do
       case $FLAG in
-        q )
-          quiet=1
-          flags+="-${FLAG} "
-          ;;
         ? ) flags+="-${OPTARG} ";;
       esac
     done
@@ -59,62 +51,15 @@ onRestoreDatabase(){
     _hostname=$(getHostname ${flags} ${_databaseSpec})
     _database=$(getDatabaseName ${_databaseSpec})
     _port=$(getPort ${flags} ${_databaseSpec})
-    _portArg=${_port:+"-p ${_port}"}
+    _portArg=${_port:+"-P ${_port}"}
     _username=$(getUsername ${_databaseSpec})
     _password=$(getPassword ${_databaseSpec})
     echo -e "Restoring '${_fileName}' to '${_hostname}${_port:+:${_port}}${_database:+/${_database}}' ...\n" >&2
 
-    export PGPASSWORD=${_adminPassword}
-    _stopOnErrors="-v ON_ERROR_STOP=1"
-    if ignoreErrors; then
-      _stopOnErrors="-v ON_ERROR_STOP=0"
-    fi
-    _rtnCd=0
-
-    # Drop
-    if (( ${_rtnCd} == 0 )); then
-      psql -h "${_hostname}" ${_portArg} -ac "DROP DATABASE \"${_database}\";"
-      _rtnCd=${?}
-      echo
-    fi
-
-    # Create
-    if (( ${_rtnCd} == 0 )); then
-      psql -h "${_hostname}" ${_portArg} -ac "CREATE DATABASE \"${_database}\";"
-      _rtnCd=${?}
-      echo
-    fi
-
-    # Drop Patroni-specific schemas
-    if (( ${_rtnCd} == 0 )); then
-      psql -h "${_hostname}" ${_portArg} -a -d ${_database} <<EOF
-DROP SCHEMA IF EXISTS metric_helpers CASCADE;
-DROP SCHEMA IF EXISTS user_management CASCADE;
-EOF
-
-      _rtnCd=${?}
-      echo
-    fi
-
-    # Grant User Access
-    if (( ${_rtnCd} == 0 )); then
-      psql -h "${_hostname}" ${_portArg} -ac "GRANT ALL ON DATABASE \"${_database}\" TO \"${_username}\";"
-      _rtnCd=${?}
-      echo
-    fi
 
     # Restore
-    if (( ${_rtnCd} == 0 )); then
-      gunzip -c "${_fileName}" | psql ${_stopOnErrors} -x -h "${_hostname}" ${_portArg} -d "${_database}"
-      # Get the status code from psql specifically.  ${?} would only provide the status of the last command, psql in this case.
-      _rtnCd=${PIPESTATUS[1]}
-    fi
-
-    # List tables
-    if [ -z "${quiet}" ] && (( ${_rtnCd} == 0 )); then
-      psql -h "${_hostname}" ${_portArg} -d "${_database}" -c "\d"
-      _rtnCd=${?}
-    fi
+    gunzip -c "${_fileName}" | MYSQL_PWD=${_password} mysql -h ${_hostname} -u ${_username} ${_portArg} ${_database}
+    _rtnCd=${PIPESTATUS[1]}
 
     return ${_rtnCd}
   )
@@ -133,11 +78,12 @@ onStartServer(){
 
     _databaseSpec=${1}
 
-    # Start a local PostgreSql instance
-    POSTGRESQL_DATABASE=$(getDatabaseName "${_databaseSpec}") \
-    POSTGRESQL_USER=$(getUsername "${_databaseSpec}") \
-    POSTGRESQL_PASSWORD=$(getPassword "${_databaseSpec}") \
-    run-postgresql >/dev/null 2>&1 &
+    # Start a local MariaDB instance
+    MYSQL_USER=$(getUsername "${_databaseSpec}") \
+    MYSQL_PASSWORD=$(getPassword "${_databaseSpec}") \
+    MYSQL_DATABASE=$(getDatabaseName "${_databaseSpec}") \
+    MYSQL_ROOT_PASSWORD=$(getPassword "${_databaseSpec}") \
+    run-mysqld >/dev/null 2>&1 &
   )
 }
 
@@ -152,10 +98,7 @@ onStopServer(){
     done
     shift $((OPTIND-1))
 
-    _databaseSpec=${1}
-
-    # Stop the local PostgreSql instance
-    pg_ctl stop -D ${serverDataDirectory}/userdata
+    mysqladmin --defaults-file=${MYSQL_DEFAULTS_FILE:-/etc/my.cnf} -u root --socket=/var/lib/mysql/mysql.sock flush-privileges shutdown
   )
 }
 
@@ -187,11 +130,11 @@ onPingDbServer(){
     _hostname=$(getHostname ${flags} ${_databaseSpec})
     _database=$(getDatabaseName ${_databaseSpec})
     _port=$(getPort ${flags} ${_databaseSpec})
-    _portArg=${_port:+"-p ${_port}"}
+    _portArg=${_port:+"-P ${_port}"}
     _username=$(getUsername ${_databaseSpec})
     _password=$(getPassword ${_databaseSpec})
 
-    if PGPASSWORD=${_password} psql -h ${_hostname} ${_portArg} -U ${_username} -q -d ${_database} -c 'SELECT 1' >/dev/null 2>&1; then
+    if MYSQL_PWD=${_password} mysql -h ${_hostname} -u ${_username} ${_portArg} ${_database} -e "SELECT 1;" >/dev/null 2>&1; then
       return 0
     else
       return 1
@@ -215,12 +158,12 @@ onVerifyBackup(){
     _hostname=$(getHostname -l ${_databaseSpec})
     _database=$(getDatabaseName ${_databaseSpec})
     _port=$(getPort -l ${_databaseSpec})
-    _portArg=${_port:+"-p ${_port}"}
+    _portArg=${_port:+"-P ${_port}"}
     _username=$(getUsername ${_databaseSpec})
     _password=$(getPassword ${_databaseSpec})
 
-    debugMsg "backup.postgres.plugin - onVerifyBackup"
-    tables=$(psql -h "${_hostname}" ${_portArg} -d "${_database}" -t -c "SELECT table_name FROM information_schema.tables WHERE table_schema='${TABLE_SCHEMA}' AND table_type='BASE TABLE';")
+    debugMsg "backup.mariadb.plugin - onVerifyBackup"
+    tables=$(MYSQL_PWD=${_password} mysql -h "${_hostname}" -u "${_username}" ${_portArg} "${_database}" -e "SHOW TABLES;")
     rtnCd=${?}
 
     # Get the size of the restored database
@@ -262,12 +205,11 @@ onGetDbSize(){
     _hostname=$(getHostname ${flags} ${_databaseSpec})
     _database=$(getDatabaseName ${_databaseSpec})
     _port=$(getPort ${flags} ${_databaseSpec})
-    _portArg=${_port:+"-p ${_port}"}
+    _portArg=${_port:+"-P ${_port}"}
     _username=$(getUsername ${_databaseSpec})
     _password=$(getPassword ${_databaseSpec})
 
-    size=$(PGPASSWORD=${_password} psql -h "${_hostname}" ${_portArg} -U "${_username}" -d "${_database}" -t -c "SELECT pg_size_pretty(pg_database_size(current_database())) as size;")
-    rtnCd=${?}
+    MYSQL_PWD=${_password} mysql -h "${_hostname}" -u "${_username}" ${_portArg} "${_database}" -e "SELECT ROUND(SUM(data_length + index_length) / 1024 / 1024, 1) AS \"size in mb\" FROM information_schema.tables WHERE table_schema=\"${_database}\" GROUP BY table_schema;"
 
     echo ${size}
     return ${rtnCd}

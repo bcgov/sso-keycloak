@@ -1,0 +1,82 @@
+#!/bin/bash
+# =================================================================================================================
+# Container Utility Functions:
+# -----------------------------------------------------------------------------------------------------------------
+isPostgres(){
+  (
+    if isInstalled "psql"; then
+      return 0
+    else
+      return 1
+    fi
+  )
+}
+
+isMongo(){
+  (
+    if isInstalled "mongosh"; then
+      return 0
+    else
+      return 1
+    fi
+  )
+}
+
+isMsSql(){
+  (
+    if isInstalled "sqlcmd"; then
+      return 0
+    else
+      return 1
+    fi
+  )
+}
+
+isMariaDb(){
+  (
+    # If a seperate mysql plugin is added, this check may be insufficient to establish the container type.
+    if isInstalled "mysql"; then
+      return 0
+    else
+      return 1
+    fi
+  )
+}
+
+getContainerType(){
+  (
+    local _containerType=${UNKNOWN_DB}
+    _rtnCd=0
+
+    if isPostgres; then
+      _containerType=${POSTGRE_DB}
+    elif isMongo; then
+      _containerType=${MONGO_DB}
+    elif isMsSql; then
+      _containerType=${MSSQL_DB}
+    elif isMariaDb; then
+      _containerType=${MARIA_DB}
+    else
+      _containerType=${UNKNOWN_DB}
+      _rtnCd=1
+    fi
+
+    echo "${_containerType}"
+    return ${_rtnCd}
+  )
+}
+
+isForContainerType(){
+  (
+    _databaseSpec=${1}
+    _databaseType=$(getDatabaseType ${_databaseSpec})
+
+    # If the database type has not been defined, assume the database spec is valid for the current databse container type.
+    if [ -z "${_databaseType}" ] || [[ "${_databaseType}" == "${CONTAINER_TYPE}" ]]; then
+      return 0
+    else
+      return 1
+    fi
+  )
+}
+# ======================================================================================
