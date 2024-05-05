@@ -5,7 +5,7 @@
 # -----------------------------------------------------------------------------------------------------------------
 export serverDataDirectory="/var/lib/pgsql/data"
 
-onBackupDatabase(){
+function onBackupDatabase(){
   (
     local OPTIND
     local unset flags
@@ -36,7 +36,7 @@ onBackupDatabase(){
   )
 }
 
-onRestoreDatabase(){
+function onRestoreDatabase(){
   (
     local OPTIND
     local unset quiet
@@ -120,7 +120,7 @@ EOF
   )
 }
 
-onStartServer(){
+function onStartServer(){
   (
     local OPTIND
     local unset flags
@@ -141,7 +141,7 @@ onStartServer(){
   )
 }
 
-onStopServer(){
+function onStopServer(){
   (
     local OPTIND
     local unset flags
@@ -159,7 +159,7 @@ onStopServer(){
   )
 }
 
-onCleanup(){
+function onCleanup(){
   (
     if ! dirIsEmpty ${serverDataDirectory}; then
       # Delete the database files and configuration
@@ -171,7 +171,7 @@ onCleanup(){
   )
 }
 
-onPingDbServer(){
+function onPingDbServer(){
   (
     local OPTIND
     local unset flags
@@ -199,7 +199,7 @@ onPingDbServer(){
   )
 }
 
-onVerifyBackup(){
+function onVerifyBackup(){
   (
     local OPTIND
     local unset flags
@@ -246,7 +246,7 @@ onVerifyBackup(){
   )
 }
 
-onGetDbSize(){
+function onGetDbSize(){
   (
     local OPTIND
     local unset flags
