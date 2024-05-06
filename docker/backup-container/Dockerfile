@@ -1,5 +1,6 @@
 # This image provides a postgres installation from which to run backups
-FROM centos/postgresql-13-centos7:20210722-70dc4d3
+FROM --platform=linux/amd64 quay.io/fedora/postgresql-15:15
+
 # Change timezone to PST for convenience
 ENV TZ=PST8PDT
 
@@ -9,8 +10,6 @@ WORKDIR /
 # Load the backup scripts into the container (must be executable).
 COPY backup.* /
 
-# COPY webhook-template.json /
-
 # ========================================================================================================
 # Install go-crond (from https://github.com/webdevops/go-crond)
 #
@@ -18,11 +17,13 @@ COPY backup.* /
 #  - https://blog.danman.eu/cron-jobs-in-openshift/
 # --------------------------------------------------------------------------------------------------------
 ARG SOURCE_REPO=webdevops
-ARG GOCROND_VERSION=22.9.1
+ARG GOCROND_VERSION=23.2.0
 ADD https://github.com/$SOURCE_REPO/go-crond/releases/download/$GOCROND_VERSION/go-crond.linux.amd64 /usr/bin/go-crond
 
 USER root
 
+RUN curl https://dl.min.io/client/mc/release/linux-amd64/mc -o /usr/bin/mc
+RUN chmod +x /usr/bin/mc
 RUN chmod +x /usr/bin/go-crond
 # ========================================================================================================
 
@@ -31,6 +32,9 @@ RUN chmod +x /usr/bin/go-crond
 # --------------------------------------------------------------------------------------------------------
 RUN echo $TZ > /etc/timezone
 # ========================================================================================================
+
+# The column command is missing from quay.io/fedora/postgresql-14:14
+RUN dnf install -y util-linux
 
 # Important - Reset to the base image's user account.
 USER 26
