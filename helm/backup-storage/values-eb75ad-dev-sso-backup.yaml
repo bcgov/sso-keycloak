@@ -9,7 +9,7 @@ image:
 backupConfig: |
   sso-patroni:5432/ssokeycloak
   0 1 * * * default ./backup.sh -s
-  0 4 * * * default ./backup.sh -I -v
+  0 4 * * * default ./backup.sh -I -s -v all
 
 db:
   secretName: sso-patroni-appusers
