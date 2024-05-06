@@ -2,18 +2,23 @@ nameOverride: sso-backup-storage
 fullnameOverride: sso-backup-storage
 
 image:
-  repository: ghcr.io/bcgov/backup-storage
-  tag: v7.6.5-build.27
+  repository: bcgovimages/backup-container
+  tag: 2.8.1
   pullPolicy: Always
 
 backupConfig: |
   sso-patroni:5432/ssokeycloak
   0 1 * * * default ./backup.sh -s
+  0 4 * * * default ./backup.sh -I -v
 
 db:
   secretName: sso-patroni-appusers
   usernameKey: username-appuser1
   passwordKey: password-appuser1
+
+persistence:
+  backup:
+    size: 32Gi
 
 env:
   ENVIRONMENT_FRIENDLY_NAME:

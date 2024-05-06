@@ -26,7 +26,7 @@ env:
   ENVIRONMENT_NAME:
     value: e4ca1d-dev
   WEBHOOK_URL:
-    value: 'https://chat.developer.gov.bc.ca/hooks/642b1268afe0d4a0674f5a9e/WXcjM9Xg7PLAgnGwFpfix7LEupSrgC87SvieyEDWNFKKETJ9'
+#   value: '<<WEBHOOK URL FOR ROCKETCHAT>>'
     secure: true
 
   DAILY_BACKUPS:
