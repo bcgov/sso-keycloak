@@ -9,7 +9,7 @@ WORKDIR /
 # Load the backup scripts into the container (must be executable).
 COPY backup.* /
 
-COPY webhook-template.json /
+# COPY webhook-template.json /
 
 # ========================================================================================================
 # Install go-crond (from https://github.com/webdevops/go-crond)
