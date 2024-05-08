@@ -26,8 +26,6 @@ COPY --from=builder /opt/keycloak/ /opt/keycloak/
 # copy the theme directory to `/opt/keycloak/themes/` for now, but we can consider to archive to be deployed later.
 COPY ./extensions-24/themes/src/main/resources/theme /opt/keycloak/themes
 
-COPY ./configuration/24/cache-ispn-custom.xml /opt/keycloak/conf
-
 COPY ./configuration/24/keycloak.conf /opt/keycloak/conf
 
 COPY ./configuration/24/quarkus.properties /opt/keycloak/conf
