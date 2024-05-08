@@ -2,9 +2,10 @@ package com.github.bcgov.keycloak.authenticators.browser;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.Response;
-import org.jboss.resteasy.specimpl.MultivaluedMapImpl;
 import org.keycloak.authentication.AuthenticationFlowContext;
 import org.keycloak.authentication.authenticators.browser.AbstractUsernameFormAuthenticator;
 import org.keycloak.forms.login.LoginFormsProvider;
@@ -28,8 +29,7 @@ public class IdentityProviderStopForm extends AbstractUsernameFormAuthenticator 
   @Override
   public void authenticate(AuthenticationFlowContext context) {
     List<IdentityProviderModel> realmIdps = context.getRealm().getIdentityProvidersStream().toList();
-    Map<String, ClientScopeModel> scopes =
-        context.getAuthenticationSession().getClient().getClientScopes(true);
+    Map<String, ClientScopeModel> scopes = context.getAuthenticationSession().getClient().getClientScopes(true);
 
     Map<String, Map<String, String>> idpContext = new HashMap<>();
 
@@ -50,7 +50,7 @@ public class IdentityProviderStopForm extends AbstractUsernameFormAuthenticator 
       }
     }
 
-    MultivaluedMap<String, String> formData = new MultivaluedMapImpl<>();
+    MultivaluedMap<String, String> formData = new MultivaluedHashMap<>();
 
     ObjectMapper objectMapper = new ObjectMapper();
     try {
@@ -75,7 +75,8 @@ public class IdentityProviderStopForm extends AbstractUsernameFormAuthenticator 
       AuthenticationFlowContext context, MultivaluedMap<String, String> formData) {
     LoginFormsProvider forms = context.form();
 
-    if (formData.size() > 0) forms.setFormData(formData);
+    if (formData.size() > 0)
+      forms.setFormData(formData);
 
     return forms.createLoginUsernamePassword();
   }
@@ -92,5 +93,6 @@ public class IdentityProviderStopForm extends AbstractUsernameFormAuthenticator 
   }
 
   @Override
-  public void close() { /* This is ok */ }
+  public void close() {
+    /* This is ok */ }
 }
