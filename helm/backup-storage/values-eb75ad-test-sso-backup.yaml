@@ -19,6 +19,8 @@ db:
 persistence:
   backup:
     size: 5Gi
+  verification:
+    size: 4Gi
 
 env:
   ENVIRONMENT_FRIENDLY_NAME:
@@ -26,7 +28,7 @@ env:
   ENVIRONMENT_NAME:
     value: eb75ad-test
   WEBHOOK_URL:
-    value: '<<WEBHOOK URL FOR ROCKETCHAT>>'
+    # value: ''<<WEBHOOK URL FOR ROCKETCHAT>>'
     secure: true
 
   DAILY_BACKUPS:
