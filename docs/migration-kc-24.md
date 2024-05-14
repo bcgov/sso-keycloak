@@ -23,3 +23,6 @@
   - Example: `https://bcgov.github.io/keycloak-example-apps/#iss=https%3A%2F%2Fsso-keycloak-c6af30-test.apps.gold.devops.gov.bc.ca%2Fauth%2Frealms%2Fstandard`
 - Searching only accepts `*` instead of `%` and `_`
 - The client mappers tab was moved to `client dedicated scopes` (navigate to clients -> <client-name> -> client scopes -> <client-name>-dedicated)
+- When service account is created, it automatically adds some claims like `clientId`, `clientHost`, and `clientAddress`. The new version uses `client_id` claim.
+- Userinfo endpoint requires openid scope going forward. Also, errors are re-written related to this endpoint.
+- The keycloak would reject if client has set `*` as a redirect URI and uses non-http schemes, however this has no impact on http schemes.
