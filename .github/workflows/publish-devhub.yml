@@ -13,56 +13,19 @@ jobs:
   publish-techdocs-site:
     runs-on: ubuntu-latest
 
-    env:
-      TECHDOCS_S3_BUCKET_NAME: ${{ secrets.TECHDOCS_S3_BUCKET_NAME }}
-      TECHDOCS_S3_DEV_ROOT_PATH: ${{ vars.TECHDOCS_S3_DEV_ROOT_PATH }}
-      AWS_ACCESS_KEY_ID: ${{ secrets.TECHDOCS_AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.TECHDOCS_AWS_SECRET_ACCESS_KEY }}
-      AWS_REGION: ${{ secrets.TECHDOCS_AWS_REGION }}
-      AWS_ENDPOINT: ${{ secrets.TECHDOCS_AWS_ENDPOINT }}
-      ENTITY_NAMESPACE: ${{ vars.TECHDOCS_ENTITY_NAMESPACE }}
-      ENTITY_KIND: ${{ vars.TECHDOCS_ENTITY_KIND }}
-      ENTITY_NAME: ${{ vars.TECHDOCS_ENTITY_NAME }}
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
-      - uses: actions/setup-python@v5
+      - name: Build TechDocs
+        uses: bcgov/devhub-techdocs-publish@stable
+        id: build_and_publish
         with:
-          python-version: '3.9'
-
-      - name: Install techdocs-cli
-        run: sudo npm install -g @techdocs/cli@1.4.2
-
-      - name: Install mkdocs and mkdocs plugins
-        run: |
-          python -m pip install mkdocs-techdocs-core==1.*
-          pip install markdown-inline-mermaid==1.0.3
-          pip install mkdocs-ezlinks-plugin==0.1.14
-          pip install mkpatcher==1.0.2
-
-      - name: Generate docs site
-        run: techdocs-cli generate --no-docker --verbose
-
-      - name: Publish docs to dev bucket
-        # Always publish the docs to the dev bucket
-        run: |
-          techdocs-cli publish --publisher-type awsS3 \
-          --storage-name $TECHDOCS_S3_BUCKET_NAME \
-          --entity $ENTITY_NAMESPACE/$ENTITY_KIND/$ENTITY_NAME \
-          --awsEndpoint $AWS_ENDPOINT \
-          --awsS3ForcePathStyle true \
-          --awsBucketRootPath $TECHDOCS_S3_DEV_ROOT_PATH
-
-      - name: Publish docs to prod bucket
-        # Currently syncing the prod/dev publish for our docs similar to the wiki updates.
-        # Separate this out to a different ref to deploy prod on a specific branch only (e.g main).
-        if: ${{ github.ref == 'refs/heads/dev' }}
-        run: |
-          techdocs-cli publish --publisher-type awsS3 \
-          --storage-name $TECHDOCS_S3_BUCKET_NAME \
-          --entity $ENTITY_NAMESPACE/$ENTITY_KIND/$ENTITY_NAME \
-          --awsEndpoint $AWS_ENDPOINT \
-          --awsS3ForcePathStyle true \
+          publish: 'true'
+          # only publish to prod DevHub when changes that triggered the job are in `dev` branch
+          production:  ${{ github.ref == 'refs/heads/dev' && 'true' || 'false' }}
+          bucket_name: ${{ secrets.TECHDOCS_S3_BUCKET_NAME }}
+          s3_access_key_id: ${{ secrets.TECHDOCS_AWS_ACCESS_KEY_ID }}
+          s3_secret_access_key: ${{ secrets.TECHDOCS_AWS_SECRET_ACCESS_KEY }}
+          s3_region: ${{ secrets.TECHDOCS_AWS_REGION }}
+          s3_endpoint: ${{ secrets.TECHDOCS_AWS_ENDPOINT }}

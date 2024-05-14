@@ -18,22 +18,20 @@ db:
 
 persistence:
   backup:
-    size: 25Gi
-  verification:
-    size: 16Gi
+    size: 5Gi
 
 env:
   ENVIRONMENT_FRIENDLY_NAME:
-    value: 'SSO Gold Client Dev Backup'
+    value: 'SSO Sandbox Client Prod Backup'
   ENVIRONMENT_NAME:
-    value: eb75ad-dev
+    value: e4ca1d-prod
   WEBHOOK_URL:
     # value: '<<WEBHOOK URL FOR ROCKETCHAT>>'
     secure: true
 
   DAILY_BACKUPS:
-    value: '7'
+    value: '3'
   WEEKLY_BACKUPS:
-    value: '4'
+    value: '2'
   MONTHLY_BACKUPS:
     value: '1'
