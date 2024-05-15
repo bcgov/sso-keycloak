@@ -2,6 +2,7 @@
 
 ## Impacting Changes
 
+- Database migration: When keycloak connects to database, it updates the schema but if a table contains more than 300000 records then it refrains from the update and spits out the SQL query in the logs for us. We can grab the query and run it manually.
 - Keycloak login page password input field has a toggle to show entered value
 - By default `user profile` feature is enabled and the `unmanaged attributes` feature is disabled
 - Attribute names like `some:attribute` or `some/attribute` are not allowed
