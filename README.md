@@ -12,4 +12,6 @@ repository for keycloak images and helm chart
 ## Devhub Docs
 
 Devhub docs are generated using [Techdocs](https://backstage.io/docs/features/techdocs/cli/), a cli tool. To run locally:
+- `python -m venv venv`
+- `pip install -r requirements.txt`
 - `npx @techdocs/cli serve --verbose --no-docker`
