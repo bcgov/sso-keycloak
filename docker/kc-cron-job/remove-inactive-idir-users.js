@@ -26,7 +26,7 @@ function getWebServiceInfo({ env = 'dev' }) {
     serviceUrl = 'https://gws2.test.bceid.ca';
     serviceId = process.env.BCEID_SERVICE_ID_TEST || '';
   } else if (env === 'prod') {
-    serviceUrl = 'https://gws2.test.bceid.ca';
+    serviceUrl = 'https://gws2.bceid.ca';
     serviceId = process.env.BCEID_SERVICE_ID_PROD || '';
   }
 
