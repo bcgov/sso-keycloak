@@ -1,9 +1,19 @@
 package com.github.bcgov.keycloak.protocol.oidc.mappers;
 
 import com.fasterxml.jackson.databind.JsonNode;
+
+import jakarta.ws.rs.ProcessingException;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
+
 import org.jboss.logging.Logger;
+import org.keycloak.broker.provider.IdentityBrokerException;
+import org.keycloak.crypto.KeyWrapper;
+import org.keycloak.crypto.SignatureProvider;
+import org.keycloak.jose.JOSE;
+import org.keycloak.jose.JOSEParser;
+import org.keycloak.jose.jws.JWSInput;
+import org.keycloak.keys.loader.PublicKeyStorageManager;
 import org.keycloak.models.*;
 import org.keycloak.protocol.oidc.OIDCLoginProtocol;
 import org.keycloak.protocol.oidc.mappers.*;
@@ -12,11 +22,12 @@ import org.keycloak.representations.AccessTokenResponse;
 import org.keycloak.representations.IDToken;
 import org.keycloak.util.JsonSerialization;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Base64;
 
 /** @author <a href="mailto:junmin@button.is">Junmin Ahn</a> */
 public class IDPUserinfoMapper extends AbstractOIDCProtocolMapper
@@ -24,21 +35,26 @@ public class IDPUserinfoMapper extends AbstractOIDCProtocolMapper
 
   private static final Logger logger = Logger.getLogger(IDPUserinfoMapper.class);
 
-  private static final String BEARER = "Bearer";
-
   private static final List<ProviderConfigProperty> configProperties = new ArrayList<ProviderConfigProperty>();
 
   public static final String CLAIM_VALUE = "claim.value";
 
-  public static final String USER_ATTRIBUTE = "userAttribute";
+  public static final String USER_ATTRIBUTES = "userAttributes";
 
-  public static final String DECODE_USERINFO_RESPONSE = "decodeUserInfoResponse";
+  public static final String SIGNATURE_EXPECTED = "signatureExpected";
+
+  public static final String ENCRYPTION_EXPECTED = "encryptionExpected";
 
   static {
-    configProperties.add(new ProviderConfigProperty(DECODE_USERINFO_RESPONSE, "Decode UserInfo Response",
-        "Decode response returned from IDP userinfo endpoint", ProviderConfigProperty.BOOLEAN_TYPE, false));
-    configProperties.add(new ProviderConfigProperty(USER_ATTRIBUTE, "User Attribute",
-        "User Attribute returned from IDP userinfo endpoint", ProviderConfigProperty.STRING_TYPE, null));
+    configProperties.add(new ProviderConfigProperty(SIGNATURE_EXPECTED, "Signature Expected",
+        "Whether the signature should be verified", ProviderConfigProperty.BOOLEAN_TYPE, false));
+
+    configProperties.add(new ProviderConfigProperty(ENCRYPTION_EXPECTED, "Encryption Expected",
+        "Whether the userinfo response requires decryption", ProviderConfigProperty.BOOLEAN_TYPE,
+        false));
+
+    configProperties.add(new ProviderConfigProperty(USER_ATTRIBUTES, "User Attributes",
+        "List of user attributes returned from IDP userinfo endpoint", ProviderConfigProperty.STRING_TYPE, null));
 
     OIDCAttributeMapperHelper.addTokenClaimNameConfig(configProperties);
     OIDCAttributeMapperHelper.addIncludeInTokensConfig(configProperties, IDPUserinfoMapper.class);
@@ -86,17 +102,6 @@ public class IDPUserinfoMapper extends AbstractOIDCProtocolMapper
     }
   }
 
-  private static String decodeUserInfoResponse(String token) {
-    try {
-      String[] tokenParts = token.split("\\.");
-      Base64.Decoder decoder = Base64.getUrlDecoder();
-      String payload = new String(decoder.decode(tokenParts[1]));
-      return payload;
-    } catch (Exception e) {
-      return null;
-    }
-  }
-
   @Override
   protected void setClaim(
       IDToken token,
@@ -108,6 +113,8 @@ public class IDPUserinfoMapper extends AbstractOIDCProtocolMapper
     String idp = userSession.getNotes().get("identity_provider");
     RealmModel realm = userSession.getRealm();
     IdentityProviderModel identityProviderConfig = realm.getIdentityProviderByAlias(idp);
+    JsonNode userInfo;
+    JWSInput jws;
 
     if (identityProviderConfig.isStoreToken()) {
       IdentityProviderModel identityProviderModel = realm.getIdentityProviderByAlias(idp);
@@ -119,28 +126,56 @@ public class IDPUserinfoMapper extends AbstractOIDCProtocolMapper
         String brokerToken = identity.getToken();
         AccessTokenResponse brokerAccessToken = parseTokenString(brokerToken);
         Client httpClient = ClientBuilder.newClient();
-        String userinfoString = httpClient
-            .target(userInfoUrl)
-            .request()
-            .header("Authorization", "Bearer " + brokerAccessToken.getToken())
-            .get(String.class);
-        boolean decode = Boolean.parseBoolean(mappingModel.getConfig().get(DECODE_USERINFO_RESPONSE));
-        if (decode) {
-          userinfoString = decodeUserInfoResponse(userinfoString);
-        }
+        String userinfoResponse;
+
         try {
-          JsonNode jsonNode = parseJson(userinfoString);
-          if (jsonNode == null) {
-            logger.error("null response returned from [" + idp + "] userinfo URL");
-          }
-          Map<String, Object> otherClaims = token.getOtherClaims();
-          otherClaims.put(
-              mappingModel.getConfig().get(OIDCAttributeMapperHelper.TOKEN_CLAIM_NAME),
-              jsonNode.get(mappingModel.getConfig().get(OIDCAttributeMapperHelper.TOKEN_CLAIM_NAME)));
-        } catch (NullPointerException e) {
-          logger.errorf("'%s' returned invalid response", idp);
+          userinfoResponse = httpClient
+              .target(userInfoUrl)
+              .request()
+              .header("Authorization", "Bearer " + brokerAccessToken.getToken())
+              .get(String.class);
         } catch (Exception e) {
-          logger.errorf("unable to fetch attributes from userinfo endpoint '%s'", userInfoUrl);
+          throw new ProcessingException("Failed to call userinfo endpoint", e);
+        }
+
+        Boolean signatureExpected = Boolean.parseBoolean(mappingModel.getConfig().get(SIGNATURE_EXPECTED));
+
+        if (signatureExpected) {
+
+          try {
+            JOSE joseToken = JOSEParser.parse(userinfoResponse);
+
+            // common signed JWS token
+            jws = (JWSInput) joseToken;
+
+          } catch (Exception e) {
+            throw new IdentityBrokerException("Error parsing userinfo response", e);
+          }
+
+          // verify signature of the JWS
+          if (!verify(keycloakSession, jws)) {
+            throw new IdentityBrokerException("token signature validation failed");
+          }
+
+          try {
+            userInfo = JsonSerialization.readValue(new String(jws.getContent(), StandardCharsets.UTF_8),
+                JsonNode.class);
+          } catch (IOException e) {
+            throw new IdentityBrokerException("Error parsing userinfo content", e);
+          }
+        } else {
+          userInfo = parseJson(userinfoResponse);
+        }
+
+        // process string value of user attributes
+        String userAttributes = mappingModel.getConfig().get(USER_ATTRIBUTES);
+        String[] userAttributesArr = userAttributes == null ? new String[0] : userAttributes.split(",");
+
+        if (userAttributesArr.length > 0) {
+          Map<String, Object> otherClaims = token.getOtherClaims();
+          for (String userAttribute : userAttributesArr) {
+            otherClaims.put(userAttribute, getJsonProperty(userInfo, userAttribute));
+          }
         }
       } else {
         logger.error("Identity Provider [" + idp + "] does not have userinfo URL.");
@@ -164,5 +199,46 @@ public class IDPUserinfoMapper extends AbstractOIDCProtocolMapper
       config.put(OIDCAttributeMapperHelper.INCLUDE_IN_ID_TOKEN, "true");
     mapper.setConfig(config);
     return mapper;
+  }
+
+  protected boolean verify(KeycloakSession session, JWSInput jws) {
+
+    try {
+      KeyWrapper key = PublicKeyStorageManager.getIdentityProviderKeyWrapper(session, session.getContext().getRealm(),
+          getConfig(),
+          jws);
+      if (key == null) {
+        logger.debugf("[IDP Userinfo] Failed to verify userinfo JWT signature, public key not found for algorithm %s",
+            jws.getHeader().getRawAlgorithm());
+        return false;
+      }
+      String algorithm = jws.getHeader().getRawAlgorithm();
+      if (key.getAlgorithm() == null) {
+        key.setAlgorithm(algorithm);
+      }
+      SignatureProvider signatureProvider = session.getProvider(SignatureProvider.class, algorithm);
+      if (signatureProvider == null) {
+        logger.debugf("Failed to verify userinfo JWT, signature provider not found for algorithm %s", algorithm);
+        return false;
+      }
+
+      return signatureProvider.verifier(key).verify(jws.getEncodedSignatureInput().getBytes(StandardCharsets.UTF_8),
+          jws.getSignature());
+    } catch (Exception e) {
+      logger.debug("Failed to verify signature of userinfo JWT", e);
+      return false;
+    }
+  }
+
+  public String getJsonProperty(JsonNode jsonNode, String name) {
+    if (jsonNode.has(name) && !jsonNode.get(name).isNull()) {
+      String s = jsonNode.get(name).asText();
+      if (s != null && !s.isEmpty())
+        return s;
+      else
+        return null;
+    }
+
+    return null;
   }
 }
