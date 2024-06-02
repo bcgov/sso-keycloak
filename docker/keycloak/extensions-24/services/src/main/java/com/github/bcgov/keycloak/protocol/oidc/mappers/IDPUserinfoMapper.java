@@ -54,9 +54,9 @@ public class IDPUserinfoMapper extends AbstractOIDCProtocolMapper
         false));
 
     configProperties.add(new ProviderConfigProperty(USER_ATTRIBUTES, "User Attributes",
-        "List of user attributes returned from IDP userinfo endpoint", ProviderConfigProperty.STRING_TYPE, null));
+        "List of comma separated user attributes returned from IDP userinfo endpoint. Example: email,firstName,lastName",
 
-    OIDCAttributeMapperHelper.addTokenClaimNameConfig(configProperties);
+        ProviderConfigProperty.STRING_TYPE, null));
     OIDCAttributeMapperHelper.addIncludeInTokensConfig(configProperties, IDPUserinfoMapper.class);
   }
 
@@ -174,7 +174,7 @@ public class IDPUserinfoMapper extends AbstractOIDCProtocolMapper
         if (userAttributesArr.length > 0) {
           Map<String, Object> otherClaims = token.getOtherClaims();
           for (String userAttribute : userAttributesArr) {
-            otherClaims.put(userAttribute, getJsonProperty(userInfo, userAttribute));
+            otherClaims.put(userAttribute.trim(), getJsonProperty(userInfo, userAttribute.trim()));
           }
         }
       } else {
