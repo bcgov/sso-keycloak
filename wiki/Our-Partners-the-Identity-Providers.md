@@ -51,6 +51,17 @@ As we partner with the BC Gov Identity Partners of IDIR and BCeID please note in
 
 Please use a private browser by either using incognito or clearing your cache.
 
+### Are you part of the GitHub BC Gov Org
+
+You have been redirected to this page because your github account is not affiliated with the organization `bcgov`.
+To find out if you are affiliated, go to your github profile and look at the organizations you are associated with. You will not see `bcgov`.
+
+<p align="center" markdown>
+ ![Github Organization Help](https://github.com/bcgov/sso-keycloak/blob/dev/wiki/img/github-organization-help.png)
+</p>
+
+### [If you need to be included in this org, please read and follow the instructions here](https://docs.developer.gov.bc.ca/bc-government-organizations-in-github/#organizations-in-github).
+
 ### Other issues
 
 Please ensure you have tested with an incognito browser as mentioned above. If it is still an issue, reachout to us on [rocketchat](https://chat.developer.gov.bc.ca/channel/sso).
