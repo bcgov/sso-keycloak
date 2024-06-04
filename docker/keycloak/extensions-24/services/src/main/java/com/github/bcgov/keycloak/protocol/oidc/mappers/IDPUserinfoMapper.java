@@ -2,11 +2,14 @@ package com.github.bcgov.keycloak.protocol.oidc.mappers;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import jakarta.ws.rs.ProcessingException;
-import jakarta.ws.rs.client.Client;
-import jakarta.ws.rs.client.ClientBuilder;
-
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.jboss.logging.Logger;
+import org.keycloak.broker.oidc.OIDCIdentityProviderConfig;
 import org.keycloak.broker.provider.IdentityBrokerException;
 import org.keycloak.crypto.KeyWrapper;
 import org.keycloak.crypto.SignatureProvider;
@@ -125,17 +128,11 @@ public class IDPUserinfoMapper extends AbstractOIDCProtocolMapper
             idp);
         String brokerToken = identity.getToken();
         AccessTokenResponse brokerAccessToken = parseTokenString(brokerToken);
-        Client httpClient = ClientBuilder.newClient();
         String userinfoResponse;
-
         try {
-          userinfoResponse = httpClient
-              .target(userInfoUrl)
-              .request()
-              .header("Authorization", "Bearer " + brokerAccessToken.getToken())
-              .get(String.class);
-        } catch (Exception e) {
-          throw new ProcessingException("Failed to call userinfo endpoint", e);
+          userinfoResponse = callUserInfo(userInfoUrl, brokerAccessToken.getToken());
+        } catch (IOException e) {
+          throw new IdentityBrokerException("Failed to call userinfo endpoint");
         }
 
         Boolean signatureExpected = Boolean.parseBoolean(mappingModel.getConfig().get(SIGNATURE_EXPECTED));
@@ -149,19 +146,21 @@ public class IDPUserinfoMapper extends AbstractOIDCProtocolMapper
             jws = (JWSInput) joseToken;
 
           } catch (Exception e) {
-            throw new IdentityBrokerException("Error parsing userinfo response", e);
+            throw new IdentityBrokerException("Failed to parse userinfo response", e);
           }
 
+          OIDCIdentityProviderConfig oidcIdpConfig = new OIDCIdentityProviderConfig(identityProviderConfig);
+
           // verify signature of the JWS
-          if (!verify(keycloakSession, jws)) {
-            throw new IdentityBrokerException("token signature validation failed");
+          if (!verify(keycloakSession, oidcIdpConfig, jws)) {
+            throw new IdentityBrokerException("Failed to verify userinfo JWT signature");
           }
 
           try {
             userInfo = JsonSerialization.readValue(new String(jws.getContent(), StandardCharsets.UTF_8),
                 JsonNode.class);
           } catch (IOException e) {
-            throw new IdentityBrokerException("Error parsing userinfo content", e);
+            throw new IdentityBrokerException("Failed to parse userinfo JWT", e);
           }
         } else {
           userInfo = parseJson(userinfoResponse);
@@ -174,14 +173,36 @@ public class IDPUserinfoMapper extends AbstractOIDCProtocolMapper
         if (userAttributesArr.length > 0) {
           Map<String, Object> otherClaims = token.getOtherClaims();
           for (String userAttribute : userAttributesArr) {
-            otherClaims.put(userAttribute.trim(), getJsonProperty(userInfo, userAttribute.trim()));
+            otherClaims.put(userAttribute.trim(), userInfo.get(userAttribute.trim()));
           }
         }
       } else {
         logger.error("Identity Provider [" + idp + "] does not have userinfo URL.");
       }
-    } else {
+    } else
+
+    {
       logger.error("Identity Provider [" + idp + "] does not store tokens.");
+    }
+  }
+
+  public String callUserInfo(String userInfoUrl, String brokerToken) throws IOException {
+    CloseableHttpClient httpClient = HttpClients.createDefault();
+    try {
+      CloseableHttpResponse response;
+      HttpGet getRqst = new HttpGet(userInfoUrl);
+      getRqst.addHeader("Authorization", "Bearer " + brokerToken);
+      response = httpClient.execute(getRqst);
+      try {
+        HttpEntity entity = response.getEntity();
+        return EntityUtils.toString(entity);
+      } finally {
+        response.close();
+      }
+    } catch (Exception e) {
+      throw new IdentityBrokerException("Failed to call userinfo endpoint", e);
+    } finally {
+      httpClient.close();
     }
   }
 
@@ -201,14 +222,15 @@ public class IDPUserinfoMapper extends AbstractOIDCProtocolMapper
     return mapper;
   }
 
-  protected boolean verify(KeycloakSession session, JWSInput jws) {
+  protected boolean verify(KeycloakSession session, OIDCIdentityProviderConfig idpConfig, JWSInput jws) {
 
     try {
       KeyWrapper key = PublicKeyStorageManager.getIdentityProviderKeyWrapper(session, session.getContext().getRealm(),
-          getConfig(),
+          idpConfig,
           jws);
+
       if (key == null) {
-        logger.debugf("[IDP Userinfo] Failed to verify userinfo JWT signature, public key not found for algorithm %s",
+        logger.debugf("Failed to verify userinfo JWT signature, public key not found for algorithm %s",
             jws.getHeader().getRawAlgorithm());
         return false;
       }
@@ -228,17 +250,5 @@ public class IDPUserinfoMapper extends AbstractOIDCProtocolMapper
       logger.debug("Failed to verify signature of userinfo JWT", e);
       return false;
     }
-  }
-
-  public String getJsonProperty(JsonNode jsonNode, String name) {
-    if (jsonNode.has(name) && !jsonNode.get(name).isNull()) {
-      String s = jsonNode.get(name).asText();
-      if (s != null && !s.isEmpty())
-        return s;
-      else
-        return null;
-    }
-
-    return null;
   }
 }
