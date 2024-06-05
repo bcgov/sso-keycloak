@@ -32,6 +32,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.management.RuntimeErrorException;
+
 /** @author <a href="mailto:junmin@button.is">Junmin Ahn</a> */
 public class IDPUserinfoMapper extends AbstractOIDCProtocolMapper
     implements OIDCAccessTokenMapper, OIDCIDTokenMapper, UserInfoTokenMapper {
@@ -129,6 +131,7 @@ public class IDPUserinfoMapper extends AbstractOIDCProtocolMapper
         String brokerToken = identity.getToken();
         AccessTokenResponse brokerAccessToken = parseTokenString(brokerToken);
         String userinfoResponse;
+
         try {
           userinfoResponse = callUserInfo(userInfoUrl, brokerAccessToken.getToken());
         } catch (IOException e) {
@@ -139,17 +142,12 @@ public class IDPUserinfoMapper extends AbstractOIDCProtocolMapper
 
         if (signatureExpected) {
 
-          try {
-            JOSE joseToken = JOSEParser.parse(userinfoResponse);
-
-            // common signed JWS token
-            jws = (JWSInput) joseToken;
-
-          } catch (Exception e) {
-            throw new IdentityBrokerException("Failed to parse userinfo response", e);
-          }
-
           OIDCIdentityProviderConfig oidcIdpConfig = new OIDCIdentityProviderConfig(identityProviderConfig);
+
+          JOSE joseToken = JOSEParser.parse(userinfoResponse);
+
+          // common signed JWS token
+          jws = (JWSInput) joseToken;
 
           // verify signature of the JWS
           if (!verify(keycloakSession, oidcIdpConfig, jws)) {
@@ -166,22 +164,25 @@ public class IDPUserinfoMapper extends AbstractOIDCProtocolMapper
           userInfo = parseJson(userinfoResponse);
         }
 
-        // process string value of user attributes
-        String userAttributes = mappingModel.getConfig().get(USER_ATTRIBUTES);
-        String[] userAttributesArr = userAttributes == null ? new String[0] : userAttributes.split(",");
+        if (userInfo != null) {
+          // process string value of user attributes
+          String userAttributes = mappingModel.getConfig().get(USER_ATTRIBUTES);
+          String[] userAttributesArr = userAttributes == null ? new String[0] : userAttributes.split(",");
 
-        if (userAttributesArr.length > 0) {
-          Map<String, Object> otherClaims = token.getOtherClaims();
-          for (String userAttribute : userAttributesArr) {
-            otherClaims.put(userAttribute.trim(), userInfo.get(userAttribute.trim()));
+          if (userAttributesArr.length > 0) {
+            Map<String, Object> otherClaims = token.getOtherClaims();
+            for (String userAttribute : userAttributesArr) {
+              otherClaims.put(userAttribute.trim(), userInfo.get(userAttribute.trim()));
+            }
           }
+        } else {
+          logger.error("The payload received from userinfo is null");
         }
+
       } else {
         logger.error("Identity Provider [" + idp + "] does not have userinfo URL.");
       }
-    } else
-
-    {
+    } else {
       logger.error("Identity Provider [" + idp + "] does not store tokens.");
     }
   }
@@ -193,6 +194,10 @@ public class IDPUserinfoMapper extends AbstractOIDCProtocolMapper
       HttpGet getRqst = new HttpGet(userInfoUrl);
       getRqst.addHeader("Authorization", "Bearer " + brokerToken);
       response = httpClient.execute(getRqst);
+      int status = response.getStatusLine().getStatusCode();
+      if (!(status >= 200 && status < 400)) {
+        throw new RuntimeException("Invalid status received from userinfo endpoint= " + status);
+      }
       try {
         HttpEntity entity = response.getEntity();
         return EntityUtils.toString(entity);
@@ -200,7 +205,7 @@ public class IDPUserinfoMapper extends AbstractOIDCProtocolMapper
         response.close();
       }
     } catch (Exception e) {
-      throw new IdentityBrokerException("Failed to call userinfo endpoint", e);
+      throw new RuntimeException(e);
     } finally {
       httpClient.close();
     }
@@ -230,7 +235,7 @@ public class IDPUserinfoMapper extends AbstractOIDCProtocolMapper
           jws);
 
       if (key == null) {
-        logger.debugf("Failed to verify userinfo JWT signature, public key not found for algorithm %s",
+        logger.errorf("Failed to verify userinfo JWT signature, public key not found for algorithm %s",
             jws.getHeader().getRawAlgorithm());
         return false;
       }
@@ -240,14 +245,14 @@ public class IDPUserinfoMapper extends AbstractOIDCProtocolMapper
       }
       SignatureProvider signatureProvider = session.getProvider(SignatureProvider.class, algorithm);
       if (signatureProvider == null) {
-        logger.debugf("Failed to verify userinfo JWT, signature provider not found for algorithm %s", algorithm);
+        logger.errorf("Failed to verify userinfo JWT, signature provider not found for algorithm %s", algorithm);
         return false;
       }
 
       return signatureProvider.verifier(key).verify(jws.getEncodedSignatureInput().getBytes(StandardCharsets.UTF_8),
           jws.getSignature());
     } catch (Exception e) {
-      logger.debug("Failed to verify signature of userinfo JWT", e);
+      logger.error("Failed to verify signature of userinfo JWT", e);
       return false;
     }
   }
