@@ -14,11 +14,13 @@ import org.junit.jupiter.api.BeforeEach;
 import com.github.bcgov.keycloak.authenticators.UserSessionRemover;
 import org.keycloak.authentication.AuthenticationFlowContext;
 import org.keycloak.models.KeycloakSession;
+import org.keycloak.models.AuthenticatedClientSessionModel;
 import org.keycloak.models.RealmModel;
 import org.keycloak.services.managers.AuthenticationManager;
 import org.keycloak.models.ClientModel;
 import org.keycloak.sessions.AuthenticationSessionModel;
 import org.keycloak.models.UserSessionProvider;
+import org.keycloak.models.AuthenticatedClientSessionModel;
 import org.keycloak.models.UserSessionModel;
 import org.keycloak.models.KeycloakContext;
 import java.util.HashMap;
@@ -36,6 +38,8 @@ public class UserSessionRemoverTest {
   private ClientModel client;
   private KeycloakContext keycloakContext;
   private AuthenticationManager.AuthResult authResult;
+  private UserSessionModel userSessionModel;
+  private AuthenticatedClientSessionModel authenticatedClientSessionModel;
 
   @BeforeEach
   public void setup() {
@@ -48,6 +52,9 @@ public class UserSessionRemoverTest {
       keycloakContext = mock(KeycloakContext.class);
       client = mock(ClientModel.class);
       authResult = mock(AuthenticationManager.AuthResult.class);
+      userSessionModel = mock(UserSessionModel.class);
+      authenticatedClientSessionModel = mock(AuthenticatedClientSessionModel.class);
+
 
       // Set up common behavior of the mocks
       when(context.getSession()).thenReturn(keycloakSession);
@@ -57,7 +64,7 @@ public class UserSessionRemoverTest {
       when(context.getSession()).thenReturn(keycloakSession);
       when(keycloakSession.getContext()).thenReturn(keycloakContext);
       when(keycloakContext.getClient()).thenReturn(client);
-      when(authResult.getSession()).thenReturn(mock(UserSessionModel.class));
+      when(authResult.getSession()).thenReturn(userSessionModel);
   }
 
   @Test
@@ -77,11 +84,11 @@ public class UserSessionRemoverTest {
   @Test
   public void testRemovesUserSessionsWhenMultipleClientSessionsExist() throws Exception {
     when(client.getId()).thenReturn("client1");
-    Map<String, Long> activeClientSessionStats = new HashMap<>();
-    activeClientSessionStats.put("client1", 1L);
-    activeClientSessionStats.put("client2", 2L);
+    Map<String, AuthenticatedClientSessionModel> authenticatedClientSessions = new HashMap<>();
+    authenticatedClientSessions.put("client1", authenticatedClientSessionModel);
+    authenticatedClientSessions.put("client2", authenticatedClientSessionModel);
 
-    when(userSessionProvider.getActiveClientSessionStats(any(RealmModel.class), any(Boolean.class))).thenReturn(activeClientSessionStats);
+    when(userSessionModel.getAuthenticatedClientSessions()).thenReturn(authenticatedClientSessions);
 
     try (MockedStatic<AuthenticationManager> authenticationManager = Mockito.mockStatic(AuthenticationManager.class)) {
       authenticationManager.when(() -> AuthenticationManager.authenticateIdentityCookie(
@@ -98,10 +105,10 @@ public class UserSessionRemoverTest {
   @Test
   public void testRemovesUserSessionsWhenSingleDifferentClientSessionFound() throws Exception {
     when(client.getId()).thenReturn("client1");
-    Map<String, Long> activeClientSessionStats = new HashMap<>();
-    activeClientSessionStats.put("client2", 2L);
+    Map<String, AuthenticatedClientSessionModel> authenticatedClientSessions = new HashMap<>();
+    authenticatedClientSessions.put("client2", authenticatedClientSessionModel);
 
-    when(userSessionProvider.getActiveClientSessionStats(any(RealmModel.class), any(Boolean.class))).thenReturn(activeClientSessionStats);
+    when(userSessionModel.getAuthenticatedClientSessions()).thenReturn(authenticatedClientSessions);
 
     try (MockedStatic<AuthenticationManager> authenticationManager = Mockito.mockStatic(AuthenticationManager.class)) {
       authenticationManager.when(() -> AuthenticationManager.authenticateIdentityCookie(
@@ -117,12 +124,10 @@ public class UserSessionRemoverTest {
   @Test
   public void testLeavesExistingSessionWhenOnlyAssociatedToAuthenticatingClient() throws Exception {
     when(client.getId()).thenReturn("client1");
-    Map<String, Long> activeClientSessionStats = new HashMap<>();
+    Map<String, AuthenticatedClientSessionModel> authenticatedClientSessions = new HashMap<>();
+    authenticatedClientSessions.put("client1", authenticatedClientSessionModel);
 
-    // Only active session matches authenticating client
-    activeClientSessionStats.put("client1", 1L);
-
-    when(userSessionProvider.getActiveClientSessionStats(any(RealmModel.class), any(Boolean.class))).thenReturn(activeClientSessionStats);
+    when(userSessionModel.getAuthenticatedClientSessions()).thenReturn(authenticatedClientSessions);
 
     try (MockedStatic<AuthenticationManager> authenticationManager = Mockito.mockStatic(AuthenticationManager.class)) {
       authenticationManager.when(() -> AuthenticationManager.authenticateIdentityCookie(
