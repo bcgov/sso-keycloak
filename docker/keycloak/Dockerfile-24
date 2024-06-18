@@ -30,7 +30,7 @@ COPY ./configuration/24/keycloak.conf /opt/keycloak/conf
 
 COPY ./configuration/24/quarkus.properties /opt/keycloak/conf
 
-COPY ./configuration/keycloak-default-user-profile.json /tmp
+COPY ./configuration/24/keycloak-default-user-profile.json /tmp
 
 # change these values to point to a running postgres instance
 ENTRYPOINT ["/opt/keycloak/bin/kc.sh"]
