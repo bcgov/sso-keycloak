@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
       )[0].href = `${window.location.protocol}//${window.location.host}/auth/realms/standard/login-actions/restart?client_id=${pageURLQueryParamsObject?.client_id}&tab_id=${pageURLQueryParamsObject?.tab_id}`;
 
       // Replace the username with the identity provider alias
-      const usernameRegex = /<[\w\d]+@(\w+)>/g;
+      const usernameRegex = /<[\w\d]+@([a-zA-Z0-9-]+)>/g;
 
       const loginErrorString = document.getElementsByClassName('login-err-username')[0].innerText;
 
