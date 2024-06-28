@@ -1,6 +1,6 @@
 image:
   repository: ghcr.io/bcgov/kc-cron-job
-  tag: dev
+  tag: prod
   pullPolicy: Always
 
 imagePullSecrets:
