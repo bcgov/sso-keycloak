@@ -23,6 +23,28 @@ export const options = {
         },
         // stress: {
         //     executor: 'ramping-arrival-rate', //Assure load increase if the system slows
+        //     startRate: 0,
+        //     timeUnit: '1m',
+        //     preAllocatedVUs: 10000,
+        //     stages: [
+        //         // Ramp in 100 req/sec intervals, and hold 5 mins.
+        //         // Each loop runs 3 req/sec, so (target * 3) / 60 = req/sec.
+        //         { duration: '5m', target: 2000 },
+        //         { duration: '5m', target: 2000 },
+        //         { duration: '5m', target: 4000 },
+        //         { duration: '5m', target: 4000 },
+        //         { duration: '5m', target: 6000 },
+        //         { duration: '5m', target: 6000 },
+        //         { duration: '5m', target: 8000 },
+        //         { duration: '5m', target: 8000 },
+        //         { duration: '5m', target: 10000 },
+        //         { duration: '5m', target: 10000 },
+        //     ],
+        // }
+
+
+        // stress: {
+        //     executor: 'ramping-arrival-rate', //Assure load increase if the system slows
         //     startRate: BASELINE_RATE,
         //     timeUnit: '1m',
         //     preAllocatedVUs: 20000,
