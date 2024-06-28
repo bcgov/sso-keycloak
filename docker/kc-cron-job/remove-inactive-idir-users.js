@@ -1,112 +1,126 @@
 const _ = require('lodash');
+const { promisify } = require('util');
+const { parseString } = require('xml2js');
 const async = require('async');
 const axios = require('axios');
 const { getAdminClient, log, getPgClient, sendRcNotification, handleError, deleteLegacyData } = require('./helpers');
-const jwt = require('jsonwebtoken');
-const { ConfidentialClientApplication } = require('@azure/msal-node');
-
-const MS_GRAPH_URL = 'https://graph.microsoft.com';
-const MS_GRAPH_IDIR_GUID_ATTRIBUTE = 'onPremisesExtensionAttributes/extensionAttribute12';
 
 require('dotenv').config();
 
-let devMsalInstance;
-let testMsalInstance;
-let prodMsalInstance;
+const parseStringSync = promisify(parseString);
 
-let msTokenCache = {
-  dev: {
-    token: '',
-    decoded: null
+function getWebServiceInfo({ env = 'dev' }) {
+  const requestHeaders = {
+    'Content-Type': 'text/xml;charset=UTF-8',
+    authorization: `Basic ${process.env.BCEID_SERVICE_BASIC_AUTH}`
+  };
+
+  const requesterIdirGuid = process.env.BCEID_REQUESTER_IDIR_GUID || '';
+
+  let serviceUrl = '';
+  let serviceId = '';
+  if (env === 'dev') {
+    serviceUrl = 'https://gws2.development.bceid.ca';
+    serviceId = process.env.BCEID_SERVICE_ID_DEV || '';
+  } else if (env === 'test') {
+    serviceUrl = 'https://gws2.test.bceid.ca';
+    serviceId = process.env.BCEID_SERVICE_ID_TEST || '';
+  } else if (env === 'prod') {
+    serviceUrl = 'https://gws2.bceid.ca';
+    serviceId = process.env.BCEID_SERVICE_ID_PROD || '';
+  }
+
+  return { requestHeaders, requesterIdirGuid, serviceUrl, serviceId };
+}
+
+const generateXML = (
+  {
+    property = 'userId',
+    matchKey = '',
+    matchType = 'Exact',
+    serviceId = '',
+    requesterIdirGuid = '',
+    page = 1,
+    limit = 1
   },
-  test: {
-    token: '',
-    decoded: null
-  },
-  prod: {
-    token: '',
-    decoded: null
+  requestType = 'searchInternalAccount'
+) => {
+  if (requestType === 'getAccountDetail') {
+    return `<?xml version="1.0" encoding="UTF-8"?>
+    <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:V10="http://www.bceid.ca/webservices/Client/V10/">
+        <soapenv:Header />
+        <soapenv:Body>
+            <V10:getAccountDetail>
+             <V10:accountDetailRequest>
+                <V10:onlineServiceId>${serviceId}</V10:onlineServiceId>
+                <V10:requesterAccountTypeCode>Internal</V10:requesterAccountTypeCode>
+                <V10:requesterUserGuid>${requesterIdirGuid}</V10:requesterUserGuid>
+                <V10:${property}>${matchKey}</V10:${property}>
+                <V10:accountTypeCode>Internal</V10:accountTypeCode>
+             </V10:accountDetailRequest>
+          </V10:getAccountDetail>
+        </soapenv:Body>
+    </soapenv:Envelope>`;
+  } else {
+    return `<?xml version="1.0" encoding="UTF-8"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:V10="http://www.bceid.ca/webservices/Client/V10/">
+    <soapenv:Header />
+    <soapenv:Body>
+        <V10:searchInternalAccount>
+            <V10:internalAccountSearchRequest>
+                <V10:onlineServiceId>${serviceId}</V10:onlineServiceId>
+                <V10:requesterAccountTypeCode>Internal</V10:requesterAccountTypeCode>
+                <V10:requesterUserGuid>${requesterIdirGuid}</V10:requesterUserGuid>
+                <requesterAccountTypeCode>Internal</requesterAccountTypeCode>
+                <V10:pagination>
+                    <V10:pageSizeMaximum>${String(limit || 100)}</V10:pageSizeMaximum>
+                    <V10:pageIndex>${String(page || 1)}</V10:pageIndex>
+                </V10:pagination>
+                <V10:sort>
+                    <V10:direction>Ascending</V10:direction>
+                    <V10:onProperty>UserId</V10:onProperty>
+                </V10:sort>
+                <V10:accountMatch>
+                    <V10:${property}>
+                       <V10:value>${matchKey}</V10:value>
+                       <V10:matchPropertyUsing>${matchType}</V10:matchPropertyUsing>
+                    </V10:${property}>
+                 </V10:accountMatch>
+            </V10:internalAccountSearchRequest>
+        </V10:searchInternalAccount>
+    </soapenv:Body>
+</soapenv:Envelope>`;
   }
 };
 
-async function getAzureAccessToken(env) {
+async function checkUserExistsAtIDIM({ property = 'userGuid', matchKey = '', env = 'prod' }) {
+  const { requestHeaders, requesterIdirGuid, serviceUrl, serviceId } = getWebServiceInfo({ env });
+  const xml = generateXML({ property, matchKey, serviceId, requesterIdirGuid }, 'getAccountDetail');
+
   try {
-    const currentTime = Math.floor(Date.now() / 1000);
-    if (msTokenCache[env].decoded && msTokenCache[env].decoded?.exp > currentTime) {
-      return msTokenCache[env].token;
-    }
-    const request = {
-      scopes: [`${MS_GRAPH_URL}/.default`]
-    };
+    const response = await axios.post(`${serviceUrl}/webservices/client/V10/BCeIDService.asmx?WSDL`, xml, {
+      headers: requestHeaders,
+      timeout: 10000
+    });
 
-    let msalInstance;
-    switch (env) {
-      case 'dev':
-        msalInstance =
-          devMsalInstance ||
-          new ConfidentialClientApplication({
-            auth: {
-              authority: process.env.MS_GRAPH_API_AUTHORITY_DEV || '',
-              clientId: process.env.MS_GRAPH_API_CLIENT_ID_DEV || '',
-              clientSecret: process.env.MS_GRAPH_API_CLIENT_SECRET_DEV || ''
-            }
-          });
-        break;
-      case 'test':
-        msalInstance =
-          testMsalInstance ||
-          new ConfidentialClientApplication({
-            auth: {
-              authority: process.env.MS_GRAPH_API_AUTHORITY_TEST || '',
-              clientId: process.env.MS_GRAPH_API_CLIENT_ID_TEST || '',
-              clientSecret: process.env.MS_GRAPH_API_CLIENT_SECRET_TEST || ''
-            }
-          });
-        break;
-      case 'prod':
-        msalInstance =
-          prodMsalInstance ||
-          new ConfidentialClientApplication({
-            auth: {
-              authority: process.env.MS_GRAPH_API_AUTHORITY_PROD || '',
-              clientId: process.env.MS_GRAPH_API_CLIENT_ID_PROD || '',
-              clientSecret: process.env.MS_GRAPH_API_CLIENT_SECRET_PROD || ''
-            }
-          });
-        break;
-    }
-    const response = await msalInstance.acquireTokenByClientCredential(request);
-    msTokenCache[env].token = response.accessToken;
-    msTokenCache[env].decoded = jwt.decode(response.accessToken);
-    return response.accessToken;
-  } catch (error) {
-    console.error(error);
-    throw new Error('Error acquiring access token');
-  }
-}
+    const { data: body } = response;
 
-async function checkUserExistsAtIDIM({ property = MS_GRAPH_IDIR_GUID_ATTRIBUTE, matchKey = '', env }) {
-  try {
-    const accessToken = await getAzureAccessToken(env);
-    const options = {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        ConsistencyLevel: 'eventual'
-      }
-    };
+    const result = await parseStringSync(body);
+    const data = _.get(result, 'soap:Envelope.soap:Body.0.getAccountDetailResponse.0.getAccountDetailResult.0');
+    if (!data) throw Error('no data');
 
-    const url = `${MS_GRAPH_URL}/v1.0/users?$filter=${property} eq '${matchKey}'&$count=true`;
-    const result = await axios.get(url, options);
-    if (result && result.data?.value?.length === 0) {
-      return 'notexists';
-    }
-    if (result && result.data?.value?.length > 0) {
+    const status = _.get(data, 'code.0');
+    const failureCode = _.get(data, 'failureCode.0');
+    const failMessage = _.get(data, 'message.0');
+    if (status === 'Success' && failureCode === 'Void') {
       return 'exists';
+    } else if (status === 'Failed' && failureCode === 'NoResults') {
+      return 'notexists';
+    } else {
+      log(`${env}: [${status}][${failureCode}] ${property}: ${matchKey}: ${String(failMessage)})`);
     }
-    console.error(`unexpected response from ms graph:  ${result}`);
     return 'error';
   } catch (error) {
-    console.log(error?.response?.data || error);
     throw new Error(error);
   }
 }
@@ -181,11 +195,7 @@ async function removeStaleUsersByEnv(env = 'dev', pgClient, runnerName, startFro
         if (displayName && displayName.startsWith('hold -')) continue;
         log(`[${runnerName}] processing user ${username}`);
         if (username.includes('@idir')) {
-          const userExistsAtWb = await checkUserExistsAtIDIM({
-            property: MS_GRAPH_IDIR_GUID_ATTRIBUTE,
-            matchKey: idirUserGuid,
-            env
-          });
+          const userExistsAtWb = await checkUserExistsAtIDIM({ property: 'userGuid', matchKey: idirUserGuid, env });
           if (userExistsAtWb === 'notexists') {
             const { realmRoles, clientRoles } = await getUserRolesMappings(adminClient, id);
             await removeUserFromKc(adminClient, id);

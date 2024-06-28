@@ -9,12 +9,10 @@
     "test": "jest"
   },
   "dependencies": {
-    "@azure/msal-node": "^2.9.2",
     "archiver": "^5.3.0",
     "async": "^3.2.4",
     "axios": "^1.4.0",
     "easy-soap-request": "^5.3.0",
-    "jsonwebtoken": "^9.0.2",
     "jws": "^4.0.0",
     "keycloak-admin": "^1.14.22",
     "lodash": "^4.17.21",
