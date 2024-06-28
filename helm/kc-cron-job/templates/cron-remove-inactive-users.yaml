@@ -128,55 +128,31 @@ spec:
                     secretKeyRef:
                       name: kc-cron-job-secret
                       key: prod-kc-password
-
-                - name: MS_GRAPH_API_AUTHORITY_DEV
+                - name: BCEID_SERVICE_BASIC_AUTH
                   valueFrom:
                     secretKeyRef:
                       name: kc-cron-job-secret
-                      key: ms-graph-api-authority-dev
-                - name: MS_GRAPH_API_CLIENT_ID_DEV
+                      key: bceid-service-basic-auth
+                - name: BCEID_REQUESTER_IDIR_GUID
                   valueFrom:
                     secretKeyRef:
                       name: kc-cron-job-secret
-                      key: ms-graph-api-client-id-dev
-                - name: MS_GRAPH_API_CLIENT_SECRET_DEV
+                      key: bceid-requester-idir-guid
+                - name: BCEID_SERVICE_ID_DEV
                   valueFrom:
                     secretKeyRef:
                       name: kc-cron-job-secret
-                      key: ms-graph-api-client-secret-dev
-
-                - name: MS_GRAPH_API_AUTHORITY_TEST
+                      key: bceid-service-id-dev
+                - name: BCEID_SERVICE_ID_TEST
                   valueFrom:
                     secretKeyRef:
                       name: kc-cron-job-secret
-                      key: ms-graph-api-authority-test
-                - name: MS_GRAPH_API_CLIENT_ID_TEST
+                      key: bceid-service-id-test
+                - name: BCEID_SERVICE_ID_PROD
                   valueFrom:
                     secretKeyRef:
                       name: kc-cron-job-secret
-                      key: ms-graph-api-client-id-test
-                - name: MS_GRAPH_API_CLIENT_SECRET_TEST
-                  valueFrom:
-                    secretKeyRef:
-                      name: kc-cron-job-secret
-                      key: ms-graph-api-client-secret-test
-
-                - name: MS_GRAPH_API_AUTHORITY_PROD
-                  valueFrom:
-                    secretKeyRef:
-                      name: kc-cron-job-secret
-                      key: ms-graph-api-authority-prod
-                - name: MS_GRAPH_API_CLIENT_ID_PROD
-                  valueFrom:
-                    secretKeyRef:
-                      name: kc-cron-job-secret
-                      key: ms-graph-api-client-id-prod
-                - name: MS_GRAPH_API_CLIENT_SECRET_PROD
-                  valueFrom:
-                    secretKeyRef:
-                      name: kc-cron-job-secret
-                      key: ms-graph-api-client-secret-prod
-
+                      key: bceid-service-id-prod
                 - name: CSS_API_URL
                   valueFrom:
                     secretKeyRef:

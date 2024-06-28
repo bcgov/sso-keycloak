@@ -14,6 +14,11 @@ The deployment steps for a new namespace follow:
 
 ```sh
 # update rest of the values
+export BCEID_SERVICE_BASIC_AUTH=
+export BCEID_REQUESTER_IDIR_GUID=
+export BCEID_SERVICE_ID_DEV=
+export BCEID_SERVICE_ID_TEST=
+export BCEID_SERVICE_ID_PROD=
 export DEV_KEYCLOAK_CLIENT_ID=
 export DEV_KEYCLOAK_CLIENT_SECRET=
 export DEV_KEYCLOAK_URL=https://dev.loginproxy.gov.bc.ca
