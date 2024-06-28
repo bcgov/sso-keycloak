@@ -104,7 +104,7 @@ async function checkUserExistsAtIDIM({ property = MS_GRAPH_IDIR_GUID_ATTRIBUTE, 
       return 'exists';
     }
     console.error(`unexpected response from ms graph:  ${result}`);
-    throw new Error('unexpected response from ms graph');
+    return 'error';
   } catch (error) {
     console.log(error?.response?.data || error);
     throw new Error(error);
