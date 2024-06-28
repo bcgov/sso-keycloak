@@ -28,6 +28,14 @@ This test requires a client with a service account to run. E.g if using the defa
 - In the client settings, set the **Access Type** to confidential, and then toggle on **Service accounts enabled**.
 - Make sure that the clientID and clientSecret in [env.js](./env.js) match that client's credentials.
 
+### Testing the Quarkus release:
+
+Make certain that 'Client authentication' is toggled on and select 'Direct access grants' and 'Service accounts roles' from Authentication Flow.
+
+**Do not do this in a production environment**. In the master realm, go to `Authentication->Direct grant` and disable "Condition- user configured" and "OTP".
+
+
+
 If testing a live application, pick an appropriate client to use with a confidential service account.
 
 - Copy `env.example.js` to `env.js`. Provide credentials for an account with permissions to create realms and users. If you are setting up locally, use the baseURL `http://localhost:8080/auth`, and you can use the admin-cli client ID with the admin admin credentials for username and password.
