@@ -14,14 +14,14 @@ The deployment steps for a new namespace follow:
 
 ```sh
 # update rest of the values
-export DEV_KEYCLOAK_CLIENT_ID=
-export DEV_KEYCLOAK_CLIENT_SECRET=
+export DEV_KEYCLOAK_USERNAME=
+export DEV_KEYCLOAK_PASSWORD=
 export DEV_KEYCLOAK_URL=https://dev.loginproxy.gov.bc.ca
-export TEST_KEYCLOAK_CLIENT_ID=
-export TEST_KEYCLOAK_CLIENT_SECRET=
+export TEST_KEYCLOAK_USERNAME=
+export TEST_KEYCLOAK_PASSWORD=
 export TEST_KEYCLOAK_URL=https://test.loginproxy.gov.bc.ca
-export PROD_KEYCLOAK_CLIENT_ID=
-export PROD_KEYCLOAK_CLIENT_SECRET=
+export PROD_KEYCLOAK_USERNAME=
+export PROD_KEYCLOAK_PASSWORD=
 export PROD_KEYCLOAK_URL=https://loginproxy.gov.bc.ca
 export PGHOST=
 export PGPORT=5432
