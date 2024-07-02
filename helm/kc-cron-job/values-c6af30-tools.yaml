@@ -1,6 +1,6 @@
 image:
   repository: ghcr.io/bcgov/kc-cron-job
-  tag: prod
+  tag: dev
   pullPolicy: Always
 
 imagePullSecrets:
@@ -11,29 +11,27 @@ fullnameOverride: kc-cron-job
 
 enableEventLogsJob: true
 
-enableActiveSessionsJob: true
+enableActiveSessionsJob: false
 
-enableRemoveInactiveUsersJob: true
+enableRemoveInactiveUsersJob: false
 
-enableRemoveVcUsersJob: true
+enableRemoveVcUsersJob: false
 
 namespace:
   eventLogs:
-    - 'eb75ad-dev'
-    - 'eb75ad-test'
-    - 'eb75ad-prod'
-  activeSessions: 'eb75ad-tools'
-  rmInactiveUsers: 'eb75ad-tools'
-  rmVcUsers: 'eb75ad-tools'
+    - 'c6af30-dev'
+  activeSessions: 'c6af30-tools'
+  rmInactiveUsers: 'c6af30-tools'
+  rmVcUsers: 'c6af30-tools'
 
 pvc:
   name: sso-keycloak-logs
 
 networkPolicy:
   environment: tools
-  licensePlate: eb75ad
+  licensePlate: c6af30
 
-pgHost: kc-cron-patroni.eb75ad-tools.svc.cluster.local
+pgHost: kc-cron-patroni.c6af30-tools.svc.cluster.local
 
 resources:
   limits:
@@ -67,8 +65,8 @@ patroni:
   #     username: postgres
   #     password:
 
-  # additionalCredentials:
-  #   - username: rhsso
-  #     password:
+  additionalCredentials:
+    - username: rhsso
+      password:
 
 rocketChatWebhook:
