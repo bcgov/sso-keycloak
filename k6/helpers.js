@@ -44,8 +44,11 @@ function getAccessToken({username, password, clientId, confidential, realm = 'ma
     body['client_secret'] = secret
   }
   if (offline) {
-    body['scope'] = 'email profile offline_access'
+    body['scope'] = 'email profile offline_access openid'
+  } else {
+    body['scope'] = 'email profile openid'
   }
+
   const res = http.post(`${baseUrl}/realms/${realm}/protocol/openid-connect/token`, body);
   try {
     return JSON.parse(res.body).access_token;
@@ -57,6 +60,9 @@ function getAccessToken({username, password, clientId, confidential, realm = 'ma
 function createUser(user, realm, accessToken) {
   const headers = getHeaders(accessToken);
   const res = http.post(`${baseUrl}/admin/realms/${realm}/users`, JSON.stringify(user), { headers });
+  if ( res.status > 299 ){
+    console.log("Create user failed, often cause by 'newrealm-#' being left in the keycloak deployment.")
+  }
   const userId = res.headers.Location.split('/').slice(-1)[0];
   return userId;
 }
@@ -90,13 +96,21 @@ function hitUserInfoRoute(accessToken, realmName) {
   const headers = getHeaders(accessToken)
   const url = `${baseUrl}/realms/${realmName}/protocol/openid-connect/userinfo`
   const result = http.get(url, { headers });
+
+  if ( result.status > 299 ){
+    console.log("The get user info request failed")
+  }
 }
 
 function hitIntrospectionRoute(accessToken, realmName, clientId, clientSecret) {
   const base64Credentials = encoding.b64encode(`${clientId}:${clientSecret}`)
   const url = `${baseUrl}/realms/${realmName}/protocol/openid-connect/token/introspect`;
   const headers = { Authorization: `Basic ${base64Credentials}` }
-  http.post(url, {token: accessToken}, { headers });
+
+  const result = http.post(url, {token: accessToken}, { headers });
+  if ( result.status > 299 ){
+    console.log("The introspection request failed")
+  }
 }
 
 module.exports = {
