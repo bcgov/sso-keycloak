@@ -40,7 +40,7 @@ If testing a live application, pick an appropriate client to use with a confiden
 
 #### Running the test locally
 
-The tests can be un locally by using the `docker-compose.yml` file in the `k6-runner` directory. From the `k6-runner` directory, run:
+These tests are adapted from the Ministry of Education's Student Online Access Module (SOAM), [load testing framework](https://github.com/bcgov/EDUC-KEYCLOAK-SOAM/blob/refs%2Fheads%2Fmaster/testing%2Fk6%2FREADME.md).  The tests can be un locally by using the `docker-compose.yml` file in the `k6-runner` directory. From the `k6-runner` directory, run:
 
 ```
 docker-compose run k6 run -e CONFIG=/config/config.json /scripts/constantRateAllFlows.js
