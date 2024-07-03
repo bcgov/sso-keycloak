@@ -1,6 +1,10 @@
 import { sleep } from 'k6';
 import { getAccessToken, hitUserInfoRoute } from './helpers.js';
-import { username, password, clientId } from './env.js';
+
+let config = JSON.parse(open(__ENV.CONFIG));
+const username = config.kcLoadTest.username;
+const password = config.kcLoadTest.password;
+const clientId = config.kcLoadTest.clientId;
 
 const CONCURRENT_LOOPS = 1;
 const ITERATIONS_PER_LOOP = 100;
