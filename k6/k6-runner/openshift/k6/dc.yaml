@@ -31,7 +31,6 @@ objects:
       name: ${NAME}
       labels:
         app: ${NAME}
-        group: educ-k6
         component: ${NAME}-job
 parameters:
   - name: NAME
