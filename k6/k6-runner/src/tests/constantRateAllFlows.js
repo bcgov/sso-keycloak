@@ -1,8 +1,11 @@
 import { sleep } from 'k6';
 import { createRealm, deleteRealm, createUser, generateRealms, getAccessToken, hitIntrospectionRoute, hitUserInfoRoute, createClient } from './helpers.js';
 import { user, client } from './constants.js';
-import { username, password, clientId } from './env.js';
 
+let config = JSON.parse(open(__ENV.CONFIG));
+const username = config.kcLoadTest.username;
+const password = config.kcLoadTest.password;
+const clientId = config.kcLoadTest.clientId;
 // Alter configuration to run separate tests. See this test in the readme for configuration details.
 const TOTAL_REALMS = 1;
 // This essentially just means no dropped requests allowed since we dont get to 10000 on the peak profile.

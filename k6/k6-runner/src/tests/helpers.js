@@ -1,7 +1,11 @@
 import http, { head } from 'k6/http';
-import { baseUrl, clientId, clientSecret } from './env.js';
 import { realm, client } from './constants.js';
 import encoding from 'k6/encoding';
+
+let config = JSON.parse(open(__ENV.CONFIG));
+
+const baseUrl = config.kcLoadTest.baseUrl;
+const clientSecret = config.kcLoadTest.clientSecret;
 
 const getHeaders = (accessToken) => ({
   Authorization: `Bearer ${accessToken}`,

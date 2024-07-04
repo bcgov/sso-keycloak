@@ -26,7 +26,7 @@ from the [podman-grapher](./local_setup/podman-grapher/) directory. This will la
 This test requires a client with a service account to run. E.g if using the default `admin-cli` client of the master realm locally, make sure the following are configured for it:
 
 - In the client settings, set the **Access Type** to confidential, and then toggle on **Service accounts enabled**.
-- Make sure that the clientID and clientSecret in [env.js](./env.js) match that client's credentials.
+- Make sure that the clientID and clientSecret in [config.json](./k6-runner/src/config/config.json) match that client's credentials.
 
 ### Testing the Quarkus release:
 
@@ -34,12 +34,49 @@ Make certain that 'Client authentication' is toggled on and select 'Direct acces
 
 **Do not do this in a production environment**. In the master realm, go to `Authentication->Direct grant` and disable "Condition- user configured" and "OTP".
 
-
-
 If testing a live application, pick an appropriate client to use with a confidential service account.
 
-- Copy `env.example.js` to `env.js`. Provide credentials for an account with permissions to create realms and users. If you are setting up locally, use the baseURL `http://localhost:8080/auth`, and you can use the admin-cli client ID with the admin admin credentials for username and password.
-- Run tests with `k6 run <js file>`
+- Copy `k6-runner/src/config/config.example.json` to `k6-runner/src/config/config.json`. Provide credentials for an account with permissions to create realms and users. If you are setting up locally, use the baseURL `http://localhost:8080/auth`, and you can use the admin-cli client ID with the admin admin credentials for username and password.
+
+#### Running the test locally
+
+These tests are adapted from the Ministry of Education's Student Online Access Module (SOAM), [load testing framework](https://github.com/bcgov/EDUC-KEYCLOAK-SOAM/blob/refs%2Fheads%2Fmaster/testing%2Fk6%2FREADME.md).  The tests can be un locally by using the `docker-compose.yml` file in the `k6-runner` directory. From the `k6-runner` directory, run:
+
+```
+docker-compose run k6 run -e CONFIG=/config/config.json /scripts/constantRateAllFlows.js
+```
+
+#### Running the test remotely
+
+The remote test runs on the script `/k6/k6-runner/openshift/k6/start.sh`. To change the test, point the run command at a different file.
+
+To run the test from a kubernetes pod you will need to do the following:
+
+Create a docker image a push it to be hosted in the bcgov ghcr repos.  **Note: do not build any secrets into the image, it is a public repo**. From the `ku-runner` directiory run:
+```
+docker build . -t ghcr.io/bcgov/sso-k6:latest
+docker push ghcr.io/bcgov/sso-k6:latest
+```
+This will create the image and host it. Each time you change the test code of config, this image will need to be rebuilt and pushed.
+
+Next create the k6-config file in the namespace from which you want to run the tests:
+```
+oc create -n <NAMESPACE> configmap k6-config --from-file=./src/config/config.json
+```
+
+Lastly deploy the config from the `sso-keycloak/k6/k6-runner/openshift/k6` directory.
+```
+oc -n <NAMESPACE> process -f dc.yaml | oc -n <NAMESPACE> apply -f -
+```
+
+Be sure to delete the job when done to prevent the load test from re-running in the cluster.
+
+#### Running the test locally without docker.
+
+The tests can also be run without docker, by running:
+`k6 run -e CONFIG=../config/config.json ./tests/constantRateAllFlows.js`
+from the `sso-keycloak/k6/k6-runner/src` directory.
+
 
 ## Tests
 

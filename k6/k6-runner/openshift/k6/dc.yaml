@@ -1,0 +1,44 @@
+kind: Template
+apiVersion: v1
+objects:
+  - apiVersion: batch/v1
+    kind: Job
+    spec:
+      backoffLimit: 0
+      template:
+        metadata:
+          creationTimestamp: null
+        spec:
+          volumes:
+            - name: k6-config
+              configMap:
+                name: k6-config
+          containers:
+            - image: ${IMAGE_REPOSITORY}:${IMAGE_TAG}
+              name: ${NAME}
+              resources:
+                limits:
+                  cpu: 2
+                  memory: 2Gi
+                requests:
+                  cpu: 500m
+                  memory: 500Mi
+              volumeMounts:
+                - name: k6-config
+                  mountPath: /var/opt/config
+          restartPolicy: Never
+    metadata:
+      name: ${NAME}
+      labels:
+        app: ${NAME}
+        component: ${NAME}-job
+parameters:
+  - name: NAME
+    value: sso-k6
+  - name: IMAGE_TAG
+    value: latest
+  - name: IMAGE_REPOSITORY
+    value: ghcr.io/bcgov/sso-k6
+  - name: HTTP_DEBUG
+    description: enable http debug logging in the k6 pod
+    value: "false"
