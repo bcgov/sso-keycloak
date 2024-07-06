@@ -11,10 +11,13 @@ import org.apache.http.util.EntityUtils;
 import org.jboss.logging.Logger;
 import org.keycloak.broker.oidc.OIDCIdentityProviderConfig;
 import org.keycloak.broker.provider.IdentityBrokerException;
+import org.keycloak.crypto.KeyUse;
 import org.keycloak.crypto.KeyWrapper;
 import org.keycloak.crypto.SignatureProvider;
 import org.keycloak.jose.JOSE;
 import org.keycloak.jose.JOSEParser;
+import org.keycloak.jose.jwe.JWE;
+import org.keycloak.jose.jwe.JWEException;
 import org.keycloak.jose.jws.JWSInput;
 import org.keycloak.keys.loader.PublicKeyStorageManager;
 import org.keycloak.models.*;
@@ -136,6 +139,37 @@ public class IDPUserinfoMapper extends AbstractOIDCProtocolMapper
           userinfoResponse = callUserInfo(userInfoUrl, brokerAccessToken.getToken());
         } catch (IOException e) {
           throw new IdentityBrokerException("Failed to call userinfo endpoint");
+        }
+
+        Boolean encryptionExpected = Boolean.parseBoolean(mappingModel.getConfig().get(ENCRYPTION_EXPECTED));
+
+        if (encryptionExpected) {
+          JOSE joseToken = JOSEParser.parse(userinfoResponse);
+          if (joseToken instanceof JWE) {
+            // encrypted JWE token
+            JWE jwe = (JWE) joseToken;
+            try {
+              KeyWrapper key;
+              if (jwe.getHeader().getKeyId() == null) {
+                key = keycloakSession.keys().getActiveKey(keycloakSession.getContext().getRealm(), KeyUse.ENC,
+                    jwe.getHeader().getRawAlgorithm());
+              } else {
+                key = keycloakSession.keys().getKey(keycloakSession.getContext().getRealm(), jwe.getHeader().getKeyId(),
+                    KeyUse.ENC,
+                    jwe.getHeader().getRawAlgorithm());
+              }
+              if (key == null || key.getPrivateKey() == null) {
+                throw new IdentityBrokerException("Private key not found in the realm to decrypt token algorithm "
+                    + jwe.getHeader().getRawAlgorithm());
+              }
+
+              jwe.getKeyStorage().setDecryptionKey(key.getPrivateKey());
+              jwe.verifyAndDecodeJwe();
+              userinfoResponse = new String(jwe.getContent(), StandardCharsets.UTF_8);
+            } catch (JWEException e) {
+              throw new IdentityBrokerException("Failed to decrypt userinfo JWT", e);
+            }
+          }
         }
 
         Boolean signatureExpected = Boolean.parseBoolean(mappingModel.getConfig().get(SIGNATURE_EXPECTED));
