@@ -61,15 +61,19 @@ This will create the image and host it. Each time you change the test code of co
 
 Next create the k6-config file in the namespace from which you want to run the tests:
 ```
-oc create -n <NAMESPACE> configmap k6-config --from-file=./src/config/config.json
+make config NAMESPACE="<NAMESPACE>"
 ```
 
 Lastly deploy the config from the `sso-keycloak/k6/k6-runner/openshift/k6` directory.
 ```
-oc -n <NAMESPACE> process -f dc.yaml | oc -n <NAMESPACE> apply -f -
+make run_job NAMESPACE="<NAMESPACE>"
 ```
 
 Be sure to delete the job when done to prevent the load test from re-running in the cluster.
+
+```
+make delete  NAMESPACE="<NAMESPACE>"
+```
 
 #### Running the test locally without docker.
 
