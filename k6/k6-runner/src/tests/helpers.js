@@ -91,7 +91,12 @@ function generateRealms(count) {
     newRealm.id = `newrealm-${i}`;
     newRealm.realm = `newrealm-${i}`;
     newRealm.displayName = `New Realm ${i}`;
+    // When testing different hashing algorythms we deploy new realms with this type of config:
+    // newRealm.passwordPolicy = "hashAlgorithm(pbkdf2-sha256) and hashIterations(27500)";
+    // The default hash iterations are 210000 and pbkdf2-sha512
+    // newRealm.passwordPolicy = "hashIterations(210000) and hashAlgorithm(pbkdf2-sha512)";
     realms.push(newRealm);
+
   }
   return realms;
 }
