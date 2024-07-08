@@ -1,8 +1,12 @@
 import { sleep } from 'k6';
 import { createRealm, deleteRealm, createUser, generateRealms, getAccessToken } from './helpers.js';
 import { user } from './constants.js';
-import { username, password, clientId } from './env.js';
 
+let config = JSON.parse(open(__ENV.CONFIG));
+
+const username = config.kcLoadTest.username;
+const password = config.kcLoadTest.password;
+const clientId = config.kcLoadTest.clientId;
 // Alter configuration to run separate tests. See this test in the readme for configuration details.
 const CONCURRENT_LOOPS = 5;
 const ITERATIONS_PER_LOOP = 50;

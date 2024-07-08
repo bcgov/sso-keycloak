@@ -1,0 +1,15 @@
+version: '3.0'
+
+networks:
+  k6:
+
+services:
+  k6:
+    image: loadimpact/k6:latest
+    networks:
+      - k6
+    ports:
+      - "6565:6565"
+    volumes:
+      - ./src/tests:/scripts
+      - ./src/config:/config

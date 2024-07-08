@@ -1,7 +1,11 @@
 import http, { head } from 'k6/http';
-import { baseUrl, clientId, clientSecret } from './env.js';
 import { realm, client } from './constants.js';
 import encoding from 'k6/encoding';
+
+let config = JSON.parse(open(__ENV.CONFIG));
+
+const baseUrl = config.kcLoadTest.baseUrl;
+const clientSecret = config.kcLoadTest.clientSecret;
 
 const getHeaders = (accessToken) => ({
   Authorization: `Bearer ${accessToken}`,
@@ -87,7 +91,12 @@ function generateRealms(count) {
     newRealm.id = `newrealm-${i}`;
     newRealm.realm = `newrealm-${i}`;
     newRealm.displayName = `New Realm ${i}`;
+    // When testing different hashing algorythms we deploy new realms with this type of config:
+    // newRealm.passwordPolicy = "hashAlgorithm(pbkdf2-sha256) and hashIterations(27500)";
+    // The default hash iterations are 210000 and pbkdf2-sha512
+    // newRealm.passwordPolicy = "hashIterations(210000) and hashAlgorithm(pbkdf2-sha512)";
     realms.push(newRealm);
+
   }
   return realms;
 }
