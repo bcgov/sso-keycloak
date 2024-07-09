@@ -51,7 +51,7 @@ jobs:
         with:
           context: docker/keycloak
           push: true
-          tags: ${{ env.GITHUB_REGISTRY }}/${{env.IMAGE_NAME}}:dev-rhbk-nk-24
+          tags: ${{ env.GITHUB_REGISTRY }}/${{env.IMAGE_NAME}}:dev-rhbk-24
           file: docker/keycloak/Dockerfile-24
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
