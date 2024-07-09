@@ -81,3 +81,24 @@ spec:
               name: {{ .Values.networkPolicy.licensePlate }}
   policyTypes:
     - Ingress
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: kc-cronjob-same-namespace
+  namespace: {{ .Values.networkPolicy.licensePlate }}-tools
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/instance: {{.Values.nameOverride}}
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: {{.Values.nameOverride}}
+          namespaceSelector:
+            matchLabels:
+              environment: tools
+              name: {{ .Values.networkPolicy.licensePlate }}
+  policyTypes:
+    - Ingress
