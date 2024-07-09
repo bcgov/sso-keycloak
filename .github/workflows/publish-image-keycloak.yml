@@ -64,7 +64,7 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          file: docker/keycloak/Dockerfile-${{ startsWith(github.ref, 'refs/tags/7.4-37') && '7.4-37' || '7.6' }}
+          file: docker/keycloak/Dockerfile-${{ startsWith(github.ref, 'refs/tags/7.6') && '7.6' || '24' }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
 
