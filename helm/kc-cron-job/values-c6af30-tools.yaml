@@ -11,11 +11,11 @@ fullnameOverride: kc-cron-job
 
 enableEventLogsJob: true
 
-enableActiveSessionsJob: false
+enableActiveSessionsJob: true
 
-enableRemoveInactiveUsersJob: false
+enableRemoveInactiveUsersJob: true
 
-enableRemoveVcUsersJob: false
+enableRemoveVcUsersJob: true
 
 namespace:
   eventLogs:

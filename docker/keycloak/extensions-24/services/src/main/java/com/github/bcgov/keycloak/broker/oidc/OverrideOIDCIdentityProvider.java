@@ -1,9 +1,8 @@
 package com.github.bcgov.keycloak.broker.oidc;
 
-import java.io.IOException;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriBuilder;
+import jakarta.ws.rs.core.UriInfo;
 import org.jboss.logging.Logger;
 import org.keycloak.broker.oidc.OIDCIdentityProvider;
 import org.keycloak.broker.oidc.OIDCIdentityProviderConfig;
@@ -15,6 +14,8 @@ import org.keycloak.representations.AccessTokenResponse;
 import org.keycloak.services.resources.IdentityBrokerService;
 import org.keycloak.services.resources.RealmsResource;
 import org.keycloak.util.JsonSerialization;
+
+import java.io.IOException;
 
 /** @author <a href="mailto:junmin@button.is">Junmin Ahn</a> */
 public class OverrideOIDCIdentityProvider extends OIDCIdentityProvider {
@@ -38,32 +39,29 @@ public class OverrideOIDCIdentityProvider extends OIDCIdentityProvider {
     }
 
     String sessionId = userSession.getId();
-    UriBuilder logoutUri = UriBuilder.fromUri(getConfig().getLogoutUrl()).queryParam("state", sessionId);
-    String redirect = RealmsResource.brokerUrl(uriInfo)
-        .path(IdentityBrokerService.class, "getEndpoint")
-        .path(OIDCEndpoint.class, "logoutResponse")
-        .build(realm.getName(), getConfig().getAlias())
-        .toString();
+    UriBuilder logoutUri =
+        UriBuilder.fromUri(getConfig().getLogoutUrl()).queryParam("state", sessionId);
+    String redirect =
+        RealmsResource.brokerUrl(uriInfo)
+            .path(IdentityBrokerService.class, "getEndpoint")
+            .path(OIDCEndpoint.class, "logoutResponse")
+            .build(realm.getName(), getConfig().getAlias())
+            .toString();
 
     if (idToken != null) {
       logoutUri.queryParam("id_token_hint", idToken);
       logoutUri.queryParam("post_logout_redirect_uri", redirect);
     } else {
-      // commented out as custom UI fields are not supported in KC22
-      // if (!isLegacyLogoutRedirectUriSupported()) {
-      // logger.warn("no id_token found and legacy logout redirect uri not supported:
-      // " + redirect);
-      // return null;
-      // }
-      // logger.warn("no id_token found; use legacy redirect_uri query param: " +
-      // redirect);
+      if (!isLegacyLogoutRedirectUriSupported()) {
+        logger.warn("no id_token found and legacy logout redirect uri not supported: " + redirect);
+        return null;
+      }
 
-      // if id token is expired or not available then use redirect_uri
+      logger.warn("no id_token found; use legacy redirect_uri query param: " + redirect);
       logoutUri.queryParam("redirect_uri", redirect);
     }
 
-    Response response = Response.status(302).location(logoutUri.build()).build();
-    return response;
+    return Response.status(302).location(logoutUri.build()).build();
   }
 
   private String getIDTokenForLogout(KeycloakSession session, UserSessionModel userSession) {
@@ -84,9 +82,7 @@ public class OverrideOIDCIdentityProvider extends OIDCIdentityProvider {
     }
   }
 
-  // commented out as custom UI fields are not supported in KC22
-  // public boolean isLegacyLogoutRedirectUriSupported() {
-  // return
-  // Boolean.valueOf(getConfig().getConfig().get("legacyLogoutRedirectUriSupported"));
-  // }
+  public boolean isLegacyLogoutRedirectUriSupported() {
+    return Boolean.valueOf(getConfig().getConfig().get("legacyLogoutRedirectUriSupported"));
+  }
 }
