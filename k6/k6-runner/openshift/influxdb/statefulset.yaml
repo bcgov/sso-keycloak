@@ -1,0 +1,84 @@
+kind: Template
+apiVersion: v1
+objects:
+  - apiVersion: apps/v1
+    kind: StatefulSet
+    metadata:
+      name: k6-influxdb
+      labels:
+        app: k6-influxdb
+    spec:
+      serviceName: k6-influxdb
+      replicas: 1
+      selector:
+        matchLabels:
+          app: k6-influxdb
+      template:
+        metadata:
+          labels:
+            app: k6-influxdb
+        spec:
+          terminationGracePeriodSeconds: 10
+          containers:
+            - name: influxdb
+              image: influxdb:2.7.6
+              ports:
+                - containerPort: 8086
+                  name: influxdb
+              volumeMounts:
+                - name: influxdb-data
+                  mountPath: /var/lib/influxdb2
+              resources:
+                requests:
+                  cpu: 50m
+                  memory: 128Mi
+                limits:
+                  cpu: 200m
+                  memory: 256Mi
+          volumes:
+            - name: influxdb-data
+              persistentVolumeClaim:
+                claimName: k6-influxdb
+
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: k6-influxdb
+      labels:
+        app: k6-influxdb
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 1Gi
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      name: k6-influxdb
+      labels:
+        app: k6-influxdb
+    spec:
+      ports:
+        - name: influxdb
+          port: 8086
+          targetPort: 8086
+      selector:
+        app: k6-influxdb
+      type: ClusterIP
+  - kind: Route
+    apiVersion: route.openshift.io/v1
+    metadata:
+      name: k6-influxdb
+    spec:
+      host: k6-influxdb-c6af30-dev.apps.gold.devops.gov.bc.ca
+      to:
+        kind: Service
+        name: k6-influxdb
+        weight: 100
+      port:
+        targetPort: influxdb
+      tls:
+        termination: edge
+        insecureEdgeTerminationPolicy: None
+      wildcardPolicy: None
