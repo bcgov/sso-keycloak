@@ -16,6 +16,31 @@ objects:
           containers:
             - image: ${IMAGE_REPOSITORY}:${IMAGE_TAG}
               name: ${NAME}
+              args:
+                - 'run'
+                - '-e'
+                - 'CONFIG=/var/opt/config/config.json'
+                - '/home/k6/scripts/constantRateAllFlows.js'
+              env:
+                - name: K6_INFLUXDB_URL
+                  value: https://k6-influxdb-c6af30-dev.apps.gold.devops.gov.bc.ca
+                - name: K6_INFLUXDB_ORGANIZATION
+                  valueFrom:
+                    secretKeyRef:
+                      name: k6-influxdb-secret
+                      key: DOCKER_INFLUXDB_INIT_ORG
+                - name: K6_INFLUXDB_BUCKET
+                  valueFrom:
+                    secretKeyRef:
+                      name: k6-influxdb-secret
+                      key: DOCKER_INFLUXDB_INIT_BUCKET
+                - name: K6_INFLUXDB_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: k6-influxdb-secret
+                      key: OPERATOR_API_TOKEN
+                - name: HTTP_DEBUG
+                  value: ${HTTP_DEBUG}
               resources:
                 limits:
                   cpu: 2
@@ -36,9 +61,9 @@ parameters:
   - name: NAME
     value: sso-k6
   - name: IMAGE_TAG
-    value: latest
+    value: dev1
   - name: IMAGE_REPOSITORY
-    value: ghcr.io/bcgov/sso-k6
+    value: ghcr.io/bcgov/sso-k6-runner
   - name: HTTP_DEBUG
     description: enable http debug logging in the k6 pod
-    value: "false"
+    value: 'false'
