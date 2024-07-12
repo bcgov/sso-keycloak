@@ -44,7 +44,7 @@ jobs:
         with:
           context: k6/k6-runner
           push: true
-          tags: ${{ env.GITHUB_REGISTRY }}/${{env.IMAGE_NAME}}:dev1
+          tags: ${{ env.GITHUB_REGISTRY }}/${{env.IMAGE_NAME}}:dev
           file: k6/k6-runner/Dockerfile.k6
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new

@@ -82,3 +82,21 @@ objects:
         termination: edge
         insecureEdgeTerminationPolicy: None
       wildcardPolicy: None
+  - kind: NetworkPolicy
+    apiVersion: networking.k8s.io/v1
+    metadata:
+      name: allow-ingress-influxdb
+      labels:
+        app: k6-influxdb
+    spec:
+      podSelector:
+        matchLabels:
+          app: k6-influxdb
+      ingress:
+        - from:
+            - namespaceSelector:
+                matchLabels:
+                  network.openshift.io/policy-group: ingress
+      policyTypes:
+        - Ingress
+    status: {}
