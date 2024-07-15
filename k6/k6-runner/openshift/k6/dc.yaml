@@ -16,6 +16,11 @@ objects:
           containers:
             - image: ${IMAGE_REPOSITORY}:${IMAGE_TAG}
               name: ${NAME}
+              args:
+                - 'run'
+                - '-e'
+                - 'CONFIG=/var/opt/config/config.json'
+                - '/home/k6/scripts/constantRateAllFlows.js'
               env:
                 - name: K6_OUT
                   value: 'timescaledb=postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}'
