@@ -3,7 +3,11 @@ name: Create and publish K6 Runner Docker image
 on:
   push:
     branches:
-      - 'SSOTEAM-914-01'
+      - main
+      - dev
+    paths:
+      - 'k6/**'
+      - '.github/workflows/publish-image-k6-runner.yml'
 
 env:
   GITHUB_REGISTRY: ghcr.io
