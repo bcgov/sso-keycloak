@@ -16,6 +16,14 @@ objects:
           containers:
             - image: ${IMAGE_REPOSITORY}:${IMAGE_TAG}
               name: ${NAME}
+              args:
+                - 'run'
+                - '-e'
+                - 'CONFIG=/var/opt/config/config.json'
+                - '/home/k6/scripts/constantRateAllFlows.js'
+              env:
+                - name: K6_OUT
+                  value: 'timescaledb=postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}'
               resources:
                 limits:
                   cpu: 2
@@ -36,9 +44,18 @@ parameters:
   - name: NAME
     value: sso-k6
   - name: IMAGE_TAG
-    value: latest
+    value: dev
   - name: IMAGE_REPOSITORY
-    value: ghcr.io/bcgov/sso-k6
-  - name: HTTP_DEBUG
-    description: enable http debug logging in the k6 pod
-    value: "false"
+    value: ghcr.io/bcgov/sso-k6-runner
+  - name: DB_USER
+    value: ''
+    required: true
+  - name: DB_PASSWORD
+    value: ''
+    required: true
+  - name: DB_NAME
+    value: 'k6loadtests'
+  - name: DB_HOST
+    value: 'k6-patroni'
+  - name: DB_PORT
+    value: '5432'
