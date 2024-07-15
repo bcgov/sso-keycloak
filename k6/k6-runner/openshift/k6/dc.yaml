@@ -16,6 +16,9 @@ objects:
           containers:
             - image: ${IMAGE_REPOSITORY}:${IMAGE_TAG}
               name: ${NAME}
+              env:
+                - name: K6_OUT
+                  value: 'timescaledb=postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}'
               resources:
                 limits:
                   cpu: 2
@@ -41,4 +44,14 @@ parameters:
     value: ghcr.io/bcgov/sso-k6
   - name: HTTP_DEBUG
     description: enable http debug logging in the k6 pod
-    value: "false"
+    value: 'false'
+  - name: DB_USER
+    value: ''
+  - name: DB_PASSWORD
+    value: ''
+  - name: DB_NAME
+    value: 'k6loadtests'
+  - name: DB_HOST
+    value: 'k6-patroni'
+  - name: DB_PORT
+    value: '5432'
