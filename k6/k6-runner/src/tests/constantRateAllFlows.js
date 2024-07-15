@@ -24,7 +24,15 @@ const OFFLINE = false;
 // Peak requests per minutes we've seen on the system
 const BASELINE_RATE = 34;
 
+const date = new Date();
+const formattedDate = `${date.getFullYear()}-${
+  date.getMonth() + 1
+}-${date.getDate()}-${date.getHours()}-${date.getMinutes()}`;
+
 export const options = {
+  tags: {
+    test_run_id: formattedDate,
+  },
   scenarios: {
     peakProfile: {
       executor: 'constant-arrival-rate',

@@ -4,13 +4,13 @@ fullnameOverride: k6-patroni
 
 image:
   # see https://github.com/zalando/spilo/releases
-  repository: ghcr.io/zalando/spilo-16
+  repository: ghcr.io/zalando/spilo-15
   pullPolicy: Always
-  tag: 3.2-p3 # timescaledb 2.14.X
+  tag: 3.2-p1
 
 replicaCount: 2
 
-postgresMajorVersion: 16
+postgresMajorVersion: 15
 
 resources:
   requests:

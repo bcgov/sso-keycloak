@@ -19,5 +19,5 @@ CREATE DATABASE k6loadtests;
 
 \c k6loadtests;
 
-CREATE EXTENSION IF NOT EXISTS timescaledb
+CREATE EXTENSION IF NOT EXISTS timescaledb;
 ```
