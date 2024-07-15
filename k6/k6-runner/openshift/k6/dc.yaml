@@ -44,9 +44,9 @@ parameters:
   - name: NAME
     value: sso-k6
   - name: IMAGE_TAG
-    value: latest
+    value: dev
   - name: IMAGE_REPOSITORY
-    value: ghcr.io/bcgov/sso-k6
+    value: ghcr.io/bcgov/sso-k6-runner
   - name: HTTP_DEBUG
     description: enable http debug logging in the k6 pod
     value: 'false'

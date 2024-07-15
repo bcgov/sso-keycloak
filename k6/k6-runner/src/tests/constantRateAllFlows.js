@@ -10,6 +10,7 @@ import {
   createClient,
 } from './helpers.js';
 import { user, client } from './constants.js';
+import exec from 'k6/execution';
 
 let config = JSON.parse(open(__ENV.CONFIG));
 const username = config.kcLoadTest.username;
@@ -25,14 +26,11 @@ const OFFLINE = false;
 const BASELINE_RATE = 34;
 
 const date = new Date();
-const formattedDate = `${date.getFullYear()}-${
-  date.getMonth() + 1
-}-${date.getDate()}-${date.getHours()}-${date.getMinutes()}`;
+const formattedDate = `${date.getFullYear()}${('0' + (date.getMonth() + 1)).slice(-2)}${('0' + date.getDate()).slice(
+  -2,
+)}${date.getHours()}${('0' + date.getMinutes()).slice(-2)}`;
 
 export const options = {
-  tags: {
-    test_run_id: formattedDate,
-  },
   scenarios: {
     peakProfile: {
       executor: 'constant-arrival-rate',
@@ -40,39 +38,48 @@ export const options = {
       timeUnit: '1m',
       rate: 34,
       preAllocatedVUs: 5,
+      tags: {
+        profile: 'peak-2h-34',
+      },
     },
     // stress: {
-    //     executor: 'ramping-arrival-rate', //Assure load increase if the system slows
-    //     startRate: 0,
-    //     timeUnit: '1m',
-    //     preAllocatedVUs: 10000,
-    //     stages: [
-    //         // Ramp in 100 req/sec intervals, and hold 5 mins.
-    //         // Each loop runs 3 req/sec, so (target * 3) / 60 = req/sec.
-    //         { duration: '5m', target: 2000 },
-    //         { duration: '5m', target: 2000 },
-    //         { duration: '5m', target: 4000 },
-    //         { duration: '5m', target: 4000 },
-    //         { duration: '5m', target: 6000 },
-    //         { duration: '5m', target: 6000 },
-    //         { duration: '5m', target: 8000 },
-    //         { duration: '5m', target: 8000 },
-    //         { duration: '5m', target: 10000 },
-    //         { duration: '5m', target: 10000 },
-    //     ],
-    // }
+    //   executor: 'ramping-arrival-rate', //Assure load increase if the system slows
+    //   startRate: 0,
+    //   timeUnit: '1m',
+    //   preAllocatedVUs: 10000,
+    //   stages: [
+    //     // Ramp in 100 req/sec intervals, and hold 5 mins.
+    //     // Each loop runs 3 req/sec, so (target * 3) / 60 = req/sec.
+    //     { duration: '5m', target: 2000 },
+    //     { duration: '5m', target: 2000 },
+    //     { duration: '5m', target: 4000 },
+    //     { duration: '5m', target: 4000 },
+    //     { duration: '5m', target: 6000 },
+    //     { duration: '5m', target: 6000 },
+    //     { duration: '5m', target: 8000 },
+    //     { duration: '5m', target: 8000 },
+    //     { duration: '5m', target: 10000 },
+    //     { duration: '5m', target: 10000 },
+    //   ],
+    //   tags: {
+    //     profile: 'stress-5m-2000',
+    //   },
+    // },
 
     // stress: {
-    //     executor: 'ramping-arrival-rate', //Assure load increase if the system slows
-    //     startRate: BASELINE_RATE,
-    //     timeUnit: '1m',
-    //     preAllocatedVUs: 20000,
-    //     stages: [
-    //         { duration: '1m', target: BASELINE_RATE }, // just slowly ramp-up to a HUGE load
-    //         // just slowly ramp-up to an EPIC load.
-    //         { duration: '1h', target: 20000 },
-    //     ],
-    // }
+    //   executor: 'ramping-arrival-rate', //Assure load increase if the system slows
+    //   startRate: BASELINE_RATE,
+    //   timeUnit: '1m',
+    //   preAllocatedVUs: 20000,
+    //   stages: [
+    //     { duration: '1m', target: BASELINE_RATE }, // just slowly ramp-up to a HUGE load
+    //     // just slowly ramp-up to an EPIC load.
+    //     { duration: '1h', target: 20000 },
+    //   ],
+    //   tags: {
+    //     profile: 'stress-1h-20000',
+    //   },
+    // },
   },
   thresholds: {
     http_req_failed: [
@@ -90,42 +97,48 @@ export const options = {
     //     },
     // ]
   },
+  tags: {
+    testid: formattedDate.toString(),
+  },
 };
 
 export function setup() {
-  const accessToken = getAccessToken({ username, password, clientId, confidential: true });
+  const accessToken = getAccessToken({ username, password, clientId, confidential: true }, { testid: formattedDate });
   const emptyRealms = generateRealms(TOTAL_REALMS);
   emptyRealms.forEach((realm, i) => {
-    createRealm(realm, accessToken);
+    createRealm(realm, accessToken, { testid: formattedDate });
     const newUser = Object.assign({}, user, { username: `${user.username}_${i}` });
-    createUser(newUser, realm.realm, accessToken);
+    createUser(newUser, realm.realm, accessToken, { testid: formattedDate });
     // Create a confidential client to be able to use the introspection endpoint with this realm
-    createClient(realm.realm, accessToken);
+    createClient(realm.realm, accessToken, { testid: formattedDate });
   });
-  return emptyRealms;
+  return { realms: emptyRealms, tags: { testid: formattedDate } };
 }
 
-export default function (realms) {
-  realms.forEach((realm, i) => {
-    const accessToken = getAccessToken({
-      username: `${user.username}_${i}`,
-      password: user.credentials[0].value,
-      clientId,
-      confidential: true,
-      realm: realm.realm,
-      offline: OFFLINE,
-    });
-    hitUserInfoRoute(accessToken, realm.realm);
-    hitIntrospectionRoute(accessToken, realm.realm, client.clientId, client.secret);
+export default function (params) {
+  params.realms.forEach((realm, i) => {
+    const accessToken = getAccessToken(
+      {
+        username: `${user.username}_${i}`,
+        password: user.credentials[0].value,
+        clientId,
+        confidential: true,
+        realm: realm.realm,
+        offline: OFFLINE,
+      },
+      params.tags,
+    );
+    hitUserInfoRoute(accessToken, realm.realm, params.tags);
+    hitIntrospectionRoute(accessToken, realm.realm, client.clientId, client.secret, params.tags);
   });
 }
 
-export function teardown(realms) {
+export function teardown(params) {
   // When stress testing, the enqueued requests can block teardown api requests from succeeding. Adding in a sleep to let the system recover a bit before trying to cleaunup.
   sleep(45);
   console.log('tearing down...');
-  const accessToken = getAccessToken({ username, password, clientId, confidential: true });
-  realms.forEach((realm, i) => {
-    deleteRealm(realm.realm, accessToken);
+  const accessToken = getAccessToken({ username, password, clientId, confidential: true }, params.tags);
+  params.realms.forEach((realm, i) => {
+    deleteRealm(realm.realm, accessToken, params.tags);
   });
 }
