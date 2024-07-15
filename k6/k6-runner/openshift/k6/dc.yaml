@@ -47,13 +47,12 @@ parameters:
     value: dev
   - name: IMAGE_REPOSITORY
     value: ghcr.io/bcgov/sso-k6-runner
-  - name: HTTP_DEBUG
-    description: enable http debug logging in the k6 pod
-    value: 'false'
   - name: DB_USER
     value: ''
+    required: true
   - name: DB_PASSWORD
     value: ''
+    required: true
   - name: DB_NAME
     value: 'k6loadtests'
   - name: DB_HOST
