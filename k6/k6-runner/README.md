@@ -16,6 +16,9 @@
   export DB_USER=
   export DB_PASSWORD=
 
+  # one of ('peakProfile', 'stressProfile', 'soakProfile')
+  export SCENARIO=
+
   # create configmap with all the configurations
   make config
 
