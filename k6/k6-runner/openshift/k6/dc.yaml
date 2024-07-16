@@ -24,6 +24,8 @@ objects:
               env:
                 - name: K6_OUT
                   value: 'timescaledb=postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}'
+                - name: SCENARIO
+                  value: ${SCENARIO}
               resources:
                 limits:
                   cpu: 2
@@ -59,3 +61,6 @@ parameters:
     value: 'k6-patroni'
   - name: DB_PORT
     value: '5432'
+  - name: SCENARIO
+    required: true
+    description: The name of the scenario (peakProfile, stressProfile, and soakProfile) to run

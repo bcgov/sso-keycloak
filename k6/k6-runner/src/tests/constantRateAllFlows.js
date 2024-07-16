@@ -13,6 +13,7 @@ import { user, client } from './constants.js';
 import exec from 'k6/execution';
 
 let config = JSON.parse(open(__ENV.CONFIG));
+let scenario = __ENV.SCENARIO;
 const username = config.kcLoadTest.username;
 const password = config.kcLoadTest.password;
 const clientId = config.kcLoadTest.clientId;
@@ -30,57 +31,59 @@ const formattedDate = `${date.getFullYear()}${('0' + (date.getMonth() + 1)).slic
   -2,
 )}${date.getHours()}${('0' + date.getMinutes()).slice(-2)}`;
 
-export const options = {
-  scenarios: {
-    peakProfile: {
-      executor: 'constant-arrival-rate',
-      duration: '2m',
-      timeUnit: '1m',
-      rate: 34,
-      preAllocatedVUs: 5,
-      tags: {
-        profile: 'peak-2h-34',
-      },
+const scenarios = {
+  peakProfile: {
+    executor: 'constant-arrival-rate',
+    duration: '2h',
+    timeUnit: '1m',
+    rate: 34,
+    preAllocatedVUs: 5,
+    tags: {
+      profile: 'peak',
     },
-    // stress: {
-    //   executor: 'ramping-arrival-rate', //Assure load increase if the system slows
-    //   startRate: 0,
-    //   timeUnit: '1m',
-    //   preAllocatedVUs: 10000,
-    //   stages: [
-    //     // Ramp in 100 req/sec intervals, and hold 5 mins.
-    //     // Each loop runs 3 req/sec, so (target * 3) / 60 = req/sec.
-    //     { duration: '5m', target: 2000 },
-    //     { duration: '5m', target: 2000 },
-    //     { duration: '5m', target: 4000 },
-    //     { duration: '5m', target: 4000 },
-    //     { duration: '5m', target: 6000 },
-    //     { duration: '5m', target: 6000 },
-    //     { duration: '5m', target: 8000 },
-    //     { duration: '5m', target: 8000 },
-    //     { duration: '5m', target: 10000 },
-    //     { duration: '5m', target: 10000 },
-    //   ],
-    //   tags: {
-    //     profile: 'stress-5m-2000',
-    //   },
-    // },
-
-    // stress: {
-    //   executor: 'ramping-arrival-rate', //Assure load increase if the system slows
-    //   startRate: BASELINE_RATE,
-    //   timeUnit: '1m',
-    //   preAllocatedVUs: 20000,
-    //   stages: [
-    //     { duration: '1m', target: BASELINE_RATE }, // just slowly ramp-up to a HUGE load
-    //     // just slowly ramp-up to an EPIC load.
-    //     { duration: '1h', target: 20000 },
-    //   ],
-    //   tags: {
-    //     profile: 'stress-1h-20000',
-    //   },
-    // },
   },
+  stressProfile: {
+    executor: 'ramping-arrival-rate', //Assure load increase if the system slows
+    startRate: 0,
+    timeUnit: '1m',
+    preAllocatedVUs: 10000,
+    stages: [
+      // Ramp in 100 req/sec intervals, and hold 5 mins.
+      // Each loop runs 3 req/sec, so (target * 3) / 60 = req/sec.
+      { duration: '5m', target: 2000 },
+      { duration: '5m', target: 2000 },
+      { duration: '5m', target: 4000 },
+      { duration: '5m', target: 4000 },
+      { duration: '5m', target: 6000 },
+      { duration: '5m', target: 6000 },
+      { duration: '5m', target: 8000 },
+      { duration: '5m', target: 8000 },
+      { duration: '5m', target: 10000 },
+      { duration: '5m', target: 10000 },
+    ],
+    tags: {
+      profile: 'stress',
+    },
+  },
+
+  soakProfile: {
+    executor: 'ramping-arrival-rate', //Assure load increase if the system slows
+    startRate: BASELINE_RATE,
+    timeUnit: '1m',
+    preAllocatedVUs: 20000,
+    stages: [
+      { duration: '1m', target: BASELINE_RATE }, // just slowly ramp-up to a HUGE load
+      // just slowly ramp-up to an EPIC load.
+      { duration: '1h', target: 20000 },
+    ],
+    tags: {
+      profile: 'soak',
+    },
+  },
+};
+
+export const options = {
+  scenarios: { [scenario]: scenarios[scenario] },
   thresholds: {
     http_req_failed: [
       {
