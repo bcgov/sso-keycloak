@@ -24,6 +24,34 @@ CREATE EXTENSION IF NOT EXISTS timescaledb;
 
 ### Grafana
 
+- Create a network policy for Grafana to connect to TimescaleDB. The policy should exist in the namespace where TimescaleDB is deployed.
+
+  ```yaml
+  # update TIMESCALEDB_NAMESPACE and GRAFANA_NAMESPACE
+
+  kind: NetworkPolicy
+  apiVersion: networking.k8s.io/v1
+  metadata:
+    name: sso-dev-sandbox-gold-grafana-access
+    namespace: <TIMESCALEDB_NAMESPACE>
+  spec:
+    podSelector:
+      matchLabels:
+        app.kubernetes.io/name: k6-patroni
+    ingress:
+      - from:
+          - namespaceSelector:
+              matchLabels:
+                environment: tools
+                name: <GRAFANA_NAMESPACE>
+          - podSelector:
+              matchLabels:
+                app.kubernetes.io/name: sso-grafana
+    policyTypes:
+      - Ingress
+  status: {}
+  ```
+
 - Existing [grafana](https://sso-grafana-sandbox.apps.gold.devops.gov.bc.ca/) instance is being used to host the dashboards.
 - Ensure a data source exists with below config.
 
@@ -45,4 +73,4 @@ CREATE EXTENSION IF NOT EXISTS timescaledb;
     timescaledb: true
   ```
 
-- Pre-built dashboards can be found [here](https://github.com/grafana/xk6-output-timescaledb/tree/main/grafana/dashboards)](https://github.com/grafana/xk6-output-timescaledb/tree/main/grafana/dashboards)
+- Pre-built dashboards can be found [here](https://github.com/grafana/xk6-output-timescaledb/tree/main/grafana/dashboards)

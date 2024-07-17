@@ -7,7 +7,7 @@
 
 ## Setup
 
-- Ensure `k6-patroni` is running in `c6af30-dev` namespace as a statefulset
+- Ensure `k6-patroni` is deployed in a namespace as a statefulset. Refer to this [guide](../../timescaledb/README.md) on setting up TimescaleDB.
 - Copy `sso-keycloak/k6/k6-runner/src/config/config.example.json` to `sso-keycloak/k6/k6-runner/src/config/config.json` and update values accordingly
 
   ```sh
