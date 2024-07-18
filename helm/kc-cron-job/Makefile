@@ -1,5 +1,5 @@
 SHELL := /usr/bin/env bash
-NAMESPACE=""
+NAMESPACE="e4ca1d-tools"
 URL=''
 CLIENTSECRET=''
 CLIENTNAME=''

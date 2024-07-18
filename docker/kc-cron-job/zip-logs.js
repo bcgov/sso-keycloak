@@ -1,7 +1,6 @@
 const fsPromises = require('fs').promises;
 const fs = require('fs');
 const archiver = require('archiver');
-const { saveFilesToDatabase } = require('./event-logs');
 const axios = require('axios');
 
 const { DIRECTORY = '/var/log/eap', EXPIRY_LENGTH_DAYS = 30, TEMP_DIRECTORY = './tmp', RC_WEBHOOK = '' } = process.env;
@@ -97,7 +96,6 @@ async function main(dirname) {
     const [datedFileNames, uniqueDates] = await getDatedLogFiles(dirname, endsWithDateRegex);
     await createDateDirectories(TEMP_DIRECTORY, uniqueDates);
     await copyFilesToDateFolder(dirname, TEMP_DIRECTORY, datedFileNames);
-    await saveFilesToDatabase(TEMP_DIRECTORY);
     await zipFolders(TEMP_DIRECTORY, dirname);
     await deleteFiles(dirname, datedFileNames);
     await deleteOldZipFiles(dirname, EXPIRY_LENGTH_DAYS);

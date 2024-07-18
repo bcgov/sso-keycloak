@@ -23,34 +23,6 @@ spec:
             app.kubernetes.io/name: {{ include "..name" $ }}
             app.kubernetes.io/instance: {{ $.Release.Name }}
         spec:
-          initContainers:
-            - name: initdb
-              image: postgres:11.6-alpine
-              command: ["bash", "-c"]
-              args:
-                - |
-                  echo starting;
-                  set -euo pipefail;
-                  echo "select 'create database $PGDATABASE_NAME' where NOT exists (select from pg_database where datname = '$PGDATABASE_NAME')\gexec" | psql -d postgres
-                  psql -d $PGDATABASE_NAME -qtA --set ON_ERROR_STOP=1 << 'EOF'
-                  {{ $.Files.Get "migration.sql" | nindent 20 -}}
-                  ;
-                  EOF
-
-              env:
-                - name: PGHOST
-                  value: {{ $.Values.pgHost }}
-                - name: PGPORT
-                  value: "5432"
-                - name: PGUSER
-                  value: postgres
-                - name: PGPASSWORD
-                  valueFrom:
-                    secretKeyRef:
-                      name: kc-cron-patroni
-                      key: password-superuser
-                - name: PGDATABASE_NAME
-                  value: rhsso
           containers:
             - name: {{ $.Chart.Name }}
               image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag }}"
@@ -67,19 +39,6 @@ spec:
                   value: /logs
                 - name: TEMP_DIRECTORY
                   value: /logs/kc-logs-tmp
-                - name: SAVE_LOGS_N_DAYS_AGO
-                  value: '1'
-                - name: PGHOST
-                  value: {{ $.Values.pgHost }}
-                - name: PGPORT
-                  value: "5432"
-                - name: PGUSER
-                  value: postgres
-                - name: PGPASSWORD
-                  valueFrom:
-                    secretKeyRef:
-                      name: kc-cron-patroni
-                      key: password-superuser
                 - name: PGDATABASE
                   value: rhsso
                 - name: RC_WEBHOOK

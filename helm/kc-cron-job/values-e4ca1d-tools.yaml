@@ -11,9 +11,7 @@ fullnameOverride: kc-cron-job
 
 enableEventLogsJob: true
 
-enableActiveSessionsJob: true
-
-enableRemoveInactiveUsersJob: false
+enableRemoveInactiveUsersJob: true
 
 enableRemoveVcUsersJob: true
 
@@ -22,7 +20,6 @@ namespace:
     - 'e4ca1d-dev'
     - 'e4ca1d-test'
     - 'e4ca1d-prod'
-  activeSessions: 'e4ca1d-tools'
   rmInactiveUsers: 'e4ca1d-tools'
   rmVcUsers: 'e4ca1d-tools'
 
