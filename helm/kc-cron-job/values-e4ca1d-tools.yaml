@@ -9,17 +9,11 @@ imagePullSecrets:
 nameOverride: kc-cron-job
 fullnameOverride: kc-cron-job
 
-enableEventLogsJob: true
-
 enableRemoveInactiveUsersJob: true
 
 enableRemoveVcUsersJob: true
 
 namespace:
-  eventLogs:
-    - 'e4ca1d-dev'
-    - 'e4ca1d-test'
-    - 'e4ca1d-prod'
   rmInactiveUsers: 'e4ca1d-tools'
   rmVcUsers: 'e4ca1d-tools'
 
