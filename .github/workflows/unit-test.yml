@@ -1,10 +1,12 @@
 name: Run unit tests
 
 on:
-  push:
-    paths:
-      - 'docker/kc-cron-job/**'
-      - '.github/workflows/unit-test.yml'
+  # Commenting out as tests are empty
+  workflow_dispatch:
+  # push:
+  #   paths:
+  #     - 'docker/kc-cron-job/**'
+  #     - '.github/workflows/unit-test.yml'
 
 jobs:
   unit_test:
