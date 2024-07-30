@@ -9,7 +9,7 @@ imagePullSecrets:
 nameOverride: kc-cron-job
 fullnameOverride: kc-cron-job
 
-enableRemoveInactiveUsersJob: true
+enableRemoveInactiveUsersJob: false
 
 enableRemoveVcUsersJob: true
 
