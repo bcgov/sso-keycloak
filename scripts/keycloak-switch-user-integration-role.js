@@ -2,17 +2,17 @@ const _ = require('lodash');
 const { argv } = require('yargs');
 const Confirm = require('prompt-confirm');
 const { getAdminClient } = require('./keycloak-core');
-const { env, realm, prevRole, newRole } = argv;
+const { env, realm, currentRole, newRole } = argv;
 
 /**
  * Adds the provided role newRole to all users in the given environment and realm with the role currentRole.
  * Expects newRole to exist.
  */
 async function main() {
-  if (!env || !realm || !prevRole || !newRole) {
+  if (!env || !realm || !currentRole || !newRole) {
     console.info(`
     Usages:
-      node keycloak-search-users.js --env <env> --realm <realm> --currentRole <previous role> --newRole <new role>
+      node keycloak-switch-user-integration-role.js --env <env> --realm <realm> --currentRole <previous role> --newRole <new role>
     `);
 
     return;
@@ -35,7 +35,7 @@ async function main() {
     }
 
     const users = await kcAdminClient.roles.findUsersWithRole({
-      name: prevRole,
+      name: currentRole,
       realm,
     });
 
@@ -45,7 +45,7 @@ async function main() {
     }
 
     prompt = new Confirm(
-      `Found the following users with role ${prevRole}: \n\n ${users
+      `Found the following users with role ${currentRole}: \n\n ${users
         .map((u) => u.email)
         .join(',\n ')}\n\nWould you like to proceed with adding the new role ${newRole} to all of them?`,
     );
