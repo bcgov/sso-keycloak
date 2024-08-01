@@ -4,6 +4,9 @@ const Confirm = require('prompt-confirm');
 const { getAdminClient } = require('./keycloak-core');
 const { env, realm, currentRole, newRole } = argv;
 
+// The number of users to update per prompt.
+const MAX_USERS = 100;
+
 /**
  * Adds the provided role newRole to all users in the given environment and realm with the role currentRole.
  * Expects newRole to exist.
@@ -34,36 +37,44 @@ async function main() {
       return;
     }
 
-    const users = await kcAdminClient.roles.findUsersWithRole({
-      name: currentRole,
-      realm,
-    });
+    let pageCount = 0;
 
-    if (!users?.length) {
-      console.info('No users found, exiting.');
-      return;
-    }
-
-    prompt = new Confirm(
-      `Found the following users with role ${currentRole}: \n\n ${users
-        .map((u) => u.email)
-        .join(',\n ')}\n\nWould you like to proceed with adding the new role ${newRole} to all of them?`,
-    );
-    answer = await prompt.run();
-    if (!answer) return;
-
-    users.forEach(async (u) => {
-      await kcAdminClient.users.addRealmRoleMappings({
-        id: u.id,
+    while (true) {
+      const users = await kcAdminClient.roles.findUsersWithRole({
+        name: currentRole,
         realm,
-        roles: [
-          {
-            id: newFoundRole.id,
-            name: newRole,
-          },
-        ],
+        first: pageCount * MAX_USERS,
+        max: MAX_USERS,
       });
-    });
+
+      pageCount++;
+
+      // Exit as soon as no users returned
+      if (!users?.length) {
+        break;
+      }
+
+      prompt = new Confirm(
+        `Found the following users with role ${currentRole}: \n\n ${users
+          .map((u) => u.email)
+          .join(',\n ')}\n\nWould you like to proceed with adding the new role ${newRole} to them?`,
+      );
+      answer = await prompt.run();
+      if (!answer) return;
+
+      users.forEach(async (u) => {
+        await kcAdminClient.users.addRealmRoleMappings({
+          id: u.id,
+          realm,
+          roles: [
+            {
+              id: newFoundRole.id,
+              name: newRole,
+            },
+          ],
+        });
+      });
+    }
 
     console.log('Added roles. Exiting');
   } catch (err) {
