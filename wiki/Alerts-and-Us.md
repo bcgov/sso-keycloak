@@ -157,9 +157,9 @@ Uptime will calculate the total downtime for the alert
 | February  2024 | 0s       |
 | March     2024 | 0s       |
 | April   2024 | 1h 47m 32s |
-| **May       2024** | **0s** |
-| June      2024 |  |
-| July      2024 |  |
+| May       2024 | 0s |
+| June      2024 | 0s |
+| **July      2024** | **0s** |
 | August    2024 |  |
 | September 2024 |  |
 | October   2024 |  |
@@ -191,9 +191,9 @@ Uptime will calculate the total downtime for the alert
 | February  2024 | 0s        |
 | March     2024 | 14m 5s    |
 | April     2024 | 2h 27m 56s |
-| **May       2024** | **1h 57m 22s** |
-| June      2024 |  |
-| July      2024 |  |
+| May       2024 | 1h 57m 22s |
+| June      2024 | 0s |
+| **July      2024** | **0s** |
 | August    2024 |  |
 | September 2024 |  |
 | October   2024 |  |
@@ -227,8 +227,8 @@ Uptime will calculate the total downtime for the alert
 | March     | 2 |  24s | 7m 2s |  Idir monitoring check failed March 21 and 22.  Communicated it to IDP partner. |
 | April     | 3 | 2m 25s | 1h 25m 10s | Uptime was having time out issues on the 20th, could not reproduce even in uptime, suspect false alarm  |
 | May       | 16 | 5m 26s | 7m 19s | All related to the IDIR check failing, outage communitated to the IDP partner.  |
-| June      |  |  |  |   |
-| July      |  |  |  |   |
+| June      | 0 | NA | NA | NA  |
+| July      | 0 | NA | NA | NA  |
 | August    |  |  |  |   |
 | September |  |  |  |   |
 | October   |  |  |  |   |
@@ -245,8 +245,8 @@ Uptime will calculate the total downtime for the alert
 | March     | 0 | NA | NA | NA |
 | April     | 2 | 3m 53s | 6m 29s | The filesystem alerts on production showed that the pods were filling up. No outage was caused, likely and internal keycloak clean up process. |
 | May       | 1 | 18s | 1m 0s | Elevated CPU May 29 during prod roll out, expected, No outage  |
-| June      |  |  |  |   |
-| July      |  |  |  |   |
+| June      | 0 | NA | NA | NA  |
+| July      | 0 | NA | NA | NA  |
 | August    |  |  |  |   |
 | September |  |  |  |   |
 | October   |  |  |  |   |
@@ -263,8 +263,8 @@ Pathfinder Team commits to acknowledging issue within 15 -30 mins and resolving 
 | March     | 0 | NA | NA | NA |
 | April     | 9 | 1m 24s | 57m 57s |Uptime was having time out issues on the 20th and 25th, could not reproduce even in uptime, suspect false alarm |
 | May       | 19 | 4m 39s | 9m 25s | All related to the dev and test IDIR check failing, outage communitated to the IDP partner.  |
-| June      |  |  |  |   |
-| July      |  |  |  |   |
+| June      | 0 | NA | NA | NA  |
+| July      | 0 | NA | NA | NA  |
 | August    |  |  |  |   |
 | September |  |  |  |   |
 | October   |  |  |  |   |
@@ -281,8 +281,8 @@ Pathfinder Team commits to acknowledging issue within 15 -30 mins and resolving 
 | March     | 0 | NA | NA | NA |
 | April     | 3 | 7m 3s | 12m 19s | The filesystem alerts on production showed that the pods were filling up. No outage was caused, likely and internal keycloak clean up process.  |
 | May       | 11 | 3m 7s | 6m 18 | Minor PVC alerts about storage capacity and some CPU alerts triggered during roll outs of prod  |
-| June      |  |  |  |   |
-| July      |  |  |  |   |
+| June      | 5 | 1m 36s | 1m 49s | All on june 11 and 12 All due to low level PVC storage warnings 60% full. No impact on system stability |
+| July      | 0 | NA | NA | NA  |
 | August    |  |  |  |   |
 | September |  |  |  |   |
 | October   |  |  |  |   |
