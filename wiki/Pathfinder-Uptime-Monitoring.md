@@ -10,6 +10,15 @@ If one these DNS checks fails while the other uptime checks pass for an environm
 * [Dev DNS Check aka DNS Dev Passes if dev.loginproxy.gov.bc.ca points to the Gold Cluster ](https://status.loginproxy.gov.bc.ca/statuspage/bcgov-sso-gold/1719406)
 * [Test DNS Check aka DNS Test Passes if test.loginproxy.gov.bc.ca points to the Gold Cluster ](https://status.loginproxy.gov.bc.ca/statuspage/bcgov-sso-gold/1719409)
 * [Prod DNS Check aka DNS Prod Passes if loginproxy.gov.bc.ca points to the Gold Cluster ](https://status.loginproxy.gov.bc.ca/statuspage/bcgov-sso-gold/1581586)
+## BCSC Endpoint Checks
+There are four health check endpoints provided by the BC Services Card team.  These are for following services:
+* [BCSC Android Production](https://status.loginproxy.gov.bc.ca/statuspage/bcgov-sso-gold/3869281)
+* [BCSC IOS Production](https://status.loginproxy.gov.bc.ca/statuspage/bcgov-sso-gold/3869284)
+* [BCSC Android Test](https://status.loginproxy.gov.bc.ca/statuspage/bcgov-sso-gold/3869275)
+* [BCSC IOS Test](https://status.loginproxy.gov.bc.ca/statuspage/bcgov-sso-gold/3869278)
+
+These checks do not provide a full keycloak login flow check, however they do indicate if the service is experiencing an outage.
+
 
 [Full Listing of Uptime Monitoring](https://status.loginproxy.gov.bc.ca/)
 
