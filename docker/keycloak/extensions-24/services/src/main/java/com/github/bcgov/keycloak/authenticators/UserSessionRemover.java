@@ -44,7 +44,7 @@ public class UserSessionRemover implements Authenticator {
 
     for (String activeSessionClientUUID : authenticatedClientSessions.keySet()) {
       if (!activeSessionClientUUID.equals(authenticatingClientUUID)) {
-        userSessionProvider.removeUserSession(context.getRealm(), authResult.getSession());
+        userSessionProvider.removeUserSession(context.getRealm(), userSessionModel);
       }
     }
 
