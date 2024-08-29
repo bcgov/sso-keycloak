@@ -6,9 +6,11 @@ import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.UserModel;
 import org.keycloak.models.UserSessionProvider;
+import org.keycloak.models.AuthenticatedClientSessionModel;
 import org.keycloak.services.managers.AuthenticationManager;
 import org.keycloak.authentication.AuthenticationFlowContext;
 import org.keycloak.sessions.AuthenticationSessionModel;
+import org.keycloak.models.UserSessionModel;
 
 import java.util.Map;
 
@@ -23,12 +25,8 @@ public class UserSessionRemover implements Authenticator {
 
   @Override
   public void authenticate(AuthenticationFlowContext context) {
-    AuthenticationSessionModel session = context.getAuthenticationSession();
-    AuthenticationManager.AuthResult authResult = AuthenticationManager.authenticateIdentityCookie(
-      context.getSession(),
-      context.getRealm(),
-      true
-    );
+    UserSessionModel userSessionModel;
+    AuthenticationManager.AuthResult authResult = AuthenticationManager.authenticateIdentityCookie(context.getSession(), context.getRealm(), true);
 
     // 1. If no Cookie session, proceed to next step
     if (authResult == null) {
@@ -36,21 +34,22 @@ public class UserSessionRemover implements Authenticator {
       return;
     }
 
-    // Need to use the KeycloakSession context to get the authenticating client ID. Not available on the AuthenticationFlowContext.
-    KeycloakSession keycloakSession = context.getSession();
-    String authenticatingClientUUID = keycloakSession.getContext().getClient().getId();
+    userSessionModel = authResult.getSession();
 
-    // Get all existing sessions. If any session is associated with a different client, clear all user sessions.
-    UserSessionProvider userSessionProvider = keycloakSession.sessions();
-    Map<String, Long> activeClientSessionStats = userSessionProvider.getActiveClientSessionStats(context.getRealm(), false);
+    String authenticatingClientUUID = context.getSession().getContext().getClient().getId();
+    UserSessionProvider userSessionProvider = context.getSession().sessions();
 
-    for (String activeSessionClientUUID : activeClientSessionStats.keySet()) {
+    // Must fetch sessions from the user session model, user session provider has all session in the realm
+    Map<String, AuthenticatedClientSessionModel> authenticatedClientSessions = userSessionModel.getAuthenticatedClientSessions();
+
+    for (String activeSessionClientUUID : authenticatedClientSessions.keySet()) {
       if (!activeSessionClientUUID.equals(authenticatingClientUUID)) {
         userSessionProvider.removeUserSession(context.getRealm(), authResult.getSession());
       }
     }
 
     context.attempted();
+    return;
   }
 
   @Override
