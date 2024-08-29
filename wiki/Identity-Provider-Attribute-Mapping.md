@@ -8,7 +8,7 @@ See below for the IDP specific claims available. For all IDPs the **Keycloak Gen
   | Last Name                             | family_name                   |
   | Email                                 | email                         |
   | Display Name                          | display_name                  |
-  | Display Name                          | name                  |
+  | Display Name                          | name (**Note**: This is available for backward compatibility. We recommend to use the display_name claim instead) |
   | IDIR Username                         | idir_username                 |
   | IDIR User GUID                        | idir_user_guid                |
   | Keycloak Generated Preferred Username | preferred_username            |
@@ -24,7 +24,7 @@ See below for the IDP specific claims available. For all IDPs the **Keycloak Gen
   | Email                                 | email                         |
   | Email                                 | user_principal_name           |
   | Display Name                          | display_name                  |
-  | Display Name                          | name                          |
+  | Display Name                          | name (**Note**: This is available for backward compatibility. We recommend to use the display_name claim instead) |
   | IDIR Username                         | idir_username                 |
   | IDIR User GUID                        | idir_user_guid                |
   | Keycloak Generated Preferred Username | preferred_username            |
@@ -35,8 +35,8 @@ See below for the IDP specific claims available. For all IDPs the **Keycloak Gen
   | ------------------------------------- | ----------------------------- |
   | Email                                 | email                         |
   | Display Name                          | display_name                  |
-  | Display Name                          | given_name                    |
-  | Display Name                          | name                    |
+  | Display Name                          | given_name (**Note**: This is available for backward compatibility. We recommend to use the display_name claim instead)                   |
+  | Display Name                          | name (**Note**: This is available for backward compatibility. We recommend to use the display_name claim instead)                   |
   | BCeID Username                        | bceid_username                |
   | BCeID User GUID                       | bceid_user_guid               |
   | Keycloak Generated Preferred Username | preferred_username            |
@@ -47,8 +47,8 @@ See below for the IDP specific claims available. For all IDPs the **Keycloak Gen
   | ------------------------------------- | ----------------------------- |
   | Email                                 | email                         |
   | Display Name                          | display_name                  |
-  | Display Name                          | given_name                    |
-  | Display Name                          | name                          |
+  | Display Name                          | given_name (**Note**: This is available for backward compatibility. We recommend to use the display_name claim instead)                    |
+  | Display Name                          | name (**Note**: This is available for backward compatibility. We recommend to use the display_name claim instead)                         |
   | BCeID Username                        | bceid_username                |
   | BCeID User GUID                       | bceid_user_guid               |
   | Keycloak Generated Preferred Username | preferred_username            |
@@ -65,8 +65,8 @@ See above for claims depending on BCeID type selected by end user.
   | ------------------------------------- | ---------------------------------------- |
   | Email                                 | email                                    |
   | Display Name                          | display_name                             |
-  | Display Name                          | name                                     |
-  | Display Name                          | given_name                               |
+  | Display Name                          | name (**Note**: This is available for backward compatibility. We recommend to use the display_name claim instead)    |
+  | Display Name                          | given_name (**Note**: This is available for backward compatibility. We recommend to use the display_name claim instead)         |
   | GitHub ID                             | github_id                                |
   | Keycloak Generated Preferred Username | preferred_username=`{{id}}@githubpublic` |
   | GitHub Username                       | github_username                          |
@@ -79,8 +79,8 @@ See above for claims depending on BCeID type selected by end user.
   | ------------------------------------- | ---------------------------------------- |
   | Email                                 | email                                    |
   | Display Name                          | display_name                             |
-  | Display Name                          | name                                     |
-  | Display Name                          | given_name                               |
+  | Display Name                          | name (**Note**: This is available for backward compatibility. We recommend to use the display_name claim instead)                |
+  | Display Name                          | given_name (**Note**: This is available for backward compatibility. We recommend to use the display_name claim instead)           |
   | GitHub ID                             | github_id                                |
   | Keycloak Generated Preferred Username | preferred_username                       |
   | GitHub Username                       | github_username                          |
