@@ -1,5 +1,0 @@
-namespace: c6af30-tools
-
-image:
-  repository: ghcr.io/bcgov/sso-keycloak/metabase
-  tag: v0.47.1

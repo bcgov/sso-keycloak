@@ -2,7 +2,7 @@
 
 Full steps for installing the `kc-cron-job` as of May 2022.
 
-The `kc-cron-jobs` are currently used to pull two types of data from the running keycloak application and storing it in the databse cluster `kc-cron-patroni`. This data is then accessible by the project's metabase deployment, allowing long term metrics to be preserved and analysed.
+The `kc-cron-jobs` are currently used to pull two types of data from the running keycloak application and storing it in the databse cluster `kc-cron-patroni`. This data is then accessible by the project's grafana deployment, allowing long term metrics to be preserved and analysed.
 
 The two jobs preserve the number of active sessions in the application and the event logs of the application. These logs may also be preserved through our Hive/splunk integration however that process is unrelated to the cron jobs deployed here.
 
@@ -97,9 +97,3 @@ Note, unistall process may be slightly buggy and will not remove the helm patron
 ```sh
 make create-postgres-db-secret NAME=kc-cron-patroni NAMESPACE=<namespace> SECRET=<postgres-superuser-secret>
 ```
-
-## 6. Add the db to metabase
-
-Once the cron job is running and the database is set up we can connect to the metabase instance. See the folder `helm/metabase/README.md` for details on connecting to metabase instances and setting network policies.
-
-Note, for the cron job to run successfully metabase must use the superuser credential.
