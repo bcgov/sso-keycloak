@@ -3,7 +3,7 @@ fullnameOverride: sso-backup-storage
 
 image:
   repository: bcgovimages/backup-container
-  tag: 2.8.1
+  tag: 2.9.0
   pullPolicy: Always
 
 backupConfig: |
