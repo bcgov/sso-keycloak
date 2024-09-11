@@ -229,7 +229,7 @@ public class IDPUserinfoMapper extends AbstractSAMLProtocolMapper implements SAM
               JsonNode attributeValue = deepFetchAttributes(userInfo, userAttribute, attributeStatement);
               if (attributeValue != null) {
                 attribute.setNameFormat(JBossSAMLURIConstants.ATTRIBUTE_FORMAT_BASIC.get());
-                attribute.addAttributeValue(attributeValue.textValue());
+                attribute.addAttributeValue(attributeValue.asText());
                 attributeStatement.addAttribute(new AttributeStatementType.ASTChoiceType(attribute));
               }
             }
