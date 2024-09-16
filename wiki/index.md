@@ -2,7 +2,7 @@
 
 Welcome to our wiki for our Single Sign On Service. You are in the right spot if you need to configure/develop a login component (IDIR or BCeID) for your digital product/project. You can learn about [Common Hosted Single Sign On App on The Exchange Youtube channel](https://www.youtube.com/watch?v=JBaGxqykXJQ&list=PL9CV_8JBQHirMRjBk62jeYUE_MpE4unU8&index=3) or continue to read below.
 
-**>Get started now for your self serve experience to our [common hosted single sign on app](https://bcgov.github.io/sso-requests).**
+**Get started now for your self serve experience to our [common hosted single sign on app](https://bcgov.github.io/sso-requests).**
 
 <p style="text-align: center" markdown>
   ![Laptop](./img/css-app-on-laptop.png){: style="width:380px;height:300px;"}
@@ -21,38 +21,56 @@ Welcome to our wiki for our Single Sign On Service. You are in the right spot if
 
 Here’s some reasons as to why this might work for your digital product:
 
-- **Easy setup.** We've made this the #1 feature of this service. You can get your DEV, TEST, and PROD instances running against most of the available identity providers right away. The Pathfinder SSO service already has integrations to the following identity providers:
+### Easy setup
 
-  - IDIR (BC Common Logon Page)
-  - [Learn about Azure IDIR ](Our-Partners-the-Identity-Providers#azure-idir-and-idir)
-  - BCeID Basic (BC Common Logon Page) -- Allows login only with BCeID _Basic_
-  - BCeID Business (BC Common Logon Page) -- Allows login only with BCeID _Business_
-  - BCeID Basic & Business(BC Common Logon Page) -- Allows login with BCeID _Basic_ or BCeID _Business_
-  - GitHub associated with BC Gov Org -- Allows login of GitHub BC Gov Org members
-  - Digital Credentials -- Allows login via _BC Wallet_
-  - BC Services Card -- Allows login via _BC Services Card App_
+We've made this the #1 feature of this service. You can get your DEV, TEST, and PROD instances running against most of the available identity providers right away. The Pathfinder SSO service already has integrations to the following identity providers
 
-- **OIDC protocol.** Where certain identity providers (BCeID in particular) support SAML protocol when used directly, Pathfinder SSO brokers the SAML connection and lets you use OIDC instead. OIDC is more common and simpler to set up in modern programming stacks. [Please watch our material on youtube.](https://www.youtube.com/playlist?list=PL9CV_8JBQHirMRjBk62jeYUE_MpE4unU8)
+- IDIR (BC Common Logon Page)
+- [Learn about Azure IDIR ](Our-Partners-the-Identity-Providers#azure-idir-and-idir)
+- BCeID Basic (BC Common Logon Page) -- Allows login only with BCeID _Basic_
+- BCeID Business (BC Common Logon Page) -- Allows login only with BCeID _Business_
+- BCeID Basic & Business(BC Common Logon Page) -- Allows login with BCeID _Basic_ or BCeID _Business_
+- GitHub associated with BC Gov Org -- Allows login of GitHub BC Gov Org members
+- Digital Credentials -- Allows login via _BC Wallet_
+- BC Services Card -- Allows login via _BC Services Card App_
 
-- **Session Management.** Some identity providers don't offer advanced session management capabilities.
+### OIDC protocol
 
-- **High Availability Requirements.** The Pathfinder SSO service is working on a formal published service level agreements (see [BC Government SSO Service Definition](https://digital.gov.bc.ca/common-components/pathfinder-sso/). This service is available 24/7 with questions and answers addressed during business hours only. [Uptime Monitoring](Pathfinder-Uptime-Monitoring)
+Where certain identity providers (BCeID in particular) support SAML protocol when used directly, Pathfinder SSO brokers the SAML connection and lets you use OIDC instead. OIDC is more common and simpler to set up in modern programming stacks. [Please watch our material on youtube.](https://www.youtube.com/playlist?list=PL9CV_8JBQHirMRjBk62jeYUE_MpE4unU8)
 
-### Limitations
+### Session Management
+
+Some identity providers don't offer advanced session management capabilities.
+
+### High Availability Requirements
+
+The Pathfinder SSO service is working on a formal published service level agreements (see [BC Government SSO Service Definition](https://digital.gov.bc.ca/common-components/pathfinder-sso/). This service is available 24/7 with questions and answers addressed during business hours only. [Uptime Monitoring](Pathfinder-Uptime-Monitoring)
+
+## Limitations
 
 It is technically possible to integrate directly with the various identity providers instead of using SSO-KEYCLOAK(formerly OCP-SSO). Architectural reasons for direct integration include:
 
-- **High Volume Expectations.** The service is shared by many dozens of applications. If one application starts sending millions of login requests, the service itself can experience service degradation which is felt by all the users of all the applications. Pathfinder SSO is managed on the OpenShift Platform and scales fluidly, but there are limits to the resources it can consume.
-- **Unique Configuration Needs.** New customers no longer receive a dedicated realm where they can experiment and invent on top of the platform (see "What's Changed" below).
-- **BC Services Card.**
+### High Volume Expectations
 
-  - The Pathfinder SSO Service provides the BC Services Card as a login option for both OpenID and SAML clients within the common realm. However, due to the high-security nature of the BC Services Card and the sensitive personal information involved in its authentication process, user personal information (PI) is not stored in the Keycloak database. As a result, we are unable to offer the **Role Management** feature, which is available with other identity providers such as IDIR and BCeID.
-  - Each application requires separate user consent for authentication. Therefore, even if a user has an active BC Services Card session with one application, they must go through the authentication process again when logging into a different application, as **Single Sign-On (SSO)** is not supported in this case.
+The service is shared by many dozens of applications. If one application starts sending millions of login requests, the service itself can experience service degradation which is felt by all the users of all the applications. Pathfinder SSO is managed on the OpenShift Platform and scales fluidly, but there are limits to the resources it can consume.
 
-- **Digital Credentials**
-  - The Pathfinder SSO Service provides the Digital Credentials as a login option for only OpenID clients. The reason this is not available for SAML clients due to lack of support for additional request query param `pres_req_conf_id`.
-  - In our system, we do not store user attributes after a successful login using Digital Credentials. As a result, we lack access to persistent user data, which is essential for managing user roles and permissions. Consequently, this limitation means that we are unable to offer **Role Management** feature, as we cannot maintain or reference user-specific information required for such functionality. This design choice prioritizes user privacy and security by ensuring that personal data is not retained, aligning with the principles of decentralized identity management.
-  - Since we do not retain any user-specific data during authentication with Digital Credentials, we cannot offer **Single Sign-On (SSO)** across client applications. As a result, users must provide consent each time they log into a new application using Digital Credentials.
+### Unique Configuration Needs
+
+New customers no longer receive a dedicated realm where they can experiment and invent on top of the platform (see "What's Changed" below).
+
+### BC Services Card
+
+The Pathfinder SSO Service provides the BC Services Card as a login option for both OpenID and SAML clients within the common realm. However, due to the high-security nature of the BC Services Card and the sensitive personal information involved in its authentication process, user personal information (PI) is not stored in the Keycloak database. As a result, we are unable to offer the **Role Management** feature, which is available with other identity providers such as IDIR and BCeID.
+
+Each application requires separate user consent for authentication. Therefore, even if a user has an active BC Services Card session with one application, they must go through the authentication process again when logging into a different application, as **Single Sign-On (SSO)** is not supported in this case.
+
+### Digital Credentials
+
+The Pathfinder SSO Service provides the Digital Credentials as a login option for only OpenID clients. The reason this is not available for SAML clients due to lack of support for additional request query param `pres_req_conf_id`.
+
+In our system, we do not store user attributes after a successful login using Digital Credentials. As a result, we lack access to persistent user data, which is essential for managing user roles and permissions. Consequently, this limitation means that we are unable to offer **Role Management** feature, as we cannot maintain or reference user-specific information required for such functionality. This design choice prioritizes user privacy and security by ensuring that personal data is not retained, aligning with the principles of decentralized identity management.
+
+Since we do not retain any user-specific data during authentication with Digital Credentials, we cannot offer **Single Sign-On (SSO)** across client applications. As a result, users must provide consent each time they log into a new application using Digital Credentials.
 
 ## Our Partners
 
