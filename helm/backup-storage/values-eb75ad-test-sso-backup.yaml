@@ -28,7 +28,7 @@ env:
   ENVIRONMENT_NAME:
     value: eb75ad-test
   WEBHOOK_URL:
-    # value: ''<<WEBHOOK URL FOR ROCKETCHAT>>'
+    # value: '<<WEBHOOK URL FOR ROCKETCHAT>>'
     secure: true
 
   DAILY_BACKUPS:
