@@ -159,8 +159,8 @@ Uptime will calculate the total downtime for the alert
 | April   2024 | 1h 47m 32s |
 | May       2024 | 0s |
 | June      2024 | 0s |
-| **July      2024** | **0s** |
-| August    2024 |  |
+| July      2024 | 0s |
+| **August    2024** |  **0s**  |
 | September 2024 |  |
 | October   2024 |  |
 | November  2024 |  |
@@ -193,8 +193,8 @@ Uptime will calculate the total downtime for the alert
 | April     2024 | 2h 27m 56s |
 | May       2024 | 1h 57m 22s |
 | June      2024 | 0s |
-| **July      2024** | **0s** |
-| August    2024 |  |
+| July      2024 | 0s |
+| **August    2024** | **0s** |
 | September 2024 |  |
 | October   2024 |  |
 | November  2024 |  |
@@ -229,7 +229,7 @@ Uptime will calculate the total downtime for the alert
 | May       | 16 | 5m 26s | 7m 19s | All related to the IDIR check failing, outage communitated to the IDP partner.  |
 | June      | 0 | NA | NA | NA  |
 | July      | 0 | NA | NA | NA  |
-| August    |  |  |  |   |
+| August    | 1 | 2m 17s | 3m 0s | Uptime outage that could not be reproduced when inspecting the site  |
 | September |  |  |  |   |
 | October   |  |  |  |   |
 | November  |  |  |  |   |
@@ -247,7 +247,7 @@ Uptime will calculate the total downtime for the alert
 | May       | 1 | 18s | 1m 0s | Elevated CPU May 29 during prod roll out, expected, No outage  |
 | June      | 0 | NA | NA | NA  |
 | July      | 0 | NA | NA | NA  |
-| August    |  |  |  |   |
+| August    | 4 | 2m 29s | 2m 44s | All CPU spikes due to a pod roll over, no service disruption |
 | September |  |  |  |   |
 | October   |  |  |  |   |
 | November  |  |  |  |   |
@@ -265,7 +265,7 @@ Pathfinder Team commits to acknowledging issue within 15 -30 mins and resolving 
 | May       | 19 | 4m 39s | 9m 25s | All related to the dev and test IDIR check failing, outage communitated to the IDP partner.  |
 | June      | 0 | NA | NA | NA  |
 | July      | 0 | NA | NA | NA  |
-| August    |  |  |  |   |
+| August    | 3 | 29m 43s | 5h 26m 45s | The long resolution time was due to an IDP outage in the test environments Aug 8, there was also a brief alert raised by the database pods cycling on Aug 6 |
 | September |  |  |  |   |
 | October   |  |  |  |   |
 | November  |  |  |  |   |
@@ -283,7 +283,7 @@ Pathfinder Team commits to acknowledging issue within 15 -30 mins and resolving 
 | May       | 11 | 3m 7s | 6m 18 | Minor PVC alerts about storage capacity and some CPU alerts triggered during roll outs of prod  |
 | June      | 5 | 1m 36s | 1m 49s | All on june 11 and 12 All due to low level PVC storage warnings 60% full. No impact on system stability |
 | July      | 0 | NA | NA | NA  |
-| August    |  |  |  |   |
+| August    | 27 | 1m 55s | 2m53s | All either 'elevated CPU' alerts and 'ready pods low' from pod roll overs or minor DB storage warnings.  No customer impact. |
 | September |  |  |  |   |
 | October   |  |  |  |   |
 | November  |  |  |  |   |
