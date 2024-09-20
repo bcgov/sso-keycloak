@@ -14,7 +14,7 @@ const restoreUsers = async () => {
   if (!env || !json) {
     console.info(`
     Pre-requisites:
-      * Run SELECT * FROM KC_DELETED_USERS WHERE TIMESTAMP > CURRENT_DATE AND ENVIRONMENT = <env>; to fetch deleted user data by environment
+      * RUN select json_agg(row_to_json(my_row)) from (select * FROM KC_DELETED_USERS WHERE TIMESTAMP > CURRENT_DATE AND ENVIRONMENT = <env>) as my_row;
       * Save the output in JSON format and place it under <root>/scripts folder
 
     Usages:
@@ -27,22 +27,21 @@ const restoreUsers = async () => {
     return;
   }
 
+  const keycloakAdmin = await getAdminClient(env);
   const totalUsers = readJSON(`${__dirname}/${json}`);
+  const realmRoles = await keycloakAdmin.roles.find({ realm: 'standard' });
 
   for (let kuser of totalUsers) {
     try {
       kuser.attributes = JSON.parse(kuser.attributes);
-      kuser.realm_roles = kuser.realm_roles.slice(1, -1).split(',');
-      let clientRoles = JSON.parse('[' + kuser.client_roles.slice(1, -1) + ']');
-      kuser.client_roles = clientRoles.map((ob) => JSON.parse(ob));
-
-      const keycloakAdmin = await getAdminClient(env);
+      kuser.realm_roles = kuser.realm_roles;
+      kuser.client_roles = kuser.client_roles.map((client) => JSON.parse(client));
 
       let newUser = null;
 
       const us = await keycloakAdmin.users.find({ realm: 'standard', username: kuser.username, max: 1 });
-
       if (us.length === 0) {
+        console.log('creating user...');
         const createdUser = await keycloakAdmin.users.create({
           realm: 'standard',
           username: kuser.username,
@@ -51,12 +50,21 @@ const restoreUsers = async () => {
           firstName: kuser.first_name,
           lastName: kuser.last_name,
           attributes: kuser.attributes,
-          realmRoles: kuser.realm_roles,
         });
         newUser = createdUser;
       } else {
         newUser = us[0];
       }
+
+      const rolesToAssign = kuser.realm_roles
+        .map((roleName) => realmRoles.find((role) => role.name === roleName))
+        .filter((role) => role);
+
+      await keycloakAdmin.users.addRealmRoleMappings({
+        id: newUser.id,
+        realm: 'standard',
+        roles: rolesToAssign,
+      });
 
       const fedList = await keycloakAdmin.users.listFederatedIdentities({ realm: 'standard', id: newUser.id });
 
@@ -109,6 +117,7 @@ const restoreUsers = async () => {
       processed.push(kuser);
       console.log('processed', processed.length);
     } catch (err) {
+      console.log(err);
       unprocessed.push(kuser);
       console.log('unprocessed', unprocessed.length);
       continue;
