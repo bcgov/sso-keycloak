@@ -10,6 +10,9 @@ const MS_GRAPH_IDIR_GUID_ATTRIBUTE = 'onPremisesExtensionAttributes/extensionAtt
 
 require('dotenv').config();
 
+// NOTE: this is per runner, e.g with 5 in prod 50 is the total user deletion limit
+const MAX_DELETED_USERS_PER_RUNNER = 10;
+
 let devMsalInstance;
 let testMsalInstance;
 let prodMsalInstance;
@@ -205,6 +208,8 @@ async function removeStaleUsersByEnv(env = 'dev', pgClient, runnerName, startFro
             await pgClient.query({ text, values });
             deletedUserCount++;
             log(`[${runnerName}] ${username} has been deleted from ${env} environment`);
+
+            if (deletedUserCount > MAX_DELETED_USERS_PER_RUNNER) break;
           } else continue;
         }
       }
@@ -213,7 +218,7 @@ async function removeStaleUsersByEnv(env = 'dev', pgClient, runnerName, startFro
       if (count < max || total === 10000) break;
 
       // max 50 users can be deleted by a runner at a time
-      if (deletedUserCount > 50) break;
+      if (deletedUserCount > MAX_DELETED_USERS_PER_RUNNER) break;
 
       await adminClient.reauth();
       first = first + max;
