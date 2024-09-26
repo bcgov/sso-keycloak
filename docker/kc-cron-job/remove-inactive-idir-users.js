@@ -13,7 +13,7 @@ const MS_GRAPH_IDIR_GUID_ATTRIBUTE = 'onPremisesExtensionAttributes/extensionAtt
 require('dotenv').config();
 
 // NOTE: this is per runner, e.g with 5 in prod 50 is the total user deletion limit
-const MAX_DELETED_USERS_PER_RUNNER = 10;
+const MAX_DELETED_USERS_PER_RUNNER = 30;
 
 let devMsalInstance;
 let testMsalInstance;
