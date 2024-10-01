@@ -309,7 +309,6 @@ async function removeStaleUsersByEnv(env = 'dev', pgClient, runnerName, startFro
         log(`[${runnerName}] processing user ${username}`);
         if (username.includes('@idir')) {
           const userExistsAtWb = await checkUserExistsAtIDIM({
-            property: MS_GRAPH_IDIR_GUID_ATTRIBUTE,
             matchKey: idirUserGuid,
             env
           });
