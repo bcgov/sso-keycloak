@@ -6,7 +6,7 @@ This folder contains load tests for our sso application
 
 ### Leveraging sysdig for extra metrics
 
-While load test run it is worth leveraging sysdig in the sanbox environments to detect latency in requests during testing.  These monitorin alerts can be manually created in the sysdig dashboard, or added to the terraform [sysdig repo](https://github.com/bcgov/sso-sysdig).
+While running the load tests it is worth leveraging sysdig in the sanbox environments to detect latency in requests during testing.  These monitorin alerts can be manually created in the sysdig dashboard, or added to the terraform [sysdig repo](https://github.com/bcgov/sso-sysdig).
 
 ### Local environment
 
