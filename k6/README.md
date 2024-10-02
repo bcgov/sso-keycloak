@@ -4,6 +4,12 @@ This folder contains load tests for our sso application
 
 ## Setting up
 
+### Leveraging sysdig for extra metrics
+
+While load test run it is worth leveraging sysdig in the sanbox environments to detect latency in requests during testing.  These monitorin alerts can be manually created in the sysdig dashboard, or added to the terraform [sysdig repo](https://github.com/bcgov/sso-sysdig).
+
+### Local environment
+
 **Developing and Running tests in a local environment**: If you would like to use a local environment for developing and running tests, there is a [podman-compose.yaml](./local_setup/podman-compose.yaml) file in this repository you can use to run our custom redhat image with a postgres database. To use it, from the [loca setup folder](./local_setup/), run:
 
 - `podman-compose up`
