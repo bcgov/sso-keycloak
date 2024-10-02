@@ -177,6 +177,33 @@ spec:
                       name: kc-cron-job-secret
                       key: ms-graph-api-client-secret-prod
 
+                - name: BCEID_SERVICE_BASIC_AUTH
+                  valueFrom:
+                    secretKeyRef:
+                      name: kc-cron-job-secret
+                      key: bceid-service-basic-auth
+                - name: BCEID_REQUESTER_IDIR_GUID
+                  valueFrom:
+                    secretKeyRef:
+                      name: kc-cron-job-secret
+                      key: bceid-requester-idir-guid
+                - name: BCEID_SERVICE_ID_DEV
+                  valueFrom:
+                    secretKeyRef:
+                      name: kc-cron-job-secret
+                      key: bceid-service-id-dev
+                - name: BCEID_SERVICE_ID_TEST
+                  valueFrom:
+                    secretKeyRef:
+                      name: kc-cron-job-secret
+                      key: bceid-service-id-test
+                - name: BCEID_SERVICE_ID_PROD
+                  valueFrom:
+                    secretKeyRef:
+                      name: kc-cron-job-secret
+                      key: bceid-service-id-prod
+
+
                 - name: CSS_API_URL
                   valueFrom:
                     secretKeyRef:
