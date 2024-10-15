@@ -21,6 +21,8 @@ services:
       KC_HTTP_RELATIVE_PATH: /auth
       KC_HOSTNAME_URL: http://localhost:8080/auth/
       KC_HOSTNAME_ADMIN_URL: http://localhost:8080/auth/
+    volumes:
+      - ../../docker/keycloak/extensions-24/themes/src/main/resources/theme:/opt/keycloak/themes/
 
   postgres:
     image: postgres:15

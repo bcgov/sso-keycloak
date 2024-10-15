@@ -13,7 +13,7 @@ ENV KC_DB=postgres
 
 COPY --from=extensions-builder /tmp/services/target/bcgov-services-1.0.0.jar /opt/keycloak/providers/
 
-COPY ./docker/keycloak/extensions-24/themes/src/main/resources/theme /opt/keycloak/themes/
+# COPY ./docker/keycloak/extensions-24/themes/src/main/resources/theme /opt/keycloak/themes/
 
 RUN /opt/keycloak/bin/kc.sh build
 

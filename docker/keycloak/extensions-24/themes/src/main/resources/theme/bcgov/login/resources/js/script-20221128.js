@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
   const titleContent = errorElem ? 'Login Error:' : 'Authenticate with:';
   document.getElementById('kc-page-title').innerHTML = titleContent;
 
-  addTooltips();
+  //addTooltips();
 
   if (titleContent === 'Login Error:') {
     if (
@@ -61,7 +61,9 @@ function addTooltips() {
     var content = elem.textContent;
 
     if (content) {
-      elem.innerHTML = content;
+      var textNode = document.createTextNode(content);
+      elem.innerHTML = '';
+      elem.appendChild(textNode);
     }
   }
 }
