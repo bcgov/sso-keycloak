@@ -63,9 +63,9 @@ Please work with the DITP team ditp.support@gov.bc.ca to define whether an exist
 
 ## BC Service Card Integration
 
-*BC Services Card provides an Open ID Connect authentication server. Integration to this service is not available in the *standard* realms.*
+*BC Services Card provides an Open ID Connect authentication server. Stay tuned as we hope to offer this in our standard service <ul><li><a href={"https://github.com/bcgov-c/pathfinder-sso-docs/discussions/26S"}>CSS App</a></li></ul></> in Autumn 2024.
 
-The IDIM team that manages BCSC integration is responsible for safeguarding the personal information that is available in a login context. They have a business requirement that integrations to BCSC cannot be shared without IDIM approval. The standard realm is a shared environment -- if we enabled a BCSC integration in a standard realm it would be technically available to all the clients that are configured to use that realm, thus breaking the security model.
+The IDIM team that manages BCSC integration is responsible for safeguarding the personal information that is available in a login context. They have a business requirement that integrations to BCSC cannot be shared without IDIM approval.
 
 ---------------------------------
 
@@ -80,23 +80,12 @@ The IDIM team that manages BCSC integration is responsible for safeguarding the 
 
 ??? info "Integrate Directly with BCSC"
 
-    Since IDIM provides an OIDC service for BCSC, your app can integrate directly with that service instead of brokering through Pathfinder SSO. Their security practices usually require a client per application in any case, so your architecture might not require using Pathfinder SSO as a proxy authentication service anyway. In addition, this pattern removes one possible point of failure from the application architecture.
-
-    Be mindful however that the SSO (Keycloak) product does offer token and session management; integrating directly with BCSC would require another form of token/session management to be used in your application.
-
+    You can now integrate with our Standard Service and BC Services Card. Please follow the steps in the Common Hosted Single Sign On App <<https://bcgov.github.io/sso-requests>>. 
+    If your ministry/sector is not available, please reach out the IDIM Consulting team as they will help you get sorted.
 
 ??? info "Configure and Manage Your Own Dedicated KeyCloak Server"
 
     KeyCloak runs on JBoss quite happily in a Docker container with a PostgreSQL backend. If you really need features provided by KeyCloak and you want to integrate with BCSC, it's possible to run your own KeyCloak server and configure your connection to BCSC by setting up your own OIDC IDP.
-
-??? info "Obtain a Dedicated KeyCloak Realm on the Pathfinder SSO service"
-
-    If the service gets to the point where there are "slots" to create new dedicated realms, a BCSC identity provider can be securely configured within a realm dedicated to your team. For now, we are unable to offer new realms while we work to reduce the number down to a manageable size.
-
-??? info "Obtain a Dedicated KeyCloak Realm on the Pathfinder SSO service"
-
-    Things are always evolving and the BC Government Open Source community is constantly innovating and solving problems together. Don't be afraid to jump into the #SSO RocketChat channel and see what the community recommends if you have an unusual use case or an innovative idea. Thank you for your collaboration!
-
 
 <p align="center" markdown>
   ![Services Card](./img/services-card.png)
