@@ -61,9 +61,7 @@ function addTooltips() {
     var content = elem.textContent;
 
     if (content) {
-      var textNode = document.createTextNode(content);
-      elem.innerHTML = '';
-      elem.appendChild(textNode);
+      elem.innerHTML = content;
     }
   }
 }
