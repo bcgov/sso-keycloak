@@ -289,4 +289,5 @@
 
 .kc-social-icon:hover .tooltiptext {
   visibility: visible;
+  word-wrap: break-word;
 }

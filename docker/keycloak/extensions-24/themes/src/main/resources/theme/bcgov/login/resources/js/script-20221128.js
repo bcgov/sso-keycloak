@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
   const titleContent = errorElem ? 'Login Error:' : 'Authenticate with:';
   document.getElementById('kc-page-title').innerHTML = titleContent;
 
-  addTooltips();
+  //addTooltips();
 
   if (titleContent === 'Login Error:') {
     if (
