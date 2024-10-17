@@ -80,7 +80,7 @@ The IDIM team that manages BCSC integration is responsible for safeguarding the 
 
 ??? info "Integrate Directly with BCSC"
 
-    You can now integrate with our Standard Service and BC Services Card. Please follow the steps in the Common Hosted Single Sign On App <<https://bcgov.github.io/sso-requests>>. 
+    You can now integrate with our Standard Service and BC Services Card. Please follow the steps in the Common Hosted Single Sign On App <<https://bcgov.github.io/sso-requests>>.
     If your ministry/sector is not available, please reach out the IDIM Consulting team as they will help you get sorted.
 
 ??? info "Configure and Manage Your Own Dedicated KeyCloak Server"
