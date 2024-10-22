@@ -71,6 +71,10 @@ The IDIM team that manages BCSC integration is responsible for safeguarding the 
 
 ### Options for Teams with BCSC Requirements
 
+??? info "Integrate with Standard Service"
+    You can now integrate with our Standard Service and BC Services Card. Please follow the steps in the <ul><li><a href="https://bcgov.github.io/sso-requests">Common Hosted Single Sign On App</a></li></ul></>.
+    If your ministry/sector is not available, please reach out the IDIM Consulting team as they will help you get sorted.
+
 ??? info "Join an Existing Dedicated Custom Realm"
     With approval from IDIM, it is possible to join an existing realm that shares the same security context as your application and already has BCSC set up. This generally means that the existing clients are all from the same ministry or sector and have the same requirements for personal information through the login process.
 
