@@ -63,17 +63,21 @@ Please work with the DITP team ditp.support@gov.bc.ca to define whether an exist
 
 ## BC Service Card Integration
 
-*BC Services Card provides an Open ID Connect authentication server. Stay tuned as we hope to offer this in our standard service in Autumn 2024 <ul><li><a href="https://bcgov.github.io/sso-requests">CSS App</a></li></ul></>
-
-The IDIM team that manages BCSC integration is responsible for safeguarding the personal information that is available in a login context. They have a business requirement that integrations to BCSC cannot be shared without IDIM approval.
+*BC Services Card provides an Open ID Connect authentication server. This is now available in production and is ready for the developers use.
+The IDIM team that manages BCSC integration is responsible for safeguarding the personal information that is available in a login context. They have a business requirement that integrations to BCSC cannot be shared without IDIM approval which ensures high level of identity assurance.
 
 ---------------------------------
 
-### Options for Teams with BCSC Requirements
+### Options for teams with BCSC requirements
 
-??? info "Integrate with Standard Service"
-    You can now integrate with our Standard Service and BC Services Card. Please follow the steps in the <ul><li><a href="https://bcgov.github.io/sso-requests">Common Hosted Single Sign On App</a></li></ul></>.
+??? info "Integrate with Standard Service and BC Services Card"
+    You can now integrate with our Standard Service and BC Services Card.
+    To integrate BCSC in the common realm, developers can request an integration here:
+    <ul><li><a href="https://bcgov.github.io/sso-requests">Common Hosted Single Sign On App</a></li></ul></>
+
     If your ministry/sector is not available, please reach out the IDIM Consulting team as they will help you get sorted.
+
+    Please note that standard service is the main way to integrate for 95% of use cases.
 
 ??? info "Join an Existing Dedicated Custom Realm"
     With approval from IDIM, it is possible to join an existing realm that shares the same security context as your application and already has BCSC set up. This generally means that the existing clients are all from the same ministry or sector and have the same requirements for personal information through the login process.
@@ -81,13 +85,7 @@ The IDIM team that manages BCSC integration is responsible for safeguarding the 
     There are very few instances of this pattern at this time, but it is an option that is possible with the help and approval of IDIM.
 
     Be that as it may, if there is a closely related project in your ministry or sector that you think would be a candidate for sharing a BCSC integration, you may wish to start the conversation with IDIM and see if it makes sense for your situation.
-
-??? info "Integrate Directly with BCSC"
-
-    You can now integrate with our Standard Service and BC Services Card. Please follow the steps in the Common Hosted Single Sign On App <<https://bcgov.github.io/sso-requests>>.
-    If your ministry/sector is not available, please reach out the IDIM Consulting team as they will help you get sorted.
-
-??? info "Configure and Manage Your Own Dedicated KeyCloak Server"
+    ??? info "Configure and Manage Your Own Dedicated KeyCloak Server"
 
     KeyCloak runs on JBoss quite happily in a Docker container with a PostgreSQL backend. If you really need features provided by KeyCloak and you want to integrate with BCSC, it's possible to run your own KeyCloak server and configure your connection to BCSC by setting up your own OIDC IDP.
 
