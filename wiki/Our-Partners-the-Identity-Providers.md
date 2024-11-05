@@ -63,7 +63,7 @@ Please work with the DITP team ditp.support@gov.bc.ca to define whether an exist
 
 ## BC Service Card Integration
 
-*BC Services Card provides an Open ID Connect authentication server. This is now available in production and is ready for the developers use.
+BC Services Card provides an Open ID Connect authentication server. This is now available in production and is ready for the developers use.
 The IDIM team that manages BCSC integration is responsible for safeguarding the personal information that is available in a login context. They have a business requirement that integrations to BCSC cannot be shared without IDIM approval which ensures high level of identity assurance.
 
 ---------------------------------
