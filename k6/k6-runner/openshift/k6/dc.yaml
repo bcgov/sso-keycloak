@@ -26,6 +26,8 @@ objects:
                   value: 'timescaledb=postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}'
                 - name: SCENARIO
                   value: ${SCENARIO}
+                - name: K6_INFLUXDB_PUSH_INTERVAL
+                  value: '5s'
               resources:
                 limits:
                   cpu: 2
