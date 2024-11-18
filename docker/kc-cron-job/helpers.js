@@ -74,7 +74,7 @@ module.exports = {
       user: process.env.PGUSER || 'postgres',
       password: process.env.PGPASSWORD || 'postgres',
       database: process.env.PGDATABASE || 'rhsso',
-      ssl: { rejectUnauthorized: false }
+      ssl: process.env.NODE_ENV === 'local' ? false : { rejectUnauthorized: false }
     });
   },
   sendRcNotification: async function (cronName, message, err) {
