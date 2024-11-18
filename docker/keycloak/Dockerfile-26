@@ -4,7 +4,7 @@ COPY ./extensions-26 /tmp/
 WORKDIR /tmp/
 RUN mvn -B clean package --file pom.xml
 
-FROM registry.redhat.io/rhbk/keycloak-rhel9:26.0-3 as builder
+FROM registry.redhat.io/rhbk/keycloak-rhel9:26.0-3 AS builder
 
 # Enable health and metrics support
 ENV KC_HEALTH_ENABLED=true
@@ -17,6 +17,7 @@ COPY --from=extensions-builder /tmp/services/target/bcgov-services-1.0.0.jar /op
 
 WORKDIR /opt/keycloak
 
+# Failing on this step:
 RUN /opt/keycloak/bin/kc.sh build
 
 FROM registry.redhat.io/rhbk/keycloak-rhel9:26.0-3
