@@ -1,10 +1,10 @@
 FROM maven:3.8.5-openjdk-17-slim AS extensions-builder
 
-COPY ./extensions-26 /tmp/
+COPY ./extensions-24 /tmp/
 WORKDIR /tmp/
 RUN mvn -B clean package --file pom.xml
 
-FROM registry.redhat.io/rhbk/keycloak-rhel9:26.0-3 AS builder
+FROM registry.redhat.io/rhbk/keycloak-rhel9:24-12 as builder
 
 # Enable health and metrics support
 ENV KC_HEALTH_ENABLED=true
@@ -17,21 +17,20 @@ COPY --from=extensions-builder /tmp/services/target/bcgov-services-1.0.0.jar /op
 
 WORKDIR /opt/keycloak
 
-# Failing on this step:
-RUN /opt/keycloak/bin/kc.sh build --verbose
+RUN /opt/keycloak/bin/kc.sh build
 
-FROM registry.redhat.io/rhbk/keycloak-rhel9:26.0-3
+FROM registry.redhat.io/rhbk/keycloak-rhel9:24-12
 
 COPY --from=builder /opt/keycloak/ /opt/keycloak/
 
 # copy the theme directory to `/opt/keycloak/themes/` for now, but we can consider to archive to be deployed later.
-COPY ./extensions-26/themes/src/main/resources/theme /opt/keycloak/themes
+COPY ./extensions-24/themes/src/main/resources/theme /opt/keycloak/themes
 
-COPY ./configuration/26/keycloak.conf /opt/keycloak/conf
+COPY ./configuration/24/keycloak.conf /opt/keycloak/conf
 
-COPY ./configuration/26/quarkus.properties /opt/keycloak/conf
+COPY ./configuration/24/quarkus.properties /opt/keycloak/conf
 
-COPY ./configuration/26/keycloak-default-user-profile.json /tmp
+COPY ./configuration/24/keycloak-default-user-profile.json /tmp
 
 # change these values to point to a running postgres instance
 ENTRYPOINT ["/opt/keycloak/bin/kc.sh"]
