@@ -18,7 +18,7 @@ COPY --from=extensions-builder /tmp/services/target/bcgov-services-1.0.0.jar /op
 WORKDIR /opt/keycloak
 
 # Failing on this step:
-RUN /opt/keycloak/bin/kc.sh build
+RUN /opt/keycloak/bin/kc.sh build --verbose
 
 FROM registry.redhat.io/rhbk/keycloak-rhel9:26.0-3
 
