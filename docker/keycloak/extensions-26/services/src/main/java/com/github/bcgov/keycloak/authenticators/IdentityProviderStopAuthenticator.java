@@ -76,6 +76,8 @@ public class IdentityProviderStopAuthenticator implements Authenticator {
             .getOrGenerateCode();
     String clientId = context.getAuthenticationSession().getClient().getClientId();
     String tabId = context.getAuthenticationSession().getTabId();
+    String clientData = "Test String"
+    String loginHint = "Test String two"
     URI location =
         Urls.identityProviderAuthnRequest(
             context.getUriInfo().getBaseUri(),
@@ -83,7 +85,9 @@ public class IdentityProviderStopAuthenticator implements Authenticator {
             context.getRealm().getName(),
             accessCode,
             clientId,
-            tabId);
+            tabId,
+            clientData,
+            loginHint);
     if (context.getAuthenticationSession().getClientNote(OAuth2Constants.DISPLAY) != null) {
       location =
           UriBuilder.fromUri(location)
