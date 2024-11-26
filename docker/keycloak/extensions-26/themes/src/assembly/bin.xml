@@ -1,0 +1,11 @@
+<assembly>
+  <id>bin</id>
+  <formats>
+    <format>tar.gz</format>
+  </formats>
+  <fileSets>
+    <fileSet>
+      <directory>src/main/resources</directory>
+    </fileSet>
+  </fileSets>
+</assembly>
