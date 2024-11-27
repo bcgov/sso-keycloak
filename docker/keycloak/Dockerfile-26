@@ -19,15 +19,15 @@ COPY --from=extensions-builder --chown=keycloak:keycloak --chmod=644 /tmp/servic
 WORKDIR /opt/keycloak
 
 # copy the theme directory to `/opt/keycloak/themes/` for now, but we can consider to archive to be deployed later.
-COPY ./extensions-26/themes/src/main/resources/theme /opt/keycloak/themes
+COPY --chown=keycloak:keycloak --chmod=644 ./extensions-26/themes/src/main/resources/theme /themes
 
-COPY ./configuration/26/keycloak.conf /opt/keycloak/conf
+COPY --chown=keycloak:keycloak --chmod=644 ./configuration/26/keycloak.conf /conf
 
-COPY ./configuration/26/quarkus.properties /opt/keycloak/conf
+COPY --chown=keycloak:keycloak --chmod=644 ./configuration/26/quarkus.properties /conf
 
-COPY ./configuration/26/keycloak-default-user-profile.json /tmp
+COPY --chown=keycloak:keycloak --chmod=644 ./configuration/26/keycloak-default-user-profile.json /tmp
 
-RUN /opt/keycloak/bin/kc.sh build --verbose
+RUN /bin/kc.sh build --verbose
 
 # change these values to point to a running postgres instance
-ENTRYPOINT ["/opt/keycloak/bin/kc.sh"]
+ENTRYPOINT ["/bin/kc.sh"]
