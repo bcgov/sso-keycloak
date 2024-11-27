@@ -14,9 +14,7 @@ ENV KEYCLOAK_VERSION 26.0.5
 # Configure a database vendor
 ENV KC_DB=postgres
 
-COPY --from=extensions-builder /tmp/services/target/bcgov-services-1.0.0.jar /opt/keycloak/providers/
-
-RUN ls -l /opt/keycloak/providers
+COPY --from=extensions-builder --chown=keycloak:keycloak --chmod=644 /tmp/services/target/bcgov-services-1.0.0.jar /opt/keycloak/providers/
 
 WORKDIR /opt/keycloak
 
