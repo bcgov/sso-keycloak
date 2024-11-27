@@ -1,8 +1,6 @@
 package com.github.bcgov.keycloak.protocol.oidc.ext.endpoints;
 
 import jakarta.ws.rs.GET;
-import org.keycloak.common.Profile;
-import org.keycloak.common.Profile.Feature;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Response;

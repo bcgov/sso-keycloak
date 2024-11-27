@@ -139,12 +139,12 @@ public class IDPUserinfoMapper extends AbstractSAMLProtocolMapper implements SAM
       KeycloakSession keycloakSession, UserSessionModel userSession, AuthenticatedClientSessionModel clientSession) {
     String idp = userSession.getNotes().get("identity_provider");
     RealmModel realm = userSession.getRealm();
-    IdentityProviderModel identityProviderConfig = realm.getIdentityProviderByAlias(idp);
+    IdentityProviderModel identityProviderConfig = keycloakSession.identityProviders().getByAlias(idp);
     JsonNode userInfo;
     JWSInput jws;
 
     if (identityProviderConfig.isStoreToken()) {
-      IdentityProviderModel identityProviderModel = realm.getIdentityProviderByAlias(idp);
+      IdentityProviderModel identityProviderModel = keycloakSession.identityProviders().getByAlias(idp);
       String userInfoUrl = identityProviderModel.getConfig().get("userInfoUrl");
 
       if (userInfoUrl != null) {

@@ -77,7 +77,7 @@ public class CustomGitHubIdentityProvider extends GitHubIdentityProvider {
           throw new IdentityBrokerException("User does not belong to the target GitHub Org");
       }
 
-      JsonNode profile = SimpleHttp.doGet(PROFILE_URL, session)
+      JsonNode profile = SimpleHttp.doGet(DEFAULT_PROFILE_URL, session)
           .header("Authorization", "Bearer " + accessToken)
           .asJson();
 
@@ -97,7 +97,7 @@ public class CustomGitHubIdentityProvider extends GitHubIdentityProvider {
 
   private String searchEmail(String accessToken) {
     try {
-      ArrayNode emails = (ArrayNode) SimpleHttp.doGet(EMAIL_URL, session)
+      ArrayNode emails = (ArrayNode) SimpleHttp.doGet(DEFAULT_EMAIL_URL, session)
           .header("Authorization", "Bearer " + accessToken)
           .asJson();
 

@@ -28,7 +28,7 @@ public class IdentityProviderStopAuthenticator implements Authenticator {
   @Override
   public void authenticate(AuthenticationFlowContext context) {
     List<IdentityProviderModel> allowedIdps = new ArrayList<>();
-    List<IdentityProviderModel> realmIdps = context.getRealm().getIdentityProvidersStream().toList();
+    List<IdentityProviderModel> realmIdps = context.getSession().identityProviders().getAllStream().toList();
     Map<String, ClientScopeModel> scopes = context.getAuthenticationSession().getClient().getClientScopes(true);
 
     for (IdentityProviderModel ridp : realmIdps) {

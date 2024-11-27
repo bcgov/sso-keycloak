@@ -52,7 +52,7 @@ public class CookieStopAuthenticator implements Authenticator {
       String sessIdp = authResult.getSession().getNotes().get("identity_provider");
 
       if (authIdp != null && !authIdp.trim().isEmpty()) {
-        IdentityProviderModel idp = context.getRealm().getIdentityProviderByAlias(authIdp);
+        IdentityProviderModel idp = context.getSession().identityProviders().getByAlias(authIdp);
         Map<String, ClientScopeModel> scopes = context.getAuthenticationSession().getClient().getClientScopes(true);
 
         if (idp != null
@@ -86,7 +86,8 @@ public class CookieStopAuthenticator implements Authenticator {
   }
 
   @Override
-  public void action(AuthenticationFlowContext context) { /* This is ok */ }
+  public void action(AuthenticationFlowContext context) {
+    /* This is ok */ }
 
   @Override
   public boolean configuredFor(KeycloakSession session, RealmModel realm, UserModel user) {
@@ -94,8 +95,10 @@ public class CookieStopAuthenticator implements Authenticator {
   }
 
   @Override
-  public void setRequiredActions(KeycloakSession session, RealmModel realm, UserModel user) { /* This is ok */ }
+  public void setRequiredActions(KeycloakSession session, RealmModel realm, UserModel user) {
+    /* This is ok */ }
 
   @Override
-  public void close() { /* This is ok */ }
+  public void close() {
+    /* This is ok */ }
 }
