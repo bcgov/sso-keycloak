@@ -18,6 +18,34 @@ const getKcConfig = (environment) => {
   };
 };
 
+async function removeUserFromKc(adminClient, id) {
+  try {
+    await adminClient.users.del({ realm: 'standard', id });
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+async function getUserRolesMappings(adminClient, userId) {
+  try {
+    const clientRoles = [];
+    const roleMappings = await adminClient.users.listRoleMappings({ realm: 'standard', id: userId });
+    const realmRoles = roleMappings.realmMappings ? roleMappings.realmMappings.map((map) => map.name) : [];
+    if (roleMappings.clientMappings) {
+      for (const map in roleMappings.clientMappings) {
+        clientRoles.push({
+          client: roleMappings.clientMappings[map].client,
+          roles: roleMappings.clientMappings[map].mappings.map((role) => role.name)
+        });
+      }
+    }
+    return { realmRoles, clientRoles };
+  } catch (err) {
+    console.error(err);
+    throw new Error(`cannot fetch roles of user ${userId}`);
+  }
+}
+
 module.exports = {
   oneMin: 60 * 1000,
   getAdminClient: async function (env) {
@@ -108,5 +136,7 @@ module.exports = {
     } finally {
       await client.end();
     }
-  }
+  },
+  removeUserFromKc,
+  getUserRolesMappings
 };
