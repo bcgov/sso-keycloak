@@ -80,11 +80,11 @@ describe('removeUserFromCssApp', () => {
   it('Calls the CSS api with userdata, clientdata and environment', async () => {
     const user = { id: 1, username: 'test' };
     const clientData = [{ client: 'client', roles: ['role1', 'role2'] }];
-    await removeUserFromCssApp({ id: 1, username: 'test' }, [{ client: 'client', roles: ['role1', 'role2'] }]);
+    await removeUserFromCssApp({ id: 1, username: 'test' }, [{ client: 'client', roles: ['role1', 'role2'] }], 'dev');
 
     expect(axios.post).toHaveBeenCalledTimes(1);
     const firstCallArgs = axios.post.mock.calls[0];
-    expect(firstCallArgs[1]).toEqual({ ...user, clientData });
+    expect(firstCallArgs[1]).toEqual({ ...user, clientData, env: 'dev' });
   });
 });
 

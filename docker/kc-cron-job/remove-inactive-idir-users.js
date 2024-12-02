@@ -128,13 +128,14 @@ async function checkUserExistsAtEntra({ property = MS_GRAPH_IDIR_GUID_ATTRIBUTE,
   }
 }
 
-async function removeUserFromCssApp(userData, clientData) {
+async function removeUserFromCssApp(userData, clientData, env) {
   try {
     const headers = {
       'Content-Type': 'application/json',
       Authorization: process.env.CSS_API_AUTH_SECRET
     };
     userData.clientData = clientData;
+    userData.env = env;
     const res = await axios.post(`${process.env.CSS_API_URL}/delete-inactive-idir-users`, userData, { headers });
     return res.status === 200;
   } catch (err) {
@@ -177,7 +178,7 @@ async function removeStaleUsersByEnv(env = 'dev', pgClient, runnerName, startFro
           if (userExistsAtWb === 'notexists') {
             const { realmRoles, clientRoles } = await getUserRolesMappings(adminClient, id);
             await removeUserFromKc(adminClient, id);
-            const userDeletedAtCss = await removeUserFromCssApp(users[x], clientRoles);
+            const userDeletedAtCss = await removeUserFromCssApp(users[x], clientRoles, env);
             const values = [
               env,
               id,
