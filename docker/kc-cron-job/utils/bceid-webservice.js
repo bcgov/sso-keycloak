@@ -2,7 +2,8 @@ const { promisify } = require('util');
 const { parseString } = require('xml2js');
 const axios = require('axios');
 const parseStringSync = promisify(parseString);
-
+const _ = require('lodash');
+const { log } = require('../helpers');
 function getWebServiceInfo({ env = 'dev' }) {
   const requestHeaders = {
     'Content-Type': 'text/xml;charset=UTF-8',
