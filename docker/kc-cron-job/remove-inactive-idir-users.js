@@ -1,11 +1,19 @@
 const _ = require('lodash');
 const async = require('async');
-const { promisify } = require('util');
 const axios = require('axios');
-const { parseString } = require('xml2js');
-const { getAdminClient, log, getPgClient, sendRcNotification, handleError, deleteLegacyData } = require('./helpers');
+const {
+  getAdminClient,
+  log,
+  getPgClient,
+  sendRcNotification,
+  handleError,
+  deleteLegacyData,
+  removeUserFromKc,
+  getUserRolesMappings
+} = require('./helpers');
 const jwt = require('jsonwebtoken');
 const { ConfidentialClientApplication } = require('@azure/msal-node');
+const { checkUserExistsAtIDIM } = require('./utils/bceid-webservice');
 
 const MS_GRAPH_URL = 'https://graph.microsoft.com';
 const MS_GRAPH_IDIR_GUID_ATTRIBUTE = 'onPremisesExtensionAttributes/extensionAttribute12';
@@ -120,164 +128,19 @@ async function checkUserExistsAtEntra({ property = MS_GRAPH_IDIR_GUID_ATTRIBUTE,
   }
 }
 
-const parseStringSync = promisify(parseString);
-
-function getWebServiceInfo({ env = 'dev' }) {
-  const requestHeaders = {
-    'Content-Type': 'text/xml;charset=UTF-8',
-    authorization: `Basic ${process.env.BCEID_SERVICE_BASIC_AUTH}`
-  };
-
-  const requesterIdirGuid = process.env.BCEID_REQUESTER_IDIR_GUID || '';
-
-  let serviceUrl = '';
-  let serviceId = '';
-  if (env === 'dev') {
-    serviceUrl = 'https://gws2.development.bceid.ca';
-    serviceId = process.env.BCEID_SERVICE_ID_DEV || '';
-  } else if (env === 'test') {
-    serviceUrl = 'https://gws2.test.bceid.ca';
-    serviceId = process.env.BCEID_SERVICE_ID_TEST || '';
-  } else if (env === 'prod') {
-    serviceUrl = 'https://gws2.bceid.ca';
-    serviceId = process.env.BCEID_SERVICE_ID_PROD || '';
-  }
-
-  return { requestHeaders, requesterIdirGuid, serviceUrl, serviceId };
-}
-
-const generateXML = (
-  {
-    property = 'userId',
-    matchKey = '',
-    matchType = 'Exact',
-    serviceId = '',
-    requesterIdirGuid = '',
-    page = 1,
-    limit = 1
-  },
-  requestType = 'searchInternalAccount'
-) => {
-  if (requestType === 'getAccountDetail') {
-    return `<?xml version="1.0" encoding="UTF-8"?>
-    <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:V10="http://www.bceid.ca/webservices/Client/V10/">
-        <soapenv:Header />
-        <soapenv:Body>
-            <V10:getAccountDetail>
-             <V10:accountDetailRequest>
-                <V10:onlineServiceId>${serviceId}</V10:onlineServiceId>
-                <V10:requesterAccountTypeCode>Internal</V10:requesterAccountTypeCode>
-                <V10:requesterUserGuid>${requesterIdirGuid}</V10:requesterUserGuid>
-                <V10:${property}>${matchKey}</V10:${property}>
-                <V10:accountTypeCode>Internal</V10:accountTypeCode>
-             </V10:accountDetailRequest>
-          </V10:getAccountDetail>
-        </soapenv:Body>
-    </soapenv:Envelope>`;
-  } else {
-    return `<?xml version="1.0" encoding="UTF-8"?>
-<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:V10="http://www.bceid.ca/webservices/Client/V10/">
-    <soapenv:Header />
-    <soapenv:Body>
-        <V10:searchInternalAccount>
-            <V10:internalAccountSearchRequest>
-                <V10:onlineServiceId>${serviceId}</V10:onlineServiceId>
-                <V10:requesterAccountTypeCode>Internal</V10:requesterAccountTypeCode>
-                <V10:requesterUserGuid>${requesterIdirGuid}</V10:requesterUserGuid>
-                <requesterAccountTypeCode>Internal</requesterAccountTypeCode>
-                <V10:pagination>
-                    <V10:pageSizeMaximum>${String(limit || 100)}</V10:pageSizeMaximum>
-                    <V10:pageIndex>${String(page || 1)}</V10:pageIndex>
-                </V10:pagination>
-                <V10:sort>
-                    <V10:direction>Ascending</V10:direction>
-                    <V10:onProperty>UserId</V10:onProperty>
-                </V10:sort>
-                <V10:accountMatch>
-                    <V10:${property}>
-                       <V10:value>${matchKey}</V10:value>
-                       <V10:matchPropertyUsing>${matchType}</V10:matchPropertyUsing>
-                    </V10:${property}>
-                 </V10:accountMatch>
-            </V10:internalAccountSearchRequest>
-        </V10:searchInternalAccount>
-    </soapenv:Body>
-</soapenv:Envelope>`;
-  }
-};
-
-async function checkUserExistsAtIDIM({ property = 'userGuid', matchKey = '', env = 'prod' }) {
-  const { requestHeaders, requesterIdirGuid, serviceUrl, serviceId } = getWebServiceInfo({ env });
-  const xml = generateXML({ property, matchKey, serviceId, requesterIdirGuid }, 'getAccountDetail');
-
-  try {
-    const response = await axios.post(`${serviceUrl}/webservices/client/V10/BCeIDService.asmx?WSDL`, xml, {
-      headers: requestHeaders,
-      timeout: 10000
-    });
-
-    const { data: body } = response;
-
-    const result = await parseStringSync(body);
-    const data = _.get(result, 'soap:Envelope.soap:Body.0.getAccountDetailResponse.0.getAccountDetailResult.0');
-    if (!data) throw Error('no data');
-
-    const status = _.get(data, 'code.0');
-    const failureCode = _.get(data, 'failureCode.0');
-    const failMessage = _.get(data, 'message.0');
-    if (status === 'Success' && failureCode === 'Void') {
-      return 'exists';
-    } else if (status === 'Failed' && failureCode === 'NoResults') {
-      return 'notexists';
-    } else {
-      log(`${env}: [${status}][${failureCode}] ${property}: ${matchKey}: ${String(failMessage)})`);
-    }
-    return 'error';
-  } catch (error) {
-    throw new Error(error);
-  }
-}
-
-async function getUserRolesMappings(adminClient, userId) {
-  try {
-    const clientRoles = [];
-    const roleMappings = await adminClient.users.listRoleMappings({ realm: 'standard', id: userId });
-    const realmRoles = roleMappings.realmMappings ? roleMappings.realmMappings.map((map) => map.name) : [];
-    if (roleMappings.clientMappings) {
-      for (const map in roleMappings.clientMappings) {
-        clientRoles.push({
-          client: roleMappings.clientMappings[map].client,
-          roles: roleMappings.clientMappings[map].mappings.map((role) => role.name)
-        });
-      }
-    }
-    return { realmRoles, clientRoles };
-  } catch (err) {
-    console.error(err);
-    throw new Error(`cannot fetch roles of user ${userId}`);
-  }
-}
-
-async function removeUserFromCssApp(userData, clientData) {
+async function removeUserFromCssApp(userData, clientData, env) {
   try {
     const headers = {
       'Content-Type': 'application/json',
       Authorization: process.env.CSS_API_AUTH_SECRET
     };
     userData.clientData = clientData;
+    userData.env = env;
     const res = await axios.post(`${process.env.CSS_API_URL}/delete-inactive-idir-users`, userData, { headers });
     return res.status === 200;
   } catch (err) {
     handleError(err);
     return false;
-  }
-}
-
-async function removeUserFromKc(adminClient, id) {
-  try {
-    await adminClient.users.del({ realm: 'standard', id });
-  } catch (err) {
-    console.error(err);
   }
 }
 
@@ -315,7 +178,7 @@ async function removeStaleUsersByEnv(env = 'dev', pgClient, runnerName, startFro
           if (userExistsAtWb === 'notexists') {
             const { realmRoles, clientRoles } = await getUserRolesMappings(adminClient, id);
             await removeUserFromKc(adminClient, id);
-            const userDeletedAtCss = await removeUserFromCssApp(users[x], clientRoles);
+            const userDeletedAtCss = await removeUserFromCssApp(users[x], clientRoles, env);
             const values = [
               env,
               id,
@@ -332,7 +195,7 @@ async function removeStaleUsersByEnv(env = 'dev', pgClient, runnerName, startFro
             deletedUserCount++;
             log(`[${runnerName}] ${username} has been deleted from ${env} environment`);
 
-            if (deletedUserCount > MAX_DELETED_USERS_PER_RUNNER) break;
+            if (deletedUserCount >= MAX_DELETED_USERS_PER_RUNNER) break;
           } else continue;
         }
       }
@@ -341,7 +204,7 @@ async function removeStaleUsersByEnv(env = 'dev', pgClient, runnerName, startFro
       if (count < max || total === 10000) break;
 
       // max 50 users can be deleted by a runner at a time
-      if (deletedUserCount > MAX_DELETED_USERS_PER_RUNNER) break;
+      if (deletedUserCount >= MAX_DELETED_USERS_PER_RUNNER) break;
 
       await adminClient.reauth();
       first = first + max;
@@ -398,4 +261,13 @@ async function main() {
   await deleteLegacyData('kc_deleted_users', process.env.INACTIVE_IDIR_USERS_RETENTION_DAYS || 60);
 }
 
-main();
+if (require.main === module) {
+  main();
+}
+
+module.exports = {
+  removeStaleUsersByEnv,
+  checkUserExistsAtIDIM,
+  removeUserFromCssApp,
+  MAX_DELETED_USERS_PER_RUNNER
+};
