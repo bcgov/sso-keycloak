@@ -62,6 +62,11 @@ public class IdentityProviderStopForm extends AbstractUsernameFormAuthenticator 
       formData.add(AuthenticationManager.FORM_USERNAME, "{}");
     }
 
+    if (formData.size() == 1) {
+      context.attempted();
+      return;
+    }
+
     Response challengeResponse = challenge(context, formData);
     context.challenge(challengeResponse);
   }
