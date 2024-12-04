@@ -3,7 +3,7 @@ version: '3.8'
 services:
   keycloak:
     container_name: keycloak
-    image: sso-keycloak:24.0.5
+    image: sso-keycloak:26.0.5
     command: start-dev
     depends_on:
       - postgres
@@ -19,8 +19,8 @@ services:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
       KC_HTTP_RELATIVE_PATH: /auth
-      KC_HOSTNAME_URL: http://localhost:8080/auth/
-      KC_HOSTNAME_ADMIN_URL: http://localhost:8080/auth/
+      KC_HOSTNAME: http://localhost:8080/auth/
+      KC_HOSTNAME_ADMIN: http://localhost:8080/auth/
     volumes:
       - ../../docker/keycloak/extensions-24/themes/src/main/resources/theme:/opt/keycloak/themes/
 

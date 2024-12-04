@@ -14,15 +14,15 @@ ENV KC_DB=postgres
 
 COPY --from=extensions-builder /tmp/services/target/bcgov-services-1.0.0.jar /opt/keycloak/providers/
 
-COPY ./docker/keycloak/extensions-26/themes/src/main/resources/theme /opt/keycloak/themes/
-
-RUN /opt/keycloak/bin/kc.sh build --verbose
-
 WORKDIR /opt/keycloak
+
+COPY ./docker/keycloak/extensions-26/themes/src/main/resources/theme /opt/keycloak/themes/
 
 COPY ./docker/keycloak/configuration/26/quarkus.properties /opt/keycloak/conf
 
 COPY ./docker/keycloak/configuration/26/keycloak-default-user-profile.json /tmp
+
+RUN /opt/keycloak/bin/kc.sh build
 
 # change these values to point to a running postgres instance
 ENTRYPOINT ["/opt/keycloak/bin/kc.sh"]
