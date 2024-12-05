@@ -143,106 +143,109 @@ public class IDPUserinfoMapper extends AbstractSAMLProtocolMapper implements SAM
     JsonNode userInfo;
     JWSInput jws;
 
-    if (identityProviderConfig.isStoreToken()) {
-      IdentityProviderModel identityProviderModel = keycloakSession.identityProviders().getByAlias(idp);
-      String userInfoUrl = identityProviderModel.getConfig().get("userInfoUrl");
+    if (identityProviderConfig.getAlias().equals(clientSession.getClient().getClientId())) {
+      if (identityProviderConfig.isStoreToken()) {
+        IdentityProviderModel identityProviderModel = keycloakSession.identityProviders().getByAlias(idp);
+        String userInfoUrl = identityProviderModel.getConfig().get("userInfoUrl");
 
-      if (userInfoUrl != null) {
-        FederatedIdentityModel identity = keycloakSession.users().getFederatedIdentity(realm, userSession.getUser(),
-            idp);
-        String brokerToken = identity.getToken();
-        AccessTokenResponse brokerAccessToken = parseTokenString(brokerToken);
-        String userinfoResponse;
-
-        try {
-          userinfoResponse = callUserInfo(userInfoUrl, brokerAccessToken.getToken());
-        } catch (IOException e) {
-          throw new IdentityBrokerException("Failed to call userinfo endpoint");
-        }
-
-        Boolean encryptionExpected = Boolean.parseBoolean(mappingModel.getConfig().get(ENCRYPTION_EXPECTED));
-
-        if (encryptionExpected) {
-          JOSE joseToken = JOSEParser.parse(userinfoResponse);
-          if (joseToken instanceof JWE) {
-            // encrypted JWE token
-            JWE jwe = (JWE) joseToken;
-            try {
-              KeyWrapper key;
-              if (jwe.getHeader().getKeyId() == null) {
-                key = keycloakSession.keys().getActiveKey(keycloakSession.getContext().getRealm(), KeyUse.ENC,
-                    jwe.getHeader().getRawAlgorithm());
-              } else {
-                key = keycloakSession.keys().getKey(keycloakSession.getContext().getRealm(), jwe.getHeader().getKeyId(),
-                    KeyUse.ENC,
-                    jwe.getHeader().getRawAlgorithm());
-              }
-              if (key == null || key.getPrivateKey() == null) {
-                throw new IdentityBrokerException("Private key not found in the realm to decrypt token algorithm "
-                    + jwe.getHeader().getRawAlgorithm());
-              }
-
-              jwe.getKeyStorage().setDecryptionKey(key.getPrivateKey());
-              jwe.verifyAndDecodeJwe();
-              userinfoResponse = new String(jwe.getContent(), StandardCharsets.UTF_8);
-            } catch (JWEException e) {
-              throw new IdentityBrokerException("Failed to decrypt userinfo JWT", e);
-            }
-          }
-        }
-
-        Boolean signatureExpected = Boolean.parseBoolean(mappingModel.getConfig().get(SIGNATURE_EXPECTED));
-
-        if (signatureExpected) {
-
-          OIDCIdentityProviderConfig oidcIdpConfig = new OIDCIdentityProviderConfig(identityProviderConfig);
-
-          JOSE joseToken = JOSEParser.parse(userinfoResponse);
-
-          // common signed JWS token
-          jws = (JWSInput) joseToken;
-
-          // verify signature of the JWS
-          if (!verify(keycloakSession, oidcIdpConfig, jws)) {
-            throw new IdentityBrokerException("Failed to verify userinfo JWT signature");
-          }
+        if (userInfoUrl != null) {
+          FederatedIdentityModel identity = keycloakSession.users().getFederatedIdentity(realm, userSession.getUser(),
+              idp);
+          String brokerToken = identity.getToken();
+          AccessTokenResponse brokerAccessToken = parseTokenString(brokerToken);
+          String userinfoResponse;
 
           try {
-            userInfo = JsonSerialization.readValue(new String(jws.getContent(), StandardCharsets.UTF_8),
-                JsonNode.class);
+            userinfoResponse = callUserInfo(userInfoUrl, brokerAccessToken.getToken());
           } catch (IOException e) {
-            throw new IdentityBrokerException("Failed to parse userinfo JWT", e);
+            throw new IdentityBrokerException("Failed to call userinfo endpoint");
           }
-        } else {
-          userInfo = parseJson(userinfoResponse);
-        }
 
-        if (userInfo != null) {
-          // process string value of user attributes
-          String userAttributes = mappingModel.getConfig().get(USER_ATTRIBUTES);
-          String[] userAttributesArr = userAttributes == null ? new String[0] : userAttributes.split(",");
+          Boolean encryptionExpected = Boolean.parseBoolean(mappingModel.getConfig().get(ENCRYPTION_EXPECTED));
 
-          if (userAttributesArr.length > 0) {
-            for (String userAttribute : userAttributesArr) {
-              AttributeType attribute = new AttributeType(userAttribute.trim());
-              attribute.setNameFormat(JBossSAMLURIConstants.ATTRIBUTE_FORMAT_BASIC.get());
-              JsonNode attributeValue = deepFetchAttributes(userInfo, userAttribute, attributeStatement);
-              if (attributeValue != null) {
-                attribute.setNameFormat(JBossSAMLURIConstants.ATTRIBUTE_FORMAT_BASIC.get());
-                attribute.addAttributeValue(attributeValue.asText());
-                attributeStatement.addAttribute(new AttributeStatementType.ASTChoiceType(attribute));
+          if (encryptionExpected) {
+            JOSE joseToken = JOSEParser.parse(userinfoResponse);
+            if (joseToken instanceof JWE) {
+              // encrypted JWE token
+              JWE jwe = (JWE) joseToken;
+              try {
+                KeyWrapper key;
+                if (jwe.getHeader().getKeyId() == null) {
+                  key = keycloakSession.keys().getActiveKey(keycloakSession.getContext().getRealm(), KeyUse.ENC,
+                      jwe.getHeader().getRawAlgorithm());
+                } else {
+                  key = keycloakSession.keys().getKey(keycloakSession.getContext().getRealm(),
+                      jwe.getHeader().getKeyId(),
+                      KeyUse.ENC,
+                      jwe.getHeader().getRawAlgorithm());
+                }
+                if (key == null || key.getPrivateKey() == null) {
+                  throw new IdentityBrokerException("Private key not found in the realm to decrypt token algorithm "
+                      + jwe.getHeader().getRawAlgorithm());
+                }
+
+                jwe.getKeyStorage().setDecryptionKey(key.getPrivateKey());
+                jwe.verifyAndDecodeJwe();
+                userinfoResponse = new String(jwe.getContent(), StandardCharsets.UTF_8);
+              } catch (JWEException e) {
+                throw new IdentityBrokerException("Failed to decrypt userinfo JWT", e);
               }
             }
           }
-        } else {
-          logger.error("The payload received from userinfo is null");
-        }
 
+          Boolean signatureExpected = Boolean.parseBoolean(mappingModel.getConfig().get(SIGNATURE_EXPECTED));
+
+          if (signatureExpected) {
+
+            OIDCIdentityProviderConfig oidcIdpConfig = new OIDCIdentityProviderConfig(identityProviderConfig);
+
+            JOSE joseToken = JOSEParser.parse(userinfoResponse);
+
+            // common signed JWS token
+            jws = (JWSInput) joseToken;
+
+            // verify signature of the JWS
+            if (!verify(keycloakSession, oidcIdpConfig, jws)) {
+              throw new IdentityBrokerException("Failed to verify userinfo JWT signature");
+            }
+
+            try {
+              userInfo = JsonSerialization.readValue(new String(jws.getContent(), StandardCharsets.UTF_8),
+                  JsonNode.class);
+            } catch (IOException e) {
+              throw new IdentityBrokerException("Failed to parse userinfo JWT", e);
+            }
+          } else {
+            userInfo = parseJson(userinfoResponse);
+          }
+
+          if (userInfo != null) {
+            // process string value of user attributes
+            String userAttributes = mappingModel.getConfig().get(USER_ATTRIBUTES);
+            String[] userAttributesArr = userAttributes == null ? new String[0] : userAttributes.split(",");
+
+            if (userAttributesArr.length > 0) {
+              for (String userAttribute : userAttributesArr) {
+                AttributeType attribute = new AttributeType(userAttribute.trim());
+                attribute.setNameFormat(JBossSAMLURIConstants.ATTRIBUTE_FORMAT_BASIC.get());
+                JsonNode attributeValue = deepFetchAttributes(userInfo, userAttribute, attributeStatement);
+                if (attributeValue != null) {
+                  attribute.setNameFormat(JBossSAMLURIConstants.ATTRIBUTE_FORMAT_BASIC.get());
+                  attribute.addAttributeValue(attributeValue.asText());
+                  attributeStatement.addAttribute(new AttributeStatementType.ASTChoiceType(attribute));
+                }
+              }
+            }
+          } else {
+            logger.error("The payload received from userinfo is null");
+          }
+
+        } else {
+          logger.error("Identity Provider [" + idp + "] does not have userinfo URL.");
+        }
       } else {
-        logger.error("Identity Provider [" + idp + "] does not have userinfo URL.");
+        logger.error("Identity Provider [" + idp + "] does not store tokens.");
       }
-    } else {
-      logger.error("Identity Provider [" + idp + "] does not store tokens.");
     }
   }
 
