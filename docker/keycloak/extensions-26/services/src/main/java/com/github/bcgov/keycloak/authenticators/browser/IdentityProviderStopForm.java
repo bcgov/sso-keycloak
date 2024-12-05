@@ -22,13 +22,8 @@ public class IdentityProviderStopForm extends AbstractUsernameFormAuthenticator 
   protected static ServicesLogger log = ServicesLogger.LOGGER;
 
   @Override
-  public void action(AuthenticationFlowContext context) {
-    context.attempted();
-  }
-
-  @Override
   public void authenticate(AuthenticationFlowContext context) {
-    List<IdentityProviderModel> realmIdps = context.getRealm().getIdentityProvidersStream().toList();
+    List<IdentityProviderModel> realmIdps = context.getSession().identityProviders().getAllStream().toList();
     Map<String, ClientScopeModel> scopes = context.getAuthenticationSession().getClient().getClientScopes(true);
 
     Map<String, Map<String, String>> idpContext = new HashMap<>();
