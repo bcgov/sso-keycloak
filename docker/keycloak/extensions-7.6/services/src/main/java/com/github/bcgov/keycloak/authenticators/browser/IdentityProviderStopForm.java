@@ -26,13 +26,13 @@ public class IdentityProviderStopForm extends AbstractUsernameFormAuthenticator 
   @Override
   public void action(AuthenticationFlowContext context) {
     context.attempted();
+    return;
   }
 
   @Override
   public void authenticate(AuthenticationFlowContext context) {
     List<IdentityProviderModel> realmIdps = context.getRealm().getIdentityProviders();
-    Map<String, ClientScopeModel> scopes =
-        context.getAuthenticationSession().getClient().getClientScopes(true);
+    Map<String, ClientScopeModel> scopes = context.getAuthenticationSession().getClient().getClientScopes(true);
     String idpkeys = "";
 
     Map<String, Map<String, String>> idpContext = new HashMap<>();
@@ -79,7 +79,8 @@ public class IdentityProviderStopForm extends AbstractUsernameFormAuthenticator 
       AuthenticationFlowContext context, MultivaluedMap<String, String> formData) {
     LoginFormsProvider forms = context.form();
 
-    if (formData.size() > 0) forms.setFormData(formData);
+    if (formData.size() > 0)
+      forms.setFormData(formData);
 
     return forms.createLoginUsernamePassword();
   }
@@ -96,5 +97,6 @@ public class IdentityProviderStopForm extends AbstractUsernameFormAuthenticator 
   }
 
   @Override
-  public void close() {}
+  public void close() {
+  }
 }
