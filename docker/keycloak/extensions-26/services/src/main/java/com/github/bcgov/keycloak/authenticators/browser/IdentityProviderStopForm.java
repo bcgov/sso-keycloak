@@ -51,19 +51,19 @@ public class IdentityProviderStopForm implements Authenticator {
       }
     }
 
-    String hintIdp = "";
-
     if (context.getUriInfo().getQueryParameters().containsKey(AdapterConstants.KC_IDP_HINT)) {
-      hintIdp = context.getUriInfo().getQueryParameters().getFirst(AdapterConstants.KC_IDP_HINT);
+      String hintIdp = context.getUriInfo().getQueryParameters().getFirst(AdapterConstants.KC_IDP_HINT);
+      if (hintIdp != null && !hintIdp.equals("") && idpContext.containsKey(hintIdp)) {
+        context.attempted();
+        return;
+      }
     }
 
-    // if only one IDP is enabled or hint IDP is passed, skip the form
-    if (!idpContext.isEmpty() && idpContext.size() == 1 && hintIdp != "") {
+    // if only one IDP is enabled then skip the form
+    if (!idpContext.isEmpty() && idpContext.size() == 1) {
       context.attempted();
       return;
     }
-
-    log.infof("hint idp: %s", hintIdp);
 
     MultivaluedMap<String, String> formData = new MultivaluedHashMap<>();
 
