@@ -3,6 +3,8 @@ package com.github.bcgov.keycloak.authenticators.browser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.keycloak.authentication.Authenticator;
+import org.keycloak.constants.AdapterConstants;
+
 import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.Response;
@@ -49,8 +51,13 @@ public class IdentityProviderStopForm implements Authenticator {
       }
     }
 
-    // if only one IDP is enabled, skip the form
-    if (!idpContext.isEmpty() && idpContext.size() == 1) {
+    String hintIdp = "";
+
+    if (context.getUriInfo().getQueryParameters().containsKey(AdapterConstants.KC_IDP_HINT)) {
+      hintIdp = context.getUriInfo().getQueryParameters().getFirst(AdapterConstants.KC_IDP_HINT);
+
+    // if only one IDP is enabled or hint IDP is passed, skip the form
+    if (!idpContext.isEmpty() && (idpContext.size() == 1 || (hintIdp != null && !hintIdp.equals("")))) {
       context.attempted();
       return;
     }
