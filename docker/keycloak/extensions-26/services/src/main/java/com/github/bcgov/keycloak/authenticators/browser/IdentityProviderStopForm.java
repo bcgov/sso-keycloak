@@ -58,7 +58,7 @@ public class IdentityProviderStopForm implements Authenticator {
     }
 
     // if only one IDP is enabled or hint IDP is passed, skip the form
-    if (!idpContext.isEmpty() && (idpContext.size() == 1 || (hintIdp != null && !hintIdp.equals("")))) {
+    if ((!idpContext.isEmpty() && idpContext.size() == 1) || (hintIdp != null && !hintIdp.equals(""))) {
       context.attempted();
       return;
     }
