@@ -1,4 +1,3 @@
-const KcAdminClient = require('keycloak-admin').default;
 const jws = require('jws');
 const { Client } = require('pg');
 const axios = require('axios');
@@ -50,6 +49,7 @@ module.exports = {
   oneMin: 60 * 1000,
   getAdminClient: async function (env) {
     try {
+      const KcAdminClient = (await import('@keycloak/keycloak-admin-client')).default;
       const config = getKcConfig(env);
       if (!config) throw Error(`invalid env ${env}`);
 
@@ -115,6 +115,7 @@ module.exports = {
     }
   },
   handleError: function (error) {
+    console.error(error);
     if (error.isAxiosError) {
       console.error((error.response && error.response.data) || error);
     } else {
