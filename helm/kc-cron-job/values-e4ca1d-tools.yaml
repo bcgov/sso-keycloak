@@ -45,6 +45,8 @@ patroni:
     limits:
       cpu: 200m
       memory: 600Mi
+  podDisruptionBudget:
+    enabled: false
   ## Only uncoment on a first install
   # credentials:
   #   existingSecret: false
