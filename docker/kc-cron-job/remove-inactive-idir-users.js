@@ -144,6 +144,19 @@ async function removeUserFromCssApp(userData, clientData, env) {
   }
 }
 
+async function userFetchWithRetry(env, username, first, max) {
+  const retries = 3;
+  const adminClient = await getAdminClient(env);
+  for (let i = 1; i <= retries; i++) {
+    try {
+      return await adminClient.users.find({ realm: 'standard', username, first, max });
+    } catch (err) {
+      console.error(`Error fetching users from Keycloak for ${env} environment with retries ${i} of ${retries}`);
+      if (i === retries) throw err;
+    }
+  }
+}
+
 async function removeStaleUsersByEnv(env = 'dev', pgClient, runnerName, startFrom, callback) {
   try {
     let deletedUserCount = 0;
@@ -158,7 +171,7 @@ async function removeStaleUsersByEnv(env = 'dev', pgClient, runnerName, startFro
     let total = 0;
 
     while (true) {
-      const users = await adminClient.users.find({ realm: 'standard', username: '@idir', first, max });
+      const users = await userFetchWithRetry(env, '@idir', first, max);
       const count = users.length;
       total += count;
 
