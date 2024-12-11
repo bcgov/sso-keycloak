@@ -130,6 +130,7 @@ public class IDPUserinfoMapper extends AbstractOIDCProtocolMapper
       if (identityProviderConfig.isStoreToken()) {
         IdentityProviderModel identityProviderModel = keycloakSession.identityProviders().getByAlias(idp);
         String userInfoUrl = identityProviderModel.getConfig().get("userInfoUrl");
+        logger.infof("userInfoUrl is %s", userInfoUrl);
 
         if (userInfoUrl != null) {
           FederatedIdentityModel identity = keycloakSession.users().getFederatedIdentity(realm, userSession.getUser(),
@@ -140,6 +141,7 @@ public class IDPUserinfoMapper extends AbstractOIDCProtocolMapper
 
           try {
             userinfoResponse = callUserInfo(userInfoUrl, brokerAccessToken.getToken());
+            logger.infof("userinfoResponse is %s", userinfoResponse);
           } catch (IOException e) {
             throw new IdentityBrokerException("Failed to call userinfo endpoint");
           }
@@ -179,6 +181,8 @@ public class IDPUserinfoMapper extends AbstractOIDCProtocolMapper
           Boolean signatureExpected = Boolean.parseBoolean(mappingModel.getConfig().get(SIGNATURE_EXPECTED));
 
           if (signatureExpected) {
+
+            logger.infof("signatureExpected is %s", signatureExpected);
 
             OIDCIdentityProviderConfig oidcIdpConfig = new OIDCIdentityProviderConfig(identityProviderConfig);
 
