@@ -124,6 +124,9 @@ public class IDPUserinfoMapper extends AbstractOIDCProtocolMapper
 
     // if the identity provider alias is the same as the client id
     if (identityProviderConfig.getAlias().equals(clientSessionCtx.getClientSession().getClient().getClientId())) {
+      logger.infof("identityProviderConfig.getAlias() is %s", identityProviderConfig.getAlias());
+      logger.infof("clientSessionCtx.getClientSession().getClient().getClientId() is %s",
+          clientSessionCtx.getClientSession().getClient().getClientId());
       if (identityProviderConfig.isStoreToken()) {
         IdentityProviderModel identityProviderModel = keycloakSession.identityProviders().getByAlias(idp);
         String userInfoUrl = identityProviderModel.getConfig().get("userInfoUrl");
