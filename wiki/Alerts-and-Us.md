@@ -161,9 +161,9 @@ Uptime will calculate the total downtime for the alert
 | June      2024 | 0s |
 | July      2024 | 0s |
 | August    2024 |  0s  |
-| **September 2024** | **0s** |
-| October   2024 |  |
-| November  2024 |  |
+| September 2024 | 0s |
+| October   2024 | 0s |
+| **November  2024** | **0s** |
 | December  2024 |  |
 
 **Note**: April 2024 alerts look like they were due to an uptime false alarm.
@@ -194,10 +194,9 @@ Uptime will calculate the total downtime for the alert
 | May       2024 | 1h 57m 22s |
 | June      2024 | 0s |
 | August    2024 |  0s  |
-| **September 2024** | **0s** |
-| September 2024 |  |
-| October   2024 |  |
-| November  2024 |  |
+| September 2024 | 0s |
+| October   2024 | 0s |
+| **November  2024** | **0s** |
 | December  2024 |  |
 
 **Note**: April 2024 alerts look like they were due to an uptime false alarm.
@@ -231,8 +230,8 @@ Uptime will calculate the total downtime for the alert
 | July      | 0 | NA | NA | NA  |
 | August    | 1 | 2m 17s | 3m 0s | Uptime outage that could not be reproduced when inspecting the site  |
 | September | 1 | 27m 9s | 29m 44s | The prod uptime DNS check was triggered during the database upgrade. Preemptive failover in effect so no downt time. Sept 18 2024  |
-| October   |  |  |  |   |
-| November  |  |  |  |   |
+| October   | 1 | 3m 17s | 3m 17s |  Prod service uptime failed a check Oct 23.  Short network outage that did not trigger a failover to GoldDR |
+| November  | 0 | NA | NA | NA  |
 | December  |  |  |  |   |
 
 
@@ -249,8 +248,8 @@ Uptime will calculate the total downtime for the alert
 | July      | 0 | NA | NA | NA  |
 | August    | 4 | 2m 29s | 2m 44s | All CPU spikes due to a pod roll over, no service disruption |
 | September | 0 | NA | NA | NA  |
-| October   |  |  |  |   |
-| November  |  |  |  |   |
+| October   | 7 | 2m 10s | 2m 10s |  All CPU spikes due to a pod roll over, no service disruption |
+| November  | 0 | NA | NA | NA  |
 | December  |  |  |  |   |
 
 #### Priority 3 aka Moderate Impact to Service --
@@ -267,8 +266,8 @@ Pathfinder Team commits to acknowledging issue within 15 -30 mins and resolving 
 | July      | 0 | NA | NA | NA  |
 | August    | 3 | 29m 43s | 5h 26m 45s | The long resolution time was due to an IDP outage in the test environments Aug 8, there was also a brief alert raised by the database pods cycling on Aug 6 |
 | September | 2 | 1m 36s | 1m 47s | Dev uptime alerts triggered during the Quarkus upgrade Sept 4. Not a real outage, alerts needed to be upgraded to work with Quarkus |
-| October   |  |  |  |   |
-| November  |  |  |  |   |
+| October   | 0 | NA | NA | NA  |
+| November  | 0 | NA | NA | NA  |
 | December  |  |  |  |   |
 
 #### Priority 4 aka Low Impact to Service --
@@ -285,8 +284,8 @@ Pathfinder Team commits to acknowledging issue within 15 -30 mins and resolving 
 | July      | 0 | NA | NA | NA  |
 | August    | 27 | 1m 55s | 2m53s | All either 'elevated CPU' alerts and 'ready pods low' from pod roll overs or minor DB storage warnings.  No customer impact. |
 | September | 4 | 3m 26s | 3m 59s | Sysdig storrage warning alerts on Sept 4 and 6.  No outgage or client impact.  |
-| October   |  |  |  |   |
-| November  |  |  |  |   |
+| October   | 19 | 2m 45s | 3m 37s | No service impact. All storage warnings and CPU spikes  |
+| November  | 6 | 2m 4s | 4m 19s | No service impact. All storage warnings and CPU spikes  |
 | December  |  |  |  |   |
 
 
