@@ -49,6 +49,29 @@
         "length": { "max": 255 },
         "person-name-prohibited-characters": {}
       }
+    },
+    {
+      "name": "vc_presented_attributes",
+      "displayName": "${vc_presented_attributes}",
+      "validations": {
+        "length": {
+          "min": "0",
+          "max": "25000"
+        }
+      },
+      "annotations": {},
+      "required": {
+        "roles": ["admin", "user"],
+        "scopes": ["digitalcredential"]
+      },
+      "permissions": {
+        "view": ["admin"],
+        "edit": ["admin"]
+      },
+      "selector": {
+        "scopes": ["digitalcredential"]
+      },
+      "multivalued": false
     }
   ],
   "groups": [
