@@ -13,8 +13,6 @@ ENV KC_METRICS_ENABLED=true
 # Configure a database vendor
 ENV KC_DB=postgres
 
-COPY ./dataset-providers/keycloak-benchmark-dataset-0.15-SNAPSHOT.jar /opt/keycloak/providers
-
 COPY --from=extensions-builder /tmp/services/target/bcgov-services-1.0.0.jar /opt/keycloak/providers/
 
 WORKDIR /opt/keycloak
