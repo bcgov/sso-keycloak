@@ -5,10 +5,12 @@ import org.keycloak.models.KeycloakSession;
 import org.keycloak.broker.saml.SAMLIdentityProviderConfig;
 import org.keycloak.broker.saml.SAMLIdentityProviderFactory;
 import org.keycloak.saml.validators.DestinationValidator;
+import org.keycloak.Config;
 
 public class OverrideSAMLIdentityProviderFactory extends SAMLIdentityProviderFactory {
 
   public static final String PROVIDER_ID = "saml-custom";
+
   private DestinationValidator destinationValidator;
 
   @Override
@@ -23,6 +25,17 @@ public class OverrideSAMLIdentityProviderFactory extends SAMLIdentityProviderFac
 
   @Override
   public String getName() {
-    return "Custom SAML Identity Provider";
+    return "SAML v2.0 - Custom";
+  }
+
+  @Override
+  public void init(Config.Scope config) {
+    super.init(config);
+    this.destinationValidator = DestinationValidator.forProtocolMap(config.getArray("knownProtocols"));
+  }
+
+  @Override
+  public SAMLIdentityProviderConfig createConfig() {
+    return new SAMLIdentityProviderConfig();
   }
 }
