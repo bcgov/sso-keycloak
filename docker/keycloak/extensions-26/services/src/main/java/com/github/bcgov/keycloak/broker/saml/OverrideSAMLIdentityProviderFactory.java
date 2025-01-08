@@ -9,6 +9,7 @@ import org.keycloak.saml.validators.DestinationValidator;
 public class OverrideSAMLIdentityProviderFactory extends SAMLIdentityProviderFactory {
 
   public static final String PROVIDER_ID = "saml-custom";
+
   private DestinationValidator destinationValidator;
 
   @Override
@@ -23,6 +24,11 @@ public class OverrideSAMLIdentityProviderFactory extends SAMLIdentityProviderFac
 
   @Override
   public String getName() {
-    return "Custom SAML Identity Provider";
+    return "SAML v2.0 - Custom";
+  }
+
+  @Override
+  public SAMLIdentityProviderConfig createConfig() {
+    return new SAMLIdentityProviderConfig();
   }
 }

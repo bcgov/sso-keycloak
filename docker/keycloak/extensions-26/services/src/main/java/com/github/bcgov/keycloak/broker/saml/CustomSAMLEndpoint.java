@@ -94,8 +94,6 @@ public class CustomSAMLEndpoint extends SAMLEndpoint {
 
       SAMLDocumentHolder holder = extractResponseDocument(samlResponse);
 
-      logger.info("im here");
-
       if (holder == null) {
         logger.error("saml response is null");
         event.event(EventType.IDENTITY_PROVIDER_RESPONSE);
