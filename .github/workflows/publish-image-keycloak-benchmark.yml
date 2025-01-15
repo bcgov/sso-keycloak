@@ -1,7 +1,9 @@
-name: Create and publish Keycloak Docker image - Dev
+name: Create and publish Benchmark Keycloak Docker image
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - 'feature/quarkus'
 
 env:
   GITHUB_REGISTRY: ghcr.io
