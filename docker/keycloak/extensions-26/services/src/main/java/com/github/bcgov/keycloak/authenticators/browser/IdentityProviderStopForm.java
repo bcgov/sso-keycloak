@@ -2,38 +2,35 @@ package com.github.bcgov.keycloak.authenticators.browser;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
-import org.jboss.resteasy.specimpl.MultivaluedMapImpl;
+import org.keycloak.authentication.Authenticator;
+import org.keycloak.constants.AdapterConstants;
+
+import jakarta.ws.rs.core.MultivaluedHashMap;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Response;
 import org.keycloak.authentication.AuthenticationFlowContext;
-import org.keycloak.authentication.authenticators.browser.AbstractUsernameFormAuthenticator;
 import org.keycloak.forms.login.LoginFormsProvider;
-import org.keycloak.models.ClientScopeModel;
-import org.keycloak.models.IdentityProviderModel;
-import org.keycloak.models.KeycloakSession;
-import org.keycloak.models.RealmModel;
-import org.keycloak.models.UserModel;
+import org.keycloak.models.*;
 import org.keycloak.services.ServicesLogger;
 import org.keycloak.services.managers.AuthenticationManager;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /** @author <a href="mailto:junmin@button.is">Junmin Ahn</a> */
-public class IdentityProviderStopForm extends AbstractUsernameFormAuthenticator {
+public class IdentityProviderStopForm implements Authenticator {
   protected static ServicesLogger log = ServicesLogger.LOGGER;
 
   @Override
   public void action(AuthenticationFlowContext context) {
     context.attempted();
-    return;
   }
 
   @Override
   public void authenticate(AuthenticationFlowContext context) {
-    List<IdentityProviderModel> realmIdps = context.getRealm().getIdentityProviders();
+    List<IdentityProviderModel> realmIdps = context.getSession().identityProviders().getAllStream().toList();
     Map<String, ClientScopeModel> scopes = context.getAuthenticationSession().getClient().getClientScopes(true);
-    String idpkeys = "";
 
     Map<String, Map<String, String>> idpContext = new HashMap<>();
 
@@ -54,10 +51,25 @@ public class IdentityProviderStopForm extends AbstractUsernameFormAuthenticator 
       }
     }
 
-    MultivaluedMap<String, String> formData = new MultivaluedMapImpl<>();
+    // if kc_idp_hint is set and matches one of the enabled idps then skip the form
+    if (context.getUriInfo().getQueryParameters().containsKey(AdapterConstants.KC_IDP_HINT)) {
+      String hintIdp = context.getUriInfo().getQueryParameters().getFirst(AdapterConstants.KC_IDP_HINT);
+      if (hintIdp != null && !hintIdp.equals("") && idpContext.containsKey(hintIdp)) {
+        context.attempted();
+        return;
+      }
+    }
 
-    ObjectMapper objectMapper = new ObjectMapper();
+    // if only one IDP is enabled then skip the form
+    if (!idpContext.isEmpty() && idpContext.size() == 1) {
+      context.attempted();
+      return;
+    }
+
+    MultivaluedMap<String, String> formData = new MultivaluedHashMap<>();
+
     try {
+      ObjectMapper objectMapper = new ObjectMapper();
       String json = objectMapper.writeValueAsString(idpContext);
       log.tracef("idp context: %s", json);
       formData.add(AuthenticationManager.FORM_USERNAME, json);
@@ -98,5 +110,5 @@ public class IdentityProviderStopForm extends AbstractUsernameFormAuthenticator 
 
   @Override
   public void close() {
-  }
+    /* This is ok */ }
 }
