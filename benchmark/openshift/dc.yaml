@@ -9,6 +9,7 @@ objects:
       accessModes:
         - ReadWriteMany
       storageClassName: netapp-file-standard
+      volumeMode: Filesystem
       resources:
         requests:
           storage: 200Mi
@@ -28,7 +29,11 @@ objects:
             - image: ${IMAGE_REPOSITORY}:${IMAGE_TAG}
               name: ${NAME}
               args:
-                - ${CONFIG}
+                - --scenario=${SCENARIO}
+                - --server-url=${SERVER_URL}
+                - --admin-username=${ADMIN_USERNAME}
+                - --admin-password=${ADMIN_PASSWORD}
+                - ${ADDITIONAL_CONFIG}
               resources:
                 limits:
                   cpu: 2
@@ -54,5 +59,14 @@ parameters:
     value: ghcr.io/bcgov/sso-benchmark-runner
   - name: KEYCLOAK_BENCHMARK_VERSION
     value: keycloak-benchmark-0.15-SNAPSHOT
-  - name: CONFIG
+  - name: SCENARIO
+    description: The scenario to run
+    default: 'keycloak.scenario.authentication.ClientSecret'
+  - name: SERVER_URL
+    description: The URL of the Keycloak server
+  - name: ADMIN_USERNAME
+    description: The admin username
+  - name: ADMIN_PASSWORD
+    description: The admin password
+  - name: ADDITIONAL_CONFIG
     description: Configuration set of parameters for the test

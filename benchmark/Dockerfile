@@ -17,6 +17,10 @@ RUN rm ${KEYCLOAK_BENCHMARK_VERSION}.tar.gz
 
 RUN chmod +x /app/${KEYCLOAK_BENCHMARK_VERSION}/bin/*.sh
 
+RUN mkdir -p ~/.java
+
+RUN chmod -R 777 ~/.java
+
 WORKDIR /app/${KEYCLOAK_BENCHMARK_VERSION}/bin
 
 ENTRYPOINT ["./kcb.sh"]
