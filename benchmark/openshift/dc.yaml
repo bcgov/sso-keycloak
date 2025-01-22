@@ -27,6 +27,7 @@ objects:
                 claimName: ${NAME}-pvc
           containers:
             - image: ${IMAGE_REPOSITORY}:${IMAGE_TAG}
+              imagePullPolicy: Always
               name: ${NAME}
               args:
                 - --scenario=${SCENARIO}
