@@ -1,0 +1,58 @@
+kind: Template
+apiVersion: v1
+objects:
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: ${NAME}-pvc
+    spec:
+      accessModes:
+        - ReadWriteMany
+      storageClassName: netapp-file-standard
+      resources:
+        requests:
+          storage: 200Mi
+  - apiVersion: batch/v1
+    kind: Job
+    spec:
+      backoffLimit: 0
+      template:
+        metadata:
+          creationTimestamp: null
+        spec:
+          volumes:
+            - name: ${NAME}-pvc
+              persistentVolumeClaim:
+                claimName: ${NAME}-pvc
+          containers:
+            - image: ${IMAGE_REPOSITORY}:${IMAGE_TAG}
+              name: ${NAME}
+              args:
+                - ${CONFIG}
+              resources:
+                limits:
+                  cpu: 2
+                  memory: 5Gi
+                requests:
+                  cpu: 500m
+                  memory: 500Mi
+              volumeMounts:
+                - name: ${NAME}-pvc
+                  mountPath: /app/${KEYCLOAK_BENCHMARK_VERSION}/results
+          restartPolicy: Never
+    metadata:
+      name: ${NAME}
+      labels:
+        app: ${NAME}
+        component: ${NAME}-job
+parameters:
+  - name: NAME
+    value: sso-benchmark-runner
+  - name: IMAGE_TAG
+    value: dev
+  - name: IMAGE_REPOSITORY
+    value: ghcr.io/bcgov/sso-benchmark-runner
+  - name: KEYCLOAK_BENCHMARK_VERSION
+    value: keycloak-benchmark-0.15-SNAPSHOT
+  - name: CONFIG
+    description: Configuration set of parameters for the test
