@@ -1,0 +1,73 @@
+kind: Template
+apiVersion: v1
+objects:
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: ${NAME}-pvc
+    spec:
+      accessModes:
+        - ReadWriteMany
+      storageClassName: netapp-file-standard
+      volumeMode: Filesystem
+      resources:
+        requests:
+          storage: 200Mi
+  - apiVersion: batch/v1
+    kind: Job
+    spec:
+      backoffLimit: 0
+      template:
+        metadata:
+          creationTimestamp: null
+        spec:
+          volumes:
+            - name: ${NAME}-pvc
+              persistentVolumeClaim:
+                claimName: ${NAME}-pvc
+          containers:
+            - image: ${IMAGE_REPOSITORY}:${IMAGE_TAG}
+              imagePullPolicy: Always
+              name: ${NAME}
+              args:
+                - --scenario=${SCENARIO}
+                - --server-url=${SERVER_URL}
+                - --admin-username=${ADMIN_USERNAME}
+                - --admin-password=${ADMIN_PASSWORD}
+                - ${ADDITIONAL_CONFIG}
+              resources:
+                limits:
+                  cpu: 2
+                  memory: 5Gi
+                requests:
+                  cpu: 500m
+                  memory: 500Mi
+              volumeMounts:
+                - name: ${NAME}-pvc
+                  mountPath: /app/${KEYCLOAK_BENCHMARK_VERSION}/results
+          restartPolicy: Never
+    metadata:
+      name: ${NAME}
+      labels:
+        app: ${NAME}
+        component: ${NAME}-job
+parameters:
+  - name: NAME
+    value: sso-benchmark-runner
+  - name: IMAGE_TAG
+    value: dev
+  - name: IMAGE_REPOSITORY
+    value: ghcr.io/bcgov/sso-benchmark-runner
+  - name: KEYCLOAK_BENCHMARK_VERSION
+    value: keycloak-benchmark-0.15-SNAPSHOT
+  - name: SCENARIO
+    description: The scenario to run
+    default: 'keycloak.scenario.authentication.ClientSecret'
+  - name: SERVER_URL
+    description: The URL of the Keycloak server
+  - name: ADMIN_USERNAME
+    description: The admin username
+  - name: ADMIN_PASSWORD
+    description: The admin password
+  - name: ADDITIONAL_CONFIG
+    description: Configuration set of parameters for the test
