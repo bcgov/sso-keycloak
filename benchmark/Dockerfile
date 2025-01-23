@@ -17,9 +17,6 @@ RUN rm ${KEYCLOAK_BENCHMARK_VERSION}.tar.gz
 
 RUN chmod +x /app/${KEYCLOAK_BENCHMARK_VERSION}/bin/*.sh
 
-RUN mkdir -p /root/.java/.userPrefs && \
-    chmod -R 777 /root/.java
-
 WORKDIR /app/${KEYCLOAK_BENCHMARK_VERSION}/bin
 
 ENTRYPOINT ["./kcb.sh"]
