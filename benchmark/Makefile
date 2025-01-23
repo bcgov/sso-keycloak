@@ -1,10 +1,13 @@
 SHELL := /usr/bin/env bash
 NAMESPACE :=
-SCENARIO := keycloak.scenario.authentication.ClientSecret
+SCENARIO := keycloak.scenario.authentication.AuthorizationCode
 SERVER_URL :=
 ADMIN_USERNAME :=
 ADMIN_PASSWORD :=
-ADDITIONAL_CONFIG := ""
+
+# make sure scenario is set to the correct value
+# test #1 - 34 users per second for 30 minutes (1800 seconds) with 101 users per realm and 101 clients per realm
+ADDITIONAL_CONFIG := "--users-per-sec=34 --ramp-up=300 --users-per-realm=101 --measurement=1800 --clients-per-realm=101"
 
 # make <comand> NAMESPACE="<namespace>"
 
