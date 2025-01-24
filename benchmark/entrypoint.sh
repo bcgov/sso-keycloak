@@ -3,7 +3,7 @@
 # Configuration
 SENDER="bcgov.sso@gov.bc.ca"
 SUBJECT="Keycloak Benchmark Results - $(date +'%Y-%m-%d %H:%M:%S')"
-BODY="Please find the attached benchmark results.\nYou need to base64 decode the attached file (base64 -d -i results.tar.gz) before extracting it.\nRegards,\nBCGov SSO Team"
+BODY="Please find the attached benchmark results. You need to base64 decode the attached file before extracting it."
 RESULTS_DIR="./results"
 ATTACHMENT_NAME="results.tar.gz"
 
@@ -25,7 +25,7 @@ if [ -d "$RESULTS_DIR" ]; then
     # Get the access token
     ACCESS_TOKEN=$(curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -d "client_id=$CHES_CLIENT_ID" -d "client_secret=$CHES_CLIENT_SECRET" -d "grant_type=client_credentials" "$CHES_TOKEN_URL" | jq -r '.access_token')
 
-    BASE64_DATA=$(base64 -i $ATTACHMENT_NAME)
+    BASE64_DATA=$(base64 -w 0 $ATTACHMENT_NAME)
 
     echo '{"from": "'"$SENDER"'", "to": ["'"$RECEPIENT"'"], "subject": "'"$SUBJECT"'", "body": "'"$BODY"'", "bodyType": "text", "attachments": [{"filename": "'"$ATTACHMENT_NAME"'", "content": "'"$BASE64_DATA"'"}]}' | curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $ACCESS_TOKEN" --data-binary @- "$MAIL_SERVER"
 
