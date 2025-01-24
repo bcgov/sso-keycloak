@@ -20,7 +20,7 @@ if [ -d "$RESULTS_DIR" ]; then
   if [ $? -eq 0 ]; then
     echo "Folder '$RESULTS_DIR' compressed successfully to '$ATTACHMENT_NAME'."
 
-    echo "Getting access token from '$TOKEN_URL'."
+    echo "Getting access token from '$CHES_TOKEN_URL'."
 
     # Get the access token
     ACCESS_TOKEN=$(curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -d "client_id=$CHES_CLIENT_ID" -d "client_secret=$CHES_CLIENT_SECRET" -d "grant_type=client_credentials" "$CHES_TOKEN_URL" | jq -r '.access_token')

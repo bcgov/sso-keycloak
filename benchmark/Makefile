@@ -20,6 +20,8 @@ run_job:
 	-p CHES_CLIENT_SECRET=$(CHES_CLIENT_SECRET) \
 	-p RECEPIENT=$(RECEPIENT) \
 	-p NAME=$(NAME) \
+	-p MAIL_SERVER=$(MAIL_SERVER) \
+	-p CHES_TOKEN_URL=$(CHES_TOKEN_URL) \
 	| oc -n $(NAMESPACE) apply -f -
 
 .PHONY: cleanup

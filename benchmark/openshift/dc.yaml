@@ -65,6 +65,12 @@ objects:
                       key: admin-password
                 - name: RECEPIENT
                   value: ${RECEPIENT}
+                - name: SCENARIO
+                  value: ${SCENARIO}
+                - name: SERVER_URL
+                  value: ${SERVER_URL}
+                - name: ADDITIONAL_CONFIG
+                  value: ${ADDITIONAL_CONFIG}
           restartPolicy: Never
     metadata:
       name: ${NAME}
