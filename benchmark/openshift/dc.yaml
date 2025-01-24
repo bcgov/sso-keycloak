@@ -21,20 +21,10 @@ objects:
         metadata:
           creationTimestamp: null
         spec:
-          volumes:
-            - name: ${NAME}-pvc
-              persistentVolumeClaim:
-                claimName: ${NAME}-pvc
           containers:
             - image: ${IMAGE_REPOSITORY}:${IMAGE_TAG}
               imagePullPolicy: Always
               name: ${NAME}
-              args:
-                - --scenario=${SCENARIO}
-                - --server-url=${SERVER_URL}
-                - --admin-username=${ADMIN_USERNAME}
-                - --admin-password=${ADMIN_PASSWORD}
-                - ${ADDITIONAL_CONFIG}
               resources:
                 limits:
                   cpu: 2
@@ -73,9 +63,8 @@ objects:
                     secretKeyRef:
                       name: ${NAME}-secret
                       key: admin-password
-              volumeMounts:
-                - name: ${NAME}-pvc
-                  mountPath: /app/${KEYCLOAK_BENCHMARK_VERSION}/results
+                - name: RECEPIENT
+                  value: ${RECEPIENT}
           restartPolicy: Never
     metadata:
       name: ${NAME}
@@ -110,3 +99,5 @@ parameters:
     description: The CHES token URL
   - name: MAIL_SERVER
     description: The mail server
+  - name: RECEPIENT
+    description: The email address to send the report to

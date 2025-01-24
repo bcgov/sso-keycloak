@@ -19,7 +19,7 @@ run_job:
 	-p CHES_CLIENT_ID=$(CHES_CLIENT_ID) \
 	-p CHES_CLIENT_SECRET=$(CHES_CLIENT_SECRET) \
 	-p RECEPIENT=$(RECEPIENT) \
-	-p NAME=$(NAME)
+	-p NAME=$(NAME) \
 	| oc -n $(NAMESPACE) apply -f -
 
 .PHONY: cleanup

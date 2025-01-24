@@ -5,6 +5,8 @@ RUN apt-get update \
 
 ENV KEYCLOAK_BENCHMARK_VERSION=keycloak-benchmark-0.15-SNAPSHOT
 
+RUN chmod -R 777 /app
+
 # Set working directory
 WORKDIR /app
 
