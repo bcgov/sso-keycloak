@@ -5,8 +5,6 @@ RUN apt-get update \
 
 ENV KEYCLOAK_BENCHMARK_VERSION=keycloak-benchmark-0.15-SNAPSHOT
 
-RUN chmod -R 777 /app
-
 # Set working directory
 WORKDIR /app
 
@@ -18,6 +16,8 @@ RUN tar -xzf ${KEYCLOAK_BENCHMARK_VERSION}.tar.gz
 RUN rm ${KEYCLOAK_BENCHMARK_VERSION}.tar.gz
 
 RUN chmod +x /app/${KEYCLOAK_BENCHMARK_VERSION}/bin/*.sh
+
+RUN chmod -R 777 /app/${KEYCLOAK_BENCHMARK_VERSION}
 
 WORKDIR /app/${KEYCLOAK_BENCHMARK_VERSION}
 
