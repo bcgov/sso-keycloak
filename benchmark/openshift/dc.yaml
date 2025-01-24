@@ -2,17 +2,17 @@ kind: Template
 apiVersion: v1
 objects:
   - apiVersion: v1
-    kind: PersistentVolumeClaim
+    kind: Secret
     metadata:
-      name: ${NAME}-pvc
-    spec:
-      accessModes:
-        - ReadWriteMany
-      storageClassName: netapp-file-standard
-      volumeMode: Filesystem
-      resources:
-        requests:
-          storage: 200Mi
+      name: ${NAME}-secret
+    type: Opaque
+    stringData:
+      admin-username: ${ADMIN_USERNAME}
+      admin-password: ${ADMIN_PASSWORD}
+      ches-client-id: ${CHES_CLIENT_ID}
+      ches-client-secret: ${CHES_CLIENT_SECRET}
+      ches-token-url: ${CHES_TOKEN_URL}
+      mail-server: ${MAIL_SERVER}
   - apiVersion: batch/v1
     kind: Job
     spec:
@@ -42,6 +42,37 @@ objects:
                 requests:
                   cpu: 500m
                   memory: 500Mi
+              env:
+                - name: MAIL_SERVER
+                  valueFrom:
+                    secretKeyRef:
+                      name: ${NAME}-secret
+                      key: mail-server
+                - name: CHES_TOKEN_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: ${NAME}-secret
+                      key: ches-token-url
+                - name: CHES_CLIENT_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: ${NAME}-secret
+                      key: ches-client-id
+                - name: CHES_CLIENT_SECRET
+                  valueFrom:
+                    secretKeyRef:
+                      name: ${NAME}-secret
+                      key: ches-client-secret
+                - name: ADMIN_USERNAME
+                  valueFrom:
+                    secretKeyRef:
+                      name: ${NAME}-secret
+                      key: admin-username
+                - name: ADMIN_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: ${NAME}-secret
+                      key: admin-password
               volumeMounts:
                 - name: ${NAME}-pvc
                   mountPath: /app/${KEYCLOAK_BENCHMARK_VERSION}/results
@@ -53,7 +84,7 @@ objects:
         component: ${NAME}-job
 parameters:
   - name: NAME
-    value: sso-benchmark-runner
+    description: The name of the job
   - name: IMAGE_TAG
     value: dev
   - name: IMAGE_REPOSITORY
@@ -71,3 +102,11 @@ parameters:
     description: The admin password
   - name: ADDITIONAL_CONFIG
     description: Configuration set of parameters for the test
+  - name: CHES_CLIENT_ID
+    description: The CHES client ID
+  - name: CHES_CLIENT_SECRET
+    description: The CHES client secret
+  - name: CHES_TOKEN_URL
+    description: The CHES token URL
+  - name: MAIL_SERVER
+    description: The mail server

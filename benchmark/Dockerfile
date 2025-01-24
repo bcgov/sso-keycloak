@@ -17,6 +17,10 @@ RUN rm ${KEYCLOAK_BENCHMARK_VERSION}.tar.gz
 
 RUN chmod +x /app/${KEYCLOAK_BENCHMARK_VERSION}/bin/*.sh
 
-WORKDIR /app/${KEYCLOAK_BENCHMARK_VERSION}/bin
+WORKDIR /app/${KEYCLOAK_BENCHMARK_VERSION}
 
-ENTRYPOINT ["./kcb.sh"]
+COPY ./entrypoint.sh ./
+
+RUN chmod +x /app/${KEYCLOAK_BENCHMARK_VERSION}/entrypoint.sh
+
+ENTRYPOINT ["./entrypoint.sh"]

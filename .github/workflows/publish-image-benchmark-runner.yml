@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - dev
+      - SSOTEAM-2187-01
     paths:
       - 'benchmark/**'
       - '.github/workflows/publish-image-benchmark-runner.yml'
