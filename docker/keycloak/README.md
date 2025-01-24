@@ -15,6 +15,31 @@ The `configuration` directory contains the pre-defined Keycloak configuration to
 1. Replace token cache mechanism `distributed-cache` with `replicated-cache` to ensure the token availability through multiple pods.
 1. Enable `manual` upgrading of the database schema instead of auto-upgrading.
 
+## Building docker images locally
+
+For testing purposes it is often neccesary to build a local version of the keycloak image and push it directly to the registry. This will require access to the redhat registry:
+
+```
+docker login registry.redhat.io
+```
+
+Credentials are stored in openshift secrets.
+
+To build the image locally, go to the `sso-keycloak/docker/keycloak/` folder and run:
+
+```
+docker build . -f <<dokerfile_name>> -t ghcr.io/bcgov/sso:<<test-tag>>
+```
+
+Publishing the taged image to the sso-switchover-agent repos requires two steps:
+
+Login to the ghcr, a guide can be found here: [github guide](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry)
+
+Pushing the image to the repo:
+
+```
+docker push ghcr.io/bcgov/sso:<<testtag>>
+```
 ## Custom extensions
 
 ### Authentications
