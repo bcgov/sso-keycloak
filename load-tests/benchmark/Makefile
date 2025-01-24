@@ -1,9 +1,8 @@
 SHELL := /usr/bin/env bash
-NAMESPACE :=
-SCENARIO := keycloak.scenario.authentication.AuthorizationCode
-SERVER_URL :=
-ADMIN_USERNAME :=
-ADMIN_PASSWORD :=
+
+#import the env varibles
+include .env
+export $(shell sed 's/=.*//' .env)
 
 # make sure scenario is set to the correct value
 # test #1 - 34 users per second for 30 minutes (1800 seconds) with 101 users per realm and 101 clients per realm
@@ -18,4 +17,4 @@ run_job:
 .PHONY: cleanup
 cleanup:
 	oc -n $(NAMESPACE) delete job sso-benchmark-runner
-	oc -n $(NAMESPACE) delete pvc sso-benchmark-runner-pvc
+#   oc -n $(NAMESPACE) delete pvc sso-benchmark-runner-pvc
