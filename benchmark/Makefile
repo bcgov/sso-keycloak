@@ -1,10 +1,6 @@
 include .env
 
 SHELL := /usr/bin/env bash
-NAME := sso-benchmark-runner
-NAMESPACE := c6af30-dev
-SCENARIO := keycloak.scenario.authentication.AuthorizationCode
-ADDITIONAL_CONFIG := "--measurement=30"
 
 # make <comand> NAMESPACE="<namespace>"
 
