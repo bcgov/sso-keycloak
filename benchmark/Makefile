@@ -1,21 +1,26 @@
-SHELL := /usr/bin/env bash
-NAMESPACE :=
-SCENARIO := keycloak.scenario.authentication.AuthorizationCode
-SERVER_URL :=
-ADMIN_USERNAME :=
-ADMIN_PASSWORD :=
+include .env
 
-# make sure scenario is set to the correct value
-# test #1 - 34 users per second for 30 minutes (1800 seconds) with 101 users per realm and 101 clients per realm
-ADDITIONAL_CONFIG := "--users-per-sec=34 --ramp-up=300 --users-per-realm=101 --measurement=1800 --clients-per-realm=101"
+SHELL := /usr/bin/env bash
 
 # make <comand> NAMESPACE="<namespace>"
 
 .PHONY: run_job
 run_job:
-	oc -n $(NAMESPACE) process -f ./openshift/dc.yaml -p SCENARIO=$(SCENARIO) -p SERVER_URL=$(SERVER_URL) -p ADMIN_USERNAME=$(ADMIN_USERNAME) -p ADMIN_PASSWORD=$(ADMIN_PASSWORD) -p ADDITIONAL_CONFIG=$(ADDITIONAL_CONFIG)| oc -n $(NAMESPACE) apply -f -
+	oc -n $(NAMESPACE) process -f ./openshift/dc.yaml \
+	-p SCENARIO=$(SCENARIO) \
+	-p SERVER_URL=$(SERVER_URL) \
+	-p ADMIN_USERNAME=$(ADMIN_USERNAME) \
+	-p ADMIN_PASSWORD=$(ADMIN_PASSWORD) \
+	-p ADDITIONAL_CONFIG=$(ADDITIONAL_CONFIG) \
+	-p CHES_CLIENT_ID=$(CHES_CLIENT_ID) \
+	-p CHES_CLIENT_SECRET=$(CHES_CLIENT_SECRET) \
+	-p RECEPIENT=$(RECEPIENT) \
+	-p NAME=$(NAME) \
+	-p MAIL_SERVER=$(MAIL_SERVER) \
+	-p CHES_TOKEN_URL=$(CHES_TOKEN_URL) \
+	| oc -n $(NAMESPACE) apply -f -
 
 .PHONY: cleanup
 cleanup:
-	oc -n $(NAMESPACE) delete job sso-benchmark-runner
-	oc -n $(NAMESPACE) delete pvc sso-benchmark-runner-pvc
+	oc -n $(NAMESPACE) delete job $(NAME)
+	oc -n $(NAMESPACE) delete secret $(NAME)-secret
