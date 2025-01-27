@@ -1,5 +1,21 @@
 # Benchmark Guide
 
+## Building Images
+
+### Server Image
+
+- You need a keycloak server with dataset provider added to be able to use it for generating test data
+- To build such server image, run `.github/workflows/publish-image-keycloak-benchmark.yml` that builds an image using `docker/keycloak/Dockerfile-26-perf` that explicitly copies `docker/keycloak/dataset-providers/keycloak-benchmark-dataset-0.15-SNAPSHOT.jar` provider
+- Deploy keycloak server run from this image **ONLY** in a test namespace
+- After the testing is complete, uninstall the server from the namespace
+
+### Runner Image
+
+- The runner image is required if you need to run benchmark tests against test keycloak server in an openshift pod
+- The image can be built using `.github/workflows/publish-image-benchmark-runner.yml` that uses `benchmark/Dockerfile`
+- Existing image `sso-benchmark-runner:dev` can be used and if not found, re-build the image
+- The instructions for running the benchmark runner are provided [here](#running-the-tests)
+
 ## Dataset
 
 - The dataset is required to pre-populate realms, clients, and users in Keycloak under test
