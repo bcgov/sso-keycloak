@@ -80,7 +80,7 @@ export ADMIN_PASSWORD=
 
 ## ADDITIONAL_CONFIG
 
-There are three runs we have done with the previous versions of keycloak.  In order for runs to be comparable the same runs should be done on future versions. These are controlled by the `ADDITIONAL_CONFIG` env var.
+There are four runs we have done with the previous versions of keycloak.  In order for runs to be comparable the same runs should be done on future versions. These are controlled by the `ADDITIONAL_CONFIG` env var.
 
 ### Run 1
 
@@ -92,6 +92,9 @@ ADDITIONAL_CONFIG := "--users-per-sec=34 --ramp-up=300 --users-per-realm=101 --m
 
 ### Run 3
 --users-per-sec=200 --ramp-up=300 --users-per-realm=9000 --measurement=1800 --clients-per-realm=301
+
+### Run 4
+--users-per-sec=500 --ramp-up=300 --users-per-realm=9995 --measurement=1800 --clients-per-realm=395
 
 ## Reports
 
