@@ -12,5 +12,5 @@ run_job:
 
 .PHONY: cleanup
 cleanup:
-	oc -n $(NAMESPACE) delete job sso-k6
+	oc -n $(NAMESPACE) delete job sso-k6 --ignore-not-found=true
 	oc -n $(NAMESPACE) delete configmap k6-config
