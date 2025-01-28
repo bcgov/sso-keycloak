@@ -22,5 +22,5 @@ run_job:
 
 .PHONY: cleanup
 cleanup:
-	oc -n $(NAMESPACE) delete job $(NAME)
+	oc -n $(NAMESPACE) delete job $(NAME) --ignore-not-found=true
 	oc -n $(NAMESPACE) delete secret $(NAME)-secret
