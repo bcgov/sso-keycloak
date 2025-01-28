@@ -94,7 +94,10 @@ ADDITIONAL_CONFIG := "--users-per-sec=34 --ramp-up=300 --users-per-realm=101 --m
 --users-per-sec=200 --ramp-up=300 --users-per-realm=9000 --measurement=1800 --clients-per-realm=301
 
 ### Run 4
---users-per-sec=500 --ramp-up=300 --users-per-realm=9995 --measurement=1800 --clients-per-realm=395
+This is a different scenerio, it is not an Auth Code flow like the other tests. The new environment vars are:
+
+SCENARIO := "keycloak.scenario.authentication.ClientSecret"
+ADDITIONAL_CONFIG := "--users-per-sec=500 --ramp-up=300 --users-per-realm=9995 --measurement=1800 --clients-per-realm=395"
 
 ## Reports
 
