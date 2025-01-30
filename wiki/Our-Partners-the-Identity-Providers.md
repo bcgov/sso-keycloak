@@ -9,9 +9,6 @@ Your technical team may need to know the identity provider attributes provided, 
 
 [Identity providers](Useful-References#identity-provider) are directories of user accounts with details about those users, called attributes. The ones available to Pathfinder SSO Clients are:
 - **IDIR:** IDIR accounts are given to individuals who work for the B.C. government. Please note, your end users must have an IDIR account which can make use of one of the two ways to login based on your application needs:
-  - **IDIR**
-    * User Experience: use an IDIR username and password for logging in.
-    * Architecture/Developer note: The authentication mechanisim via siteminder.
   - **IDIR with MFA**
     * User Experience: IDIR account with the added the benefit of MFA (multi-factor authentication). i.e use an IDIR username, password and mfa for logging in.
     * Architecture/Developer note: It is a step up security-wise from regular IDIR. The authentication mechanism is azure cloud [More on MFA registration](https://intranet.gov.bc.ca/thehub/ocio/ocio-enterprise-services/information-security-branch/information-security-mfa/mfa-registration)
@@ -45,9 +42,9 @@ Also note if you get an error message similar to the one below, please ensure th
 
 ## Common Login Errors
 
-### IDIR and BCeID in the same browser
+### On prem IDIR and BCeID in the same browser
 
-As we partner with the BC Gov Identity Partners of IDIR and BCeID please note in the same browser, you cannot have one tab logged in with IDIR and another with BCeID.
+If an application is using the on premise IDIR (not IDIR MFA) there will be some conflicts. As we partner with the BC Gov Identity Partners of IDIR and BCeID please note in the same browser, you cannot have one tab logged in with IDIR and another with BCeID.
 
 Please use a private browser by either using incognito or clearing your cache.
 
