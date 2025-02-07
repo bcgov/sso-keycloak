@@ -1,6 +1,6 @@
 # SSO Pathfinder Knowledge Base
 
-Welcome to our wiki for our Single Sign On Service. You are in the right spot if you need to configure/develop a login component (IDIR or BCeID) for your digital product/project. You can learn about [Common Hosted Single Sign On App on The Exchange Youtube channel](https://www.youtube.com/watch?v=JBaGxqykXJQ&list=PL9CV_8JBQHirMRjBk62jeYUE_MpE4unU8&index=3) or continue to read below.
+Welcome to our wiki for our Single Sign On Service. You are in the right spot if you need to configure/develop a login component for your digital product/project. You can learn about [Common Hosted Single Sign On App on The Exchange Youtube channel](https://www.youtube.com/watch?v=JBaGxqykXJQ&list=PL9CV_8JBQHirMRjBk62jeYUE_MpE4unU8&index=3) or continue to read below.
 
 **Get started now for your self serve experience to our [common hosted single sign on app](https://bcgov.github.io/sso-requests).**
 
@@ -25,8 +25,7 @@ Here’s some reasons as to why this might work for your digital product:
 
 We've made this the #1 feature of this service. You can get your DEV, TEST, and PROD instances running against most of the available identity providers right away. The Pathfinder SSO service already has integrations to the following identity providers
 
-- IDIR (BC Common Logon Page)
-- [Learn about Azure IDIR ](Our-Partners-the-Identity-Providers#azure-idir-and-idir)
+- [ IDIR MFA ](Our-Partners-the-Identity-Providers#azure-idir-and-idir)
 - BCeID Basic (BC Common Logon Page) -- Allows login only with BCeID _Basic_
 - BCeID Business (BC Common Logon Page) -- Allows login only with BCeID _Business_
 - BCeID Basic & Business(BC Common Logon Page) -- Allows login with BCeID _Basic_ or BCeID _Business_
@@ -60,7 +59,7 @@ New customers no longer receive a dedicated realm where they can experiment and 
 
 ### BC Services Card
 
-The Pathfinder SSO Service provides the BC Services Card as a login option for both OpenID and SAML clients within the common realm. However, due to the high-security nature of the BC Services Card and the sensitive personal information involved in its authentication process, user personal information (PI) is not stored in the Keycloak database. As a result, we are unable to offer the **Role Management** feature, which is available with other identity providers such as IDIR and BCeID.
+The Pathfinder SSO Service provides the BC Services Card as a login option for both OpenID and SAML clients within the common realm. However, due to the high-security nature of the BC Services Card and the sensitive personal information involved in its authentication process, user personal information (PI) is not stored in the Keycloak database. As a result, we are unable to offer the **Role Management** feature, which is available with other identity providers such as IDIR MFA and BCeID.
 
 Each application requires separate user consent for authentication. Therefore, even if a user has an active BC Services Card session with one application, they must go through the authentication process again when logging into a different application, as **Single Sign-On (SSO)** is not supported in this case.
 

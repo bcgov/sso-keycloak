@@ -151,6 +151,22 @@ Uptime will calculate the total downtime for the alert
 
 
 ### Gold Keycloak SSO Prod End User Access Uptime
+
+| Month          | Downtime |
+| -------------- | -------  |
+| **January   2025** | **0s** |
+| February  2025 |        |
+| March     2025 |        |
+| April     2025 |  |
+| May       2025 |  |
+| June      2025 |  |
+| July      2025 |  |
+| August    2025 |  |
+| September 2025 |  |
+| October   2025 |  |
+| November  2025 |  |
+| December  2025 |  |
+
 | Month          | Downtime |
 | -------------- | -------  |
 | January   2024 | 0s       |
@@ -163,8 +179,8 @@ Uptime will calculate the total downtime for the alert
 | August    2024 |  0s  |
 | September 2024 | 0s |
 | October   2024 | 0s |
-| **November  2024** | **0s** |
-| December  2024 |  |
+| November  2024 | 0s |
+| December  2024 | 0s |
 
 **Note**: April 2024 alerts look like they were due to an uptime false alarm.
 
@@ -185,6 +201,23 @@ Uptime will calculate the total downtime for the alert
 
 ### Gold KeyCloak SSO Prod and IDIR siteminder Uptime
 
+| Month          | Downtime |
+| -------------- | -------  |
+| **January   2025** | **9m 28s** |
+| February  2025 |        |
+| March     2025 |        |
+| April     2025 |  |
+| May       2025 |  |
+| June      2025 |  |
+| July      2025 |  |
+| August    2025 |  |
+| September 2025 |  |
+| October   2025 |  |
+| November  2025 |  |
+| December  2025 |  |
+
+Note: January outage was due to a testing password renewal and did not effect clients
+
 | Month          | Downtime  |
 | -------------- | --------- |
 | January   2024 | 1h 3m 19s |
@@ -196,8 +229,8 @@ Uptime will calculate the total downtime for the alert
 | August    2024 |  0s  |
 | September 2024 | 0s |
 | October   2024 | 0s |
-| **November  2024** | **0s** |
-| December  2024 |  |
+| November  2024 | 0s |
+| December  2024 | 0s |
 
 **Note**: April 2024 alerts look like they were due to an uptime false alarm.
 
@@ -216,6 +249,73 @@ Uptime will calculate the total downtime for the alert
 | November  2023 | 0h25m28s |
 | December  2023 | 0h06m18s |
 
+## 2025
+
+
+##### P1 Stats
+| Month      | Number of Alerts | Acknowledge Time | Resolve Time    | Notes |
+| :---        |     :----:   |   :----:   |          ---: |---: |
+| January   | 1 | 40s | 9m 26s | No actual outage, uptime test acount password had been updated  |
+| February  |  |  |  |   |
+| March  |  |  |  |   |
+| April  |  |  |  |   |
+| May  |  |  |  |   |
+| June  |  |  |  |   |
+| July  |  |  |  |   |
+| August |  |  |  |   |
+| September   |  |  |  |   |
+| October  |  |  |  |   |
+| November  |  |  |  |   |
+| December  |  |  |  |   |
+
+##### P2 Stats
+| Month      | Number of Alerts | Acknowledge Time | Resolve Time    | Notes |
+| :---        |     :----:   |   :----:   |          ---: |---: |
+| January   | 0 | NA | NA | NA  |
+| February  |  |  |  |   |
+| March  |  |  |  |   |
+| April  |  |  |  |   |
+| May  |  |  |  |   |
+| June  |  |  |  |   |
+| July  |  |  |  |   |
+| August |  |  |  |   |
+| September   |  |  |  |   |
+| October  |  |  |  |   |
+| November  |  |  |  |   |
+| December  |  |  |  |   |
+
+##### P3 Stats
+| Month      | Number of Alerts | Acknowledge Time | Resolve Time    | Notes |
+| :---        |     :----:   |   :----:   |          ---: |---: |
+| January   | 1 | 26s | 5m 5s | dev or test uptime test account password update caused a false alert  |
+| February  |  |  |  |   |
+| March  |  |  |  |   |
+| April  |  |  |  |   |
+| May  |  |  |  |   |
+| June  |  |  |  |   |
+| July  |  |  |  |   |
+| August |  |  |  |   |
+| September   |  |  |  |   |
+| October  |  |  |  |   |
+| November  |  |  |  |   |
+| December  |  |  |  |   |
+
+##### P4 Stats
+| Month      | Number of Alerts | Acknowledge Time | Resolve Time    | Notes |
+| :---        |     :----:   |   :----:   |          ---: |---: |
+| January   | 0 | NA | NA | NA  |
+| February  |  |  |  |   |
+| March  |  |  |  |   |
+| April  |  |  |  |   |
+| May  |  |  |  |   |
+| June  |  |  |  |   |
+| July  |  |  |  |   |
+| August |  |  |  |   |
+| September   |  |  |  |   |
+| October  |  |  |  |   |
+| November  |  |  |  |   |
+| December  |  |  |  |   |
+
 ## 2024
 
 ##### P1 Stats
@@ -232,7 +332,7 @@ Uptime will calculate the total downtime for the alert
 | September | 1 | 27m 9s | 29m 44s | The prod uptime DNS check was triggered during the database upgrade. Preemptive failover in effect so no downt time. Sept 18 2024  |
 | October   | 1 | 3m 17s | 3m 17s |  Prod service uptime failed a check Oct 23.  Short network outage that did not trigger a failover to GoldDR |
 | November  | 0 | NA | NA | NA  |
-| December  |  |  |  |   |
+| December  | 0 | NA | NA | NA  |
 
 
 ##### P2 Stats
@@ -250,7 +350,7 @@ Uptime will calculate the total downtime for the alert
 | September | 0 | NA | NA | NA  |
 | October   | 7 | 2m 10s | 2m 10s |  All CPU spikes due to a pod roll over, no service disruption |
 | November  | 0 | NA | NA | NA  |
-| December  |  |  |  |   |
+| December  | 0 | NA | NA | NA  |
 
 #### Priority 3 aka Moderate Impact to Service --
 Pathfinder Team commits to acknowledging issue within 15 -30 mins and resolving as quickly as possible
@@ -268,7 +368,7 @@ Pathfinder Team commits to acknowledging issue within 15 -30 mins and resolving 
 | September | 2 | 1m 36s | 1m 47s | Dev uptime alerts triggered during the Quarkus upgrade Sept 4. Not a real outage, alerts needed to be upgraded to work with Quarkus |
 | October   | 0 | NA | NA | NA  |
 | November  | 0 | NA | NA | NA  |
-| December  |  |  |  |   |
+| December  | 3 | 5m 11s | 5m 20s | Pod roll over warnings, not client impact  |
 
 #### Priority 4 aka Low Impact to Service --
 Pathfinder Team commits to acknowledging issue within 15 -30 mins and resolving as quickly as possible
@@ -286,7 +386,7 @@ Pathfinder Team commits to acknowledging issue within 15 -30 mins and resolving 
 | September | 4 | 3m 26s | 3m 59s | Sysdig storrage warning alerts on Sept 4 and 6.  No outgage or client impact.  |
 | October   | 19 | 2m 45s | 3m 37s | No service impact. All storage warnings and CPU spikes  |
 | November  | 6 | 2m 4s | 4m 19s | No service impact. All storage warnings and CPU spikes  |
-| December  |  |  |  |   |
+| December  | 6 | 2m 15s | 3m 9s | Pod rolovers and elevated CPU warnings associated with them, not client impace. |
 
 
 ## 2023
