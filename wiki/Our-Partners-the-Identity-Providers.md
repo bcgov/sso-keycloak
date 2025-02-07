@@ -8,18 +8,17 @@ Your technical team may need to know the identity provider attributes provided, 
 ## What are Identity Providers?
 
 [Identity providers](Useful-References#identity-provider) are directories of user accounts with details about those users, called attributes. The ones available to Pathfinder SSO Clients are:
-- **IDIR:** IDIR accounts are given to individuals who work for the B.C. government.
-    * User Experience: IDIR account with the added the benefit of MFA (multi-factor authentication). i.e use an IDIR username, password and mfa for logging in.
-    * Architecture/Developer note: The authentication mechanism is azure cloud [More on MFA registration](https://intranet.gov.bc.ca/thehub/ocio/ocio-enterprise-services/information-security-branch/information-security-mfa/mfa-registration)
+* **IDIR:** IDIR accounts are given to individuals who work for the B.C. government.
+  * User Experience: IDIR account with the added the benefit of MFA (multi-factor authentication). i.e use an IDIR username, password and mfa for logging in.
+  * Architecture/Developer note: The authentication mechanism is azure cloud [More on MFA registration](https://intranet.gov.bc.ca/thehub/ocio/ocio-enterprise-services/information-security-branch/information-security-mfa/mfa-registration)
 
-- **BCeID** BCeID Accounts enable people to access government services using a single identifier and password.[More on BCeID ](https://www2.gov.bc.ca/gov/content/governments/services-for-government/information-management-technology/identity-and-authentication-services/bceid-authentication-service)
+* **BCeID** BCeID Accounts enable people to access government services using a single identifier and password.[More on BCeID ](https://www2.gov.bc.ca/gov/content/governments/services-for-government/information-management-technology/identity-and-authentication-services/bceid-authentication-service)
 
-- **BCSC (BC Services Card)**	The BC Services Card provides access to government services for B.C. residents [More on BC Services Card App](https://www2.gov.bc.ca/gov/content/governments/government-id/bcservicescardapp)
+* **BCSC (BC Services Card)**	The BC Services Card provides access to government services for B.C. residents [More on BC Services Card App](https://www2.gov.bc.ca/gov/content/governments/government-id/bcservicescardapp)
 
-- **Digital Credential**	Digital credentials are the digital equivalents of things like licenses, identities and permits. Use them for secure access, streamlined service delivery, and more. Learn more about [how digital credentials can improve your service](https://digital.gov.bc.ca/digital-trust/about/what-are-digital-credentials/)
+* **Digital Credential**	Digital credentials are the digital equivalents of things like licenses, identities and permits. Use them for secure access, streamlined service delivery, and more. Learn more about [how digital credentials can improve your service](https://digital.gov.bc.ca/digital-trust/about/what-are-digital-credentials/)
 
-
-- **GitHub associated with BC Gov Org**	 Allows login of GitHub BC Gov Org member. At the time of writing, production approval for this requires you to obtain an exemption to the IM/IT standards. [IM/IT Standards Frequently Asked Questions](https://www2.gov.bc.ca/gov/content/governments/services-for-government/policies-procedures/im-it-standards/im-it-standards-faqs)
+* **GitHub associated with BC Gov Org**	 Allows login of GitHub BC Gov Org member. At the time of writing, production approval for this requires you to obtain an exemption to the IM/IT standards. [IM/IT Standards Frequently Asked Questions](https://www2.gov.bc.ca/gov/content/governments/services-for-government/policies-procedures/im-it-standards/im-it-standards-faqs)
 
 
 Many times, our clients ask, which identity provider should we use for our product. We can't really make that decision for you and with our partners, can refer you to a few helpful links
