@@ -9,7 +9,6 @@ Your technical team may need to know the identity provider attributes provided, 
 
 [Identity providers](Useful-References#identity-provider) are directories of user accounts with details about those users, called attributes. The ones available to Pathfinder SSO Clients are:
 * **IDIR:** IDIR accounts are given to individuals who work for the B.C. government.
-
     * User Experience: IDIR account with the added the benefit of MFA (multi-factor authentication). i.e use an IDIR username, password and mfa for logging in.
 
     * Architecture/Developer note: The authentication mechanism is azure cloud [More on MFA registration](https://intranet.gov.bc.ca/thehub/ocio/ocio-enterprise-services/information-security-branch/information-security-mfa/mfa-registration)
