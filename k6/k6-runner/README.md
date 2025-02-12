@@ -1,5 +1,6 @@
 # K6 Runner for Load Tests
 
+# DEPRECATED: as of February 2025 in favor of the benchmark tests in the [folder/(../../benchmark/)
 ## Requirements
 
 - `k6-patroni` timescaleDB built on top of postgreSQL managed by patroni
