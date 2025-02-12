@@ -1,5 +1,8 @@
 # Overview
 
+
+# DEPRECATED: as of February 2025 in favor of the benchmark tests in the [folder/(../benchmark/)
+
 This folder contains load tests for our sso application
 
 ## Setting up
