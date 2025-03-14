@@ -8,7 +8,7 @@
                 <ul class="kc-social-links">
                     <#assign idpContext = login.username?eval_json>
                     <#list social.providers as p>
-                        <#if idpContext[p.alias]?has_content && idpContext[p.alias]["enabled"] == "true" && !(idpContext[p.alias])>
+                        <#if idpContext[p.alias]?has_content && idpContext[p.alias]["enabled"] == "true" && !(idpContext[p.alias]["social"]??)>
                         <li class="kc-social-link">
                             <a id="social-${p.alias}" class="bcgov-primary mb-2" type="button" href="${p.loginUrl}">
                                 <span class="kc-social-title ${properties.kcFormSocialAccountNameClass!}">${p.displayName!}</span>
