@@ -204,6 +204,11 @@
   color: #2D2D2D;
 }
 
+.external-idp-links li.external-idp-link:first-of-type {
+  border-top: 1px solid #b3b1b3;
+  padding-top: 20px;
+}
+
 
 span.icon-spacer {
   height: 25px;
@@ -230,13 +235,6 @@ span.email-code-icon {
   content: url('../img/email.svg');
 }
 
-
-hr.separator {
-  margin: 0;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-  border-bottom: 1px solid #b3b1b3;
-}
 
 #kc-social-providers .kc-social-links .kc-social-link a.bcgov-secondary[type='button']:hover {
   background-color: #d8d8d8;

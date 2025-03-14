@@ -38,13 +38,11 @@
                         </li>
                         </#if>
                     </#list>
-
-
-                    <hr class="separator" />
-
+                    </ul>
+                    <ul class="kc-social-links external-idp-links">
                     <#list social.providers as p>
                         <#if idpContext[p.alias]?has_content && idpContext[p.alias]["enabled"] == "true" && idpContext[p.alias]["social"]??>
-                        <li class="kc-social-link">
+                        <li class="kc-social-link external-idp-link">
                             <a id="social-${p.alias}" class="bcgov-secondary mb-2" type="button" href="${p.loginUrl}">
                                 <#if p.alias == "google">
                                     <span class="google-icon icon-spacer"></span>
