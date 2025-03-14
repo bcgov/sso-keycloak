@@ -4,11 +4,14 @@
         ${msg("loginAccountTitle")}
     <#elseif section = "socialProviders">
         <#if social.providers?? && (login.username)??>
+            <#--  Flag to add separator between idps if bcgov IDPs and social IDPs are both used  -->
+            <#assign addIdpSeparator = false>
             <div id="kc-social-providers" class="${properties.kcFormSocialAccountSectionClass!}">
                 <ul class="kc-social-links">
                     <#assign idpContext = login.username?eval_json>
                     <#list social.providers as p>
                         <#if idpContext[p.alias]?has_content && idpContext[p.alias]["enabled"] == "true" && !(idpContext[p.alias]["social"]??)>
+                        <#assign addIdpSeparator = true>
                         <li class="kc-social-link">
                             <a id="social-${p.alias}" class="bcgov-primary mb-2" type="button" href="${p.loginUrl}">
                                 <span class="kc-social-title ${properties.kcFormSocialAccountNameClass!}">${p.displayName!}</span>
@@ -42,6 +45,11 @@
                     <ul class="kc-social-links external-idp-links">
                     <#list social.providers as p>
                         <#if idpContext[p.alias]?has_content && idpContext[p.alias]["enabled"] == "true" && idpContext[p.alias]["social"]??>
+                        <#--  Add separator above first social IDP  -->
+                        <#if addIdpSeparator>
+                            <hr class="separator" />
+                            <#assign addIdpSeparator = false>
+                        </#if>
                         <li class="kc-social-link external-idp-link">
                             <a id="social-${p.alias}" class="bcgov-secondary mb-2" type="button" href="${p.loginUrl}">
                                 <#if p.alias == "google">
