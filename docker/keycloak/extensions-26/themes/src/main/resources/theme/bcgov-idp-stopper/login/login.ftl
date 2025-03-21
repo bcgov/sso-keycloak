@@ -54,7 +54,7 @@
                             <a id="social-${p.alias}" class="bcgov-secondary mb-2" type="button" href="${p.loginUrl}">
                                 <#if p.alias == "google">
                                     <span class="google-icon icon-spacer"></span>
-                                <#elseif p.alias == "entra-personal">
+                                <#elseif p.alias == "microsoft">
                                     <span class="microsoft-icon icon-spacer"></span>
                                 <#elseif p.alias == "apple">
                                     <span class="apple-icon icon-spacer"></span>
