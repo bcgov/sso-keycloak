@@ -44,6 +44,7 @@ export const authorize = async (oidcProvider: Provider) => {
               params: debug(params),
               prompt: debug(prompt),
             },
+            error: '',
           });
         }
         case 'consent': {
@@ -80,6 +81,20 @@ export const generateOtp = async (oidcProvider: Provider) => {
       } = await oidcProvider.interactionDetails(req, res);
       if (name === 'login') {
         const { email } = req.body;
+        if (!email) {
+          return res.render('signin', {
+            uid,
+            details: prompt.details,
+            params,
+            title: 'Sign-in',
+            session: session ? debug(session) : undefined,
+            dbg: {
+              params: debug(params),
+              prompt: debug(prompt),
+            },
+            error: 'Email is required!',
+          });
+        }
         const otp = crypto.getRandomValues(new Uint32Array(1))[0].toString().slice(-6);
         const otpExpiry = Date.now() + 5 * 60 * 1000; // Set OTP expiry time to 5 minutes
 
@@ -94,6 +109,7 @@ export const generateOtp = async (oidcProvider: Provider) => {
         return res.render('otp', {
           uid,
           email,
+          error: '',
         });
       }
     } catch (error) {
@@ -113,10 +129,19 @@ export const login = async (oidcProvider: Provider) => {
 
       if (name === 'login') {
         const { email, otp } = req.body;
+
+        if (!otp) {
+          return res.render('otp', {
+            uid: req.params.uid,
+            email,
+            error: 'OTP is required!',
+          });
+        }
+
         const storedOtp = otps.get(email);
         if (!storedOtp || storedOtp.otp !== otp || Date.now() > storedOtp.expiry) {
           result = {
-            error: 'invalid_grant',
+            error: 'Invalid or expired OTP',
             error_description: 'Invalid or expired OTP',
           };
         } else {

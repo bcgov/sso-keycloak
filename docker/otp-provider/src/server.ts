@@ -1,11 +1,12 @@
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import Provider, { Configuration, ResponseType } from 'oidc-provider';
 import { setRoutes } from './routes.ts';
 import { dirname } from 'desm';
 import * as path from 'node:path';
 import bodyParser from 'body-parser';
-import morgan from 'morgan';
 import cors from 'cors';
+import { generateEvents } from './events.ts';
+import SessionNotFound from 'oidc-provider';
 
 const __dirname = dirname(import.meta.url);
 
@@ -27,8 +28,6 @@ app.use(bodyParser.urlencoded());
 
 // parse application/json
 app.use(bodyParser.json());
-
-app.use(morgan('combined'));
 
 app.use(cors());
 
@@ -56,6 +55,28 @@ const clientsConfig: Configuration = {
     devInteractions: { enabled: false },
     introspection: { enabled: true },
     userinfo: { enabled: false },
+    rpInitiatedLogout: {
+      enabled: true,
+      logoutSource: async (ctx, form) => {
+        // auto submit to skip the logout confirmation page
+        form = form.replace('</form>', '<input type="hidden" name="logout" value="yes"/></form>');
+        ctx.body = `
+  <!DOCTYPE html>
+  <head>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () { document.forms[0].submit() });
+    </script>
+  </head>
+  <body>
+    ${form}
+    <noscript>
+      <button autofocus type="submit" form="op.logoutForm" value="yes" name="logout">Continue</button>
+    </noscript>
+  </body>
+  </html>
+`;
+      },
+    },
     resourceIndicators: {
       enabled: true,
       getResourceServerInfo: async (ctx, resourceIndicator, client) => {
@@ -98,6 +119,18 @@ app.use('/', await setRoutes(provider));
 
 app.use(provider.callback());
 
+generateEvents(provider);
+
 app.listen(PORT, () => {
   console.log(`OIDC Provider is running on http://localhost:${PORT}`);
+});
+
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  let errorMessage = 'Internal Server Error';
+  if (err?.error === 'invalid_request') {
+    errorMessage = 'Invalid or expired session found so please login again';
+  }
+  res.render('error', {
+    error: errorMessage,
+  });
 });
