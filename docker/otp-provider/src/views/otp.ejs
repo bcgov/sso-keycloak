@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" class="login-pf">
+
+<%- include("./partials/header") %>
+
+<body>
+  <header>
+    <div class="banner">
+      <span></span>
+      <h1>Pathfinder SSO</h1>
+    </div>
+    <div class="other">&nbsp;</div>
+  </header>
+  <div class="login-pf-page">
+    <div id="kc-header" class="login-pf-page-header">
+      <div id="kc-header-wrapper" class="">
+        Secure OTP Login
+      </div>
+    </div>
+    <div class="card-pf">
+      <header class="login-pf-header">
+        <h1 id="kc-page-title">Enter OTP:</h1>
+      </header>
+      <div id="kc-content">
+        <div id="kc-content-wrapper">
+          <div id="kc-form">
+            <div id="kc-form-wrapper">
+              <form action="/interaction/<%= uid %>/login" method="POST" autocomplete="off" id="kc-form-login">
+                <div class="form-group">
+                  <label for="otp" class="pf-c-form__label pf-c-form__label-text">OTP</label>
+                  <input tabindex="2" id="otp" class="pf-c-form-control" name="otp" value="" type="text" autofocus="" autocomplete="otp" aria-invalid="" dir="ltr">
+                </div>
+                <div id="kc-form-buttons" class="form-group">
+                  <input type="hidden" id="id-hidden-input" name="credentialId">
+                  <input type="hidden" name="email" value="<%= email %>">
+                  <input tabindex="7" class="pf-c-button pf-m-primary pf-m-block btn-lg" name="login" id="kc-login" type="submit" value="Submit">
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+
+</html>

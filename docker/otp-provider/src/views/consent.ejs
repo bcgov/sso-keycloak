@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" class="login-pf">
+
+<%- include("./partials/header") %>
+
+<body>
+  <header>
+    <div class="banner">
+      <span></span>
+      <h1>Pathfinder SSO</h1>
+    </div>
+    <div class="other">&nbsp;</div>
+  </header>
+  <div class="login-pf-page">
+    <div id="kc-header" class="login-pf-page-header">
+      <div id="kc-header-wrapper" class="">
+        Secure OTP Login
+      </div>
+    </div>
+    <div class="card-pf">
+      <header class="login-pf-header">
+        <h1 id="kc-page-title">Consent Required!</h1>
+      </header>
+      <div id="kc-content">
+        <div id="kc-content-wrapper">
+          <div id="kc-form">
+            <div id="kc-form-wrapper">
+              <form action="/interaction/<%= uid %>/confirm" method="POST" autocomplete="off" id="kc-form-login">
+                <div class="form-group">
+                  <span>You have successfully verified your OTP. You can now proceed to the next step.
+                    Click the button below to continue.</span>
+                </div>
+                <div id="kc-form-buttons" class="form-group">
+                  <input tabindex="7" class="pf-c-button pf-m-primary pf-m-block btn-lg" name="login" id="kc-login" type="submit" value="Login">
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+
+</html>
