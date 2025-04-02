@@ -47,6 +47,11 @@ public class IdentityProviderStopForm implements Authenticator {
           data.put("tooltip", tooltip);
         }
 
+        String social = ridp.getConfig().get("social");
+        if ("true".equals(social)) {
+          data.put("social", social);
+        }
+
         idpContext.put(oidcAlias, data);
       }
     }
