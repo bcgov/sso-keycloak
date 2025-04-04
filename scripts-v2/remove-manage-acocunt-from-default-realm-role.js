@@ -19,7 +19,7 @@ async function main() {
 
   const allRealms = await client.realms.find({});
 
-  for (let realm of allRealms.slice(0,3)) {
+  for (let realm of allRealms) {
     const realmName = realm.realm;
     console.log(`Checking for default role in realm ${realmName}...`);
 
