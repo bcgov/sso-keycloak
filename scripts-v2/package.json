@@ -1,0 +1,16 @@
+{
+  "name": "scripts-v2",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "remove-manage-acocunt-from-default-realm-role.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@keycloak/keycloak-admin-client": "^26.1.4",
+    "dotenv": "^16.4.7"
+  }
+}
