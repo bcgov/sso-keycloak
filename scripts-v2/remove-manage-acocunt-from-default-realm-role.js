@@ -2,7 +2,7 @@ import KcAdminClient from '@keycloak/keycloak-admin-client';
 import dotenv from 'dotenv';
 dotenv.config();
 
-const { DEV_KEYCLOAK_USERNAME, DEV_KEYCLOAK_PASSWORD, BASE_KC_URL } = process.env;
+const { KEYCLOAK_USERNAME, KEYCLOAK_PASSWORD, BASE_KC_URL } = process.env;
 
 async function main() {
   const client = new KcAdminClient({
@@ -11,8 +11,8 @@ async function main() {
   });
 
   await client.auth({
-    username: DEV_KEYCLOAK_USERNAME,
-    password: DEV_KEYCLOAK_PASSWORD,
+    username: KEYCLOAK_USERNAME,
+    password: KEYCLOAK_PASSWORD,
     grantType: 'password',
     clientId: 'admin-cli',
   });
