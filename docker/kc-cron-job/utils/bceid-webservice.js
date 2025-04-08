@@ -121,5 +121,7 @@ async function checkUserExistsAtIDIM({ property = 'userGuid', matchKey = '', env
 }
 
 module.exports = {
+  getWebServiceInfo,
+  generateXML,
   checkUserExistsAtIDIM
 };
