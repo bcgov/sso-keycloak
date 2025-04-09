@@ -43,6 +43,7 @@ const callSoapService = async (user) => {
 const verifyKeycloakUsers = async (name, start, callback) => {
   const suspeciousUsers = [];
   const max = 100;
+  let total = 0;
   let first = start;
   const adminClient = await getAdminClient(env);
   const username = '@idir';
@@ -50,13 +51,15 @@ const verifyKeycloakUsers = async (name, start, callback) => {
   try {
     while (true) {
       const users = await adminClient.users.find({ realm: 'standard', username, first, max });
+      const count = users.length;
+      total += count;
       if (users.length === 0) break;
 
-      for (const user of users) {
-        console.log('Processing user:', user.username, user.email);
-        const { attributes } = user;
+      for (let x = 0; x < users.length; x++) {
+        console.log(`[${name}]Processing user:`, users[x].username, users[x].email);
+        const { attributes } = users[x];
         if (attributes?.idir_username) {
-          const { data: body } = await callSoapService(user);
+          const { data: body } = await callSoapService(users[x]);
 
           const result = await parseStringSync(body);
           const data = _.get(
@@ -70,27 +73,31 @@ const verifyKeycloakUsers = async (name, start, callback) => {
 
           if (status === 'Success') {
             const email = _.get(data, 'accountList.0.BCeIDAccount.0.contact.0.email.0.value.0');
-            if (!user.email || !email) {
+            if (!users[x].email || !email) {
               continue;
             }
-            if (user.email.toLowerCase() !== email.toLowerCase()) {
-              console.log('Mismatch:', user.username, user.email, email);
+            if (users[x].email.toLowerCase() !== email.toLowerCase()) {
+              console.log('Mismatch:', users[x].username, users[x].email, email);
               suspeciousUsers.push({
-                username: user.username,
-                kcEmail: user.email,
+                username: users[x].username,
+                kcEmail: users[x].email,
                 bceidEmail: email
               });
             }
           } else {
-            console.log('Skipping user:', user.username);
+            console.log('Skipping user:', users[x].username);
             console.log('Status:', status);
             console.log('Failure Code:', _.get(data, 'failureCode.0'));
             continue;
           }
         }
       }
+      // each runner can process records up to 10000
+      if (count < max || total === 10000) break;
+
       await adminClient.reauth();
-      first += max;
+      first = first + max;
+      console.log(`[${name}] completed processing ${first} users`);
     }
     callback(null, { name, start, total: suspeciousUsers.length, suspeciousUsers });
   } catch (err) {
