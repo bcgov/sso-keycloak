@@ -154,10 +154,10 @@ Uptime will calculate the total downtime for the alert
 
 | Month          | Downtime |
 | -------------- | -------  |
-| **January   2025** | **0s** |
-| February  2025 |        |
-| March     2025 |        |
-| April     2025 |  |
+| January   2025 |    0s    |
+| February  2025 |    0s    |
+| March     2025 |    5m 8s |
+| **April     2025** | **10m 30s**  |
 | May       2025 |  |
 | June      2025 |  |
 | July      2025 |  |
@@ -203,10 +203,10 @@ Uptime will calculate the total downtime for the alert
 
 | Month          | Downtime |
 | -------------- | -------  |
-| **January   2025** | **9m 28s** |
-| February  2025 |        |
-| March     2025 |        |
-| April     2025 |  |
+| January   2025 |   9m 28s |
+| February  2025 |    0s    |
+| March     2025 |   5m 14s |
+| **April     2025** | **28m 50s** |
 | May       2025 |  |
 | June      2025 |  |
 | July      2025 |  |
@@ -256,9 +256,9 @@ Note: January outage was due to a testing password renewal and did not effect cl
 | Month      | Number of Alerts | Acknowledge Time | Resolve Time    | Notes |
 | :---        |     :----:   |   :----:   |          ---: |---: |
 | January   | 1 | 40s | 9m 26s | No actual outage, uptime test acount password had been updated  |
-| February  |  |  |  |   |
-| March  |  |  |  |   |
-| April  |  |  |  |   |
+| February  | 0 | NA | NA | NA  |
+| March  | 4 |  | 5m 50s | All related to short outage caused by production upgrade.  Also many related to BCeID checks |
+| April  | 5 | 8m 24s | 19m 22s | Caused by network outage on April 13 which resulted in successful switch to GoldDR and an IDIR login failure on April 22  |
 | May  |  |  |  |   |
 | June  |  |  |  |   |
 | July  |  |  |  |   |
@@ -272,9 +272,9 @@ Note: January outage was due to a testing password renewal and did not effect cl
 | Month      | Number of Alerts | Acknowledge Time | Resolve Time    | Notes |
 | :---        |     :----:   |   :----:   |          ---: |---: |
 | January   | 0 | NA | NA | NA  |
-| February  |  |  |  |   |
-| March  |  |  |  |   |
-| April  |  |  |  |   |
+| February  | 2 | 31s | 31s | CPU spike on Feb 18, no user impact |
+| March  | 0 | NA | NA | NA  |
+| April  | 0 | NA | NA | NA  |
 | May  |  |  |  |   |
 | June  |  |  |  |   |
 | July  |  |  |  |   |
@@ -288,9 +288,9 @@ Note: January outage was due to a testing password renewal and did not effect cl
 | Month      | Number of Alerts | Acknowledge Time | Resolve Time    | Notes |
 | :---        |     :----:   |   :----:   |          ---: |---: |
 | January   | 1 | 26s | 5m 5s | dev or test uptime test account password update caused a false alert  |
-| February  |  |  |  |   |
-| March  |  |  |  |   |
-| April  |  |  |  |   |
+| February  | 7 | NA | NA |  Some data lost on these alerts due to migration.  All patroni pod warnings and Dev warnings due to upgrade. Unavoidable impact to developers done after working hours.   |
+| March  | 5 | 14m 5s | 14m 5s | dev and test idir monitoring were down for short intervals  |
+| April  | 11 | NA | NA | Some data lost on these alerts due to migration.  Mostly due to dev and test IDIR checks failing.  |
 | May  |  |  |  |   |
 | June  |  |  |  |   |
 | July  |  |  |  |   |
@@ -304,9 +304,9 @@ Note: January outage was due to a testing password renewal and did not effect cl
 | Month      | Number of Alerts | Acknowledge Time | Resolve Time    | Notes |
 | :---        |     :----:   |   :----:   |          ---: |---: |
 | January   | 0 | NA | NA | NA  |
-| February  |  |  |  |   |
-| March  |  |  |  |   |
-| April  |  |  |  |   |
+| February  | 17 | NA | NA | Some data lost on these alerts due to migration. No enduser impact all internal warnings.  |
+| March  | 7 | 4m 42s | 1h 49m 25s | All warnings about elevated CPU and filesystem. No enduser impact  |
+| April  | 0 | NA | NA | NA  |
 | May  |  |  |  |   |
 | June  |  |  |  |   |
 | July  |  |  |  |   |
