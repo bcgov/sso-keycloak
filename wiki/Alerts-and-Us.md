@@ -20,8 +20,6 @@ Planned outages on the Openshift platform have minimal impact on our end user up
 
 The current availability commitments for the Gold/Gold DR Openshift service is 99.95%. Or no more than about 22 minutes of downtime per month.
 
-Reference: [Private Cloud Memorandum of Understanding](https://cloud.gov.bc.ca/private-cloud/our-services-in-private-cloud-paas/memorandum-of-understanding-for-private-cloud-paas/) and [Private Cloud Hosting Tiers](https://cloud.gov.bc.ca/private-cloud/our-products-in-the-private-cloud-paas/silver-and-gold-tier-platforms/)
-
 **BC Government Kamloops and Calgary Data Centers**
 
 It should be noted together with the Private Cloud/Platform Services Team we are reliant on the service levels agreed upon by the
@@ -90,7 +88,7 @@ The Pathfinder SSO Team responds to 4 levels of incidents. The team responds to 
 > Low - P4 - Any warning from Sysdig alerts that reflects less than perfect system health, but doesn't indicate any kind of outage in the near future. Response time: <45 minutes during business hours, best effort after hours.
 >
 
-As a very responsive team, you will see our metrics over the years and that we respond  very quickly [2022 and 2023 Recap of Alerts/Incidents](Alerts-and-Us.md#metrics)
+As a very responsive team, you will see our metrics over the years and that we respond  very quickly [2024 and 2025 Recap of Alerts/Incidents](Alerts-and-Us.md#metrics)
 
 It should be noted that our current version of Redhat SSO does not enable us to offer zero downtime aka [blue green deployments](https://docs.aws.amazon.com/whitepapers/latest/introduction-devops-aws/blue-green-deployments.html). As a result, when we need to upgrade our Redhat SSO version or need to apply a patch, we advise our clients in advance via [RocketChat](https://chat.developer.gov.bc.ca/channel/sso) with a note that active sessions may be lost ie: end users may have to login again.
 
