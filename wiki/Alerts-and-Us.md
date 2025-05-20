@@ -7,7 +7,7 @@ We often get questions about our Service Level Agreement and over the years we'v
 ## What is our Service
 Our service, the Pathfinder SSO ensures that our Keycloak server acts as an [Open ID Connect OIDC](https://openid.net/connect/) based Identity Provider, mediating with an enterprise user directory or 3rd-party SSO providers for identity information and applications via standards-based tokens and identity assertions.
 
-Specifically, we make use of the Red Hat SSO v 7.6.1.GA
+Specifically, we make use of the RHBK 26.0.9
 
 **Other systems we rely on**
 
@@ -16,9 +16,9 @@ The Pathfinder SSO service is hosted on the Private Cloud Openshift platform in 
 **Private Cloud Platform as a Service (Platform Services)**
 
 We are a subset of a larger ecosystem of services within BC Government. Our Keycloak server sits on the [BCGov Private Cloud Platform as a Service aka Openshift](https://cloud.gov.bc.ca/private-cloud).
-Planned outages on the Openshift platform have minimal impact on our end user uptime due to the Switchover/GoldDR process (15-30 minutes at most).
+Planned outages on the Openshift platform have minimal impact on our end user uptime due to the Switchover/GoldDR process (15 minutes at most).
 
-The current availability commitments for the Gold/Gold DR Openshift service is 99.95%.
+The current availability commitments for the Gold/Gold DR Openshift service is 99.95%. Or no more than about 22 minutes of downtime per month.
 
 Reference: [Private Cloud Memorandum of Understanding](https://cloud.gov.bc.ca/private-cloud/our-services-in-private-cloud-paas/memorandum-of-understanding-for-private-cloud-paas/) and [Private Cloud Hosting Tiers](https://cloud.gov.bc.ca/private-cloud/our-products-in-the-private-cloud-paas/silver-and-gold-tier-platforms/)
 
@@ -120,11 +120,6 @@ We do make use of uptime monitoring to help report out on our service levels. We
 **Cost**
 
 There is no cost for the BC Gov's Pathfinder SSO service for B.C. government ministries, central agencies, and Crown corporations in the 2023/2024 fiscal year.  There may be a cost model introduced in the following fiscal years. To receive updates, sign up for the [sso newsletter](https://digital.gov.bc.ca/sso-notifications/).
-
-**Future Thinking**
-As a [DevOps Agile team](https://aws.amazon.com/devops/what-is-devops/) , we want to minimize the downtime our clients have. Our current focus is to complete our Openshift Silver Keycloak migration to Openshift Gold Keycloak and then we hope to have cycles to innovate and pursue zero down time (eventually move to [ROSA](https://aws.amazon.com/rosa/) or maybe when Redhat SSO is linked with [Keycloak Quarkus](https://www.keycloak.org/downloads).
-Join our monthly open demos as we share where we are going.
-
 
 
 # Metrics
