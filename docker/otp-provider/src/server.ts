@@ -1,14 +1,14 @@
 import express, { Request, Response, NextFunction } from 'express';
 import Provider, { Configuration, ResponseType } from 'oidc-provider';
-import { setRoutes } from './routes.ts';
-import { dirname } from 'desm';
+import { setRoutes } from './routes';
 import * as path from 'node:path';
-import bodyParser from 'body-parser';
 import cors from 'cors';
-import { generateEvents } from './events.ts';
-import SessionNotFound from 'oidc-provider';
+import { generateEvents } from './events';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 
-const __dirname = dirname(import.meta.url);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const app = express();
 
@@ -23,11 +23,6 @@ app.set('trust proxy', true);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-// parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded());
-
-// parse application/json
-app.use(bodyParser.json());
 
 app.use(cors());
 
@@ -113,13 +108,13 @@ const clientsConfig: Configuration = {
   },
 };
 
-const provider = new Provider(`http://localhost:${PORT}`, clientsConfig);
-
-app.use('/', await setRoutes(provider));
-
-app.use(provider.callback());
-
-generateEvents(provider);
+(async () => {
+  const provider = new Provider(`http://localhost:${PORT}`, clientsConfig);
+  const routes = await setRoutes(provider);
+  app.use('/', routes);
+  app.use(provider.callback());
+  generateEvents(provider);
+})();
 
 app.listen(PORT, () => {
   console.log(`OIDC Provider is running on http://localhost:${PORT}`);

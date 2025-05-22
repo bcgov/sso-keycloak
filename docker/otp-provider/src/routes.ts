@@ -1,6 +1,6 @@
 import express, { Express, NextFunction, Request, Response } from 'express';
 import Provider from 'oidc-provider';
-import { authorize, generateOtp, login, userConsent, abortLogin } from './controllers/auth-controller.ts';
+import { authorize, generateOtp, login, userConsent, abortLogin } from './controllers/auth-controller';
 
 const otps = new Map();
 

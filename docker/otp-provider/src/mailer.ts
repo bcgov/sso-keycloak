@@ -1,7 +1,7 @@
 import https from 'https';
 import axios from 'axios';
 import url from 'url';
-import { config } from './config.ts';
+import { config } from './config';
 
 const { CHES_TOKEN_URL, CHES_EMAIL_URL, CHES_USERNAME, CHES_PASSWORD } = config;
 

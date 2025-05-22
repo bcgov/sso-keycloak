@@ -2,19 +2,17 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "ESNext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "isolatedModules": true,
     "forceConsistentCasingInFileNames": true,
+    "allowSyntheticDefaultImports": true,
     "outDir": "./build",
     "rootDir": "./src",
-    "typeRoots": ["./node_modules/@types", "./src/types"],
     "baseUrl": "./",
-    "lib": ["esnext"],
-    "allowImportingTsExtensions": true,
-    "noEmit": true
+    "lib": ["esnext"]
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "dist"]

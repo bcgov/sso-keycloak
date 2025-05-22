@@ -1,6 +1,6 @@
 import Provider from 'oidc-provider';
-import { config } from './config.ts';
-import logger from './winston.config.ts';
+import { config } from './config';
+import logger from './winston.config';
 import { NextFunction } from 'express';
 
 const { LOG_LEVEL } = config;

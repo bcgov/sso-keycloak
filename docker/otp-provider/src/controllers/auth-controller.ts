@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from 'express';
 import * as querystring from 'node:querystring';
 import { inspect } from 'node:util';
 import crypto from 'node:crypto';
-import { sendEmail } from '../mailer.ts';
+import { sendEmail } from '../mailer';
 
 const debug = (obj: any) =>
   querystring.stringify(
