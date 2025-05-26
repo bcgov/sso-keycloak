@@ -10,7 +10,6 @@ import { getClients } from './utils/queries';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import { config } from './config';
-import { create } from 'node_modules/axios/index.cjs';
 import { createMigrator } from './modules/sequelize/umzug';
 import logger from './modules/winston.config';
 import SequelizeAdapter from './modules/sequelize/adapter';

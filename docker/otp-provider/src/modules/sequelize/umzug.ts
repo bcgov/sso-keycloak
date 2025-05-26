@@ -1,16 +1,14 @@
 import sequelize from './config';
 import { dirname } from 'path';
 import { Umzug, SequelizeStorage } from 'umzug';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+import os from 'node:os';
 
 export const createMigrator = async (logger?: any) => {
   try {
+    const __dirname = dirname(import.meta.url.replace(os.platform() === 'win32' ? 'file:///' : 'file://', '')); //dirname(__filename);
     return new Umzug({
       migrations: {
-        glob: ['migrations/*.{ts,js}', { cwd: __dirname }],
+        glob: `${__dirname}/migrations/*.{ts,js}`,
         resolve: ({ name, path, context }) => {
           return {
             name,
