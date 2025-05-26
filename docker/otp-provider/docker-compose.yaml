@@ -10,7 +10,6 @@ services:
     ports:
       - '5432:5432'
     volumes:
-      - ./local/database-init.sql:/docker-entrypoint-initdb.d/database-init.sql
       - otp-db-data:/var/lib/postgresql/data
     networks:
       - sso-otp-network
