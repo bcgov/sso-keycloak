@@ -3,6 +3,13 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export const config = {
+  APP_URL: process.env.APP_URL || 'http://localhost:8080',
+  DB_HOSTNAME: process.env.DB_HOSTNAME || 'localhost',
+  DB_USERNAME: process.env.DB_USERNAME || 'postgres',
+  DB_PASSWORD: process.env.DB_PASSWORD || 'postgres',
+  DB_NAME: process.env.DB_NAME || 'otp',
+  DB_PORT: process.env.DB_PORT ? parseInt(process.env.DB_PORT, 10) : 5432,
+  DB_SSL: process.env.DB_SSL === 'true',
   CHES_TOKEN_URL: process.env.CHES_TOKEN_URL || '',
   CHES_EMAIL_URL: process.env.CHES_EMAIL_URL || '',
   CHES_USERNAME: process.env.CHES_USERNAME || '',

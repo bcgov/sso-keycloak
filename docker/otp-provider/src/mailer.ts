@@ -1,4 +1,3 @@
-import https from 'https';
 import axios from 'axios';
 import url from 'url';
 import { config } from './config';
