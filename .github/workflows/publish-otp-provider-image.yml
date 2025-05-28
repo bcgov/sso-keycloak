@@ -22,6 +22,7 @@ jobs:
           TF_STATE_BUCKET=xgr00q-dev-sso-otp-provider
           TF_STATE_BUCKET_KEY=sso-otp-provider.tfstate
           TF_STATE_DYNAMODB_TABLE=xgr00q-dev-otp-state-locking
+          CUSTOM_DOMAIN_NAME=otp-sandbox.loginproxy.gov.bc.ca
 
           EOF
       - name: Checkout repository
@@ -67,6 +68,7 @@ jobs:
           aws_ecr_uri="${{ steps.login-ecr.outputs.registry }}"
           ches_username="${{ secrets.CHES_USERNAME }}"
           ches_password="${{ secrets.CHES_PASSWORD }}"
+          custom_domain_name="${{ env.CUSTOM_DOMAIN_NAME }}"
           EOF
 
         working-directory: ./docker/otp-provider/terraform
