@@ -26,7 +26,7 @@ module "db" {
   # 0 is used to disable enhanced monitoring
   monitoring_interval  = 0
   skip_final_snapshot  = true
-  enable_http_endpoint = false
+  enable_http_endpoint = true
 
   serverlessv2_scaling_configuration = {
     max_capacity             = var.rds_max_capacity
