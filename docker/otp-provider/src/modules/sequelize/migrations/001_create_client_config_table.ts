@@ -1,6 +1,6 @@
 import { QueryInterface, DataTypes, Sequelize } from 'sequelize';
 
-const name = '001_client_config_table';
+const name = '001_create_client_config_table';
 
 export const up = async (queryInterface: QueryInterface) => {
   await queryInterface.createTable('ClientConfig', {

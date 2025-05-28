@@ -1,6 +1,6 @@
 import { QueryInterface, DataTypes, Sequelize } from 'sequelize';
 
-const name = '002_client_session_table';
+const name = '002_create_session_table';
 
 export const up = async (queryInterface: QueryInterface) => {
   await queryInterface.createTable('Session', {

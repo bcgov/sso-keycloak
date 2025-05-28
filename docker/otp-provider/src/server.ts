@@ -15,10 +15,12 @@ import logger from './modules/winston.config';
 import SequelizeAdapter from './modules/sequelize/adapter';
 import Keygrip from 'keygrip';
 
-const { APP_URL } = config;
+const { APP_URL, JWKS } = config;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+
+const jwks = JWKS || {};
 
 const app = express();
 
@@ -30,8 +32,6 @@ const PORT = 3000;
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-
-app.set('trust proxy', true);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -57,6 +57,7 @@ app.use(
 );
 
 const clientsConfig: Configuration = {
+  jwks,
   adapter: SequelizeAdapter,
   cookies: {
     keys: new Keygrip(process.env.COOKIE_SECRETS!?.split(','), 'sha256', 'base64'),

@@ -59,3 +59,4 @@ __pycache__
 site
 venv
 build
+secrets.auto.tfvars

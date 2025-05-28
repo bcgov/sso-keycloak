@@ -4,19 +4,19 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = ">= 5.80.0"
+      version = ">= 5.98.0"
     }
 
     random = {
       source  = "hashicorp/random"
-      version = ">= 3.4.3"
+      version = ">= 3.7.2"
     }
   }
 
   backend "s3" {
-    bucket         = "otp-provider-terraform"
-    key            = "terraform.tfstate"
-    region         = "us-east-1"
-    dynamodb_table = "otp-provider-terraform-lock"
+    bucket         = "xgr00q-dev-sso-otp-provider"
+    key            = "sso-otp-provider.tfstate"
+    region         = "ca-central-1"
+    dynamodb_table = "xgr00q-dev-otp-state-locking"
   }
 }

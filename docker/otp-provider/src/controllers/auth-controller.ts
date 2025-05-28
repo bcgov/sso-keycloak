@@ -2,8 +2,8 @@ import Provider from 'oidc-provider';
 import { NextFunction, Request, Response } from 'express';
 import * as querystring from 'node:querystring';
 import { inspect } from 'node:util';
-import crypto from 'node:crypto';
 import { sendEmail } from '../mailer';
+import { generateOtpWithExpiry, isOtpValid } from '../utils/helpers';
 
 const debug = (obj: any) =>
   querystring.stringify(
@@ -95,10 +95,9 @@ export const generateOtp = async (oidcProvider: Provider) => {
             error: 'Email is required!',
           });
         }
-        const otp = crypto.getRandomValues(new Uint32Array(1))[0].toString().slice(-6);
-        const otpExpiry = Date.now() + 5 * 60 * 1000; // Set OTP expiry time to 5 minutes
+        const { otp, expiresAt } = generateOtpWithExpiry();
 
-        otps.set(req.body?.email, { otp, expiry: otpExpiry });
+        otps.set(req.body?.email, { otp, expiry: expiresAt });
 
         sendEmail({
           to: [email],
@@ -139,7 +138,7 @@ export const login = async (oidcProvider: Provider) => {
         }
 
         const storedOtp = otps.get(email);
-        if (!storedOtp || storedOtp.otp !== otp || Date.now() > storedOtp.expiry) {
+        if (!storedOtp || storedOtp.otp !== otp || !isOtpValid(otp, storedOtp.expiry)) {
           result = {
             error: 'Invalid or expired OTP',
             error_description: 'Invalid or expired OTP',

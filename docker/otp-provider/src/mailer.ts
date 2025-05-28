@@ -2,7 +2,7 @@ import axios from 'axios';
 import url from 'url';
 import { config } from './config';
 
-const { CHES_TOKEN_URL, CHES_EMAIL_URL, CHES_USERNAME, CHES_PASSWORD } = config;
+const { CHES_TOKEN_URL, CHES_API_URL, CHES_USERNAME, CHES_PASSWORD } = config;
 
 interface EmailOptions {
   from?: string;
@@ -50,7 +50,7 @@ export const sendEmail = async ({ from = 'bcgov.sso@gov.bc.ca', to, body, ...res
     }
 
     const res = await axios.post(
-      CHES_EMAIL_URL,
+      CHES_API_URL,
       {
         // see https://ches.nrs.gov.bc.ca/api/v1/docs#operation/postEmail for options
         bodyType: 'text',
