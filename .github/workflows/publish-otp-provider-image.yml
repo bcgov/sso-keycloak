@@ -1,4 +1,4 @@
-name: Create and publish Otp Provider Docker image - Dev
+name: Create and publish Otp Provider Docker image
 
 on:
   push:
@@ -7,6 +7,7 @@ on:
 
 env:
   IMAGE_NAME: bcgov-sso/otp-provider
+  TF_VERSION: 1.2.0
 
 jobs:
   build-and-push-image:
@@ -14,6 +15,15 @@ jobs:
     runs-on: ubuntu-24.04
 
     steps:
+      - name: Set env to development
+        if: (github.ref == 'refs/heads/SSOTEAM-2352' && github.event_name == 'push')
+        run: |
+          cat >> $GITHUB_ENV <<EOF
+          TF_STATE_BUCKET=xgr00q-dev-sso-otp-provider
+          TF_STATE_BUCKET_KEY=sso-otp-provider.tfstate
+          TF_STATE_DYNAMODB_TABLE=xgr00q-dev-otp-state-locking
+
+          EOF
       - name: Checkout repository
         uses: actions/checkout@v3
 
@@ -37,3 +47,44 @@ jobs:
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
         working-directory: ./docker/otp-provider
+
+      - name: Terraform Variables
+        run: |
+          cat >"config.tf" <<EOF
+          terraform {
+            backend "s3" {
+              bucket         = "${{ env.TF_STATE_BUCKET }}"
+              key            = "${{ env.TF_STATE_BUCKET_KEY }}"
+              region         = "ca-central-1"
+              dynamodb_table = "${{ env.TF_STATE_DYNAMODB_TABLE }}"
+            }
+          }
+          EOF
+
+          cat >"ci.auto.tfvars" <<EOF
+          aws_ecr_uri="${{ steps.login-ecr.outputs.registry }}"
+          ches_username="${{ secrets.CHES_USERNAME }}"
+          ches_password="${{ secrets.CHES_PASSWORD }}"
+          EOF
+
+        working-directory: ./docker/otp-provider/terraform
+
+      - name: Terraform Init
+        id: init
+        run: terraform init -upgrade
+        working-directory: ./docker/otp-provider/terraform
+
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan -no-color
+        working-directory: ./docker/otp-provider/terraform
+        continue-on-error: true
+
+      - name: Terraform Plan Status
+        if: steps.plan.outcome == 'failure'
+        run: exit 1
+
+      # - name: Terraform Apply
+      #   if: github.event_name == 'push'
+      #   run: terraform apply -auto-approve
+      #   working-directory: ./docker/otp-provider/terraform
