@@ -33,5 +33,7 @@ jobs:
           REPOSITORY: ${{ env.IMAGE_NAME }}
           IMAGE_TAG: latest
         run: |
+          echo "Building and pushing Docker image to ECR..."
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+        working-directory: ./docker/otp-provider
