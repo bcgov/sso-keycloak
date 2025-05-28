@@ -3,7 +3,7 @@ name: Create and publish Otp Provider Docker image
 on:
   push:
     branches:
-      - 'SSOTEAM-2352'
+      - 'dev'
 
 env:
   IMAGE_NAME: bcgov-sso/otp-provider
@@ -16,7 +16,7 @@ jobs:
 
     steps:
       - name: Set env to development
-        if: (github.ref == 'refs/heads/SSOTEAM-2352' && github.event_name == 'push')
+        if: (github.ref == 'refs/heads/dev' && github.event_name == 'push')
         run: |
           cat >> $GITHUB_ENV <<EOF
           TF_STATE_BUCKET=xgr00q-dev-sso-otp-provider
