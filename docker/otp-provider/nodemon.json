@@ -1,6 +1,6 @@
 {
-  "watch": ["src"],
+  "watch": ["src", ".env"],
   "ext": "ts",
   "ignore": ["build"],
-  "exec": "ts-node --esm src/server.ts"
+  "exec": "tsx --env-file=.env src/server.ts"
 }

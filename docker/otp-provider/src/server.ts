@@ -1,16 +1,30 @@
 import express, { Request, Response, NextFunction } from 'express';
-import Provider, { Configuration, ResponseType } from 'oidc-provider';
-import { setRoutes } from './routes.ts';
-import { dirname } from 'desm';
+import Provider, { ClientMetadata, Configuration } from 'oidc-provider';
+import { setRoutes } from './routes';
 import * as path from 'node:path';
-import bodyParser from 'body-parser';
 import cors from 'cors';
-import { generateEvents } from './events.ts';
-import SessionNotFound from 'oidc-provider';
+import { generateEvents } from './events';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import { getClients } from './utils/queries';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
+import { config } from './config';
+import { createMigrator } from './modules/sequelize/umzug';
+import logger from './modules/winston.config';
+import SequelizeAdapter from './modules/sequelize/adapter';
+import Keygrip from 'keygrip';
 
-const __dirname = dirname(import.meta.url);
+const { APP_URL, JWKS, CORS_ORIGINS } = config;
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const jwks = JWKS || {};
 
 const app = express();
+
+app.use(helmet());
 
 app.use(express.static(__dirname + '/public'));
 
@@ -19,34 +33,36 @@ const PORT = 3000;
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-app.set('trust proxy', true);
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-// parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded());
 
-// parse application/json
-app.use(bodyParser.json());
+app.use(
+  cors({
+    origin: CORS_ORIGINS.split(',').map((origin) => origin.trim()),
+    methods: ['GET', 'POST'],
+  }),
+);
 
-app.use(cors());
+app.disable('x-powered-by');
 
-const clients = [
-  {
-    client_id: 'conf-client',
-    client_secret: 'secret',
-    grant_types: ['authorization_code', 'refresh_token'],
-    redirect_uris: ['http://localhost:3001'],
-    scope: 'openid email',
-    response_types: ['code'] as ResponseType[],
-    clientUri: 'http://localhost:3001',
-    post_logout_redirect_uris: ['http://localhost:3001'],
-  },
-];
+app.use(
+  rateLimit({
+    windowMs: 1 * 60 * 1000, // 1 minute
+    max: 100,
+    message: 'Too many requests, please try again later.',
+    standardHeaders: true,
+    legacyHeaders: false,
+    skipSuccessfulRequests: true,
+  }),
+);
 
 const clientsConfig: Configuration = {
+  jwks,
+  adapter: SequelizeAdapter,
+  cookies: {
+    keys: new Keygrip(process.env.COOKIE_SECRETS!?.split(','), 'sha256', 'base64'),
+  },
   clientAuthMethods: ['client_secret_basic', 'client_secret_post', 'none'],
-  clients,
   issueRefreshToken() {
     return true;
   },
@@ -113,24 +129,56 @@ const clientsConfig: Configuration = {
   },
 };
 
-const provider = new Provider(`http://localhost:${PORT}`, clientsConfig);
-
-app.use('/', await setRoutes(provider));
-
-app.use(provider.callback());
-
-generateEvents(provider);
-
-app.listen(PORT, () => {
-  console.log(`OIDC Provider is running on http://localhost:${PORT}`);
-});
-
-app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-  let errorMessage = 'Internal Server Error';
-  if (err?.error === 'invalid_request') {
-    errorMessage = 'Invalid or expired session found so please login again';
+(async () => {
+  try {
+    const migrator = await createMigrator(logger);
+    console.log('Migrating pending migrations:', await migrator.pending());
+    await migrator.up();
+    console.log('Database migration completed');
+  } catch (err) {
+    console.error('Error during database migration:', err);
   }
-  res.render('error', {
-    error: errorMessage,
+
+  const rawClients = await getClients([
+    'clientId',
+    'clientSecret',
+    'grantTypes',
+    'redirectUris',
+    'scope',
+    'responseTypes',
+    'clientUri',
+    'postLogoutRedirectUris',
+  ]);
+  const clients: ClientMetadata[] = rawClients.map((row: any) => ({
+    client_id: row.clientId,
+    client_secret: row.clientSecret,
+    grant_types: row.grantTypes,
+    redirect_uris: row.redirectUris,
+    scope: row.scope,
+    response_types: row.responseTypes,
+    client_uri: row.clientUri,
+    post_logout_redirect_uris: row.postLogoutRedirectUris,
+  }));
+  const provider = new Provider(APP_URL, {
+    ...clientsConfig,
+    clients,
   });
-});
+  const routes = await setRoutes(provider);
+  app.use('/', routes);
+  app.use(provider.callback());
+  generateEvents(provider);
+
+  app.listen(PORT, () => {
+    console.log(`OIDC Provider is running on ${APP_URL}`);
+  });
+
+  app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+    let errorMessage = 'Internal Server Error';
+    if (err?.error === 'invalid_request') {
+      errorMessage = 'Invalid or expired session found so please login again';
+    }
+    res.render('error', {
+      error: errorMessage,
+    });
+  });
+})();

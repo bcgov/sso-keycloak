@@ -1,0 +1,43 @@
+version: '3.9'
+services:
+  otp-db:
+    image: postgres:15
+    container_name: otp-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: otp
+    ports:
+      - '5432:5432'
+    volumes:
+      - otp-db-data:/var/lib/postgresql/data
+    networks:
+      - sso-otp-network
+  otp-provider:
+    image: sso-otp-provider:dev
+    container_name: otp-provider
+    environment:
+      DB_HOSTNAME: otp-db
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: otp
+      NODE_ENV: development
+      APP_URL: http://localhost:8080
+      CHES_EMAIL_URL: https://ches.api.gov.bc.ca/api/v1/email
+      CHES_TOKEN_URL: https://loginproxy.gov.bc.ca/auth/realms/comsvcauth/protocol/openid-connect/token
+      LOG_LEVEL: debug
+      COOKIE_SECRETS: 's3cr3t1,s3cr3t1,s3cr3t2'
+    ports:
+      - '8080:8080'
+    depends_on:
+      - otp-db
+    networks:
+      - sso-otp-network
+
+volumes:
+  otp-db-data:
+    driver: local
+
+networks:
+  sso-otp-network: {}

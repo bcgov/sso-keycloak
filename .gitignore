@@ -58,3 +58,5 @@ mds.json
 __pycache__
 site
 venv
+build
+secrets.auto.tfvars

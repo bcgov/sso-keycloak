@@ -7,7 +7,7 @@ yarn 1.22.4
 k6 0.34.1
 terraform 1.2.0
 terraform-docs 0.12.1
-tflint 0.28.1
+tflint 0.43.0
 java openjdk-21.0.1
 gradle 7.3.1
 postgres 14.2
