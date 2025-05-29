@@ -15,7 +15,7 @@ import logger from './modules/winston.config';
 import SequelizeAdapter from './modules/sequelize/adapter';
 import Keygrip from 'keygrip';
 
-const { APP_URL, JWKS } = config;
+const { APP_URL, JWKS, CORS_ORIGINS } = config;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -38,7 +38,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(
   cors({
-    origin: '*',
+    origin: CORS_ORIGINS.split(',').map((origin) => origin.trim()),
     methods: ['GET', 'POST'],
   }),
 );

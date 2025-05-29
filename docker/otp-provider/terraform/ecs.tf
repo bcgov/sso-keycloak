@@ -125,6 +125,10 @@ resource "aws_ecs_task_definition" "this" {
         {
           name  = "YARN_CACHE_FOLDER",
           value = "/tmp/yarn-cache"
+        },
+        {
+          name  = "CORS_ORIGINS",
+          value = var.cors_origins
         }
       ]
       secrets = [

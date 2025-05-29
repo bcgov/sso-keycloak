@@ -17,4 +17,5 @@ export const config = {
   NODE_ENV: process.env.NODE_ENV || 'development',
   PORT: process.env.PORT ? parseInt(process.env.PORT, 10) : 3000,
   JWKS: process.env.JWKS ? JSON.parse(process.env.JWKS) : {},
+  CORS_ORIGINS: process.env.CORS_ORIGINS || '',
 };

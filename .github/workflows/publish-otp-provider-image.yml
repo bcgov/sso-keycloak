@@ -23,6 +23,7 @@ jobs:
           TF_STATE_BUCKET_KEY=sso-otp-provider.tfstate
           TF_STATE_DYNAMODB_TABLE=xgr00q-dev-otp-state-locking
           CUSTOM_DOMAIN_NAME=otp-sandbox.loginproxy.gov.bc.ca
+          CORS_ORIGINS=https://dev.sandbox.loginproxy.gov.bc.ca,https://test.sandbox.loginproxy.gov.bc.ca,https://sandbox.loginproxy.gov.bc.ca,https://sso-playground.apps.gold.devops.gov.bc.ca
 
           EOF
       - name: Checkout repository
@@ -69,6 +70,7 @@ jobs:
           ches_username="${{ secrets.CHES_USERNAME }}"
           ches_password="${{ secrets.CHES_PASSWORD }}"
           custom_domain_name="${{ env.CUSTOM_DOMAIN_NAME }}"
+          cors_origins="${{ env.CORS_ORIGINS }}"
           EOF
 
         working-directory: ./docker/otp-provider/terraform

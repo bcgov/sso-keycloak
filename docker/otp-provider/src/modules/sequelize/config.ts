@@ -13,7 +13,7 @@ const config: any = {
     password: DB_PASSWORD || 'postgres',
     database: DB_NAME || 'otp',
     port: DB_PORT,
-    logging: true,
+    logging: false,
     dialectOptions: {},
     omitNull: false,
     define: {

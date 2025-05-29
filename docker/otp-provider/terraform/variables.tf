@@ -137,3 +137,9 @@ variable "custom_domain_name" {
   type        = string
   default     = ""
 }
+
+variable "cors_origins" {
+  description = "Comma separated whitelisted domains allowed to connect to the server"
+  type        = string
+  default     = ""
+}
