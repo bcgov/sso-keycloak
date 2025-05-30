@@ -42,6 +42,10 @@ app.use(
   }),
 );
 
+if (NODE_ENV === 'production') {
+  app.set('trust proxy', true);
+}
+
 app.use((req, res, next) => {
   console.log(req.headers);
   console.log('X-Forwarded-Proto:', req.headers['x-forwarded-proto']);
@@ -59,12 +63,6 @@ const PORT = 3000;
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-
-const prod = process.env.NODE_ENV === 'production';
-
-if (prod) {
-  app.set('trust proxy', true);
-}
 
 app.use(
   cors({
