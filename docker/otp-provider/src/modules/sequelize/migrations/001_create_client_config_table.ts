@@ -5,7 +5,7 @@ const name = '001_create_client_config_table';
 export const up = async (queryInterface: QueryInterface) => {
   await queryInterface.createTable('ClientConfig', {
     id: {
-      type: DataTypes.INTEGER.UNSIGNED,
+      type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
     },
@@ -25,6 +25,10 @@ export const up = async (queryInterface: QueryInterface) => {
     },
     clientUri: {
       type: DataTypes.STRING,
+    },
+    allowedCorsOrigins: {
+      type: DataTypes.ARRAY(DataTypes.STRING),
+      defaultValue: [],
     },
     contacts: {
       type: DataTypes.ARRAY(DataTypes.STRING),

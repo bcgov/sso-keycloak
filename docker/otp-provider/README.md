@@ -40,6 +40,7 @@ OTP Provider -> Authenticates user via email-based OTP and returns identity asse
   	"scope",
   	"responseTypes",
   	"clientUri",
+    "allowedCorsOrigins",
   	"postLogoutRedirectUris")
   VALUES('conf-client',
   's3cr3t',
@@ -48,6 +49,7 @@ OTP Provider -> Authenticates user via email-based OTP and returns identity asse
   'openid email',
   '{code}',
   'http://localhost:3001',
+  '{http://localhost:3001}',
   '{http://localhost:3001}');
   ```
 

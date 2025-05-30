@@ -30,8 +30,6 @@ export const authorize = async (oidcProvider: Provider) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { uid, prompt, params, session } = await oidcProvider.interactionDetails(req, res);
-      const client = await oidcProvider.Client.find(params?.client_id as string);
-
       switch (prompt.name) {
         case 'login': {
           return res.render('signin', {
@@ -121,6 +119,7 @@ export const login = async (oidcProvider: Provider) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const {
+        uid,
         prompt: { name },
       } = await oidcProvider.interactionDetails(req, res);
 
@@ -131,7 +130,7 @@ export const login = async (oidcProvider: Provider) => {
 
         if (!otp) {
           return res.render('otp', {
-            uid: req.params.uid,
+            uid,
             email,
             error: 'OTP is required!',
           });

@@ -1,7 +1,13 @@
 import sequelize from './config';
 import Sequelize from 'sequelize';
 
-const grantable = new Set(['AccessToken', 'AuthorizationCode', 'RefreshToken', 'DeviceCode']);
+const grantable = new Set([
+  'AccessToken',
+  'AuthorizationCode',
+  'RefreshToken',
+  'DeviceCode',
+  'BackchannelAuthenticationRequest',
+]);
 
 const models = [
   'Session',
@@ -16,6 +22,8 @@ const models = [
   'Interaction',
   'ReplayDetection',
   'PushedAuthorizationRequest',
+  'Grant',
+  'BackchannelAuthenticationRequest',
 ].reduce((map, name) => {
   map.set(
     name,
@@ -42,6 +50,7 @@ models.set(
     clientName: { type: Sequelize.STRING },
     clientSecret: { type: Sequelize.STRING },
     clientUri: { type: Sequelize.STRING },
+    allowedCorsOrigins: { type: Sequelize.ARRAY(Sequelize.STRING), defaultValue: [] },
     contacts: { type: Sequelize.ARRAY(Sequelize.STRING), defaultValue: [] },
     defaultAcrValues: { type: Sequelize.ARRAY(Sequelize.STRING), defaultValue: [] },
     defaultMaxAge: { type: Sequelize.INTEGER },
