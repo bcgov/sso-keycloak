@@ -1,10 +1,8 @@
-import Provider from 'oidc-provider';
-import { config } from './config';
+import Provider, { AccessToken, KoaContextWithOIDC, RefreshToken } from 'oidc-provider';
 import logger from './modules/winston.config';
 
-const { LOG_LEVEL } = config;
-
 export const generateEvents = (provider: Provider) => {
+  console.log('Generating events for OIDC provider...');
   const eventTypes = [
     'access_token.destroyed',
     'access_token.saved',
@@ -62,12 +60,43 @@ export const generateEvents = (provider: Provider) => {
     'userinfo.error',
   ];
 
+  eventTypes.map((event) => {
+    if (
+      [
+        'interaction.started',
+        'interaction.ended',
+        'end_session.success',
+        'grant.success',
+        'grant.revoked',
+        'authorization.success',
+        'authorization.accepted',
+      ].includes(event)
+    ) {
+      provider.on(event, (ctx: KoaContextWithOIDC, ...rest: any) => {
+        const grantId = rest?.grantId ? `", grantId":"${rest?.grantId}"` : '';
+        logger.info(
+          `{"event":"${event}","client_id":"${ctx?.oidc?.client?.clientId}","user_agent":"${ctx?.request?.headers['user-agent']}", "ip":"${ctx?.request?.ip}", "method":"${ctx?.request?.method}", "url":"${ctx?.request?.url}"${grantId}}`,
+        );
+      });
+    }
+  });
+
+  eventTypes.map((event) => {
+    if (['access_token.issued', 'refresh_token.consumed'].includes(event)) {
+      provider.on(event, (token: AccessToken | RefreshToken) => {
+        logger.info(
+          `{"event":"${event}","client_id":"${token?.client?.clientId}","sessionUid":"${token?.sessionUid}","message":"${event}","grantId":"${token?.grantId}","accountId": "${token?.accountId}"}`,
+        );
+      });
+    }
+  });
+
   // capture all the error events
   eventTypes.map((event) => {
     if (event.endsWith('.error')) {
       provider.on(event, (ctx, error) => {
         logger.error(
-          `{"event":"${event}","client_id":"${ctx?.oidc?.client?.clientId}","message":"${error}", user_agent:"${ctx?.request?.headers['user-agent']}", ip:"${ctx?.request?.ip}", method:"${ctx?.request?.method}", url:"${ctx?.request?.url}"}`,
+          `{"event":"${event}","client_id":"${ctx?.oidc?.client?.clientId}","message":"${error}", "user_agent":"${ctx?.request?.headers['user-agent']}", "ip":"${ctx?.request?.ip}", "method":"${ctx?.request?.method}", "url":"${ctx?.request?.url}"}`,
         );
       });
     }
