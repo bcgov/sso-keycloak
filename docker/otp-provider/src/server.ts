@@ -215,6 +215,8 @@ const clientsConfig: Configuration = {
   app.use('/', routes);
   app.use(provider.callback());
 
+  if (NODE_ENV === 'production') provider.proxy = true; // Enable proxy support for the provider
+
   generateEvents(provider);
 
   app.listen(PORT, () => {

@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export const config = {
-  APP_URL: process.env.APP_URL || 'http://localhost:8080',
+  APP_URL: process.env.APP_URL || 'http://localhost:3000',
   DB_HOSTNAME: process.env.DB_HOSTNAME || 'localhost',
   DB_USERNAME: process.env.DB_USERNAME || 'postgres',
   DB_PASSWORD: process.env.DB_PASSWORD || 'postgres',
