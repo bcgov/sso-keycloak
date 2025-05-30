@@ -42,6 +42,14 @@ app.use(
   }),
 );
 
+app.use((req, res, next) => {
+  console.log(req.headers);
+  console.log('X-Forwarded-Proto:', req.headers['x-forwarded-proto']);
+  console.log('X-Forwarded-For:', req.headers['x-forwarded-for']);
+
+  next();
+});
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
