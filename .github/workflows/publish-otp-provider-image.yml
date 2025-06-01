@@ -19,6 +19,7 @@ jobs:
         if: (github.ref == 'refs/heads/dev' && github.event_name == 'push')
         run: |
           cat >> $GITHUB_ENV <<EOF
+          APP_URL=https://otp-sandbox.loginproxy.gov.bc.ca
           TF_STATE_BUCKET=xgr00q-dev-sso-otp-provider
           TF_STATE_BUCKET_KEY=sso-otp-provider.tfstate
           TF_STATE_DYNAMODB_TABLE=xgr00q-dev-otp-state-locking
@@ -73,6 +74,7 @@ jobs:
           custom_domain_name="${{ env.CUSTOM_DOMAIN_NAME }}"
           cors_origins="${{ env.CORS_ORIGINS }}"
           node_env="${{ env.NODE_ENV }}"
+          app_url="${{ env.APP_URL }}"
           EOF
 
         working-directory: ./docker/otp-provider/terraform
