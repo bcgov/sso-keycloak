@@ -68,6 +68,13 @@ app.disable('x-powered-by');
 const corsProp = 'allowedCorsOrigins';
 
 const clientsConfig: Configuration = {
+  pkce: {
+    required: (ctx, client) => {
+      // Require PKCE for all clients except those using 'none' client authentication
+      return Boolean(!client.clientSecret && client.grantTypes?.includes('authorization_code'));
+    },
+    methods: ['S256', 'plain'],
+  },
   jwks,
   adapter: SequelizeAdapter,
   cookies: {
