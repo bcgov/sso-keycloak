@@ -1,5 +1,6 @@
 import sequelize from './config';
 import Sequelize from 'sequelize';
+import { models } from './umzug';
 
 const grantable = new Set([
   'AccessToken',
@@ -9,22 +10,7 @@ const grantable = new Set([
   'BackchannelAuthenticationRequest',
 ]);
 
-const models = [
-  'Session',
-  'AccessToken',
-  'AuthorizationCode',
-  'RefreshToken',
-  'DeviceCode',
-  'ClientCredentials',
-  'Client',
-  'InitialAccessToken',
-  'RegistrationAccessToken',
-  'Interaction',
-  'ReplayDetection',
-  'PushedAuthorizationRequest',
-  'Grant',
-  'BackchannelAuthenticationRequest',
-].reduce((map, name) => {
+const mappedModels = models.reduce((map, name) => {
   map.set(
     name,
     sequelize.define(name, {
@@ -41,7 +27,7 @@ const models = [
   return map;
 }, new Map());
 
-models.set(
+mappedModels.set(
   'ClientConfig',
   sequelize.define('ClientConfig', {
     id: { type: Sequelize.STRING, primaryKey: true },
@@ -74,4 +60,4 @@ models.set(
   }),
 );
 
-export default models;
+export default mappedModels;

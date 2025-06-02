@@ -143,3 +143,9 @@ variable "cors_origins" {
   type        = string
   default     = ""
 }
+
+variable "db_cleanup_cron" {
+  description = "Cron schedule to run database cleanup task"
+  type        = string
+  default     = "0 1 * * *"
+}

@@ -2,8 +2,10 @@ import { QueryInterface, DataTypes, Sequelize } from 'sequelize';
 
 const name = '002_create_session_table';
 
+const tableName = 'Session';
+
 export const up = async (queryInterface: QueryInterface) => {
-  await queryInterface.createTable('Session', {
+  await queryInterface.createTable(tableName, {
     id: {
       allowNull: false,
       primaryKey: true,
@@ -32,10 +34,16 @@ export const up = async (queryInterface: QueryInterface) => {
       defaultValue: Sequelize.fn('NOW'),
     },
   });
+
+  await queryInterface.addIndex(tableName, {
+    fields: ['uid'],
+    name: 'session_uid_index',
+  });
 };
 
 export const down = async (queryInterface: QueryInterface) => {
-  await queryInterface.dropTable('Session');
+  await queryInterface.dropTable(tableName);
+  await queryInterface.removeIndex(tableName, 'session_uid_index');
 };
 
 export default { name, up, down };

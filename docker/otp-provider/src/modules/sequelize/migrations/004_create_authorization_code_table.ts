@@ -2,8 +2,10 @@ import { QueryInterface, DataTypes, Sequelize } from 'sequelize';
 
 const name = '004_create_authorization_code_table';
 
+const tableName = 'AuthorizationCode';
+
 export const up = async (queryInterface: QueryInterface) => {
-  await queryInterface.createTable('AuthorizationCode', {
+  await queryInterface.createTable(tableName, {
     id: {
       allowNull: false,
       primaryKey: true,
@@ -32,10 +34,16 @@ export const up = async (queryInterface: QueryInterface) => {
       defaultValue: Sequelize.fn('NOW'),
     },
   });
+
+  await queryInterface.addIndex(tableName, {
+    fields: ['grantId'],
+    name: 'auth_code_grant_id_index',
+  });
 };
 
 export const down = async (queryInterface: QueryInterface) => {
-  await queryInterface.dropTable('AuthorizationCode');
+  await queryInterface.dropTable(tableName);
+  await queryInterface.removeIndex(tableName, 'auth_code_grant_id_index');
 };
 
 export default { name, up, down };

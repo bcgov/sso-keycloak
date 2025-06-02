@@ -2,8 +2,10 @@ import { QueryInterface, DataTypes, Sequelize } from 'sequelize';
 
 const name = '003_create_access_token_table';
 
+const tableName = 'AccessToken';
+
 export const up = async (queryInterface: QueryInterface) => {
-  await queryInterface.createTable('AccessToken', {
+  await queryInterface.createTable(tableName, {
     id: {
       allowNull: false,
       primaryKey: true,
@@ -32,10 +34,16 @@ export const up = async (queryInterface: QueryInterface) => {
       defaultValue: Sequelize.fn('NOW'),
     },
   });
+
+  await queryInterface.addIndex(tableName, {
+    fields: ['grantId'],
+    name: 'access_token_grant_id_index',
+  });
 };
 
 export const down = async (queryInterface: QueryInterface) => {
-  await queryInterface.dropTable('AccessToken');
+  await queryInterface.dropTable(tableName);
+  await queryInterface.removeIndex(tableName, 'access_token_grant_id_index');
 };
 
 export default { name, up, down };
