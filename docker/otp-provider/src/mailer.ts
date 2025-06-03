@@ -1,6 +1,7 @@
 import axios from 'axios';
 import url from 'url';
 import { config } from './config';
+import logger from './modules/winston.config';
 
 const { CHES_TOKEN_URL, CHES_API_URL, CHES_USERNAME, CHES_PASSWORD } = config;
 
@@ -68,6 +69,6 @@ export const sendEmail = async ({ from = 'bcgov.sso@gov.bc.ca', to, body, ...res
     );
     return res;
   } catch (err) {
-    console.error(err);
+    logger.error(err);
   }
 };

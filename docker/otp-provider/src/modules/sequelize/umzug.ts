@@ -47,7 +47,7 @@ export const createMigrator = async (logger?: any) => {
       logger: logger || console,
     });
   } catch (error) {
-    console.error('Error creating migrator:', error);
+    logger.error('Error creating migrator:', error);
     throw error;
   }
 };
