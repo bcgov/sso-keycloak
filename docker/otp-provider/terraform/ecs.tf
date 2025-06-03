@@ -129,6 +129,10 @@ resource "aws_ecs_task_definition" "this" {
         {
           name  = "CORS_ORIGINS",
           value = var.cors_origins
+        },
+        {
+          name  = "DB_CLEANUP_CRON",
+          value = var.db_cleanup_cron
         }
       ]
       secrets = [

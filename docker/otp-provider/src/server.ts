@@ -15,8 +15,10 @@ import SequelizeAdapter from './modules/sequelize/adapter';
 import Keygrip from 'keygrip';
 import { isOrigin } from './utils/helpers';
 import * as crypto from 'crypto';
+import cron from 'node-cron';
+import { cleanupTables } from './modules/cron/cleanup';
 
-const { NODE_ENV, APP_URL, JWKS, CORS_ORIGINS } = config;
+const { NODE_ENV, APP_URL, JWKS, CORS_ORIGINS, DB_CLEANUP_CRON } = config;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -73,7 +75,6 @@ const clientsConfig: Configuration = {
       // Require PKCE for all clients except those using 'none' client authentication
       return Boolean(!client.clientSecret && client.grantTypes?.includes('authorization_code'));
     },
-    methods: ['S256', 'plain'],
   },
   jwks,
   adapter: SequelizeAdapter,
@@ -117,7 +118,7 @@ const clientsConfig: Configuration = {
         return {
           scope: client?.scope as string,
           accessTokenFormat: 'jwt',
-          accessTokenTTL: 300,
+          accessTokenTTL: 5, // expire in 5 seconds
           jwt: {
             sign: {
               alg: 'RS256',
@@ -151,13 +152,15 @@ const clientsConfig: Configuration = {
     },
   },
   ttl: {
-    Session: 36000, // 10 hours
+    // Session defines how long the session object (i.e., the user login state) is stored and valid.
+    Session: 300, // 5 minutes
     AccessToken: 300, // 5 minutes
     AuthorizationCode: 60, // 1 minute
-    RefreshToken: 1800, // 30 minutes
+    RefreshToken: 1800, // 2 seconds
     Interaction: 300, // 5 minutes
     IdToken: 300, // 5 minutes
-    Grant: 36000, // 10 hours
+    //Grant controls how long the authorization grant (which includes tokens and scopes) is valid. This affects token reuse and refresh behavior.
+    Grant: 36000, // 10 hours - client session max
     DeviceCode: 300, // 5 minutes
     InitialAccessToken: 300, // 5 minutes
     RegistrationAccessToken: 300, // 5 minutes
@@ -200,17 +203,24 @@ const clientsConfig: Configuration = {
     'responseTypes',
     'clientUri',
     'postLogoutRedirectUris',
+    'tokenEndpointAuthMethod',
   ]);
-  const clients: ClientMetadata[] = rawClients.map((row: any) => ({
-    client_id: row.clientId,
-    client_secret: row.clientSecret,
-    grant_types: row.grantTypes,
-    redirect_uris: row.redirectUris,
-    scope: row.scope,
-    response_types: row.responseTypes,
-    client_uri: row.clientUri,
-    post_logout_redirect_uris: row.postLogoutRedirectUris,
-  }));
+
+  const clients: ClientMetadata[] = rawClients.map((row: any) => {
+    const client: ClientMetadata = {
+      client_id: row.clientId,
+      grant_types: row.grantTypes,
+      redirect_uris: row.redirectUris,
+      scope: row.scope,
+      response_types: row.responseTypes,
+      client_uri: row.clientUri,
+      post_logout_redirect_uris: row.postLogoutRedirectUris,
+      token_endpoint_auth_method: row.tokenEndpointAuthMethod || 'none',
+    };
+    if (row?.clientSecret) client.client_secret = row?.clientSecret;
+    return client;
+  });
+
   const provider = new Provider(APP_URL, {
     ...clientsConfig,
     clients,
@@ -238,4 +248,6 @@ const clientsConfig: Configuration = {
       error: errorMessage,
     });
   });
+
+  cron.schedule(DB_CLEANUP_CRON, cleanupTables);
 })();

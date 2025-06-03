@@ -2,8 +2,10 @@ import { QueryInterface, DataTypes, Sequelize } from 'sequelize';
 
 const name = '010_create_device_code_table';
 
+const tableName = 'DeviceCode';
+
 export const up = async (queryInterface: QueryInterface) => {
-  await queryInterface.createTable('DeviceCode', {
+  await queryInterface.createTable(tableName, {
     id: {
       allowNull: false,
       primaryKey: true,
@@ -35,10 +37,15 @@ export const up = async (queryInterface: QueryInterface) => {
       defaultValue: Sequelize.fn('NOW'),
     },
   });
+  await queryInterface.addIndex(tableName, {
+    fields: ['grantId'],
+    name: 'device_code_grant_id_index',
+  });
 };
 
 export const down = async (queryInterface: QueryInterface) => {
-  await queryInterface.dropTable('DeviceCode');
+  await queryInterface.dropTable(tableName);
+  await queryInterface.removeIndex(tableName, 'device_code_grant_id_index');
 };
 
 export default { name, up, down };

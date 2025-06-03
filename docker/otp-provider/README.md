@@ -41,7 +41,8 @@ OTP Provider -> Authenticates user via email-based OTP and returns identity asse
   	"responseTypes",
   	"clientUri",
     "allowedCorsOrigins",
-  	"postLogoutRedirectUris")
+  	"postLogoutRedirectUris",
+    "tokenEndpointAuthMethod")
   VALUES('conf-client',
   's3cr3t',
   '{authorization_code, refresh_token}',
@@ -50,7 +51,8 @@ OTP Provider -> Authenticates user via email-based OTP and returns identity asse
   '{code}',
   'http://localhost:3001',
   '{http://localhost:3001}',
-  '{http://localhost:3001}');
+  '{http://localhost:3001}'
+  'client_secret_post'); -- 'none' for public client
   ```
 
 ## References

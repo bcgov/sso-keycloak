@@ -2,8 +2,10 @@ import { QueryInterface, DataTypes, Sequelize } from 'sequelize';
 
 const name = '015_create_back_channel_auth_request_table';
 
+const tableName = 'BackchannelAuthenticationRequest';
+
 export const up = async (queryInterface: QueryInterface) => {
-  await queryInterface.createTable('BackchannelAuthenticationRequest', {
+  await queryInterface.createTable(tableName, {
     id: {
       allowNull: false,
       primaryKey: true,
@@ -32,10 +34,16 @@ export const up = async (queryInterface: QueryInterface) => {
       defaultValue: Sequelize.fn('NOW'),
     },
   });
+
+  await queryInterface.addIndex(tableName, {
+    fields: ['grantId'],
+    name: 'back_ch_auth_grant_id_index',
+  });
 };
 
 export const down = async (queryInterface: QueryInterface) => {
-  await queryInterface.dropTable('BackchannelAuthenticationRequest');
+  await queryInterface.dropTable(tableName);
+  await queryInterface.removeIndex(tableName, 'back_ch_auth_grant_id_index');
 };
 
 export default { name, up, down };

@@ -3,6 +3,23 @@ import { dirname } from 'path';
 import { Umzug, SequelizeStorage } from 'umzug';
 import os from 'node:os';
 
+export const models = [
+  'Session',
+  'AccessToken',
+  'AuthorizationCode',
+  'RefreshToken',
+  'DeviceCode',
+  'ClientCredentials',
+  'Client',
+  'InitialAccessToken',
+  'RegistrationAccessToken',
+  'Interaction',
+  'ReplayDetection',
+  'PushedAuthorizationRequest',
+  'Grant',
+  'BackchannelAuthenticationRequest',
+];
+
 export const createMigrator = async (logger?: any) => {
   try {
     const __dirname = dirname(import.meta.url.replace(os.platform() === 'win32' ? 'file:///' : 'file://', '')); //dirname(__filename);

@@ -18,4 +18,5 @@ export const config = {
   PORT: process.env.PORT ? parseInt(process.env.PORT, 10) : 3000,
   JWKS: process.env.JWKS ? JSON.parse(process.env.JWKS) : {},
   CORS_ORIGINS: process.env.CORS_ORIGINS || '',
+  DB_CLEANUP_CRON: process.env.DB_CLEANUP_CRON || '0 1 * * *',
 };

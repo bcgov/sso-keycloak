@@ -6,8 +6,7 @@
  * for DeviceCode model. uid should be additionaly indexed for Session model.
  */
 
-// npm i sequelize@^5.21.2
-import { Sequelize } from 'sequelize'; // eslint-disable-line import/no-unresolved
+import { Op, Sequelize } from 'sequelize';
 import models from './models';
 
 const sequelize = new Sequelize('databaseName', 'username', 'password', {
@@ -75,6 +74,17 @@ class SequelizeAdapter {
 
   static async connect() {
     return sequelize.sync();
+  }
+
+  async listExpiredRecords() {
+    return await this.model.findAll({
+      where: {
+        expiresAt: {
+          [Op.lt]: new Date(),
+        },
+      },
+      raw: true,
+    });
   }
 }
 
