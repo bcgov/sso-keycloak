@@ -75,6 +75,10 @@ resource "aws_ecs_task_definition" "this" {
       }
       environment = [
         {
+          name  = "APP_ENV",
+          value = var.app_env
+        },
+        {
           name  = "NODE_ENV",
           value = var.node_env
         },

@@ -71,6 +71,12 @@ variable "log_level" {
   default     = "info"
 }
 
+variable "app_env" {
+  type        = string
+  description = "App environment"
+  default     = "development"
+}
+
 variable "node_env" {
   type        = string
   description = "App node environment"

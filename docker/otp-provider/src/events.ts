@@ -1,5 +1,8 @@
 import Provider, { AccessToken, ErrorOut, KoaContextWithOIDC, RefreshToken } from 'oidc-provider';
 import logger from './modules/winston.config';
+import { config } from './config';
+
+const { NODE_ENV } = config;
 
 export const generateEvents = (provider: Provider) => {
   console.log('Generating events for OIDC provider...');
@@ -73,10 +76,16 @@ export const generateEvents = (provider: Provider) => {
       ].includes(event)
     ) {
       provider.on(event, (ctx: KoaContextWithOIDC, ...rest: any) => {
-        const grantId = rest?.grantId ? `", grantId":"${rest?.grantId}"` : '';
-        logger.info(
-          `{"event":"${event}","client_id":"${ctx?.oidc?.client?.clientId}","user_agent":"${ctx?.request?.headers['user-agent']}", "ip":"${ctx?.request?.ip}", "method":"${ctx?.request?.method}", "url":"${ctx?.request?.url}"${grantId}}`,
-        );
+        const log = {
+          event,
+          client_id: ctx?.oidc?.client?.clientId,
+          user_agent: ctx?.request?.headers['user-agent'],
+          ip: ctx?.request?.ip,
+          method: ctx?.request?.method,
+          url: ctx?.request?.url,
+          grantId: rest?.grantId || '',
+        };
+        logger.info(NODE_ENV !== 'production' ? JSON.stringify(log) : log);
       });
     }
   });
@@ -84,9 +93,15 @@ export const generateEvents = (provider: Provider) => {
   eventTypes.map((event) => {
     if (['access_token.issued', 'refresh_token.consumed'].includes(event)) {
       provider.on(event, (token: AccessToken | RefreshToken) => {
-        logger.info(
-          `{"event":"${event}","client_id":"${token?.client?.clientId}","sessionUid":"${token?.sessionUid}","message":"${event}","grantId":"${token?.grantId}","accountId": "${token?.accountId}"}`,
-        );
+        const log = {
+          event,
+          client_id: token?.client?.clientId,
+          sessionUid: token?.sessionUid,
+          message: event,
+          grantId: token?.grantId,
+          accountId: token?.accountId,
+        };
+        logger.info(NODE_ENV !== 'production' ? JSON.stringify(log) : log);
       });
     }
   });
@@ -95,9 +110,16 @@ export const generateEvents = (provider: Provider) => {
   eventTypes.map((event) => {
     if (event.endsWith('.error')) {
       provider.on(event, (ctx: KoaContextWithOIDC, error: ErrorOut) => {
-        logger.error(
-          `{"event":"${event}", "error": "${error?.error}", "message":"${error?.error_description}", "user_agent":"${ctx?.request?.headers['user-agent']}", "ip":"${ctx?.request?.ip}", "method":"${ctx?.request?.method}", "url":"${ctx?.request?.url}"}`,
-        );
+        const log = {
+          event,
+          error: error?.error,
+          message: error?.error_description,
+          user_agent: ctx?.request?.headers['user-agent'],
+          ip: ctx?.request?.ip,
+          method: ctx?.request?.method,
+          url: ctx?.request?.url,
+        };
+        logger.error(NODE_ENV !== 'production' ? JSON.stringify(log) : log);
       });
     }
   });
