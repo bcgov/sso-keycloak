@@ -1,21 +1,19 @@
 import * as winston from 'winston';
 import { config } from '../config';
 
-const { LOG_LEVEL } = config;
+const { LOG_LEVEL, NODE_ENV } = config;
 
-const isDevelopment = process.env.NODE_ENV !== 'production';
+const { combine, timestamp, json, errors, splat } = winston.format;
 
 const logger = winston.createLogger({
   level: LOG_LEVEL,
-  format: isDevelopment
-    ? winston.format.combine(
-        winston.format.timestamp(),
-        winston.format.colorize(),
-        winston.format.printf(({ timestamp, level, message }) => {
-          return `${timestamp} [${level}]: ${message}`;
-        }), // Custom formatting for development
-      )
-    : winston.format.json(), // Format to Kibana-compatible JSON
+  format: combine(
+    timestamp(),
+    errors({ stack: NODE_ENV !== 'production' }),
+    json(),
+    splat(),
+    NODE_ENV === 'production' ? winston.format.uncolorize() : winston.format.colorize(),
+  ),
   transports: [new winston.transports.Console()],
 });
 

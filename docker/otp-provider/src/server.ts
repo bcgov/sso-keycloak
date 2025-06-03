@@ -187,11 +187,10 @@ const clientsConfig: Configuration = {
 (async () => {
   try {
     const migrator = await createMigrator(logger);
-    console.log('Migrating pending migrations:', await migrator.pending());
+    logger.info('Migrating pending migrations:', await migrator.pending());
     await migrator.up();
-    console.log('Database migration completed');
   } catch (err) {
-    console.error('Error during database migration:', err);
+    logger.error('Error during database migration:', err);
   }
 
   const rawClients = await getClients([
@@ -235,12 +234,12 @@ const clientsConfig: Configuration = {
   generateEvents(provider);
 
   app.listen(PORT, () => {
-    console.log(`OIDC Provider is running on ${APP_URL}`);
+    logger.info(`OIDC Provider is running on ${APP_URL}`);
   });
 
   app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-    console.error('Error occurred:', err);
     let errorMessage = 'Internal Server Error';
+    logger.error(errorMessage, err);
     if (err?.error === 'invalid_request') {
       errorMessage = 'Invalid or expired session found so please login again';
     }
