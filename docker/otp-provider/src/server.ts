@@ -153,7 +153,7 @@ const clientsConfig: Configuration = {
   },
   ttl: {
     // Session defines how long the session object (i.e., the user login state) is stored and valid.
-    Session: 60, // 60 seconds - user session max
+    Session: 300, // 5 minutes
     AccessToken: 300, // 5 minutes
     AuthorizationCode: 60, // 1 minute
     RefreshToken: 1800, // 2 seconds
