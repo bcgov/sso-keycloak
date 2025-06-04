@@ -13,7 +13,7 @@ import { createMigrator } from './modules/sequelize/umzug';
 import logger from './modules/winston.config';
 import SequelizeAdapter from './modules/sequelize/adapter';
 import Keygrip from 'keygrip';
-import { isOrigin } from './utils/helpers';
+import { isOrigin, hashEmail } from './utils/helpers';
 import * as crypto from 'crypto';
 import cron from 'node-cron';
 import { cleanupTables } from './modules/cron/cleanup';
@@ -71,8 +71,8 @@ const corsProp = 'allowedCorsOrigins';
 
 const clientsConfig: Configuration = {
   claims: {
-    openid: ['sub'],
-    email: ['email'],
+    openid: ['sub', 'otp_guid'],
+    email: ['sub', 'otp_guid', 'email'],
   },
   pkce: {
     required: (ctx, client) => {
@@ -176,6 +176,8 @@ const clientsConfig: Configuration = {
       async claims() {
         return {
           sub,
+          otp_guid: hashEmail(sub),
+          email: sub,
         };
       },
     };
