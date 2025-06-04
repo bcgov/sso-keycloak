@@ -1,1 +1,0 @@
-variable "realm_id" {}
