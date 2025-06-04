@@ -27,6 +27,7 @@ jobs:
           CUSTOM_DOMAIN_NAME=otp-sandbox.loginproxy.gov.bc.ca
           CORS_ORIGINS=https://dev.sandbox.loginproxy.gov.bc.ca,https://test.sandbox.loginproxy.gov.bc.ca,https://sandbox.loginproxy.gov.bc.ca,https://sso-playground.apps.gold.devops.gov.bc.ca
           NODE_ENV=production
+          HASH_SALT=${{ secrets.DEV_HASH_SALT }}
 
           EOF
       - name: Checkout repository
@@ -77,6 +78,7 @@ jobs:
           app_env="${{ env.APP_ENV }}"
           node_env="${{ env.NODE_ENV }}"
           app_url="${{ env.APP_URL }}"
+          hash_salt="${{ env.HASH_SALT }}"
           EOF
 
         working-directory: ./docker/otp-provider/terraform

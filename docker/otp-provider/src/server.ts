@@ -13,7 +13,7 @@ import { createMigrator } from './modules/sequelize/umzug';
 import logger from './modules/winston.config';
 import SequelizeAdapter from './modules/sequelize/adapter';
 import Keygrip from 'keygrip';
-import { isOrigin } from './utils/helpers';
+import { isOrigin, hashEmail } from './utils/helpers';
 import * as crypto from 'crypto';
 import cron from 'node-cron';
 import { cleanupTables } from './modules/cron/cleanup';
@@ -70,6 +70,10 @@ app.disable('x-powered-by');
 const corsProp = 'allowedCorsOrigins';
 
 const clientsConfig: Configuration = {
+  claims: {
+    openid: ['sub', 'otp_guid'],
+    email: ['sub', 'otp_guid', 'email'],
+  },
   pkce: {
     required: (ctx, client) => {
       // Require PKCE for all clients except those using 'none' client authentication
@@ -86,6 +90,7 @@ const clientsConfig: Configuration = {
     return true;
   },
   features: {
+    claimsParameter: { enabled: true },
     revocation: { enabled: true },
     devInteractions: { enabled: false },
     introspection: { enabled: true },
@@ -165,12 +170,14 @@ const clientsConfig: Configuration = {
     InitialAccessToken: 300, // 5 minutes
     RegistrationAccessToken: 300, // 5 minutes
   },
-  findAccount: async (ctx, incomingEmail) => {
+  findAccount: async (ctx, sub) => {
     return {
-      accountId: incomingEmail,
+      accountId: sub,
       async claims() {
         return {
-          sub: incomingEmail,
+          sub,
+          otp_guid: hashEmail(sub),
+          email: sub,
         };
       },
     };

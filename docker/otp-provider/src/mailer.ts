@@ -43,7 +43,7 @@ const fetchChesToken = async () => {
   }
 };
 
-export const sendEmail = async ({ from = 'bcgov.sso@gov.bc.ca', to, body, ...rest }: EmailOptions) => {
+export const sendEmail = async ({ from = 'no-reply-sso@gov.bc.ca', to, body, ...rest }: EmailOptions) => {
   try {
     const [accessToken, error] = await fetchChesToken();
     if (error) {
