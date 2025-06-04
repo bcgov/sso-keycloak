@@ -155,3 +155,9 @@ variable "db_cleanup_cron" {
   type        = string
   default     = "0 1 * * *"
 }
+
+variable "hash_salt" {
+  description = "Salt used for hashing email"
+  type        = string
+  default     = ""
+}

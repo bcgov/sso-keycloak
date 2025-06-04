@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from 'express';
 import * as querystring from 'node:querystring';
 import { inspect } from 'node:util';
 import { sendEmail } from '../mailer';
-import { generateOtpWithExpiry, isOtpValid } from '../utils/helpers';
+import { generateOtpWithExpiry, hashEmail, isOtpValid } from '../utils/helpers';
 
 const debug = (obj: any) =>
   querystring.stringify(
@@ -145,7 +145,7 @@ export const login = async (oidcProvider: Provider) => {
         } else {
           result = {
             login: {
-              accountId: req.body?.email,
+              accountId: hashEmail(req.body?.email),
             },
           };
         }

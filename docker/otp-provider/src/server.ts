@@ -70,6 +70,10 @@ app.disable('x-powered-by');
 const corsProp = 'allowedCorsOrigins';
 
 const clientsConfig: Configuration = {
+  claims: {
+    openid: ['sub'],
+    email: ['email'],
+  },
   pkce: {
     required: (ctx, client) => {
       // Require PKCE for all clients except those using 'none' client authentication
@@ -86,6 +90,7 @@ const clientsConfig: Configuration = {
     return true;
   },
   features: {
+    claimsParameter: { enabled: true },
     revocation: { enabled: true },
     devInteractions: { enabled: false },
     introspection: { enabled: true },
@@ -165,12 +170,12 @@ const clientsConfig: Configuration = {
     InitialAccessToken: 300, // 5 minutes
     RegistrationAccessToken: 300, // 5 minutes
   },
-  findAccount: async (ctx, incomingEmail) => {
+  findAccount: async (ctx, sub) => {
     return {
-      accountId: incomingEmail,
+      accountId: sub,
       async claims() {
         return {
-          sub: incomingEmail,
+          sub,
         };
       },
     };

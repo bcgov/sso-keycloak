@@ -20,4 +20,5 @@ export const config = {
   JWKS: process.env.JWKS ? JSON.parse(process.env.JWKS) : {},
   CORS_ORIGINS: process.env.CORS_ORIGINS || '',
   DB_CLEANUP_CRON: process.env.DB_CLEANUP_CRON || '0 1 * * *',
+  HASH_SALT: process.env.HASH_SALT || '',
 };

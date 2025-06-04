@@ -137,6 +137,10 @@ resource "aws_ecs_task_definition" "this" {
         {
           name  = "DB_CLEANUP_CRON",
           value = var.db_cleanup_cron
+        },
+        {
+          name  = "HASH_SALT",
+          value = var.hash_salt
         }
       ]
       secrets = [
