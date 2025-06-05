@@ -30,7 +30,9 @@ OTP Provider -> Authenticates user via email-based OTP and returns identity asse
 ## Test Data
 
 - Given the application and database are up and database migration is successfully complete, run below SQL to add a client for testing purposes.
+
   ```sql
+  --confidential client
   INSERT
   	INTO
   	"ClientConfig" ("clientId",
@@ -51,8 +53,29 @@ OTP Provider -> Authenticates user via email-based OTP and returns identity asse
   '{code}',
   'http://localhost:3001',
   '{http://localhost:3001}',
-  '{http://localhost:3001}'
-  'client_secret_post'); -- 'none' for public client
+  '{http://localhost:3001}',
+  'client_secret_post');
+
+  --public client
+  INSERT INTO public."ClientConfig"
+  ("clientId",
+  "grantTypes",
+  "redirectUris",
+  "scope",
+  "responseTypes",
+  "clientUri",
+  "allowedCorsOrigins",
+  "postLogoutRedirectUris",
+  "tokenEndpointAuthMethod")
+  VALUES('pub-client',
+    '{authorization_code, refresh_token}',
+    '{http://localhost:3001}',
+    'openid email',
+    '{code}',
+    'http://localhost:3001',
+    '{http://localhost:3001}',
+    '{http://localhost:3001}',
+    'none');
   ```
 
 ## References

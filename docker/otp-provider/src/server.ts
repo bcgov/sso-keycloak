@@ -72,7 +72,7 @@ const corsProp = 'allowedCorsOrigins';
 const clientsConfig: Configuration = {
   claims: {
     openid: ['sub', 'otp_guid'],
-    email: ['sub', 'otp_guid', 'email'],
+    email: ['email'],
   },
   pkce: {
     required: (ctx, client) => {
