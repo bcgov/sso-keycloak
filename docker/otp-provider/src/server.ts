@@ -18,8 +18,8 @@ import * as crypto from 'crypto';
 import cron from 'node-cron';
 import { cleanupTables } from './modules/cron/cleanup';
 import { userRouter } from './routes/user';
-import pgSession from 'connect-pg-simple';
 import session from 'express-session';
+import { AppError } from './modules/errors';
 
 const { NODE_ENV, APP_URL, JWKS, CORS_ORIGINS, DB_CLEANUP_CRON } = config;
 
@@ -91,7 +91,7 @@ const clientsConfig: Configuration = {
     email: ['email'],
   },
   pkce: {
-    required: (ctx, client) => {
+    required: (_ctx, client) => {
       // Require PKCE for all clients except those using 'none' client authentication
       return Boolean(!client.clientSecret && client.grantTypes?.includes('authorization_code'));
     },
@@ -135,7 +135,7 @@ const clientsConfig: Configuration = {
     },
     resourceIndicators: {
       enabled: true,
-      getResourceServerInfo: async (ctx, resourceIndicator, client) => {
+      getResourceServerInfo: async (_ctx, _resourceIndicator, client) => {
         return {
           scope: client?.scope as string,
           accessTokenFormat: 'jwt',
@@ -147,10 +147,10 @@ const clientsConfig: Configuration = {
           },
         };
       },
-      defaultResource: async (ctx, client, oneOf) => {
+      defaultResource: async (_ctx, client, _oneOf) => {
         return client?.clientUri as string;
       },
-      useGrantedResource: async (ctx, model) => {
+      useGrantedResource: async (_ctx, _model) => {
         return true;
       },
     },
@@ -186,7 +186,7 @@ const clientsConfig: Configuration = {
     InitialAccessToken: 300, // 5 minutes
     RegistrationAccessToken: 300, // 5 minutes
   },
-  findAccount: async (ctx, sub) => {
+  findAccount: async (_ctx, sub) => {
     return {
       accountId: sub,
       async claims() {
@@ -198,7 +198,7 @@ const clientsConfig: Configuration = {
       },
     };
   },
-  clientBasedCORS: (ctx, origin, client) => {
+  clientBasedCORS: (_ctx, origin, client) => {
     // Allow all origins; you can add logic here to restrict origins based on client if needed
     if (client && typeof client === 'object' && Array.isArray((client as any)[corsProp])) {
       return ((client as any)[corsProp] as string[]).includes(origin);
@@ -265,16 +265,25 @@ const clientsConfig: Configuration = {
     logger.info(`OIDC Provider is running on ${APP_URL}`);
   });
 
-  // app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-  //   let errorMessage = 'Internal Server Error';
-  //   logger.error(errorMessage, err);
-  //   if (err?.error === 'invalid_request') {
-  //     errorMessage = 'Invalid or expired session found so please login again';
-  //   }
-  //   res.render('error', {
-  //     error: errorMessage,
-  //   });
-  // });
+  app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+    let errorMessage = 'An unexpected error occurred';
+    let errorStatus = 500;
+    if (err instanceof errors.OIDCProviderError) {
+      logger.error('OIDC Provider Error:', err);
+      errorMessage = err.message;
+      errorStatus = err.status || 500;
+    } else if (err instanceof AppError) {
+      logger.error('Application Error:', err);
+      errorMessage = err.message;
+      errorStatus = err.statusCode || 500;
+    } else if (err instanceof Error) {
+      logger.error('General Error:', err);
+    }
+
+    return res.status(errorStatus).render('error', {
+      error: errorMessage,
+    });
+  });
 
   cron.schedule(DB_CLEANUP_CRON, cleanupTables);
 })();
