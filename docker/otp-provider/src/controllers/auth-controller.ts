@@ -41,16 +41,7 @@ export const generateOtp = async (oidcProvider: Provider, nonce: string) => {
       if (name === 'login') {
         const { email } = req.body;
 
-        const error = await requestNewOtp(email);
-
-        if (error) {
-          return res.render('signin', {
-            uid,
-            error,
-            nonce,
-            csrfToken: csrfToken(req),
-          });
-        }
+        await requestNewOtp(email);
 
         return res.render('otp', {
           uid,

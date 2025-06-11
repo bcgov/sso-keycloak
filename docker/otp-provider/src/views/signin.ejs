@@ -22,25 +22,27 @@
     }
 
     function handleShowResentOtpWaitTime(durationInSeconds) {
-      let resendButton = document.getElementById("kc-login");
+      let loginButton = document.getElementById("kc-login");
       let errorMessageField = document.getElementById("input-error");
 
-      resendButton.disabled = true;
+      loginButton.disabled = true;
 
       let interval = setInterval(() => {
         if (durationInSeconds <= 0) {
           clearInterval(interval);
-          resendButton.disabled = false;
+          loginButton.disabled = false;
           errorMessageField.textContent = "";
         } else {
           errorMessageField.textContent = `Please wait ${durationInSeconds--} seconds before requesting a new code.`;
         }
       }, 1000);
     }
+
     window.addEventListener("DOMContentLoaded", function() {
       const form = document.getElementById('kc-form-login')
-      console.log("🚀 ~ document.addEventListener ~ form:", form)
       form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const time = await getResendOtpWaitTime();
         const emailInput = document.getElementById('email');
         const email = emailInput.value.trim();
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -50,16 +52,12 @@
 
         if (!email) {
           errorMessageField.textContent = 'Email is required.';
-          e.preventDefault();
         } else if (!emailRegex.test(email)) {
           errorMessageField.textContent = 'Please enter a valid email address.';
-          e.preventDefault();
+        } else if (time && time.seconds !== 0) {
+          handleShowResentOtpWaitTime(time.seconds);
         } else {
-          const time = await getResendOtpWaitTime();
-          if (time && time.seconds !== 0) {
-            handleShowResentOtpWaitTime(time.seconds);
-            e.preventDefault();
-          }
+          form.submit();
         }
 
       });
