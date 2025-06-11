@@ -4,6 +4,64 @@
 <%- include("./partials/header") %>
 
 <body>
+  <script nonce="<%= nonce %>">
+    async function resendOtp() {
+      // make api call to get the wait time for resend OTP
+      const res = await fetch("/user/otp", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: "<%= email %>",
+          _csrf: "<%= csrfToken %>"
+        })
+      });
+    }
+    async function getResendOtpWaitTime() {
+      // make api call to get the wait time for resend OTP
+      const res = await fetch("/user/otp/resend-wait-time", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: "<%= email %>",
+          _csrf: "<%= csrfToken %>"
+        })
+      });
+      return res.json();
+    }
+
+    function handleShowResentOtpWaitTime(durationInSeconds) {
+      let resendButton = document.getElementById("resend-otp");
+      let timerDisplay = document.getElementById("timerDisplay");
+
+      resendButton.disabled = true;
+
+      let interval = setInterval(() => {
+        if (durationInSeconds <= 0) {
+          clearInterval(interval);
+          resendButton.disabled = false;
+          timerDisplay.textContent = "";
+        } else {
+          timerDisplay.textContent = `Please wait ${durationInSeconds--} seconds before resending OTP.`;
+        }
+      }, 1000);
+    }
+
+
+    document.addEventListener('DOMContentLoaded', async function() {
+      const time = await getResendOtpWaitTime();
+      handleShowResentOtpWaitTime(time.seconds);
+      document.getElementById('resend-otp').addEventListener('click', async function() {
+        document.getElementById('input-error').textContent = "";
+        await resendOtp();
+        const time = await getResendOtpWaitTime();
+        handleShowResentOtpWaitTime(time.seconds);
+      });
+    });
+  </script>
   <header>
     <div class="banner">
       <span></span>
@@ -29,16 +87,17 @@
                 <div class="form-group">
                   <label for="otp" class="pf-c-form__label pf-c-form__label-text">OTP</label>
                   <input tabindex="2" id="otp" class="pf-c-form-control" name="otp" value="" type="text" autofocus="" autocomplete="otp" aria-invalid="" dir="ltr">
-                  <% if(error) {%>
                   <span id="input-error" class="required" aria-live="polite">
                     <%= error %>
                   </span>
-                  <% } %>
                 </div>
                 <div id="kc-form-buttons" class="form-group">
                   <input type="hidden" id="id-hidden-input" name="credentialId">
                   <input type="hidden" name="email" value="<%= email %>">
                   <input tabindex="7" class="pf-c-button pf-m-primary pf-m-block btn-lg" name="login" id="kc-login" type="submit" value="Submit">
+                  <br />
+                  <input tabindex="7" class="pf-c-button pf-m-primary pf-m-block btn-lg" name="resend-otp" id="resend-otp" value="Resend OTP" type="button">
+                  <p id="timerDisplay"></p>
                 </div>
               </form>
             </div>

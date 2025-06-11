@@ -4,6 +4,67 @@
 <%- include("./partials/header") %>
 
 <body>
+  <script nonce="<%= nonce %>">
+    async function getResendOtpWaitTime() {
+      const emailInput = document.getElementById('email');
+      // make api call to get the wait time for resend OTP
+      const res = await fetch("/user/otp/resend-wait-time", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: emailInput.value.trim(),
+          _csrf: "<%= csrfToken %>"
+        })
+      });
+      return res.json();
+    }
+
+    function handleShowResentOtpWaitTime(durationInSeconds) {
+      let resendButton = document.getElementById("kc-login");
+      let errorMessageField = document.getElementById("input-error");
+
+      resendButton.disabled = true;
+
+      let interval = setInterval(() => {
+        if (durationInSeconds <= 0) {
+          clearInterval(interval);
+          resendButton.disabled = false;
+          errorMessageField.textContent = "";
+        } else {
+          errorMessageField.textContent = `Please wait ${durationInSeconds--} seconds before requesting a new code.`;
+        }
+      }, 1000);
+    }
+    window.addEventListener("DOMContentLoaded", function() {
+      const form = document.getElementById('kc-form-login')
+      console.log("🚀 ~ document.addEventListener ~ form:", form)
+      form.addEventListener('submit', async function(e) {
+        const emailInput = document.getElementById('email');
+        const email = emailInput.value.trim();
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        let resendButton = document.getElementById("kc-login");
+        let errorMessageField = document.getElementById("input-error");
+
+        if (!email) {
+          errorMessageField.textContent = 'Email is required.';
+          e.preventDefault();
+        } else if (!emailRegex.test(email)) {
+          errorMessageField.textContent = 'Please enter a valid email address.';
+          e.preventDefault();
+        } else {
+          const time = await getResendOtpWaitTime();
+          if (time && time.seconds !== 0) {
+            handleShowResentOtpWaitTime(time.seconds);
+            e.preventDefault();
+          }
+        }
+
+      });
+    });
+  </script>
   <header>
     <div class="banner">
       <span></span>
@@ -28,12 +89,10 @@
               <form action="/interaction/<%= uid %>/otp" method="POST" autocomplete="off" id="kc-form-login">
                 <div class="form-group">
                   <label for="email" class="pf-c-form__label pf-c-form__label-text">Email</label>
-                  <input tabindex="2" id="email" class="pf-c-form-control" name="email" value="" type="email" autofocus="" autocomplete="email" aria-invalid="" dir="ltr">
-                  <% if(error) {%>
+                  <input tabindex="2" id="email" class="pf-c-form-control" name="email" value="" type="text" autofocus="" autocomplete="email" aria-invalid="" dir="ltr">
                   <span id="input-error" class="required" aria-live="polite">
                     <%= error %>
                   </span>
-                  <% } %>
                 </div>
                 <div id="kc-form-buttons" class="form-group">
                   <input type="hidden" id="id-hidden-input" name="credentialId">

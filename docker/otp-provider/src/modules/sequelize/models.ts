@@ -60,4 +60,17 @@ mappedModels.set(
   }),
 );
 
+mappedModels.set(
+  'Otp',
+  sequelize.define('Otp', {
+    id: { type: Sequelize.STRING, primaryKey: true, defaultValue: Sequelize.UUIDV4 },
+    otp: { type: Sequelize.STRING, allowNull: false },
+    email: { type: Sequelize.STRING, allowNull: false },
+    attempts: { type: Sequelize.INTEGER, defaultValue: 0 },
+    active: { type: Sequelize.BOOLEAN, defaultValue: true },
+    createdAt: { type: Sequelize.DATE, defaultValue: Sequelize.NOW },
+    updatedAt: { type: Sequelize.DATE, defaultValue: Sequelize.NOW },
+  }),
+);
+
 export default mappedModels;

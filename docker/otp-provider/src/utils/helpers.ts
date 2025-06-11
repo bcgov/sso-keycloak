@@ -1,15 +1,11 @@
 import * as crypto from 'crypto';
 import { config } from '../config';
+import type { NextFunction, Response, Request } from 'express';
 
 const { HASH_SALT } = config;
 
-export const generateOtpWithExpiry = () => {
-  const otp = crypto.getRandomValues(new Uint32Array(1))[0].toString().slice(-6);
-  const otpExpiry = Date.now() + 5 * 60 * 1000; // Set OTP expiry time to 5 minutes
-  return {
-    otp,
-    expiresAt: new Date(otpExpiry),
-  };
+export const generateOtp = () => {
+  return crypto.getRandomValues(new Uint32Array(1))[0].toString().slice(-6);
 };
 
 export const isOtpValid = (otp: string, expiresAt: Date): boolean => {
@@ -25,4 +21,9 @@ export const hashEmail = (email: string) => {
   const salt = Buffer.from(HASH_SALT);
   const combined = Buffer.concat([Buffer.from(email, 'utf8'), salt]);
   return crypto.createHash('sha256').update(combined).digest('hex');
+};
+
+export const setNoCache = (req: Request, res: Response, next: NextFunction) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  next();
 };

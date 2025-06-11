@@ -1,12 +1,12 @@
 import express, { Request, Response, NextFunction } from 'express';
 import Provider, { ClientMetadata, Configuration, errors } from 'oidc-provider';
-import { setRoutes } from './routes';
+import { oidcRouter } from './routes/interaction';
 import * as path from 'node:path';
 import cors from 'cors';
 import { generateEvents } from './events';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import { getClients } from './utils/queries';
+import { getClients } from './modules/sequelize/queries/client';
 import helmet from 'helmet';
 import { config } from './config';
 import { createMigrator } from './modules/sequelize/umzug';
@@ -17,6 +17,9 @@ import { isOrigin, hashEmail } from './utils/helpers';
 import * as crypto from 'crypto';
 import cron from 'node-cron';
 import { cleanupTables } from './modules/cron/cleanup';
+import { userRouter } from './routes/user';
+import pgSession from 'connect-pg-simple';
+import session from 'express-session';
 
 const { NODE_ENV, APP_URL, JWKS, CORS_ORIGINS, DB_CLEANUP_CRON } = config;
 
@@ -66,6 +69,19 @@ app.use(
 );
 
 app.disable('x-powered-by');
+
+app.use(
+  session({
+    secret: process.env.EXPRESS_SESSION_COOKIE_SECRET || 'default_secret',
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      secure: NODE_ENV === 'production', // Use secure cookies in production
+      httpOnly: true,
+      maxAge: 5 * 60 * 1000, // 5 minutes
+    },
+  }),
+);
 
 const corsProp = 'allowedCorsOrigins';
 
@@ -232,8 +248,13 @@ const clientsConfig: Configuration = {
     clients,
   });
 
-  const routes = await setRoutes(provider);
-  app.use('/', routes);
+  const userRoutes = await userRouter(app);
+
+  app.use('/user', userRoutes);
+
+  const oidcRoutes = await oidcRouter(provider, { cspNonce });
+  app.use('/interaction', oidcRoutes);
+
   app.use(provider.callback());
 
   if (NODE_ENV === 'production') provider.proxy = true; // Enable proxy support for the provider
@@ -244,16 +265,16 @@ const clientsConfig: Configuration = {
     logger.info(`OIDC Provider is running on ${APP_URL}`);
   });
 
-  app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-    let errorMessage = 'Internal Server Error';
-    logger.error(errorMessage, err);
-    if (err?.error === 'invalid_request') {
-      errorMessage = 'Invalid or expired session found so please login again';
-    }
-    res.render('error', {
-      error: errorMessage,
-    });
-  });
+  // app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  //   let errorMessage = 'Internal Server Error';
+  //   logger.error(errorMessage, err);
+  //   if (err?.error === 'invalid_request') {
+  //     errorMessage = 'Invalid or expired session found so please login again';
+  //   }
+  //   res.render('error', {
+  //     error: errorMessage,
+  //   });
+  // });
 
   cron.schedule(DB_CLEANUP_CRON, cleanupTables);
 })();

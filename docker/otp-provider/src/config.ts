@@ -21,4 +21,8 @@ export const config = {
   CORS_ORIGINS: process.env.CORS_ORIGINS || '',
   DB_CLEANUP_CRON: process.env.DB_CLEANUP_CRON || '0 1 * * *',
   HASH_SALT: process.env.HASH_SALT || '',
+  OTP_VALIDITY_MINUTES: process.env.OTP_VALIDITY_MINUTES || '5',
+  OTP_ATTEMPTS_ALLOWED: process.env.OTP_ATTEMPTS_ALLOWED || '5',
+  OTP_RESENDS_ALLOWED_PER_DAY: process.env.OTP_RESENDS_ALLOWED_PER_DAY || '5',
+  OTP_RESEND_INTERVAL_MINUTES: process.env.OTP_RESEND_INTERVAL_MINUTES || '[1,2,5,60,1440]',
 };
