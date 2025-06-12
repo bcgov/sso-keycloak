@@ -13,10 +13,9 @@ import { config } from '../config';
 const { OTP_VALIDITY_MINUTES, OTP_ATTEMPTS_ALLOWED } = config;
 
 export const requestNewOtp = async (email: string) => {
-  let _error = '';
-  const requestOtp = await canRequestOtp(email);
-  const waitTimeforOtp = await secondsRemainingToRequestNewOtp(email);
-  if (requestOtp) {
+  const canRequest = await canRequestOtp(email);
+  if (canRequest) {
+    const [waitTimeforOtp] = await secondsRemainingToRequestNewOtp(email);
     if (waitTimeforOtp === 0) {
       await disableOtpsByEmail(email);
       const otp = generateOtp();
@@ -26,9 +25,8 @@ export const requestNewOtp = async (email: string) => {
         body: `Your OTP is ${otp}. It is valid for 5 minutes.`,
         subject: 'Your One-Time Password (OTP)',
       });
-    } else _error = `You can request a new OTP in ${waitTimeforOtp} seconds.`;
-  } else _error = 'You have reached the maximum number of OTP requests for today. Please try again tomorrow.';
-  return _error;
+    }
+  }
 };
 
 export const validateOtp = async (otp: string, email: string) => {

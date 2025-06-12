@@ -161,3 +161,27 @@ variable "hash_salt" {
   type        = string
   default     = ""
 }
+
+variable "otp_validity_minutes" {
+  description = "Number of minutes for otp expiration"
+  type        = string
+  default     = ""
+}
+
+variable "otp_attempts_allowed" {
+  description = "Number of otp entry attempts allowed per user"
+  type        = string
+  default     = ""
+}
+
+variable "otp_resends_allowed_per_day" {
+  description = "Number of otp resends allowed per day per user"
+  type        = string
+  default     = ""
+}
+
+variable "otp_resend_interval_minutes" {
+  description = "Interval between otp resends"
+  type        = string
+  default     = ""
+}

@@ -19,6 +19,11 @@ resource "random_password" "cookie_secret3" {
   special = true
 }
 
+resource "random_password" "cookie_secret4" {
+  length  = 8
+  special = true
+}
+
 resource "aws_ecs_cluster" "this" {
   name = var.app_name
 }
@@ -141,6 +146,26 @@ resource "aws_ecs_task_definition" "this" {
         {
           name  = "HASH_SALT",
           value = var.hash_salt
+        },
+        {
+          name  = "OTP_VALIDITY_MINUTES",
+          value = var.otp_validity_minutes
+        },
+        {
+          name  = "OTP_ATTEMPTS_ALLOWED",
+          value = var.otp_attempts_allowed
+        },
+        {
+          name  = "OTP_RESENDS_ALLOWED_PER_DAY",
+          value = var.otp_resends_allowed_per_day
+        },
+        {
+          name  = "OTP_RESEND_INTERVAL_MINUTES",
+          value = var.otp_resend_interval_minutes
+        },
+        {
+          name  = "COOKIE_SECRET",
+          value = random_password.cookie_secret4.result
         }
       ]
       secrets = [

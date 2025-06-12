@@ -2,6 +2,7 @@ import Provider from 'oidc-provider';
 import { NextFunction, Request, Response } from 'express';
 import { requestNewOtp, validateOtp } from '../services/otp';
 import { csrfToken } from 'src/modules/csrf';
+import { errors } from 'oidc-provider';
 
 export const authorize = async (oidcProvider: Provider, nonce: string) => {
   return async (req: Request, res: Response, next: NextFunction) => {
@@ -25,7 +26,7 @@ export const authorize = async (oidcProvider: Provider, nonce: string) => {
           return undefined;
       }
     } catch (error) {
-      next(error);
+      return next(error);
     }
   };
 };

@@ -7,7 +7,8 @@ export const userResendOtpWaitTimeSeconds = async () => {
     try {
       const { email } = req.body;
       if (!email) return res.status(400).json({ error: 'Email is required' });
-      const seconds = await secondsRemainingToRequestNewOtp(email as string);
+      const [seconds, err] = await secondsRemainingToRequestNewOtp(email as string);
+      if (err) res.status(429).json({ error: err });
       return res.status(200).json({ seconds });
     } catch (error) {
       next(error);

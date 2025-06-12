@@ -53,7 +53,11 @@
 
     document.addEventListener('DOMContentLoaded', async function() {
       const time = await getResendOtpWaitTime();
-      handleShowResentOtpWaitTime(time.seconds);
+      if (time.error) {
+        document.getElementById('timerDisplay').textContent = time.error;
+        document.getElementById("resend-otp").disabled = true;
+      } else
+        handleShowResentOtpWaitTime(time.seconds);
       document.getElementById('resend-otp').addEventListener('click', async function() {
         document.getElementById('input-error').textContent = "";
         await resendOtp();

@@ -47,19 +47,21 @@
         const email = emailInput.value.trim();
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-        let resendButton = document.getElementById("kc-login");
+        let submitButton = document.getElementById("kc-login");
         let errorMessageField = document.getElementById("input-error");
 
         if (!email) {
           errorMessageField.textContent = 'Email is required.';
         } else if (!emailRegex.test(email)) {
           errorMessageField.textContent = 'Please enter a valid email address.';
+        } else if (time && time.error) {
+          errorMessageField.textContent = time.error;
+          submitButton.disabled = true;
         } else if (time && time.seconds !== 0) {
           handleShowResentOtpWaitTime(time.seconds);
         } else {
           form.submit();
         }
-
       });
     });
   </script>
