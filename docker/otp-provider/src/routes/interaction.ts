@@ -5,11 +5,11 @@ import { setNoCache } from '../utils/helpers';
 import { errors } from 'oidc-provider';
 import logger from '../modules/winston.config';
 
-export const oidcRouter = async (oidcProvider: Provider, optionalArgs: { cspNonce: string } = { cspNonce: '' }) => {
+export const oidcRouter = async (oidcProvider: Provider) => {
   const oidcRouter = express.Router();
-  oidcRouter.get('/:uid', setNoCache, await authorize(oidcProvider, optionalArgs?.cspNonce));
-  oidcRouter.post('/:uid/otp', setNoCache, await generateOtp(oidcProvider, optionalArgs?.cspNonce));
-  oidcRouter.post('/:uid/login', setNoCache, await login(oidcProvider, optionalArgs?.cspNonce));
+  oidcRouter.get('/:uid', setNoCache, await authorize(oidcProvider));
+  oidcRouter.post('/:uid/otp', setNoCache, await generateOtp(oidcProvider));
+  oidcRouter.post('/:uid/login', setNoCache, await login(oidcProvider));
   oidcRouter.post('/:uid/confirm', setNoCache, await userConsent(oidcProvider));
   oidcRouter.post('/:uid/abort', await abortLogin(oidcProvider));
   oidcRouter.use((err: Error, req: Request, res: Response, next: NextFunction) => {

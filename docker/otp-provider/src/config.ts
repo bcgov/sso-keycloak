@@ -5,6 +5,7 @@ dotenv.config();
 export const config = {
   APP_ENV: process.env.APP_ENV || 'development',
   APP_URL: process.env.APP_URL || 'http://localhost:3000',
+  DB_RUN_MIGRATIONS: process.env.DB_RUN_MIGRATIONS || 'true',
   DB_HOSTNAME: process.env.DB_HOSTNAME || 'localhost',
   DB_USERNAME: process.env.DB_USERNAME || 'postgres',
   DB_PASSWORD: process.env.DB_PASSWORD || 'postgres',

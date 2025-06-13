@@ -20,6 +20,27 @@ const config: any = {
       freezeTableName: true,
     },
   },
+  test: {
+    dialect: 'postgres',
+    dialectModule: pg,
+    host: DB_HOSTNAME || 'localhost',
+    username: DB_USERNAME || 'postgres',
+    password: DB_PASSWORD || 'postgres',
+    database: DB_NAME || 'otp_test',
+    port: DB_PORT,
+    logging: false,
+    dialectOptions: {},
+    omitNull: false,
+    define: {
+      freezeTableName: true,
+    },
+    pool: {
+      max: 5,
+      min: 0,
+      acquire: 30000,
+      idle: 10000,
+    },
+  },
   production: {
     host: DB_HOSTNAME || 'localhost',
     username: DB_USERNAME || '',

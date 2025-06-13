@@ -1,10 +1,10 @@
 import Provider from 'oidc-provider';
 import { NextFunction, Request, Response } from 'express';
 import { requestNewOtp, validateOtp } from '../services/otp';
-import { csrfToken } from 'src/modules/csrf';
+import { csrfToken } from '../modules/csrf';
 import { errors } from 'oidc-provider';
 
-export const authorize = async (oidcProvider: Provider, nonce: string) => {
+export const authorize = async (oidcProvider: Provider) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { uid, prompt } = await oidcProvider.interactionDetails(req, res);
@@ -13,7 +13,7 @@ export const authorize = async (oidcProvider: Provider, nonce: string) => {
           return res.render('signin', {
             uid,
             error: '',
-            nonce,
+            nonce: res.locals.cspNonce,
             csrfToken: csrfToken(req),
           });
         }
@@ -31,7 +31,7 @@ export const authorize = async (oidcProvider: Provider, nonce: string) => {
   };
 };
 
-export const generateOtp = async (oidcProvider: Provider, nonce: string) => {
+export const generateOtp = async (oidcProvider: Provider) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const {
@@ -48,7 +48,7 @@ export const generateOtp = async (oidcProvider: Provider, nonce: string) => {
           uid,
           email,
           error: '',
-          nonce,
+          nonce: res.locals.cspNonce,
           csrfToken: csrfToken(req),
         });
       }
@@ -58,7 +58,7 @@ export const generateOtp = async (oidcProvider: Provider, nonce: string) => {
   };
 };
 
-export const login = async (oidcProvider: Provider, nonce: string) => {
+export const login = async (oidcProvider: Provider) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const {
@@ -76,7 +76,7 @@ export const login = async (oidcProvider: Provider, nonce: string) => {
             uid,
             email,
             error: 'OTP is required!',
-            nonce,
+            nonce: res.locals.cspNonce,
             csrfToken: csrfToken(req),
           });
         }
@@ -89,7 +89,7 @@ export const login = async (oidcProvider: Provider, nonce: string) => {
               uid,
               email,
               error: `Invalid OTP, you have ${attemptsLeft} attempts left.`,
-              nonce,
+              nonce: res.locals.cspNonce,
               csrfToken: csrfToken(req),
             });
           } else {

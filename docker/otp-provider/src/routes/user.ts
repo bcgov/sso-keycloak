@@ -1,9 +1,9 @@
-import { Express, Router } from 'express';
+import { Router } from 'express';
 import { setNoCache } from '../utils/helpers';
 import { resendOtp, userResendOtpWaitTimeSeconds } from '../controllers/otp-controller';
-import { csrfProtectionMiddleware } from 'src/modules/csrf';
+import { csrfProtectionMiddleware } from '../modules/csrf';
 
-export const userRouter = async (app: Express) => {
+export const userRouter = async () => {
   const userRouter = Router();
   userRouter.post(
     '/otp/resend-wait-time',

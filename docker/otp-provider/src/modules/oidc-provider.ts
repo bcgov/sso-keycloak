@@ -2,8 +2,9 @@ import { Client, ClientMetadata, Configuration, errors, KoaContextWithOIDC } fro
 import { config } from '../config';
 import SequelizeAdapter from './sequelize/adapter';
 import Keygrip from 'keygrip';
-import { isOrigin, hashEmail } from 'src/utils/helpers';
+import { isOrigin, hashEmail } from '../utils/helpers';
 import { getClients } from './sequelize/queries/client';
+import type { Response } from 'express';
 
 const { JWKS } = config;
 
@@ -11,7 +12,7 @@ const jwks = JWKS || {};
 
 const corsProp = 'allowedCorsOrigins';
 
-export const getConfig = ({ cspNonce }: { cspNonce: string }): Configuration => {
+export const getConfig = (): Configuration => {
   return {
     claims: {
       openid: ['sub', 'otp_guid'],
@@ -46,7 +47,7 @@ export const getConfig = ({ cspNonce }: { cspNonce: string }): Configuration => 
           ctx.body = `
         <!DOCTYPE html>
         <head>
-          <script nonce="${cspNonce}">
+          <script nonce="${(ctx.res as Response)?.locals?.cspNonce}">
             document.addEventListener('DOMContentLoaded', function () { document.forms[0].submit() });
           </script>
         </head>
