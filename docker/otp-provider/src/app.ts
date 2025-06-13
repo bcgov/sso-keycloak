@@ -10,12 +10,10 @@ import { config } from './config';
 import { createMigrator } from './modules/sequelize/umzug';
 import logger from './modules/winston.config';
 import * as crypto from 'crypto';
-import { userRouter } from './routes/user';
-import session from 'express-session';
 import { getConfig, getOidcClients } from './modules/oidc-provider';
 import os from 'node:os';
 
-const { NODE_ENV, APP_URL, CORS_ORIGINS, COOKIE_SECRET } = config;
+const { NODE_ENV, APP_URL, CORS_ORIGINS } = config;
 
 const staticFolder = dirname(import.meta.url.replace(os.platform() === 'win32' ? 'file:///' : 'file://', ''));
 
@@ -62,19 +60,6 @@ app.use(
 
 app.disable('x-powered-by');
 
-app.use(
-  session({
-    secret: COOKIE_SECRET || 'default_secret',
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-      secure: NODE_ENV === 'production', // Use secure cookies in production
-      httpOnly: true,
-      maxAge: 24 * 60 * 60 * 1000, // 1 day
-    },
-  }),
-);
-
 export const initializeApp = async (app: Express) => {
   try {
     const migrator = await createMigrator(logger);
@@ -88,10 +73,6 @@ export const initializeApp = async (app: Express) => {
     ...getConfig(),
     clients: await getOidcClients(),
   });
-
-  const userRoutes = await userRouter();
-
-  app.use('/user', userRoutes);
 
   const oidcRoutes = await oidcRouter(provider);
   app.use('/interaction', oidcRoutes);

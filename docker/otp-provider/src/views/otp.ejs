@@ -5,34 +5,6 @@
 
 <body>
   <script nonce="<%= nonce %>">
-    async function resendOtp() {
-      // make api call to get the wait time for resend OTP
-      const res = await fetch("/user/otp", {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: "<%= email %>",
-          _csrf: "<%= csrfToken %>"
-        })
-      });
-    }
-    async function getResendOtpWaitTime() {
-      // make api call to get the wait time for resend OTP
-      const res = await fetch("/user/otp/resend-wait-time", {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: "<%= email %>",
-          _csrf: "<%= csrfToken %>"
-        })
-      });
-      return res.json();
-    }
-
     function handleShowResentOtpWaitTime(durationInSeconds) {
       let resendButton = document.getElementById("resend-otp");
       let timerDisplay = document.getElementById("timerDisplay");
@@ -52,17 +24,20 @@
 
 
     document.addEventListener('DOMContentLoaded', async function() {
-      const time = await getResendOtpWaitTime();
-      if (time.error) {
-        document.getElementById('timerDisplay').textContent = time.error;
-        document.getElementById("resend-otp").disabled = true;
-      } else
-        handleShowResentOtpWaitTime(time.seconds);
-      document.getElementById('resend-otp').addEventListener('click', async function() {
-        document.getElementById('input-error').textContent = "";
-        await resendOtp();
-        const time = await getResendOtpWaitTime();
-        handleShowResentOtpWaitTime(time.seconds);
+      const emailInput = document.getElementById("email-input");
+      const time = emailInput.getAttribute('wait-time');
+      handleShowResentOtpWaitTime(Number(time));
+      const form = document.getElementById('kc-form-login');
+      form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const otpInput = document.getElementById('otp');
+        const otp = otpInput.value.trim();
+        const errorMessageField = document.getElementById("input-error");
+        if (!otp) {
+          errorMessageField.textContent = 'OTP is required!'
+        } else {
+          form.submit();
+        }
       });
     });
   </script>
@@ -97,10 +72,16 @@
                 </div>
                 <div id="kc-form-buttons" class="form-group">
                   <input type="hidden" id="id-hidden-input" name="credentialId">
-                  <input type="hidden" name="email" value="<%= email %>">
+                  <input type="hidden" name="email" value="<%= email %>" id="email-input" wait-time="<%= waitTime %>">
                   <input tabindex="7" class="pf-c-button pf-m-primary pf-m-block btn-lg" name="login" id="kc-login" type="submit" value="Submit">
-                  <br />
-                  <input tabindex="7" class="pf-c-button pf-m-primary pf-m-block btn-lg" name="resend-otp" id="resend-otp" value="Resend OTP" type="button">
+                </div>
+              </form>
+              <form action="/interaction/<%= uid %>/otp" method="POST" autocomplete="off" id="kc-form-resend-otp">
+                <div id="kc-form-buttons" class="form-group">
+                  <input type="hidden" id="id-hidden-input" name="credentialId">
+                  <input type="hidden" name="email" value="<%= email %>">
+                  <input type="hidden" name="otpType" value="resend">
+                  <input tabindex="7" class="pf-c-button pf-m-primary pf-m-block btn-lg" name="resend-otp" id="resend-otp" value="Resend OTP" type="submit" disabled="<%= disableResend %>">
                   <p id="timerDisplay"></p>
                 </div>
               </form>

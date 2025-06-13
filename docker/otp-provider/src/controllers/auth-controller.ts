@@ -1,8 +1,7 @@
 import Provider from 'oidc-provider';
 import { NextFunction, Request, Response } from 'express';
 import { requestNewOtp, validateOtp } from '../services/otp';
-import { csrfToken } from '../modules/csrf';
-import { errors } from 'oidc-provider';
+import { secondsRemainingToRequestNewOtp } from '../utils/otp';
 
 export const authorize = async (oidcProvider: Provider) => {
   return async (req: Request, res: Response, next: NextFunction) => {
@@ -14,7 +13,7 @@ export const authorize = async (oidcProvider: Provider) => {
             uid,
             error: '',
             nonce: res.locals.cspNonce,
-            csrfToken: csrfToken(req),
+            waitTime: 0,
           });
         }
         case 'consent': {
@@ -40,16 +39,41 @@ export const generateOtp = async (oidcProvider: Provider) => {
       } = await oidcProvider.interactionDetails(req, res);
 
       if (name === 'login') {
-        const { email } = req.body;
+        const { email, otpType } = req.body;
 
-        await requestNewOtp(email);
+        let [time, error] = await secondsRemainingToRequestNewOtp(email);
+
+        if (time !== 0 || error) {
+          if (otpType === 'resend') {
+            return res.render('otp', {
+              uid,
+              email,
+              error: error ? error : '',
+              nonce: res.locals.cspNonce,
+              waitTime: time,
+              disableResend: 'true',
+            });
+          }
+          return res.render('signin', {
+            uid,
+            error,
+            nonce: res.locals.cspNonce,
+            waitTime: time,
+          });
+        }
+
+        if (!error) {
+          await requestNewOtp(email);
+          [time, error] = await secondsRemainingToRequestNewOtp(email);
+        }
 
         return res.render('otp', {
           uid,
           email,
           error: '',
           nonce: res.locals.cspNonce,
-          csrfToken: csrfToken(req),
+          waitTime: time,
+          disableResend: 'false',
         });
       }
     } catch (error) {
@@ -71,17 +95,9 @@ export const login = async (oidcProvider: Provider) => {
       if (name === 'login') {
         const { email, otp } = req.body;
 
-        if (!otp) {
-          return res.render('otp', {
-            uid,
-            email,
-            error: 'OTP is required!',
-            nonce: res.locals.cspNonce,
-            csrfToken: csrfToken(req),
-          });
-        }
-
         const { verified, attemptsLeft } = await validateOtp(otp, email);
+
+        let [time] = await secondsRemainingToRequestNewOtp(email);
 
         if (!verified) {
           if (attemptsLeft > 0) {
@@ -90,7 +106,8 @@ export const login = async (oidcProvider: Provider) => {
               email,
               error: `Invalid OTP, you have ${attemptsLeft} attempts left.`,
               nonce: res.locals.cspNonce,
-              csrfToken: csrfToken(req),
+              waitTime: time,
+              disableResend: 'false',
             });
           } else {
             result = {

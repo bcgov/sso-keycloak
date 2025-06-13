@@ -5,25 +5,10 @@
 
 <body>
   <script nonce="<%= nonce %>">
-    async function getResendOtpWaitTime() {
-      const emailInput = document.getElementById('email');
-      // make api call to get the wait time for resend OTP
-      const res = await fetch("/user/otp/resend-wait-time", {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: emailInput.value.trim(),
-          _csrf: "<%= csrfToken %>"
-        })
-      });
-      return res.json();
-    }
-
     function handleShowResentOtpWaitTime(durationInSeconds) {
       let loginButton = document.getElementById("kc-login");
       let errorMessageField = document.getElementById("input-error");
+      const emailInput = document.getElementById('email');
 
       loginButton.disabled = true;
 
@@ -32,6 +17,7 @@
           clearInterval(interval);
           loginButton.disabled = false;
           errorMessageField.textContent = "";
+          emailInput.setAttribute('wait-time', 0);
         } else {
           errorMessageField.textContent = `Please wait ${durationInSeconds--} seconds before requesting a new code.`;
         }
@@ -39,14 +25,20 @@
     }
 
     window.addEventListener("DOMContentLoaded", function() {
-      const form = document.getElementById('kc-form-login')
+      let emailInput = document.getElementById('email');
+      emailInput.value = localStorage.getItem('otp-email');
+      let time = emailInput.getAttribute('wait-time');
+      if (time && Number(time) !== 0) {
+        handleShowResentOtpWaitTime(Number(time));
+      }
+      const form = document.getElementById('kc-form-login');
       form.addEventListener('submit', async function(e) {
         e.preventDefault();
-        const time = await getResendOtpWaitTime();
-        const emailInput = document.getElementById('email');
+        emailInput = document.getElementById('email');
+        time = emailInput.getAttribute('wait-time');
+        const error = "<%= error %>" || '';
         const email = emailInput.value.trim();
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
         let submitButton = document.getElementById("kc-login");
         let errorMessageField = document.getElementById("input-error");
 
@@ -54,12 +46,13 @@
           errorMessageField.textContent = 'Email is required.';
         } else if (!emailRegex.test(email)) {
           errorMessageField.textContent = 'Please enter a valid email address.';
-        } else if (time && time.error) {
-          errorMessageField.textContent = time.error;
+        } else if (error) {
           submitButton.disabled = true;
-        } else if (time && time.seconds !== 0) {
-          handleShowResentOtpWaitTime(time.seconds);
+        } else if (time && Number(time) !== 0) {
+          handleShowResentOtpWaitTime(Number(time));
         } else {
+          localStorage.setItem('otp-email', email);
+          submitButton.disabled = true;
           form.submit();
         }
       });
@@ -89,7 +82,7 @@
               <form action="/interaction/<%= uid %>/otp" method="POST" autocomplete="off" id="kc-form-login">
                 <div class="form-group">
                   <label for="email" class="pf-c-form__label pf-c-form__label-text">Email</label>
-                  <input tabindex="2" id="email" class="pf-c-form-control" name="email" value="" type="text" autofocus="" autocomplete="email" aria-invalid="" dir="ltr">
+                  <input tabindex="2" id="email" class="pf-c-form-control" name="email" value="" type="text" autofocus="" autocomplete="email" aria-invalid="" dir="ltr" wait-time="<%= waitTime %>">
                   <span id="input-error" class="required" aria-live="polite">
                     <%= error %>
                   </span>
