@@ -81,7 +81,7 @@ jobs:
           hash_salt="${{ env.HASH_SALT }}"
           otp_validity_minutes="5"
           otp_attempts_allowed="5"
-          otp_resends_allowed_per_day="5"
+          otp_resends_allowed_per_day="4"
           otp_resend_interval_minutes="[1,2,5,60]"
           EOF
 
