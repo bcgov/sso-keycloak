@@ -17,12 +17,12 @@ describe('database', () => {
       "tokenEndpointAuthMethod")
       VALUES('pub-client',
         '{authorization_code, refresh_token}',
-        '{http://localhost:3001}',
+        '{http://localhost:3000/cb}',
         'openid email',
         '{code}',
-        'http://localhost:3001',
-        '{http://localhost:3001}',
-        '{http://localhost:3001}',
+        'http://localhost:3000',
+        '{http://localhost:3000}',
+        '{http://localhost:3000}',
         'none')`);
   });
   it('should migrate database successfully', async () => {
