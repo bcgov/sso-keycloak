@@ -1,7 +1,8 @@
 import Provider from 'oidc-provider';
 import { NextFunction, Request, Response } from 'express';
 import { requestNewOtp, validateOtp } from '../services/otp';
-import { secondsRemainingToRequestNewOtp } from '../utils/otp';
+import { canRequestOtp, secondsRemainingToRequestNewOtp } from '../utils/otp';
+import { errors } from 'src/modules/errors';
 
 export const authorize = async (oidcProvider: Provider) => {
   return async (req: Request, res: Response, next: NextFunction) => {
@@ -12,6 +13,7 @@ export const authorize = async (oidcProvider: Provider) => {
           return res.render('signin', {
             uid,
             error: '',
+            email: '',
             nonce: res.locals.cspNonce,
             waitTime: 0,
           });
@@ -40,40 +42,37 @@ export const generateOtp = async (oidcProvider: Provider) => {
 
       if (name === 'login') {
         const { email, otpType } = req.body;
+        const errorTemplate = otpType === 'resend' ? 'otp' : 'signin';
 
-        let [time, error] = await secondsRemainingToRequestNewOtp(email);
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const renderVars = {
+          uid,
+          email: email ?? "",
+          nonce: res.locals.cspNonce,
+          waitTime: 0,
+          error: '',
+          disableResend: true,
+        };
 
-        if (time !== 0 || error) {
-          if (otpType === 'resend') {
-            return res.render('otp', {
-              uid,
-              email,
-              error: error ? error : '',
-              nonce: res.locals.cspNonce,
-              waitTime: time,
-              disableResend: 'true',
-            });
-          }
-          return res.render('signin', {
-            uid,
-            error,
-            nonce: res.locals.cspNonce,
-            waitTime: time,
-          });
-        }
+        if (email.length > 254) return res.render(errorTemplate, { ...renderVars, error: errors.INVALID_EMAIL });
+        if (!emailRegex.test(email)) return res.render(errorTemplate, { ...renderVars, error: errors.INVALID_EMAIL });
 
-        if (!error) {
-          await requestNewOtp(email);
-          [time, error] = await secondsRemainingToRequestNewOtp(email);
-        }
+        const canRequest = await canRequestOtp(email);
+        if (!canRequest) return res.render(errorTemplate, { ...renderVars, error: errors.OTPS_LIMIT_REACHED });
 
+        let [waitTime, error] = await secondsRemainingToRequestNewOtp(email);
+        if (error) return res.render(errorTemplate, { ...renderVars, error });
+
+        if (waitTime !== 0) return res.render(errorTemplate, { ...renderVars, waitTime });
+
+        await requestNewOtp(email);
         return res.render('otp', {
           uid,
           email,
-          error: '',
           nonce: res.locals.cspNonce,
-          waitTime: time,
           disableResend: 'false',
+          waitTime,
+          error: '',
         });
       }
     } catch (error) {
@@ -91,7 +90,6 @@ export const login = async (oidcProvider: Provider) => {
       } = await oidcProvider.interactionDetails(req, res);
 
       let result;
-
       if (name === 'login') {
         const { email, otp } = req.body;
 

@@ -5,57 +5,33 @@
 
 <body>
   <script nonce="<%= nonce %>">
-    function handleShowResentOtpWaitTime(durationInSeconds) {
-      let loginButton = document.getElementById("kc-login");
-      let errorMessageField = document.getElementById("input-error");
+    window.addEventListener("DOMContentLoaded", function() {
+      const loginButton = document.getElementById("kc-login");
+      const errorMessageField = document.getElementById("input-error");
       const emailInput = document.getElementById('email');
+      let time = Number(errorMessageField.getAttribute('data-wait-time'));
 
+      if (time === 0) return;
       loginButton.disabled = true;
+      const resetForm = () => {
+        errorMessageField.textContent = "";
+        errorMessageField.setAttribute('wait-time', "");
+        loginButton.disabled = false;
+      }
 
       let interval = setInterval(() => {
-        if (durationInSeconds <= 0) {
+        if (time <= 0) {
           clearInterval(interval);
-          loginButton.disabled = false;
-          errorMessageField.textContent = "";
-          emailInput.setAttribute('wait-time', 0);
+          resetForm();
         } else {
-          errorMessageField.textContent = `Please wait ${durationInSeconds--} seconds before requesting a new code.`;
+          errorMessageField.textContent = `Please wait ${time--} seconds before requesting a new code.`;
         }
       }, 1000);
-    }
 
-    window.addEventListener("DOMContentLoaded", function() {
-      let emailInput = document.getElementById('email');
-      emailInput.value = localStorage.getItem('otp-email');
-      let time = emailInput.getAttribute('wait-time');
-      if (time && Number(time) !== 0) {
-        handleShowResentOtpWaitTime(Number(time));
+      emailInput.oninput = () => {
+          clearInterval(interval);
+          resetForm();
       }
-      const form = document.getElementById('kc-form-login');
-      form.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        emailInput = document.getElementById('email');
-        time = emailInput.getAttribute('wait-time');
-        const error = "<%= error %>" || '';
-        const email = emailInput.value.trim();
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        let submitButton = document.getElementById("kc-login");
-        let errorMessageField = document.getElementById("input-error");
-
-        if (!email) {
-          errorMessageField.textContent = 'Email is required.';
-        } else if (!emailRegex.test(email)) {
-          errorMessageField.textContent = 'Please enter a valid email address.';
-        } else if (error) {
-          submitButton.disabled = true;
-        } else if (time && Number(time) !== 0) {
-          handleShowResentOtpWaitTime(Number(time));
-        } else {
-          localStorage.setItem('otp-email', email);
-          submitButton.disabled = true;
-          form.submit();
-        }
-      });
     });
   </script>
   <header>
@@ -82,9 +58,13 @@
               <form action="/interaction/<%= uid %>/otp" method="POST" autocomplete="off" id="kc-form-login">
                 <div class="form-group">
                   <label for="email" class="pf-c-form__label pf-c-form__label-text">Email</label>
-                  <input tabindex="2" id="email" class="pf-c-form-control" name="email" value="" type="text" autofocus="" autocomplete="email" aria-invalid="" dir="ltr" wait-time="<%= waitTime %>">
-                  <span id="input-error" class="required" aria-live="polite">
-                    <%= error %>
+                  <input tabindex="2" id="email" class="pf-c-form-control" name="email" value="<%= email %>" type="text" autofocus="" autocomplete="email" aria-invalid="" dir="ltr" wait-time="<%= waitTime %>" required maxlength="254">
+                  <span id="input-error" class="required" aria-live="polite" data-wait-time="<%= waitTime %>">
+                    <% if (error) { %>
+                      <%= error %>
+                    <% } else if (waitTime > 0) { %>
+                      Please wait  <%= waitTime %> seconds before requesting a new code.
+                    <% } %>
                   </span>
                 </div>
                 <div id="kc-form-buttons" class="form-group">
