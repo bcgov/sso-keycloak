@@ -104,6 +104,8 @@ export const login = async (oidcProvider: Provider) => {
         let validatedOtp = { verified: false, attemptsLeft: 0 };
         const { email, otp } = req.body;
 
+        let disableResend = 'false';
+
         validatedOtp = await validateOtp(otp, email);
 
         const canRequest = await canRequestOtp(email);
@@ -111,16 +113,20 @@ export const login = async (oidcProvider: Provider) => {
         if (canRequest) time = await secondsRemainingToRequestNewOtp(email);
 
         if (!validatedOtp.verified) {
+          const otpRenderParams = {
+            uid,
+            email,
+            error,
+            nonce: res.locals.cspNonce,
+            waitTime: time,
+            disableResend,
+          };
           if (validatedOtp.attemptsLeft > 0) {
             error = `Invalid OTP, you have ${validatedOtp.attemptsLeft} attempts left.`;
-            return res.render('otp', {
-              uid,
-              email,
-              error,
-              nonce: res.locals.cspNonce,
-              waitTime: time,
-              disableResend: 'false',
-            });
+            return res.render('otp', { ...otpRenderParams, error });
+          } else if (validatedOtp.attemptsLeft === 0 && (await canRequestOtp(email))) {
+            error = errors.EXPIRED_OTP_WITH_RESEND;
+            return res.render('otp', { ...otpRenderParams, error });
           } else {
             result = {
               error: 'Invalid or expired OTP',

@@ -31,10 +31,11 @@ export const requestNewOtp = async (email: string) => {
 
 export const validateOtp = async (otp: string, email: string) => {
   const activeOtp = await getActiveOtp(email);
-  const otpExpired =
-    new Date().getTime() - new Date(activeOtp.createdAt).getTime() > Number(OTP_VALIDITY_MINUTES) * 60 * 1000;
-  if (!activeOtp || activeOtp.otp !== otp || activeOtp.attempts > Number(OTP_ATTEMPTS_ALLOWED) || otpExpired) {
-    await updateOtpAttempts(activeOtp.otp, email, activeOtp.attempts + 1);
+  if (!activeOtp) {
+    return { verified: false, attemptsLeft: 0 };
+  } else if (activeOtp.otp !== otp || activeOtp.attempts === Number(OTP_ATTEMPTS_ALLOWED)) {
+    if (activeOtp.attempts < Number(OTP_ATTEMPTS_ALLOWED))
+      await updateOtpAttempts(activeOtp.otp, email, activeOtp.attempts + 1);
     return { verified: false, attemptsLeft: Number(OTP_ATTEMPTS_ALLOWED) - (activeOtp.attempts + 1) };
   }
   await deleteOtpsByEmail(email);
