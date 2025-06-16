@@ -1,7 +1,8 @@
 import SequelizeAdapter from '../sequelize/adapter';
 import { models } from '../sequelize/umzug';
+import sequelizeModels from '../sequelize/models';
 
-const ignoredModels = ['ClientConfig'];
+const ignoredModels = ['ClientConfig', 'Otp'];
 
 export const cleanupTables = async () => {
   for (const table of models) {
@@ -12,4 +13,9 @@ export const cleanupTables = async () => {
       model.destroy(record.id);
     });
   }
+
+  const otpModel = sequelizeModels.get('Otp');
+  await otpModel.destroy({
+    truncate: true,
+  });
 };

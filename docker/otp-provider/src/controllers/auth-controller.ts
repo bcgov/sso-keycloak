@@ -1,68 +1,33 @@
 import Provider from 'oidc-provider';
 import { NextFunction, Request, Response } from 'express';
-import * as querystring from 'node:querystring';
-import { inspect } from 'node:util';
-import { sendEmail } from '../mailer';
-import { generateOtpWithExpiry, isOtpValid } from '../utils/helpers';
-
-const debug = (obj: any) =>
-  querystring.stringify(
-    Object.entries(obj).reduce((acc: Record<string, any>, [key, value]) => {
-      keys.add(key);
-      if (!value) return acc;
-      acc[key] = inspect(value, { depth: null });
-      return acc;
-    }, {}),
-    '<br/>',
-    ': ',
-    {
-      encodeURIComponent(value) {
-        return keys.has(value) ? `<strong>${value}</strong>` : value;
-      },
-    },
-  );
-
-const keys = new Set();
-
-const otps = new Map();
+import { requestNewOtp, validateOtp } from '../services/otp';
+import { canRequestOtp, secondsRemainingToRequestNewOtp } from '../utils/otp';
+import { emailValidator } from '../utils/validator';
+import { errors } from '../modules/errors';
 
 export const authorize = async (oidcProvider: Provider) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { uid, prompt, params, session } = await oidcProvider.interactionDetails(req, res);
+      const { uid, prompt } = await oidcProvider.interactionDetails(req, res);
       switch (prompt.name) {
         case 'login': {
           return res.render('signin', {
             uid,
-            details: prompt.details,
-            params,
-            title: 'Sign-in',
-            session: session ? debug(session) : undefined,
-            dbg: {
-              params: debug(params),
-              prompt: debug(prompt),
-            },
             error: '',
+            nonce: res.locals.cspNonce,
+            waitTime: 0,
           });
         }
         case 'consent': {
           return res.render('consent', {
             uid,
-            details: prompt.details,
-            params,
-            title: 'Authorize',
-            session: session ? debug(session) : undefined,
-            dbg: {
-              params: debug(params),
-              prompt: debug(prompt),
-            },
           });
         }
         default:
           return undefined;
       }
     } catch (error) {
-      next(error);
+      return next(error);
     }
   };
 };
@@ -72,41 +37,49 @@ export const generateOtp = async (oidcProvider: Provider) => {
     try {
       const {
         uid,
-        prompt,
-        params,
-        session,
         prompt: { name },
       } = await oidcProvider.interactionDetails(req, res);
+
       if (name === 'login') {
-        const { email } = req.body;
-        if (!email) {
-          return res.render('signin', {
-            uid,
-            details: prompt.details,
-            params,
-            title: 'Sign-in',
-            session: session ? debug(session) : undefined,
-            dbg: {
-              params: debug(params),
-              prompt: debug(prompt),
-            },
-            error: 'Email is required!',
-          });
+        let error = '';
+        let time = 0;
+        const { email, otpType } = req.body;
+
+        error = emailValidator(email);
+
+        if (!error) {
+          const canRequest = await canRequestOtp(email);
+          if (!canRequest) {
+            error = errors.OTPS_LIMIT_REACHED;
+          } else {
+            time = await secondsRemainingToRequestNewOtp(email);
+          }
         }
-        const { otp, expiresAt } = generateOtpWithExpiry();
 
-        otps.set(req.body?.email, { otp, expiry: expiresAt });
+        if (error) {
+          if (otpType !== 'resend') {
+            return res.render('signin', {
+              uid,
+              error,
+              nonce: res.locals.cspNonce,
+              waitTime: time,
+            });
+          }
+        }
 
-        sendEmail({
-          to: [email],
-          body: `Your OTP is ${otp}. It is valid for 5 minutes.`,
-          subject: 'Your One-Time Password (OTP)',
-        });
+        if (!error && time === 0) {
+          await requestNewOtp(email);
+          const canRequest = await canRequestOtp(email);
+          if (canRequest) time = await secondsRemainingToRequestNewOtp(email);
+        }
 
         return res.render('otp', {
           uid,
           email,
-          error: '',
+          error,
+          nonce: res.locals.cspNonce,
+          waitTime: error ? 0 : time,
+          disableResend: error ? 'true' : 'false',
         });
       }
     } catch (error) {
@@ -124,24 +97,36 @@ export const login = async (oidcProvider: Provider) => {
       } = await oidcProvider.interactionDetails(req, res);
 
       let result;
+      let time = 0;
+      let error = '';
 
       if (name === 'login') {
+        let validatedOtp = { verified: false, attemptsLeft: 0 };
         const { email, otp } = req.body;
 
-        if (!otp) {
-          return res.render('otp', {
-            uid,
-            email,
-            error: 'OTP is required!',
-          });
-        }
+        validatedOtp = await validateOtp(otp, email);
 
-        const storedOtp = otps.get(email);
-        if (!storedOtp || storedOtp.otp !== otp || !isOtpValid(otp, storedOtp.expiry)) {
-          result = {
-            error: 'Invalid or expired OTP',
-            error_description: 'Invalid or expired OTP',
-          };
+        const canRequest = await canRequestOtp(email);
+
+        if (canRequest) time = await secondsRemainingToRequestNewOtp(email);
+
+        if (!validatedOtp.verified) {
+          if (validatedOtp.attemptsLeft > 0) {
+            error = `Invalid OTP, you have ${validatedOtp.attemptsLeft} attempts left.`;
+            return res.render('otp', {
+              uid,
+              email,
+              error,
+              nonce: res.locals.cspNonce,
+              waitTime: time,
+              disableResend: 'false',
+            });
+          } else {
+            result = {
+              error: 'Invalid or expired OTP',
+              error_description: 'Invalid or expired OTP',
+            };
+          }
         } else {
           result = {
             login: {
@@ -165,7 +150,6 @@ export const userConsent = async (oidcProvider: Provider) => {
         prompt: { name, details },
         params,
         session: { accountId } = {},
-        grantId,
       } = interactionDetails;
       if (name === 'consent') {
         let { grantId } = interactionDetails;

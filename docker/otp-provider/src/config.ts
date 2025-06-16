@@ -5,6 +5,7 @@ dotenv.config();
 export const config = {
   APP_ENV: process.env.APP_ENV || 'development',
   APP_URL: process.env.APP_URL || 'http://localhost:3000',
+  DB_RUN_MIGRATIONS: process.env.DB_RUN_MIGRATIONS || 'true',
   DB_HOSTNAME: process.env.DB_HOSTNAME || 'localhost',
   DB_USERNAME: process.env.DB_USERNAME || 'postgres',
   DB_PASSWORD: process.env.DB_PASSWORD || 'postgres',
@@ -21,4 +22,9 @@ export const config = {
   CORS_ORIGINS: process.env.CORS_ORIGINS || '',
   DB_CLEANUP_CRON: process.env.DB_CLEANUP_CRON || '0 1 * * *',
   HASH_SALT: process.env.HASH_SALT || '',
+  OTP_VALIDITY_MINUTES: process.env.OTP_VALIDITY_MINUTES || '5',
+  OTP_ATTEMPTS_ALLOWED: process.env.OTP_ATTEMPTS_ALLOWED || '5',
+  OTP_RESENDS_ALLOWED_PER_DAY: process.env.OTP_RESENDS_ALLOWED_PER_DAY || '4',
+  OTP_RESEND_INTERVAL_MINUTES: process.env.OTP_RESEND_INTERVAL_MINUTES || '[1,2,5,60]',
+  COOKIE_SECRET: process.env.COOKIE_SECRET || 'default_secret',
 };

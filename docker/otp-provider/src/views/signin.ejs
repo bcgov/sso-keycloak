@@ -4,6 +4,49 @@
 <%- include("./partials/header") %>
 
 <body>
+  <script nonce="<%= nonce %>">
+    function handleShowResentOtpWaitTime(durationInSeconds) {
+      let loginButton = document.getElementById("kc-login");
+      let errorMessageField = document.getElementById("input-error");
+      const emailInput = document.getElementById('email');
+
+      loginButton.disabled = true;
+
+      let interval = setInterval(() => {
+        if (durationInSeconds <= 0) {
+          clearInterval(interval);
+          loginButton.disabled = false;
+          errorMessageField.textContent = "";
+          emailInput.setAttribute('wait-time', 0);
+        } else {
+          errorMessageField.textContent = `Please wait ${durationInSeconds--} seconds before requesting a new code.`;
+        }
+      }, 1000);
+    }
+
+    window.addEventListener("DOMContentLoaded", function() {
+      let emailInput = document.getElementById('email');
+      let time = emailInput.getAttribute('wait-time');
+      if (time && Number(time) !== 0) {
+        handleShowResentOtpWaitTime(Number(time));
+      }
+      const form = document.getElementById('kc-form-login');
+      form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        emailInput = document.getElementById('email');
+        time = emailInput.getAttribute('wait-time');
+        const error = "<%= error %>" || '';
+        let submitButton = document.getElementById("kc-login");
+
+        if (time && Number(time) !== 0) {
+          handleShowResentOtpWaitTime(Number(time));
+          return;
+        }
+        submitButton.disabled = true;
+        form.submit();
+      });
+    });
+  </script>
   <header>
     <div class="banner">
       <span></span>
@@ -28,12 +71,10 @@
               <form action="/interaction/<%= uid %>/otp" method="POST" autocomplete="off" id="kc-form-login">
                 <div class="form-group">
                   <label for="email" class="pf-c-form__label pf-c-form__label-text">Email</label>
-                  <input tabindex="2" id="email" class="pf-c-form-control" name="email" value="" type="email" autofocus="" autocomplete="email" aria-invalid="" dir="ltr">
-                  <% if(error) {%>
+                  <input tabindex="2" id="email" class="pf-c-form-control" name="email" value="" type="text" autofocus="" autocomplete="email" aria-invalid="" dir="ltr" wait-time="<%= waitTime %>">
                   <span id="input-error" class="required" aria-live="polite">
                     <%= error %>
                   </span>
-                  <% } %>
                 </div>
                 <div id="kc-form-buttons" class="form-group">
                   <input type="hidden" id="id-hidden-input" name="credentialId">

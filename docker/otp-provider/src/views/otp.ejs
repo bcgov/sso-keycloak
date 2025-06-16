@@ -4,6 +4,32 @@
 <%- include("./partials/header") %>
 
 <body>
+  <script nonce="<%= nonce %>">
+    function handleShowResentOtpWaitTime(durationInSeconds) {
+      let resendButton = document.getElementById("resend-otp");
+      let timerDisplay = document.getElementById("timerDisplay");
+
+      resendButton.disabled = true;
+
+      let interval = setInterval(() => {
+        if (durationInSeconds <= 0) {
+          clearInterval(interval);
+          resendButton.disabled = false;
+          timerDisplay.textContent = "";
+        } else {
+          timerDisplay.textContent = `Please wait ${durationInSeconds--} seconds before resending OTP.`;
+        }
+      }, 1000);
+    }
+
+
+    document.addEventListener('DOMContentLoaded', async function() {
+      const emailInput = document.getElementById("email-input");
+      const time = emailInput.getAttribute('wait-time');
+      handleShowResentOtpWaitTime(Number(time));
+      const form = document.getElementById('kc-form-login');
+    });
+  </script>
   <header>
     <div class="banner">
       <span></span>
@@ -29,16 +55,23 @@
                 <div class="form-group">
                   <label for="otp" class="pf-c-form__label pf-c-form__label-text">OTP</label>
                   <input tabindex="2" id="otp" class="pf-c-form-control" name="otp" value="" type="text" autofocus="" autocomplete="otp" aria-invalid="" dir="ltr">
-                  <% if(error) {%>
                   <span id="input-error" class="required" aria-live="polite">
                     <%= error %>
                   </span>
-                  <% } %>
                 </div>
                 <div id="kc-form-buttons" class="form-group">
                   <input type="hidden" id="id-hidden-input" name="credentialId">
-                  <input type="hidden" name="email" value="<%= email %>">
+                  <input type="hidden" name="email" value="<%= email %>" id="email-input" wait-time="<%= waitTime %>">
                   <input tabindex="7" class="pf-c-button pf-m-primary pf-m-block btn-lg" name="login" id="kc-login" type="submit" value="Submit">
+                </div>
+              </form>
+              <form action="/interaction/<%= uid %>/otp" method="POST" autocomplete="off" id="kc-form-resend-otp">
+                <div id="kc-form-buttons" class="form-group">
+                  <input type="hidden" id="id-hidden-input" name="credentialId">
+                  <input type="hidden" name="email" value="<%= email %>">
+                  <input type="hidden" name="otpType" value="resend">
+                  <input tabindex="7" class="pf-c-button pf-m-primary pf-m-block btn-lg" name="resend-otp" id="resend-otp" value="Resend OTP" type="submit" disabled="<%= disableResend %>">
+                  <p id="timerDisplay"></p>
                 </div>
               </form>
             </div>

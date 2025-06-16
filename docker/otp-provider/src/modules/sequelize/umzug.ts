@@ -1,7 +1,7 @@
 import sequelize from './config';
-import { dirname } from 'path';
 import { Umzug, SequelizeStorage } from 'umzug';
 import os from 'node:os';
+import { dirname } from 'path';
 
 export const models = [
   'Session',
@@ -21,11 +21,11 @@ export const models = [
 ];
 
 export const createMigrator = async (logger?: any) => {
+  const dirName = dirname(import.meta.url.replace(os.platform() === 'win32' ? 'file:///' : 'file://', ''));
   try {
-    const __dirname = dirname(import.meta.url.replace(os.platform() === 'win32' ? 'file:///' : 'file://', '')); //dirname(__filename);
     return new Umzug({
       migrations: {
-        glob: `${__dirname}/migrations/*.{ts,js}`,
+        glob: `${dirName}/migrations/*.{ts,js}`,
         resolve: ({ name, path, context }) => {
           return {
             name,
