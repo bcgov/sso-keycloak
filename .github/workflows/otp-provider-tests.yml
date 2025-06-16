@@ -1,8 +1,12 @@
 name: Run OTP provider tests
 
 on:
-  push:
-    branches: [SSOTEAM-2382-01]
+  pull_request:
+    branches:
+      - dev
+    paths:
+      - 'docker/otp-provider'
+      - '.github/workflows/otp-provider-tests.yml'
 
 jobs:
   otp-provider-test:
