@@ -1,7 +1,9 @@
 import Provider from 'oidc-provider';
 import { NextFunction, Request, Response } from 'express';
 import { requestNewOtp, validateOtp } from '../services/otp';
-import { secondsRemainingToRequestNewOtp } from '../utils/otp';
+import { canRequestOtp, secondsRemainingToRequestNewOtp } from '../utils/otp';
+import { emailValidator } from '../utils/validator';
+import { errors } from '../modules/errors';
 
 export const authorize = async (oidcProvider: Provider) => {
   return async (req: Request, res: Response, next: NextFunction) => {
@@ -39,41 +41,45 @@ export const generateOtp = async (oidcProvider: Provider) => {
       } = await oidcProvider.interactionDetails(req, res);
 
       if (name === 'login') {
+        let error = '';
+        let time = 0;
         const { email, otpType } = req.body;
 
-        let [time, error] = await secondsRemainingToRequestNewOtp(email);
-
-        if (time !== 0 || error) {
-          if (otpType === 'resend') {
-            return res.render('otp', {
-              uid,
-              email,
-              error: error ? error : '',
-              nonce: res.locals.cspNonce,
-              waitTime: time,
-              disableResend: 'true',
-            });
-          }
-          return res.render('signin', {
-            uid,
-            error,
-            nonce: res.locals.cspNonce,
-            waitTime: time,
-          });
-        }
+        error = emailValidator(email);
 
         if (!error) {
+          const canRequest = await canRequestOtp(email);
+          if (!canRequest) {
+            error = errors.OTPS_LIMIT_REACHED;
+          } else {
+            time = await secondsRemainingToRequestNewOtp(email);
+          }
+        }
+
+        if (error) {
+          if (otpType !== 'resend') {
+            return res.render('signin', {
+              uid,
+              error,
+              nonce: res.locals.cspNonce,
+              waitTime: time,
+            });
+          }
+        }
+
+        if (!error && time === 0) {
           await requestNewOtp(email);
-          [time, error] = await secondsRemainingToRequestNewOtp(email);
+          const canRequest = await canRequestOtp(email);
+          if (canRequest) time = await secondsRemainingToRequestNewOtp(email);
         }
 
         return res.render('otp', {
           uid,
           email,
-          error: '',
+          error,
           nonce: res.locals.cspNonce,
-          waitTime: time,
-          disableResend: 'false',
+          waitTime: error ? 0 : time,
+          disableResend: error ? 'true' : 'false',
         });
       }
     } catch (error) {
@@ -91,20 +97,26 @@ export const login = async (oidcProvider: Provider) => {
       } = await oidcProvider.interactionDetails(req, res);
 
       let result;
+      let time = 0;
+      let error = '';
 
       if (name === 'login') {
+        let validatedOtp = { verified: false, attemptsLeft: 0 };
         const { email, otp } = req.body;
 
-        const { verified, attemptsLeft } = await validateOtp(otp, email);
+        validatedOtp = await validateOtp(otp, email);
 
-        let [time] = await secondsRemainingToRequestNewOtp(email);
+        const canRequest = await canRequestOtp(email);
 
-        if (!verified) {
-          if (attemptsLeft > 0) {
+        if (canRequest) time = await secondsRemainingToRequestNewOtp(email);
+
+        if (!validatedOtp.verified) {
+          if (validatedOtp.attemptsLeft > 0) {
+            error = `Invalid OTP, you have ${validatedOtp.attemptsLeft} attempts left.`;
             return res.render('otp', {
               uid,
               email,
-              error: `Invalid OTP, you have ${attemptsLeft} attempts left.`,
+              error,
               nonce: res.locals.cspNonce,
               waitTime: time,
               disableResend: 'false',

@@ -3,6 +3,7 @@ import app, { initializeApp } from '../app';
 import sequelize from '../modules/sequelize/config';
 import { QueryTypes } from 'sequelize';
 import crypto from 'node:crypto';
+import { getOtpsByEmail } from './helpers/queries';
 
 describe('otp login test', () => {
   let agent: Agent;
@@ -46,10 +47,7 @@ describe('otp login test', () => {
     const res = await agent.post(`${interactionPath}/otp`).type('form').send(data);
     expect(res.status).toEqual(200);
 
-    const otpRecords: any = await sequelize.query('select * from "Otp" where email=:email and active = true', {
-      replacements: { email: 'testuser@gmail.com' },
-      type: QueryTypes.SELECT,
-    });
+    const otpRecords: any[] = await getOtpsByEmail('testuser@gmail.com');
     expect(otpRecords[0].attempts).toEqual(0);
     expect(otpRecords[0].active).toBeTruthy();
   });

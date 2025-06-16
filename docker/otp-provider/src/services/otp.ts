@@ -15,7 +15,7 @@ const { OTP_VALIDITY_MINUTES, OTP_ATTEMPTS_ALLOWED } = config;
 export const requestNewOtp = async (email: string) => {
   const canRequest = await canRequestOtp(email);
   if (canRequest) {
-    const [waitTimeforOtp] = await secondsRemainingToRequestNewOtp(email);
+    const waitTimeforOtp = await secondsRemainingToRequestNewOtp(email);
     if (waitTimeforOtp === 0) {
       await disableOtpsByEmail(email);
       const otp = generateOtp();

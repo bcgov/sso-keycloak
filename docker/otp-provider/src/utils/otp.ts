@@ -11,15 +11,11 @@ export const canRequestOtp = async (email: string) => {
 };
 
 export const secondsRemainingToRequestNewOtp = async (email: string) => {
-  let error = '';
   if (Number(OTP_RESENDS_ALLOWED_PER_DAY) !== JSON.parse(OTP_RESEND_INTERVAL_MINUTES).length) {
     throw new Error('OTP_RESENDS_ALLOWED_PER_DAY must match the length of OTP_RESEND_INTERVAL_MINUTES');
   }
   const existingOtps = await listAllOtpsByEmail(email);
-  if (existingOtps.length === 0) return [0, null];
-  if (existingOtps.length > Number(OTP_RESENDS_ALLOWED_PER_DAY)) {
-    return [0, errors.OTPS_LIMIT_REACHED];
-  }
+  if (existingOtps.length === 0) return 0;
   const now: Date = new Date();
   const then: Date = new Date(existingOtps[0].createdAt);
   const secondsPassedFromRecentOtp = Math.floor((now.getTime() - then.getTime()) / 1000);
@@ -27,5 +23,5 @@ export const secondsRemainingToRequestNewOtp = async (email: string) => {
     0,
     JSON.parse(OTP_RESEND_INTERVAL_MINUTES)[existingOtps.length - 1] * 60 - secondsPassedFromRecentOtp,
   );
-  return [secs, null];
+  return secs;
 };

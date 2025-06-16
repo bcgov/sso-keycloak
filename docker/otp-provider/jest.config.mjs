@@ -8,7 +8,7 @@ const config = {
   // ESM support:
   extensionsToTreatAsEsm: ['.ts'],
   moduleNameMapper: {
-    '^(\\.{1,2}/.*)\\.js$': '$1',
+    '^(\\.{1,2}/.*)\\.ts$': '$1',
   },
   transform: {
     '^.+\\.m?[tj]sx?$': [
@@ -22,5 +22,6 @@ const config = {
   setupFilesAfterEnv: ['<rootDir>/src/jest.setup.ts'],
   testSequencer: '<rootDir>/testSequencer.mjs',
   globalTeardown: '<rootDir>/src/jest.globalTeardown.ts',
+  testMatch: ['<rootDir>/src/__tests__/**/*.test.ts'],
 };
 export default config;
