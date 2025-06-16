@@ -43,9 +43,6 @@ if (NODE_ENV === 'production') {
   app.set('trust proxy', true);
 }
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
 app.use(express.static(staticFolder + '/public'));
 
 app.set('views', path.join(staticFolder, 'views'));

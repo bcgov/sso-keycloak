@@ -1,0 +1,69 @@
+name: Run OTP provider tests
+
+on:
+  pull_request:
+    branches:
+      - dev
+    paths:
+      - 'docker/otp-provider'
+      - '.github/workflows/otp-provider-tests.yml'
+
+jobs:
+  otp-provider-test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
+      - name: Cache Node dependencies
+        uses: actions/cache@v4
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: ${{ runner.os }}-yarn-
+
+      - name: Install asdf requirements
+        run: |
+          sudo apt-get install -y libssl-dev libreadline-dev uuid-dev
+
+      - name: Install asdf
+        uses: asdf-vm/actions/setup@v3
+      - name: Cache asdf tools
+        uses: actions/cache@v4
+        with:
+          path: |
+            /home/runner/.asdf
+          key: ${{ runner.os }}-${{ hashFiles('**/.tool-versions') }}
+
+      - name: Install asdf
+        uses: asdf-vm/actions/install@v3
+
+      - name: Install app specific asdf plugins
+        run: |
+          cat .tool-versions | cut -f 1 -d ' ' | xargs -n 1 asdf plugin-add || true
+          asdf plugin-update --all
+          asdf install
+          asdf reshim
+        working-directory: ./docker/otp-provider
+
+      - name: Install dependencies
+        run: yarn install
+        working-directory: ./docker/otp-provider
+
+      - name: Setup postgres
+        env:
+          PGUSER: postgres
+        run: |
+          pg_ctl start
+          createdb runner || true
+          chmod +x ./db-setup.sh
+          ./db-setup.sh otp_test
+        working-directory: ./docker/otp-provider/.bin
+
+      - name: Run unit tests
+        run: |
+          yarn test
+        working-directory: ./docker/otp-provider

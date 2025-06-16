@@ -1,15 +1,17 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { NextFunction, Request, Response, urlencoded } from 'express';
 import Provider from 'oidc-provider';
 import { authorize, generateOtp, login, userConsent, abortLogin } from '../controllers/auth-controller';
 import { setNoCache } from '../utils/helpers';
 import { errors } from 'oidc-provider';
 import logger from '../modules/winston.config';
 
+const body = urlencoded({ extended: false });
+
 export const oidcRouter = async (oidcProvider: Provider) => {
   const oidcRouter = express.Router();
   oidcRouter.get('/:uid', setNoCache, await authorize(oidcProvider));
-  oidcRouter.post('/:uid/otp', setNoCache, await generateOtp(oidcProvider));
-  oidcRouter.post('/:uid/login', setNoCache, await login(oidcProvider));
+  oidcRouter.post('/:uid/otp', setNoCache, body, await generateOtp(oidcProvider));
+  oidcRouter.post('/:uid/login', setNoCache, body, await login(oidcProvider));
   oidcRouter.post('/:uid/confirm', setNoCache, await userConsent(oidcProvider));
   oidcRouter.post('/:uid/abort', await abortLogin(oidcProvider));
   oidcRouter.use((err: Error, req: Request, res: Response, next: NextFunction) => {

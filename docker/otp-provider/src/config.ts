@@ -26,5 +26,5 @@ export const config = {
   OTP_ATTEMPTS_ALLOWED: process.env.OTP_ATTEMPTS_ALLOWED || '5',
   OTP_RESENDS_ALLOWED_PER_DAY: process.env.OTP_RESENDS_ALLOWED_PER_DAY || '4',
   OTP_RESEND_INTERVAL_MINUTES: process.env.OTP_RESEND_INTERVAL_MINUTES || '[1,2,5,60]',
-  COOKIE_SECRET: process.env.COOKIE_SECRET || 'default_secret',
+  COOKIE_SECRETS: process.env.COOKIE_SECRETS || 's3cr3t1,s3cr3t1,s3cr3t2',
 };

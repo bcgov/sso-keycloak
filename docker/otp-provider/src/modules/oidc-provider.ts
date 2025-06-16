@@ -6,7 +6,7 @@ import { isOrigin, hashEmail } from '../utils/helpers';
 import { getClients } from './sequelize/queries/client';
 import type { Response } from 'express';
 
-const { JWKS } = config;
+const { JWKS, COOKIE_SECRETS } = config;
 
 const jwks = JWKS || {};
 
@@ -27,7 +27,7 @@ export const getConfig = (): Configuration => {
     jwks,
     adapter: SequelizeAdapter,
     cookies: {
-      keys: new Keygrip(process.env.COOKIE_SECRETS!?.split(','), 'sha256', 'base64'),
+      keys: new Keygrip(COOKIE_SECRETS!?.split(','), 'sha256', 'base64'),
     },
     clientAuthMethods: ['client_secret_basic', 'client_secret_post', 'none'],
     issueRefreshToken() {
