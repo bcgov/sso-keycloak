@@ -30,6 +30,8 @@ public class PPIDMapper extends AbstractOIDCProtocolMapper
 
   public static final String CLAIM_VALUE = "claim.value";
 
+  public static final String PRIVACY_ZONE_MAPPER = "privacy_zone";
+
   private static final List<ProviderConfigProperty> configProperties = new ArrayList<ProviderConfigProperty>();
 
   static {
@@ -77,16 +79,20 @@ public class PPIDMapper extends AbstractOIDCProtocolMapper
     try {
       String idp = userSession.getNotes().get("identity_provider");
 
-      ProtocolMapperModel proto = clientSessionCtx.getClientSession().getClient()
-          .getProtocolMapperByName(OIDCLoginProtocol.LOGIN_PROTOCOL, "privacy_zone");
+      ProtocolMapperModel pzMapper = clientSessionCtx.getClientSession().getClient()
+          .getProtocolMapperByName(OIDCLoginProtocol.LOGIN_PROTOCOL, PRIVACY_ZONE_MAPPER);
 
-      String ppid = PPID.getPpid(applicationProperties.getIssuer(idp), userSession.getUser().getEmail(),
-          proto.getConfig().get(CLAIM_VALUE));
+      if (pzMapper != null) {
+        String ppid = PPID.getPpid(applicationProperties.getIssuer(idp), userSession.getUser().getEmail(),
+            pzMapper.getConfig().get(CLAIM_VALUE));
 
-      if (ppid != null) {
-        Map<String, Object> otherClaims = token.getOtherClaims();
-        otherClaims.put(tokenClaim, ppid);
-      }
+        if (ppid != null) {
+          Map<String, Object> otherClaims = token.getOtherClaims();
+          otherClaims.put(tokenClaim, ppid);
+        }
+      } else
+        logger.errorf("Could not find %s mapper", PRIVACY_ZONE_MAPPER);
+
     } catch (Exception e) {
       logger.errorf("Failed to add claim %s to the token", tokenClaim);
     }

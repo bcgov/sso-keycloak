@@ -1,6 +1,7 @@
 package com.github.bcgov.keycloak.protocol.saml.mappers;
 
 import org.keycloak.dom.saml.v2.assertion.AttributeStatementType;
+import org.keycloak.dom.saml.v2.assertion.AttributeStatementType.ASTChoiceType;
 import org.keycloak.models.AuthenticatedClientSessionModel;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.ProtocolMapperModel;
@@ -31,9 +32,12 @@ public class PPIDMapper extends AbstractSAMLProtocolMapper implements SAMLAttrib
 
   private static final List<ProviderConfigProperty> configProperties = new ArrayList<ProviderConfigProperty>();
 
-  public static final String CLAIM_VALUE = "claim.value";
+  public static final String CLAIM_VALUE = "attribute.value";
 
   public static final String CLAIM_NAME = "claim.name";
+
+  public static final String PRIVACY_ZONE_MAPPER = "privacy_zone";
+
   static {
     configProperties.add(new ProviderConfigProperty(CLAIM_NAME, "Claim Name",
         "Assertion attribute name containing the ppid identifier of the authenticated subject.",
@@ -72,17 +76,28 @@ public class PPIDMapper extends AbstractSAMLProtocolMapper implements SAMLAttrib
     try {
       String idp = userSession.getNotes().get("identity_provider");
 
-      ProtocolMapperModel proto = clientSession.getClient()
-          .getProtocolMapperByName("saml", "privacy_zone");
+      ProtocolMapperModel pzMapper = clientSession.getClient()
+          .getProtocolMapperByName("saml", PRIVACY_ZONE_MAPPER);
+      if (pzMapper != null) {
+        String ppid = PPID.getPpid(applicationProperties.getIssuer(idp), userSession.getUser().getEmail(),
+            pzMapper.getConfig().get(CLAIM_VALUE));
+        if (ppid != null) {
+          AttributeType attribute = new AttributeType(ppidKey.trim());
+          attribute.setNameFormat(JBossSAMLURIConstants.ATTRIBUTE_FORMAT_BASIC.get());
+          attribute.addAttributeValue(ppid);
+          attributeStatement.addAttribute(new AttributeStatementType.ASTChoiceType(attribute));
+        }
+      } else
+        logger.errorf("Could not find %s mapper", PRIVACY_ZONE_MAPPER);
 
-      String ppid = PPID.getPpid(applicationProperties.getIssuer(idp), userSession.getUser().getEmail(),
-          proto.getConfig().get(CLAIM_VALUE));
-
-      if (ppid != null) {
-        AttributeType attribute = new AttributeType(ppidKey.trim());
-        attribute.setNameFormat(JBossSAMLURIConstants.ATTRIBUTE_FORMAT_BASIC.get());
-        attribute.addAttributeValue(ppid);
-        attributeStatement.addAttribute(new AttributeStatementType.ASTChoiceType(attribute));
+      List<ASTChoiceType> attributes = attributeStatement.getAttributes();
+      for (int i = attributes.size(); i-- > 0;) {
+        AttributeStatementType.ASTChoiceType attribute = attributes.get(i);
+        String name = attribute.getAttribute().getName();
+        if (name.equals(PRIVACY_ZONE_MAPPER)) {
+          attributeStatement.removeAttribute(attribute);
+          break;
+        }
       }
 
     } catch (Exception e) {

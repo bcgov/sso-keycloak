@@ -73,11 +73,8 @@ public class PPID {
   }
 
   public static String getPpid(String issuer, String sub, String privacyZoneUri) {
-
     String ppid = "";
-
     ApplicationProperties applicationProperties = new ApplicationProperties();
-
     try {
       String token = getAccessToken();
       if (token != null && token != "") {

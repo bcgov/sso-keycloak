@@ -15,7 +15,6 @@ public class ApplicationProperties {
   private String ppidClinetSecret;
 
   public ApplicationProperties() {
-    logger.info("Loading application properties...");
     ppidApiTokenUrl = System.getenv().getOrDefault("PPID_API_TOKEN_URL", "MissingPpidApiTokenUrl");
     ppidOtpIssuer = System.getenv().getOrDefault("PPID_OTP_ISSUER", "MissingOtpIssuer");
     ppidClientId = System.getenv().getOrDefault("PPID_CLIENT_ID", "MissingPpidClientId");
@@ -32,13 +31,9 @@ public class ApplicationProperties {
   };
 
   public String getIssuer(String idp) {
-    switch (idp) {
-      case "otp":
-        return ppidOtpIssuer;
-
-      default:
-        return "";
-    }
+    if (idp.contains("otp"))
+      return ppidOtpIssuer;
+    return "";
   }
 
   public String getPPIDClientID() {
