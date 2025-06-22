@@ -11,7 +11,7 @@ import org.keycloak.protocol.saml.mappers.SAMLAttributeStatementMapper;
 import org.keycloak.saml.common.constants.JBossSAMLURIConstants;
 
 import com.github.bcgov.keycloak.common.ApplicationProperties;
-import com.github.bcgov.keycloak.common.PPIDToken;
+import com.github.bcgov.keycloak.common.PPID;
 
 import org.keycloak.dom.saml.v2.assertion.AttributeType;
 
@@ -75,7 +75,7 @@ public class PPIDMapper extends AbstractSAMLProtocolMapper implements SAMLAttrib
       ProtocolMapperModel proto = clientSession.getClient()
           .getProtocolMapperByName("saml", "privacy_zone");
 
-      String ppid = PPIDToken.getPpid(applicationProperties.getIssuer(idp), userSession.getUser().getEmail(),
+      String ppid = PPID.getPpid(applicationProperties.getIssuer(idp), userSession.getUser().getEmail(),
           proto.getConfig().get(CLAIM_VALUE));
 
       if (ppid != null) {

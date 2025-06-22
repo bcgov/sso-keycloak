@@ -20,7 +20,7 @@ import org.keycloak.provider.ProviderConfigProperty;
 import org.keycloak.representations.IDToken;
 
 import com.github.bcgov.keycloak.common.ApplicationProperties;
-import com.github.bcgov.keycloak.common.PPIDToken;
+import com.github.bcgov.keycloak.common.PPID;
 
 public class PPIDMapper extends AbstractOIDCProtocolMapper
     implements OIDCAccessTokenMapper, OIDCIDTokenMapper, UserInfoTokenMapper {
@@ -80,7 +80,7 @@ public class PPIDMapper extends AbstractOIDCProtocolMapper
       ProtocolMapperModel proto = clientSessionCtx.getClientSession().getClient()
           .getProtocolMapperByName(OIDCLoginProtocol.LOGIN_PROTOCOL, "privacy_zone");
 
-      String ppid = PPIDToken.getPpid(applicationProperties.getIssuer(idp), userSession.getUser().getEmail(),
+      String ppid = PPID.getPpid(applicationProperties.getIssuer(idp), userSession.getUser().getEmail(),
           proto.getConfig().get(CLAIM_VALUE));
 
       if (ppid != null) {

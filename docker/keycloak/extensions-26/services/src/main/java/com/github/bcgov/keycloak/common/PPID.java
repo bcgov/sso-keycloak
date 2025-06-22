@@ -23,7 +23,7 @@ import com.github.bcgov.keycloak.protocol.oidc.mappers.PPIDMapper;
 
 import jakarta.ws.rs.core.HttpHeaders;
 
-public class PPIDToken {
+public class PPID {
 
   private static final Logger logger = Logger.getLogger(PPIDMapper.class);
 
@@ -80,9 +80,11 @@ public class PPIDToken {
     ApplicationProperties applicationProperties = new ApplicationProperties();
 
     try {
-      String token = PPIDToken.getAccessToken();
+      String token = getAccessToken();
+      logger.info("token:" + token);
       if (token != null && token != "") {
         CloseableHttpClient httpClient = HttpClients.createDefault();
+        logger.info("applicationProperties.getPPIDApiUrl(): " + applicationProperties.getPPIDApiUrl());
         HttpPost httpPost = new HttpPost(applicationProperties.getPPIDApiUrl());
         httpPost.addHeader(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", token));
         String jsonBody = String.format("{\"iss\": \"%s\", \"sub\": \"%s\", \"privacy_zone_uri\": \"%s\"}", issuer,
@@ -110,6 +112,5 @@ public class PPIDToken {
       logger.error("Failed to fetch ppid for the subject");
     }
     return ppid;
-
   }
 }
