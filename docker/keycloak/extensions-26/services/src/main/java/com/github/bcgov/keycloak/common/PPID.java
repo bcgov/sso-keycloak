@@ -18,7 +18,6 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.jboss.logging.Logger;
 import org.keycloak.util.JsonSerialization;
-
 import com.github.bcgov.keycloak.protocol.oidc.mappers.PPIDMapper;
 
 import jakarta.ws.rs.core.HttpHeaders;
@@ -28,7 +27,7 @@ public class PPID {
   private static final Logger logger = Logger.getLogger(PPIDMapper.class);
 
   private static String accessToken = "";
-  private static long expiryTimeMillis;
+  private static long expiryTimeMillis = 0L;
 
   private static final long EXPIRY_BUFFER_MILLIS = 60 * 1000;
 
@@ -61,7 +60,7 @@ public class PPID {
           InputStream content = response.getEntity().getContent();
           Map<String, String> json = JsonSerialization.readValue(content, Map.class);
           accessToken = json.get("access_token");
-          int expiresIn = Integer.parseInt(json.get("expires_in").toString());
+          int expiresIn = Integer.parseInt(String.valueOf(json.get("expires_in")));
           expiryTimeMillis = System.currentTimeMillis() + (expiresIn * 1000L);
         } finally {
           EntityUtils.consumeQuietly(response.getEntity());
@@ -81,10 +80,8 @@ public class PPID {
 
     try {
       String token = getAccessToken();
-      logger.info("token:" + token);
       if (token != null && token != "") {
         CloseableHttpClient httpClient = HttpClients.createDefault();
-        logger.info("applicationProperties.getPPIDApiUrl(): " + applicationProperties.getPPIDApiUrl());
         HttpPost httpPost = new HttpPost(applicationProperties.getPPIDApiUrl());
         httpPost.addHeader(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", token));
         String jsonBody = String.format("{\"iss\": \"%s\", \"sub\": \"%s\", \"privacy_zone_uri\": \"%s\"}", issuer,
