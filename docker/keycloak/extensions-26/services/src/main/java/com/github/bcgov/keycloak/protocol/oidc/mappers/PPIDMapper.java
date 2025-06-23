@@ -18,6 +18,7 @@ import org.keycloak.protocol.oidc.mappers.OIDCIDTokenMapper;
 import org.keycloak.protocol.oidc.mappers.UserInfoTokenMapper;
 import org.keycloak.provider.ProviderConfigProperty;
 import org.keycloak.representations.IDToken;
+import org.keycloak.saml.common.util.StringUtil;
 
 import com.github.bcgov.keycloak.common.ApplicationProperties;
 import com.github.bcgov.keycloak.common.PPID;
@@ -86,7 +87,7 @@ public class PPIDMapper extends AbstractOIDCProtocolMapper
         String ppid = PPID.getPpid(applicationProperties.getIssuer(idp), userSession.getUser().getEmail(),
             pzMapper.getConfig().get(CLAIM_VALUE));
 
-        if (ppid != null) {
+        if (!StringUtil.isNullOrEmpty(ppid)) {
           Map<String, Object> otherClaims = token.getOtherClaims();
           otherClaims.put(tokenClaim, ppid);
         }

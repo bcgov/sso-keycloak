@@ -6,10 +6,12 @@ import org.keycloak.models.AuthenticatedClientSessionModel;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.ProtocolMapperModel;
 import org.keycloak.models.UserSessionModel;
+import org.keycloak.protocol.saml.SamlProtocol;
 import org.keycloak.protocol.saml.mappers.AbstractSAMLProtocolMapper;
 import org.keycloak.protocol.saml.mappers.AttributeStatementHelper;
 import org.keycloak.protocol.saml.mappers.SAMLAttributeStatementMapper;
 import org.keycloak.saml.common.constants.JBossSAMLURIConstants;
+import org.keycloak.saml.common.util.StringUtil;
 
 import com.github.bcgov.keycloak.common.ApplicationProperties;
 import com.github.bcgov.keycloak.common.PPID;
@@ -22,9 +24,9 @@ import java.util.List;
 import org.jboss.logging.Logger;
 import org.keycloak.provider.ProviderConfigProperty;
 
-public class PPIDMapper extends AbstractSAMLProtocolMapper implements SAMLAttributeStatementMapper {
+public class PPIDAttributeMapper extends AbstractSAMLProtocolMapper implements SAMLAttributeStatementMapper {
 
-  private static final Logger logger = Logger.getLogger(PPIDMapper.class);
+  private static final Logger logger = Logger.getLogger(PPIDAttributeMapper.class);
 
   ApplicationProperties applicationProperties = new ApplicationProperties();
 
@@ -32,14 +34,14 @@ public class PPIDMapper extends AbstractSAMLProtocolMapper implements SAMLAttrib
 
   private static final List<ProviderConfigProperty> configProperties = new ArrayList<ProviderConfigProperty>();
 
-  public static final String CLAIM_VALUE = "attribute.value";
+  public static final String ATTRIBUTE_VALUE = "attribute.value";
 
-  public static final String CLAIM_NAME = "claim.name";
+  public static final String ATTRIBUTE_NAME = "attribute.name";
 
   public static final String PRIVACY_ZONE_MAPPER = "privacy_zone";
 
   static {
-    configProperties.add(new ProviderConfigProperty(CLAIM_NAME, "Claim Name",
+    configProperties.add(new ProviderConfigProperty(ATTRIBUTE_NAME, "Attribute Name",
         "Assertion attribute name containing the ppid identifier of the authenticated subject.",
         ProviderConfigProperty.STRING_TYPE, "ppid"));
   }
@@ -72,16 +74,16 @@ public class PPIDMapper extends AbstractSAMLProtocolMapper implements SAMLAttrib
   @Override
   public void transformAttributeStatement(AttributeStatementType attributeStatement, ProtocolMapperModel mappingModel,
       KeycloakSession keycloakSession, UserSessionModel userSession, AuthenticatedClientSessionModel clientSession) {
-    String ppidKey = mappingModel.getConfig().get(CLAIM_NAME);
+    String ppidKey = mappingModel.getConfig().get(ATTRIBUTE_NAME);
     try {
       String idp = userSession.getNotes().get("identity_provider");
 
       ProtocolMapperModel pzMapper = clientSession.getClient()
-          .getProtocolMapperByName("saml", PRIVACY_ZONE_MAPPER);
+          .getProtocolMapperByName(SamlProtocol.LOGIN_PROTOCOL, PRIVACY_ZONE_MAPPER);
       if (pzMapper != null) {
         String ppid = PPID.getPpid(applicationProperties.getIssuer(idp), userSession.getUser().getEmail(),
-            pzMapper.getConfig().get(CLAIM_VALUE));
-        if (ppid != null) {
+            pzMapper.getConfig().get(ATTRIBUTE_VALUE));
+        if (!StringUtil.isNullOrEmpty(ppid)) {
           AttributeType attribute = new AttributeType(ppidKey.trim());
           attribute.setNameFormat(JBossSAMLURIConstants.ATTRIBUTE_FORMAT_BASIC.get());
           attribute.addAttributeValue(ppid);

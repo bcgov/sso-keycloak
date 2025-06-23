@@ -17,6 +17,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.jboss.logging.Logger;
+import org.keycloak.saml.common.util.StringUtil;
 import org.keycloak.util.JsonSerialization;
 import com.github.bcgov.keycloak.protocol.oidc.mappers.PPIDMapper;
 
@@ -77,7 +78,7 @@ public class PPID {
     ApplicationProperties applicationProperties = new ApplicationProperties();
     try {
       String token = getAccessToken();
-      if (token != null && token != "") {
+      if (!StringUtil.isNullOrEmpty(token)) {
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpPost httpPost = new HttpPost(applicationProperties.getPPIDApiUrl());
         httpPost.addHeader(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", token));
