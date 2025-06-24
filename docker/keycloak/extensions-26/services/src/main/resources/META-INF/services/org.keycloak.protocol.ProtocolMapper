@@ -3,3 +3,6 @@ com.github.bcgov.keycloak.protocol.saml.mappers.IDPUserinfoMapper
 com.github.bcgov.keycloak.protocol.oidc.mappers.ClaimOmitterMapper
 com.github.bcgov.keycloak.protocol.saml.mappers.ClientRoleListMapper
 com.github.bcgov.keycloak.protocol.saml.mappers.StatementAttributeOmitterMapper
+com.github.bcgov.keycloak.protocol.oidc.mappers.PPIDMapper
+com.github.bcgov.keycloak.protocol.saml.mappers.PPIDAttributeMapper
+com.github.bcgov.keycloak.protocol.saml.mappers.PPIDAttributeMapperNameId

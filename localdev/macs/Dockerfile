@@ -4,8 +4,7 @@ COPY ./docker/keycloak/extensions-26 /tmp/
 WORKDIR /tmp/
 RUN mvn -B clean package --file pom.xml -Dmaven.test.skip=true
 
-# Built using quarkus/container/Dockerfile from https://github.com/keycloak/keycloak
-FROM keycloak:26.0.6 AS builder
+FROM registry.redhat.io/rhbk/keycloak-rhel9:26.0-3 AS builder
 
 # Enable health and metrics support
 ENV KC_HEALTH_ENABLED=true
