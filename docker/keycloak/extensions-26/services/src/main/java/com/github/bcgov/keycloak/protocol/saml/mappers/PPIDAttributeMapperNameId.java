@@ -1,9 +1,11 @@
 package com.github.bcgov.keycloak.protocol.saml.mappers;
 
+import org.keycloak.models.AuthenticatedClientSessionModel;
 import org.keycloak.models.ClientSessionContext;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.UserSessionModel;
 import org.keycloak.protocol.saml.mappers.AbstractSAMLProtocolMapper;
+import org.keycloak.protocol.saml.mappers.SAMLAttributeStatementMapper;
 import org.keycloak.protocol.saml.mappers.SAMLLoginResponseMapper;
 import org.keycloak.protocol.saml.SamlProtocol;
 import org.keycloak.representations.idm.ProtocolMapperRepresentation;
@@ -16,6 +18,8 @@ import com.github.bcgov.keycloak.common.PPID;
 import org.keycloak.provider.ProviderConfigProperty;
 import org.keycloak.models.ProtocolMapperModel;
 import org.jboss.logging.Logger;
+import org.keycloak.dom.saml.v2.assertion.AttributeStatementType;
+import org.keycloak.dom.saml.v2.assertion.AttributeStatementType.ASTChoiceType;
 import org.keycloak.dom.saml.v2.assertion.NameIDType;
 import org.keycloak.dom.saml.v2.assertion.SubjectConfirmationType;
 import org.keycloak.dom.saml.v2.assertion.SubjectType;
@@ -24,7 +28,8 @@ import org.keycloak.dom.saml.v2.protocol.ResponseType;
 import java.net.URI;
 import java.util.*;
 
-public class PPIDAttributeMapperNameId extends AbstractSAMLProtocolMapper implements SAMLLoginResponseMapper {
+public class PPIDAttributeMapperNameId extends AbstractSAMLProtocolMapper
+    implements SAMLLoginResponseMapper, SAMLAttributeStatementMapper {
 
   private static final Logger logger = Logger.getLogger(PPIDAttributeMapperNameId.class);
 
@@ -131,4 +136,17 @@ public class PPIDAttributeMapperNameId extends AbstractSAMLProtocolMapper implem
     return rep;
   }
 
+  @Override
+  public void transformAttributeStatement(AttributeStatementType attributeStatement, ProtocolMapperModel mappingModel,
+      KeycloakSession keycloakSession, UserSessionModel userSession, AuthenticatedClientSessionModel clientSession) {
+    List<ASTChoiceType> attributes = attributeStatement.getAttributes();
+    for (int i = attributes.size(); i-- > 0;) {
+      AttributeStatementType.ASTChoiceType attribute = attributes.get(i);
+      String name = attribute.getAttribute().getName();
+      if (name.equals(PRIVACY_ZONE_MAPPER)) {
+        attributeStatement.removeAttribute(attribute);
+        break;
+      }
+    }
+  }
 }
