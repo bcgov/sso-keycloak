@@ -77,21 +77,22 @@ public class PPIDAttributeMapper extends AbstractSAMLProtocolMapper implements S
     String ppidKey = mappingModel.getConfig().get(ATTRIBUTE_NAME);
     try {
       String idp = userSession.getNotes().get("identity_provider");
-
-      ProtocolMapperModel pzMapper = clientSession.getClient()
-          .getProtocolMapperByName(SamlProtocol.LOGIN_PROTOCOL, PRIVACY_ZONE_MAPPER);
-      if (pzMapper != null) {
-        String ppid = PPID.getPpid(applicationProperties.getIssuer(idp), userSession.getUser().getEmail(),
-            pzMapper.getConfig().get(ATTRIBUTE_VALUE));
-        if (!StringUtil.isNullOrEmpty(ppid)) {
-          AttributeType attribute = new AttributeType(ppidKey.trim());
-          attribute.setNameFormat(JBossSAMLURIConstants.ATTRIBUTE_FORMAT_BASIC.get());
-          attribute.addAttributeValue(ppid);
-          attributeStatement.addAttribute(new AttributeStatementType.ASTChoiceType(attribute));
-        }
-      } else
-        logger.errorf("Could not find %s mapper", PRIVACY_ZONE_MAPPER);
-
+      if (idp.equalsIgnoreCase("otp")) {
+        ProtocolMapperModel pzMapper = clientSession.getClient()
+            .getProtocolMapperByName(SamlProtocol.LOGIN_PROTOCOL, PRIVACY_ZONE_MAPPER);
+        if (pzMapper != null) {
+          String ppid = PPID.getPpid(applicationProperties.getIssuer(idp), userSession.getUser().getEmail(),
+              pzMapper.getConfig().get(ATTRIBUTE_VALUE));
+          if (!StringUtil.isNullOrEmpty(ppid)) {
+            AttributeType attribute = new AttributeType(ppidKey.trim());
+            attribute.setNameFormat(JBossSAMLURIConstants.ATTRIBUTE_FORMAT_BASIC.get());
+            attribute.addAttributeValue(ppid);
+            attributeStatement.addAttribute(new AttributeStatementType.ASTChoiceType(attribute));
+          }
+        } else
+          logger.errorf("Could not find %s mapper", PRIVACY_ZONE_MAPPER);
+      }
+      // remove privacy zone attribute
       List<ASTChoiceType> attributes = attributeStatement.getAttributes();
       for (int i = attributes.size(); i-- > 0;) {
         AttributeStatementType.ASTChoiceType attribute = attributes.get(i);

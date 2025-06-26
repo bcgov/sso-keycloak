@@ -79,21 +79,21 @@ public class PPIDMapper extends AbstractOIDCProtocolMapper
     String tokenClaim = mappingModel.getConfig().get(CLAIM_NAME);
     try {
       String idp = userSession.getNotes().get("identity_provider");
+      if (idp.equalsIgnoreCase("otp")) {
+        ProtocolMapperModel pzMapper = clientSessionCtx.getClientSession().getClient()
+            .getProtocolMapperByName(OIDCLoginProtocol.LOGIN_PROTOCOL, PRIVACY_ZONE_MAPPER);
 
-      ProtocolMapperModel pzMapper = clientSessionCtx.getClientSession().getClient()
-          .getProtocolMapperByName(OIDCLoginProtocol.LOGIN_PROTOCOL, PRIVACY_ZONE_MAPPER);
+        if (pzMapper != null) {
+          String ppid = PPID.getPpid(applicationProperties.getIssuer(idp), userSession.getUser().getEmail(),
+              pzMapper.getConfig().get(CLAIM_VALUE));
 
-      if (pzMapper != null) {
-        String ppid = PPID.getPpid(applicationProperties.getIssuer(idp), userSession.getUser().getEmail(),
-            pzMapper.getConfig().get(CLAIM_VALUE));
-
-        if (!StringUtil.isNullOrEmpty(ppid)) {
-          Map<String, Object> otherClaims = token.getOtherClaims();
-          otherClaims.put(tokenClaim, ppid);
-        }
-      } else
-        logger.errorf("Could not find %s mapper", PRIVACY_ZONE_MAPPER);
-
+          if (!StringUtil.isNullOrEmpty(ppid)) {
+            Map<String, Object> otherClaims = token.getOtherClaims();
+            otherClaims.put(tokenClaim, ppid);
+          }
+        } else
+          logger.errorf("Could not find %s mapper", PRIVACY_ZONE_MAPPER);
+      }
     } catch (Exception e) {
       logger.errorf("Failed to add claim %s to the token", tokenClaim);
     }
