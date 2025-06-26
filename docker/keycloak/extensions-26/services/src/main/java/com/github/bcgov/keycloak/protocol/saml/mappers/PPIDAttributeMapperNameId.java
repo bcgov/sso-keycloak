@@ -57,44 +57,43 @@ public class PPIDAttributeMapperNameId extends AbstractSAMLProtocolMapper
   public ResponseType transformLoginResponse(ResponseType response,
       ProtocolMapperModel mappingModel, KeycloakSession session,
       UserSessionModel userSession, ClientSessionContext clientSessionCtx) {
-
-    String nameIdFormat = mappingModel.getConfig().get(NAMEID_FORMAT);
-
     String idp = userSession.getNotes().get("identity_provider");
+    if (idp.equalsIgnoreCase("otp")) {
+      String nameIdFormat = mappingModel.getConfig().get(NAMEID_FORMAT);
+      ProtocolMapperModel pzMapper = clientSessionCtx.getClientSession().getClient()
+          .getProtocolMapperByName(SamlProtocol.LOGIN_PROTOCOL, PRIVACY_ZONE_MAPPER);
+      if (pzMapper != null) {
+        String ppid = PPID.getPpid(applicationProperties.getIssuer(idp), userSession.getUser().getEmail(),
+            pzMapper.getConfig().get(PZ_ATTRIBUTE_VALUE));
 
-    ProtocolMapperModel pzMapper = clientSessionCtx.getClientSession().getClient()
-        .getProtocolMapperByName(SamlProtocol.LOGIN_PROTOCOL, PRIVACY_ZONE_MAPPER);
-    if (pzMapper != null) {
-      String ppid = PPID.getPpid(applicationProperties.getIssuer(idp), userSession.getUser().getEmail(),
-          pzMapper.getConfig().get(PZ_ATTRIBUTE_VALUE));
-
-      if (!StringUtil.isNullOrEmpty(ppid)) {
-        if (StringUtil.isNullOrEmpty(nameIdFormat)) {
-          nameIdFormat = JBossSAMLURIConstants.NAMEID_FORMAT_PERSISTENT.get();
-        }
-
-        NameIDType nameID = new NameIDType();
-        nameID.setFormat(URI.create(nameIdFormat));
-        nameID.setValue(ppid);
-
-        SubjectType subject = new SubjectType();
-        SubjectType.STSubType subType = new SubjectType.STSubType();
-        subType.addBaseID(nameID);
-        subject.setSubType(subType);
-
-        // Set NameID in the SAML response
-        if (response.getAssertions() != null && !response.getAssertions().isEmpty()) {
-          List<SubjectConfirmationType> subConfimationTypeList = response.getAssertions().get(0).getAssertion()
-              .getSubject()
-              .getConfirmation();
-          for (SubjectConfirmationType subjectConfirmationType : subConfimationTypeList) {
-            subject.addConfirmation(subjectConfirmationType);
+        if (!StringUtil.isNullOrEmpty(ppid)) {
+          if (StringUtil.isNullOrEmpty(nameIdFormat)) {
+            nameIdFormat = JBossSAMLURIConstants.NAMEID_FORMAT_PERSISTENT.get();
           }
-          response.getAssertions().get(0).getAssertion().setSubject(subject);
+
+          NameIDType nameID = new NameIDType();
+          nameID.setFormat(URI.create(nameIdFormat));
+          nameID.setValue(ppid);
+
+          SubjectType subject = new SubjectType();
+          SubjectType.STSubType subType = new SubjectType.STSubType();
+          subType.addBaseID(nameID);
+          subject.setSubType(subType);
+
+          // Set NameID in the SAML response
+          if (response.getAssertions() != null && !response.getAssertions().isEmpty()) {
+            List<SubjectConfirmationType> subConfimationTypeList = response.getAssertions().get(0).getAssertion()
+                .getSubject()
+                .getConfirmation();
+            for (SubjectConfirmationType subjectConfirmationType : subConfimationTypeList) {
+              subject.addConfirmation(subjectConfirmationType);
+            }
+            response.getAssertions().get(0).getAssertion().setSubject(subject);
+          }
         }
-      }
-    } else
-      logger.errorf("Could not find %s mapper", PRIVACY_ZONE_MAPPER);
+      } else
+        logger.errorf("Could not find %s mapper", PRIVACY_ZONE_MAPPER);
+    }
     return response;
   }
 
@@ -139,6 +138,7 @@ public class PPIDAttributeMapperNameId extends AbstractSAMLProtocolMapper
   @Override
   public void transformAttributeStatement(AttributeStatementType attributeStatement, ProtocolMapperModel mappingModel,
       KeycloakSession keycloakSession, UserSessionModel userSession, AuthenticatedClientSessionModel clientSession) {
+    // remove privacy_zone attribute
     List<ASTChoiceType> attributes = attributeStatement.getAttributes();
     for (int i = attributes.size(); i-- > 0;) {
       AttributeStatementType.ASTChoiceType attribute = attributes.get(i);
