@@ -1,0 +1,26 @@
+<%- include("./partials/header") %>
+
+  <div class="size-full flex flex-row justify-center">
+    <div class="card">
+      <h2 class="text-lg font-bold">Verification code expired</h2>
+      <p>The verification code sent to <%= email %> has expired after five minutes.</p>
+      <% if (waitTime > 0) { %>
+          <span id="wait-text" class="w-full">Please wait <span id="wait-time-text" data-wait-time="<%= waitTime %>"><%= waitTime %></span> seconds before requesting a new code for this email address.</span>
+          <% } else { %>
+              <form
+                  class="w-full"
+                  id="signin-form"
+                  action="/interaction/<%= uid %>/otp"
+                  method="POST"
+                  autocomplete="off"
+                  class="w-full flex flex-col gap-24 items-start"
+              >
+              <button class="btn w-full">Send a new code</button>
+              </form>
+      <% } %>
+    </div>
+  </div>
+</body>
+<script src="/js/expired.js" type="module" nonce="<%= nonce %>"></script>
+
+</html>

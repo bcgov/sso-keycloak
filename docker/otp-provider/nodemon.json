@@ -1,6 +1,6 @@
 {
   "watch": ["src", ".env"],
-  "ext": "ts",
+  "ext": "ts,ejs,css",
   "ignore": ["build"],
-  "exec": "tsx --env-file=.env src/server.ts"
+  "exec": "yarn build && yarn start"
 }

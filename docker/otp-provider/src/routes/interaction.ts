@@ -1,6 +1,6 @@
 import express, { NextFunction, Request, Response, urlencoded } from 'express';
 import Provider from 'oidc-provider';
-import { authorize, generateOtp, login, userConsent, abortLogin } from '../controllers/auth-controller';
+import { authorize, generateOtp, login, abortLogin } from '../controllers/auth-controller';
 import { setNoCache } from '../utils/helpers';
 import { errors } from 'oidc-provider';
 import logger from '../modules/winston.config';
@@ -12,7 +12,6 @@ export const oidcRouter = async (oidcProvider: Provider) => {
   oidcRouter.get('/:uid', setNoCache, await authorize(oidcProvider));
   oidcRouter.post('/:uid/otp', setNoCache, body, await generateOtp(oidcProvider));
   oidcRouter.post('/:uid/login', setNoCache, body, await login(oidcProvider));
-  oidcRouter.post('/:uid/confirm', setNoCache, await userConsent(oidcProvider));
   oidcRouter.post('/:uid/abort', await abortLogin(oidcProvider));
   oidcRouter.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     if (err) {
@@ -54,7 +53,8 @@ export const oidcRouter = async (oidcProvider: Provider) => {
         errorStatus = err.status || 400;
       }
       return res.status(errorStatus).render('error', {
-        error: errorMessage,
+        title: errorStatus,
+        message: errorMessage,
       });
     }
   });
