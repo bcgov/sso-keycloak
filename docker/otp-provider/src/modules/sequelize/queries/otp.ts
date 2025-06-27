@@ -48,9 +48,6 @@ export const getActiveOtp = async (email: string, options: QueryOptions = { raw:
     where: {
       email,
       active: true,
-      createdAt: {
-        [Op.gte]: new Date(Date.now() - Number(OTP_VALIDITY_MINUTES) * 60 * 1000),
-      },
     },
     ...options,
   });

@@ -12,6 +12,8 @@ COPY . .
 # Install dependencies
 RUN yarn install
 
+RUN yarn tailwind:build
+
 # Build the application
 RUN yarn build
 

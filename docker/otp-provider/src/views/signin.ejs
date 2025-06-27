@@ -1,93 +1,55 @@
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" class="login-pf">
+  <%- include("./partials/header") %>
 
-<%- include("./partials/header") %>
+    <div class="size-full flex flex-row justify-center">
+      <div class="card">
+        <h2 class="text-lg font-bold">Enter an email</h2>
+        <p>A code will be sent for a password-free login.</p>
 
-<body>
-  <script nonce="<%= nonce %>">
-    function handleShowResentOtpWaitTime(durationInSeconds) {
-      let loginButton = document.getElementById("kc-login");
-      let errorMessageField = document.getElementById("input-error");
-      const emailInput = document.getElementById('email');
-
-      loginButton.disabled = true;
-
-      let interval = setInterval(() => {
-        if (durationInSeconds <= 0) {
-          clearInterval(interval);
-          loginButton.disabled = false;
-          errorMessageField.textContent = "";
-          emailInput.setAttribute('wait-time', 0);
-        } else {
-          errorMessageField.textContent = `Please wait ${durationInSeconds--} seconds before requesting a new code.`;
-        }
-      }, 1000);
-    }
-
-    window.addEventListener("DOMContentLoaded", function() {
-      let emailInput = document.getElementById('email');
-      let time = emailInput.getAttribute('wait-time');
-      if (time && Number(time) !== 0) {
-        handleShowResentOtpWaitTime(Number(time));
-      }
-      const form = document.getElementById('kc-form-login');
-      form.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        emailInput = document.getElementById('email');
-        time = emailInput.getAttribute('wait-time');
-        const error = "<%= error %>" || '';
-        let submitButton = document.getElementById("kc-login");
-
-        if (time && Number(time) !== 0) {
-          handleShowResentOtpWaitTime(Number(time));
-          return;
-        }
-        submitButton.disabled = true;
-        form.submit();
-      });
-    });
-  </script>
-  <header>
-    <div class="banner">
-      <span></span>
-      <h1>Pathfinder SSO</h1>
-    </div>
-    <div class="other">&nbsp;</div>
-  </header>
-  <div class="login-pf-page">
-    <div id="kc-header" class="login-pf-page-header">
-      <div id="kc-header-wrapper" class="">
-        Secure OTP Login
-      </div>
-    </div>
-    <div class="card-pf">
-      <header class="login-pf-header">
-        <h1 id="kc-page-title">Authenticate with:</h1>
-      </header>
-      <div id="kc-content">
-        <div id="kc-content-wrapper">
-          <div id="kc-form">
-            <div id="kc-form-wrapper">
-              <form action="/interaction/<%= uid %>/otp" method="POST" autocomplete="off" id="kc-form-login">
-                <div class="form-group">
-                  <label for="email" class="pf-c-form__label pf-c-form__label-text">Email</label>
-                  <input tabindex="2" id="email" class="pf-c-form-control" name="email" value="" type="text" autofocus="" autocomplete="email" aria-invalid="" dir="ltr" wait-time="<%= waitTime %>">
-                  <span id="input-error" class="required" aria-live="polite">
-                    <%= error %>
-                  </span>
-                </div>
-                <div id="kc-form-buttons" class="form-group">
-                  <input type="hidden" id="id-hidden-input" name="credentialId">
-                  <input tabindex="7" class="pf-c-button pf-m-primary pf-m-block btn-lg" name="login" id="kc-login" type="submit" value="Get OTP">
-                </div>
-              </form>
-            </div>
+        <form
+          id="signin-form"
+          action="/interaction/<%= uid %>/otp"
+          method="POST"
+          autocomplete="off"
+          class="w-full flex flex-col gap-24 items-start"
+        >
+          <div class="flex flex-col items-start gap-4 w-full">
+            <input
+              class="border border-light-grey border-1 p-2 rounded-[4px] w-full p-8"
+              placeholder="Enter an email"
+              id="email-input"
+              name="email"
+              value=""
+              autofocus=""
+              aria-invalid=""
+              dir="ltr"
+              data-wait-time="<%= waitTime %>"
+              required
+            />
+            <span id="email-error" class="text-danger text-sm min-h-40">
+              <% if (error) { %>
+                <%= error %>
+              <% } else if (waitTime > 0) { %>
+                Please wait  <span id="wait-time-text"><%= waitTime %></span> seconds before requesting a new code for this email address.
+              <% } %>
+            </span>
+            <!-- <span id="email-error" class="text-danger text-sm min-h-20"> Email invalid </span> -->
           </div>
-        </div>
+          <!-- <input type="hidden" id="id-hidden-input" name="credentialId" /> -->
+          <button
+            class="btn"
+            type="submit"
+            name="login"
+            id="submit-button"
+          >
+            Continue
+          </button>
+        </form>
+        <p class="bg-lightest-grey p-16">
+          Your personal information is being collected for the purposes of providing user authentication under section 26(c) of the Freedom of Information and Protection of Privacy Act. Should you have any questions, please contact [placeholder].
+By proceeding, you acknowledge and agree that your email address will be shared with the application you are accessing.
+        </p>
       </div>
     </div>
-  </div>
-
-</body>
-
+  </body>
+  <script src="/js/signin.js" type="module" nonce="<%= nonce %>"></script>
 </html>

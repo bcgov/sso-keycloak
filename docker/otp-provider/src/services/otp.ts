@@ -29,15 +29,19 @@ export const requestNewOtp = async (email: string) => {
   }
 };
 
+const FIVE_MINUTES = 5*60*1000;
+
 export const validateOtp = async (otp: string, email: string) => {
   const activeOtp = await getActiveOtp(email);
   if (!activeOtp) {
-    return { verified: false, attemptsLeft: 0 };
-  } else if (activeOtp.otp !== otp || activeOtp.attempts === Number(OTP_ATTEMPTS_ALLOWED)) {
+    return { verified: false, attemptsLeft: 0, expired: false };
+  } else if (Date.now() - new Date(activeOtp.createdAt).getTime() > FIVE_MINUTES) {
+    return {verified: false, attemptsLeft: 0, expired: true }
+  } else if (activeOtp.otp !== otp) {
     if (activeOtp.attempts < Number(OTP_ATTEMPTS_ALLOWED))
       await updateOtpAttempts(activeOtp.otp, email, activeOtp.attempts + 1);
-    return { verified: false, attemptsLeft: Number(OTP_ATTEMPTS_ALLOWED) - (activeOtp.attempts + 1) };
+    return { verified: false, attemptsLeft: Number(OTP_ATTEMPTS_ALLOWED) - (activeOtp.attempts + 1), expired: false, };
   }
   await deleteOtpsByEmail(email);
-  return { verified: true, attemptsLeft: Number(OTP_ATTEMPTS_ALLOWED) - (activeOtp.attempts + 1) };
+  return { verified: true, attemptsLeft: Number(OTP_ATTEMPTS_ALLOWED) - (activeOtp.attempts + 1), expired: false };
 };

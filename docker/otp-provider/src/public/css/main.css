@@ -1,0 +1,51 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: "BC Sans";
+  font-style: normal;
+  font-weight: 400;
+  src: url("/fonts/bcsans-regular.woff") format("woff");
+}
+
+@font-face {
+  font-family: "BC Sans";
+  font-style: normal;
+  font-weight: 700;
+  src: url("/fonts/bcsans-bold.woff") format("woff");
+}
+
+@theme {
+  --color-primary: #013366;
+  --color-primary-hover: #1e5189;
+  --color-grey: #2D2D2D;
+  --color-light-grey: #D8D8D8;
+  --color-lightest-grey: #FAF9F8;
+  --color-gold: #FCBA19;
+  --color-danger: #CE3E39;
+  --color-disabled: #EDEBE9;
+  --color-typography-disabled: #9F9D9C;
+  --color-link:  #255A90;
+  --text-lg: 24px;
+  --text-xl: 28px;
+  --text-md: 16px;
+
+  --font-bc: "BC Sans";
+
+  --spacing: 1px;
+}
+
+.btn {
+  @apply bg-primary w-full rounded-[4px] text-white p-8 flex flex-row items-center justify-center gap-6 disabled:bg-disabled disabled:text-typography-disabled disabled:cursor-not-allowed hover:bg-primary-hover
+}
+
+.link {
+  @apply text-link cursor-pointer;
+}
+
+.card {
+  @apply bg-white mt-32 py-24 px-32 flex flex-col gap-24 items-center w-[95dvw] max-w-500
+}
+
+#code-digit-3::after {
+  content: '-';
+}

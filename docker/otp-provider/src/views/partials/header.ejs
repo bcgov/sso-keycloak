@@ -1,35 +1,21 @@
-<head>
-  <meta charset="UTF-8">
-  <title>Sign In</title>
-  <link rel="stylesheet" href="/patternfly.min.css" type="text/css">
-  <link rel="stylesheet" href="/patternfly1.min.css" type="text/css">
-  <link rel="stylesheet" href="/patternfly.additions.min.css" type="text/css">
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-CA">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="One time passcode login">
+    <title>Sign In</title>
+    <link rel="stylesheet" href="/css/output.css" type="text/css" />
+  </head>
 
-  <link rel="stylesheet" href="/pficon.css" type="text/css">
-  <link rel="stylesheet" href="/login.css" type="text/css">
-  <link rel="stylesheet" href="/bcsans.css" type="text/css">
-  <link rel="stylesheet" href="/main.css" type="text/css">
-  <link rel="stylesheet" href="/content.css" type="text/css">
-  <style class="automa-element-selector">
-    @font-face {
-      font-family: "Inter var";
-      font-weight: 100 900;
-      font-display: swap;
-      font-style: normal;
-      font-named-instance: "Regular";
-      src: url("chrome-extension://infppggnoaenmfagbfknfkancpbljcca/Inter-roman-latin.var.woff2") format("woff2")
-    }
-
-    .automa-element-selector {
-      direction: ltr
-    }
-
-    [automa-isDragging] {
-      user-select: none
-    }
-
-    [automa-el-list] {
-      outline: 2px dashed #6366f1;
-    }
-  </style>
-</head>
+  <body class="font-bc text-grey bg-primary">
+    <header>
+      <div class="flex flex-row gap-16 items-center p-6 border-b-1 border-gold">
+        <img src="/img/bcgovlogosmall.svg" alt="British Columbia Logo" class="block md:hidden" />
+        <img src="/img/bcgovlogo.svg" alt="British Columbia Logo" height="54" width="140" class="hidden md:block" />
+        <div class="w-1 bg-gold h-full min-h-54"></div>
+        <p class="text-xl text-white font-bold">One Time Passcode</p>
+      </div>
+    </header>
+  </body>
+</html>

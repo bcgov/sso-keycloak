@@ -1,5 +1,5 @@
 import express, { Express, Response } from 'express';
-import Provider from 'oidc-provider';
+import Provider, { interactionPolicy } from 'oidc-provider';
 import { oidcRouter } from './routes/interaction';
 import * as path from 'node:path';
 import cors from 'cors';
@@ -12,12 +12,13 @@ import logger from './modules/winston.config';
 import * as crypto from 'crypto';
 import { getConfig, getOidcClients } from './modules/oidc-provider';
 import os from 'node:os';
+import compression from 'compression';
 
 const { NODE_ENV, APP_URL, CORS_ORIGINS } = config;
 
 const staticFolder = dirname(import.meta.url.replace(os.platform() === 'win32' ? 'file:///' : 'file://', ''));
 
-export const app = express();
+const app = express();
 
 app.use((_, res, next) => {
   res.locals.cspNonce = crypto.randomBytes(16).toString('base64');
@@ -38,6 +39,8 @@ app.use(
     },
   }),
 );
+
+app.use(compression());
 
 if (NODE_ENV === 'production') {
   app.set('trust proxy', true);
@@ -66,14 +69,44 @@ export const initializeApp = async (app: Express) => {
     logger.error('Error during database migration:', err);
   }
 
+  // Removing consent flow entirely, it is implicit from the login message
+  const { base } = interactionPolicy;
+  const policy = base();
+  policy.remove('consent');
+
   const provider = new Provider(APP_URL, {
     ...getConfig(),
+    interactions: {
+      policy,
+    },
     clients: await getOidcClients(),
+    // Automatically adds grant without the user's explicit consent. Consent is considered implicit from login page.
+    loadExistingGrant: async (ctx) => {
+      const grantId =
+        ctx.oidc.result?.consent?.grantId ||
+        (ctx.oidc.client?.clientId && ctx.oidc.session?.grantIdFor(ctx.oidc.client?.clientId!));
+
+      if (grantId) {
+        const grant = await ctx.oidc.provider.Grant.find(grantId);
+        return grant;
+      }
+
+      const grant = new ctx.oidc.provider.Grant({
+        clientId: ctx.oidc.client!.clientId,
+        accountId: ctx.oidc.session!.accountId,
+      });
+
+      grant.addOIDCScope('openid email');
+      grant.addOIDCClaims(['email']);
+      await grant.save();
+      return grant;
+    },
   });
 
   const oidcRoutes = await oidcRouter(provider);
   app.use('/interaction', oidcRoutes);
 
+  // Note: Provider callback handles catchall 404 already
   app.use(provider.callback());
 
   if (NODE_ENV === 'production') provider.proxy = true; // Enable proxy support for the provider

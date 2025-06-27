@@ -26,6 +26,11 @@ OTP Provider -> Authenticates user via email-based OTP and returns identity asse
 - Run `yarn dev` to start a local server
 - Run `yarn build` to create a javascript bundle for production deployment
 - Run `yarn start` to run the javascript bundle
+- Run `yarn tailwind` to compile the css (will hot reload)
+
+## Local Env
+
+The app runs locally using tsup to compile the server and client files into the `build` directory. To recompile the css on the fly, run `yarn tailwind` in another terminal.
 
 ## Test Data
 

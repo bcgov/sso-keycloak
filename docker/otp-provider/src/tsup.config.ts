@@ -17,7 +17,13 @@ export default defineConfig([
       cpSync(join(__dirname, 'views'), './build/views', {
         recursive: true,
       });
-      cpSync(join(__dirname, 'public'), './build/public', {
+      cpSync(join(__dirname, 'public/fonts'), './build/public/fonts', {
+        recursive: true,
+      });
+      cpSync(join(__dirname, 'public/img'), './build/public/img', {
+        recursive: true,
+      });
+      cpSync(join(__dirname, 'public/css/output.css'), './build/public/css/output.css', {
         recursive: true,
       });
     },
@@ -28,4 +34,13 @@ export default defineConfig([
     outDir: 'build/migrations',
     splitting: true,
   },
+  {
+    entry: ['src/client/*.ts',],
+    format: ['esm'],
+    sourcemap: false,
+    clean: true,
+    outDir: 'build/public/js',
+    target: 'es2017',
+    minify: true,
+}
 ]);

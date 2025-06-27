@@ -4,6 +4,24 @@ import sequelize from '../modules/sequelize/config';
 import { QueryTypes } from 'sequelize';
 import crypto from 'node:crypto';
 import { getOtpsByEmail } from './helpers/queries';
+import { errors } from '../modules/errors';
+
+const codes = {
+  code1: '1',
+  code2: '1',
+  code3: '1',
+  code4: '1',
+  code5: '1',
+  code6: '1',
+}
+
+const formatCode = (otp: string) => {
+  const codes: any = {}
+  otp.split('').forEach((char, i) => {
+    codes[`code${i+1}`] = char;
+  });
+  return codes;
+}
 
 describe('otp login test', () => {
   let agent: Agent;
@@ -52,11 +70,11 @@ describe('otp login test', () => {
     expect(otpRecords[0].active).toBeTruthy();
   });
 
-  it('should accept the invalid passcode at the otp interaction and return attempts left', async () => {
-    const data = { email: 'testuser@gmail.com', otp: '123456' };
+  it('should accept the invalid passcode at the otp interaction and return the expected error', async () => {
+    const data = { email: 'testuser@gmail.com', ...codes, };
     const res = await agent.post(`${interactionPath}/login`).type('form').send(data);
     expect(res.status).toEqual(200);
-    expect(res.text).toContain('Invalid OTP, you have 4 attempts left');
+    expect(res.text).toContain(errors.INVALID_OTP);
 
     const otpRecords: any = await sequelize.query('select * from "Otp" where email=:email and active = true', {
       replacements: { email: 'testuser@gmail.com' },
@@ -80,28 +98,27 @@ describe('otp login test', () => {
     expect(otpRecords[0].active).toBeTruthy();
   });
 
-  it('should accept correct passcode and redirect to consent page', async () => {
+  it('should accept correct passcode', async () => {
     const otpRecords: any = await sequelize.query('select * from "Otp" where email=:email and active = true', {
       replacements: { email: 'testuser@gmail.com' },
       type: QueryTypes.SELECT,
     });
 
-    const data = { email: 'testuser@gmail.com', otp: otpRecords[0].otp };
+    const codes = formatCode(otpRecords[0].otp)
+    const data = { email: 'testuser@gmail.com', ...codes };
     const res = await agent.post(`${interactionPath}/login`).type('form').send(data).redirects(0);
-    expect(res.status).toEqual(303);
-    const redirectRes = await agent.get(new URL(res.headers.location).pathname).redirects(0);
-    expect(redirectRes.status).toEqual(303);
-    consentInteractionPath = redirectRes.headers.location;
-  });
 
-  it('should allow for submitting consent and return code', async () => {
-    const consentRes = await agent.post(`${consentInteractionPath}/confirm`).type('form').send({}).redirects(0);
-    expect(consentRes.status).toEqual(303);
-    const redirectRes = await agent.get(new URL(consentRes.headers.location).pathname).redirects(0);
-    expect(redirectRes.status).toEqual(303);
-    const code = new URL(redirectRes.headers.location).searchParams.get('code');
-    expect(code).toBeTruthy;
-    authCode = code || '';
+    const resumeUrl = new URL(res.headers.location).pathname;
+
+    const redirectToClient = await agent
+      .get(resumeUrl)
+      .redirects(0);
+
+    expect(redirectToClient.status).toBe(303);
+
+    const redirectUrl = new URL(redirectToClient.headers.location);
+    authCode = redirectUrl.searchParams.get('code')!;
+    expect(authCode).toBeTruthy();
   });
 
   it('should return token when presented with the code', async () => {

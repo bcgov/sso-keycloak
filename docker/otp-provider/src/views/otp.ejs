@@ -1,86 +1,75 @@
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" class="login-pf">
+    <%- include("./partials/header") %>
 
-<%- include("./partials/header") %>
+      <div class="size-full flex flex-row justify-center">
+        <div class="card">
+          <h2 class="text-lg font-bold text-center">Enter your verification code</h2>
+          <form
+            action="/interaction/<%= uid %>/login"
+            method="POST"
+            autocomplete="off"
+            class="w-full flex flex-col gap-24 items-center"
+            id="otp-form"
+            <% if (disableForm) { %> disabled <% } %>
+          >
+            <fieldset class="flex flex-col items-center" aria-describedby="code-hint">
+              <legend class="text-center mt-24">A 6-digit verification code was just sent to <%= email %>. Please enter the code within five minutes.</legend>
 
-<body>
-  <script nonce="<%= nonce %>">
-    function handleShowResentOtpWaitTime(durationInSeconds) {
-      let resendButton = document.getElementById("resend-otp");
-      let timerDisplay = document.getElementById("timerDisplay");
-
-      resendButton.disabled = true;
-
-      let interval = setInterval(() => {
-        if (durationInSeconds <= 0) {
-          clearInterval(interval);
-          resendButton.disabled = false;
-          timerDisplay.textContent = "";
-        } else {
-          timerDisplay.textContent = `Please wait ${durationInSeconds--} seconds before resending OTP.`;
-        }
-      }, 1000);
-    }
-
-
-    document.addEventListener('DOMContentLoaded', async function() {
-      const emailInput = document.getElementById("email-input");
-      const time = emailInput.getAttribute('wait-time');
-      handleShowResentOtpWaitTime(Number(time));
-      const form = document.getElementById('kc-form-login');
-    });
-  </script>
-  <header>
-    <div class="banner">
-      <span></span>
-      <h1>Pathfinder SSO</h1>
-    </div>
-    <div class="other">&nbsp;</div>
-  </header>
-  <div class="login-pf-page">
-    <div id="kc-header" class="login-pf-page-header">
-      <div id="kc-header-wrapper" class="">
-        Secure OTP Login
-      </div>
-    </div>
-    <div class="card-pf">
-      <header class="login-pf-header">
-        <h1 id="kc-page-title">Enter OTP:</h1>
-      </header>
-      <div id="kc-content">
-        <div id="kc-content-wrapper">
-          <div id="kc-form">
-            <div id="kc-form-wrapper">
-              <form action="/interaction/<%= uid %>/login" method="POST" autocomplete="off" id="kc-form-login">
-                <div class="form-group">
-                  <label for="otp" class="pf-c-form__label pf-c-form__label-text">OTP</label>
-                  <input tabindex="2" id="otp" class="pf-c-form-control" name="otp" value="" type="text" autofocus="" autocomplete="otp" aria-invalid="" dir="ltr">
-                  <span id="input-error" class="required" aria-live="polite">
+              <div class="flex flex-col w-270">
+                <div class="flex flex-row gap-8 mt-24 justify-between" role="group" aria-label="Verification code">
+                  <% for (let i = 1; i <= 6; i++) { %>
+                    <input
+                      <% if (i === 1) { %> autofocus <% } %>
+                      class="text-center border border-light-grey border-1 p-2 rounded-[4px] font-bold text-lg w-34 h-56"
+                      type="text"
+                      pattern="\d*"
+                      name="code<%= i %>"
+                      inputmode="numeric"
+                      pattern="[0-9]*"
+                      <% if (disableForm) { %> disabled <% } %>
+                      maxlength="1"
+                      required
+                      id="code-digit-<%= i %>"
+                      aria-label="Digit <%= i %>">
+                      <% if (i === 3) { %>
+                        <span class="flex items-center font-bold text-lg leading-10">-</span>
+                      <% } %>
+                    <% } %>
+                </div>
+                <span id="otp-error" class="text-danger min-h-20 py-12" data-wait-time="<%= waitTime %>">
+                  <% if (error) { %>
                     <%= error %>
-                  </span>
+                  <% } %>
+                </span>
+                <div class="flex flex-col md:flex-row justify-between items-center gap-16">
+                  <div>
+                    <a href="https://gmail.com/" target="_blank" rel="noopener noreferrer">
+                      <img class="inline pb-2" src="/img/gmail.png" alt="Google Mail"><span class="ml-4">Open Gmail</span>
+                    </a>
+                  </div>
+                  <div>
+                    <a href="https://outlook.office.com/" target="_blank" rel="noopener noreferrer">
+                      <img class="inline pb-2" src="/img/outlook.png" alt="Outlook"><span class="ml-4">Open Outlook</span>
+                    </a>
+                  </div>
                 </div>
-                <div id="kc-form-buttons" class="form-group">
-                  <input type="hidden" id="id-hidden-input" name="credentialId">
-                  <input type="hidden" name="email" value="<%= email %>" id="email-input" wait-time="<%= waitTime %>">
-                  <input tabindex="7" class="pf-c-button pf-m-primary pf-m-block btn-lg" name="login" id="kc-login" type="submit" value="Submit">
-                </div>
-              </form>
-              <form action="/interaction/<%= uid %>/otp" method="POST" autocomplete="off" id="kc-form-resend-otp">
-                <div id="kc-form-buttons" class="form-group">
-                  <input type="hidden" id="id-hidden-input" name="credentialId">
-                  <input type="hidden" name="email" value="<%= email %>">
-                  <input type="hidden" name="otpType" value="resend">
-                  <input tabindex="7" class="pf-c-button pf-m-primary pf-m-block btn-lg" name="resend-otp" id="resend-otp" value="Resend OTP" type="submit" disabled="<%= disableResend %>">
-                  <p id="timerDisplay"></p>
-                </div>
-              </form>
-            </div>
-          </div>
+              </div>
+            </fieldset>
+            <button class="btn" <% if (disableForm) { %> disabled <% } %>  type="submit" name="login" id="kc-login">
+              Continue
+            <% if (disableForm) { %>
+              <img src="/img/caution.svg" alt="Caution" class="w-16 h-16">
+            <% } %>
+            </button>
+          </form>
+          <hr class="bg-light-grey border-none w-full h-1"/>
+          <% if (!disableResend) { %>
+          <span id="new-code-text" class="inline"> Can't find the code?
+                <%- include("./partials/send-code") %>
+          </span>
+          <% } %>
         </div>
       </div>
-    </div>
-  </div>
+    </body>
+    <script src="/js/otp.js" type="module" nonce="<%= nonce %>"></script>
 
-</body>
-
-</html>
+    </html>

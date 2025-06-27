@@ -5,6 +5,7 @@ import Keygrip from 'keygrip';
 import { isOrigin, hashEmail } from '../utils/helpers';
 import { getClients } from './sequelize/queries/client';
 import type { Response } from 'express';
+import app from '../app';
 
 const { JWKS, COOKIE_SECRETS } = config;
 
@@ -17,6 +18,21 @@ export const getConfig = (): Configuration => {
     claims: {
       openid: ['sub', 'otp_guid'],
       email: ['email'],
+    },
+    // Overrride node-oidc default page with the EJS error template
+    renderError: async (ctx, out, error) => {
+      app.render(
+        'error',
+        {
+          title: 'statusCode' in error ? error.statusCode : 'Unknown Error',
+          message:
+            'error_description' in error ? error.error_description : 'The server has encountered an unknown error.',
+        },
+        (_, html) => {
+          ctx.type = 'text/html';
+          ctx.body = html;
+        },
+      );
     },
     pkce: {
       required: (_ctx: KoaContextWithOIDC, client: Client) => {
