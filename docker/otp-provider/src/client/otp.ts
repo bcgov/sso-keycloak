@@ -24,7 +24,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const [, error] = otpValidator(codes);
     if (error) {
       setFormError(errorEl, loginButton, error as string);
-      digitInputs[0]?.focus();
       const firstEmptyInput = digitInputs.find((input) => input?.value === '');
       if (firstEmptyInput) firstEmptyInput.focus();
       else digitInputs[0].focus();
@@ -40,7 +39,6 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!value) return;
 
       clearFormError(errorEl, loginButton);
-
       if (!otpValidDigits.includes(value)) {
         setFormError(errorEl, loginButton, errors.OTP_TYPES);
         (e.target as HTMLInputElement)?.focus();
