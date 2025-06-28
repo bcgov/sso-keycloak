@@ -20,16 +20,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
-  const codes = digitInputs.map((input) => input.value).filter(val => val !== '');
+    const codes = digitInputs.map((input) => input.value).filter((val) => val !== '');
     const [, error] = otpValidator(codes);
     if (error) {
       setFormError(errorEl, loginButton, error as string);
       digitInputs[0]?.focus();
-      const firstEmptyInput = digitInputs.find(input => input?.value === '');
+      const firstEmptyInput = digitInputs.find((input) => input?.value === '');
       if (firstEmptyInput) firstEmptyInput.focus();
       else digitInputs[0].focus();
     } else form.submit();
-
   });
 
   digitInputs.forEach((input, i) => {
@@ -64,13 +63,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const pasted = e.clipboardData?.getData('text');
       if (!pasted) return;
 
-      const validPastedChars = pasted.split('').filter(char => otpValidDigits.includes(char));
+      const validPastedChars = pasted.split('').filter((char) => otpValidDigits.includes(char));
       digitInputs.slice(i).forEach((input, k) => {
-        if (validPastedChars[k])
-          input.value = validPastedChars[k];
+        if (validPastedChars[k]) input.value = validPastedChars[k];
       });
 
-      const fullCode = digitInputs.map(input => input.value).filter(val => val !== '');
+      const fullCode = digitInputs.map((input) => input.value).filter((val) => val !== '');
       if (fullCode.length < 6) {
         digitInputs[fullCode.length].focus();
         return;
@@ -93,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       if (e.key === 'Backspace' && input.value === '') {
         e.preventDefault();
-        clearFormError(errorEl, loginButton)
+        clearFormError(errorEl, loginButton);
         if (i > 0) {
           digitInputs[i - 1].value = '';
           digitInputs[i - 1].focus();

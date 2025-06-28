@@ -59,15 +59,15 @@ export const getUID = () => location.pathname.split('/')[location.pathname.split
  * @param errorText The error message to display.
  */
 export const setFormError = (errorEl: HTMLElement, submitButton: HTMLButtonElement, errorText: string) => {
-    clearFormError(errorEl, submitButton);
-    submitButton.disabled = true;
-    const img = document.createElement('img');
-    img.src = '/img/caution.svg';
-    img.alt = 'Caution';
-    img.className = 'w-16 h-16';
-    submitButton.appendChild(img);
-    errorEl.textContent = errorText;
-}
+  clearFormError(errorEl, submitButton);
+  submitButton.disabled = true;
+  const img = document.createElement('img');
+  img.src = '/img/caution.svg';
+  img.alt = 'Caution';
+  img.className = 'w-16 h-16';
+  submitButton.appendChild(img);
+  errorEl.textContent = errorText;
+};
 
 /**
  * Clear form errors.
@@ -75,8 +75,8 @@ export const setFormError = (errorEl: HTMLElement, submitButton: HTMLButtonEleme
  * @param submitButton The HTML Button Element to submit the form.
  */
 export const clearFormError = (errorEl: HTMLElement, submitButton: HTMLButtonElement) => {
-    errorEl.textContent = "";
-    submitButton.disabled = false;
-    const cautionImg = submitButton.querySelector('img');
-    if (cautionImg) cautionImg.remove();
-}
+  errorEl.textContent = '';
+  submitButton.disabled = false;
+  const cautionImg = submitButton.querySelector('img');
+  if (cautionImg) cautionImg.remove();
+};
