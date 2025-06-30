@@ -24,7 +24,7 @@ export const emailValidator = (email?: string): [boolean, null | string] => {
 };
 
 export const otpValidator = (codes: any[]) => {
-    if (codes.length !== 6) return [false, errors.OTP_LENGTH];
     if (!codes.every(codePart => otpValidDigits.includes(codePart))) return [false, errors.OTP_TYPES];
+    if (codes.length !== 6 || codes.some(code => code === '')) return [false, errors.OTP_LENGTH];
     return [codes.join(''), null];
 }
