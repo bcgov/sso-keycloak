@@ -1,5 +1,5 @@
 import { emailValidator } from '../utils/shared';
-import { countdown } from './shared';
+import { countdown, clearFormError, setFormError } from './shared';
 
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('signin-form') as HTMLFormElement;
@@ -10,10 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (!form || !emailInput || !errorField || !submitButton || !errorField) return;
   emailInput.addEventListener('input', () => {
-    errorField.textContent = '';
-    submitButton.disabled = false;
-    const cautionImg = submitButton.querySelector('img');
-    if (cautionImg) cautionImg.remove();
+    clearFormError(errorField, submitButton);
   });
 
   form.setAttribute('novalidate', '');
@@ -24,16 +21,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const [emailValid, error] = emailValidator(emailContent);
 
     if (!emailValid) {
-      if (error) errorField.textContent = error;
-      submitButton.disabled = true;
-      const img = document.createElement('img');
-      img.src = '/img/caution.svg';
-      img.alt = 'Caution';
-      img.className = 'w-16 h-16';
-      submitButton.appendChild(img);
+      setFormError(errorField, submitButton, error as string);
       return;
     }
-
     form.submit();
   });
 
@@ -41,9 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (waitTimeElement) {
     countdown(cooldownPeriod, waitTimeElement, () => {
-      errorField.textContent = '';
-      submitButton.disabled = false;
-      submitButton.querySelector('img')?.remove();
+      clearFormError(errorField, submitButton);
     });
   }
 });
