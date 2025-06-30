@@ -54,7 +54,7 @@ export const sendEmail = async ({ from = 'no-reply-sso@gov.bc.ca', to, body, ...
       CHES_API_URL,
       {
         // see https://ches.nrs.gov.bc.ca/api/v1/docs#operation/postEmail for options
-        bodyType: ' html',
+        bodyType: 'html',
         body,
         encoding: 'utf-8',
         from,
