@@ -9,7 +9,6 @@
           id="signin-form"
           action="/interaction/<%= uid %>/otp"
           method="POST"
-          autocomplete="off"
           class="w-full flex flex-col gap-24 items-start"
         >
           <div class="flex flex-col items-start gap-4 w-full">
@@ -19,11 +18,12 @@
               id="email-input"
               name="email"
               value=""
-              autofocus=""
-              aria-invalid=""
+              autofocus
+              aria-label="Email"
               dir="ltr"
               data-wait-time="<%= waitTime %>"
               type="email"
+              autocomplete="email"
               required
             />
             <span id="email-error" class="text-danger text-sm min-h-40">
