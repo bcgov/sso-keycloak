@@ -23,7 +23,7 @@ export const requestNewOtp = async (email: string) => {
       await sendEmail({
         to: [email],
         body: `<p>Copy and enter this 6-digit verification code to the One Time Passcode login page. This code will expire in 5 minutes.</p>
-        <p>${otp}</p>
+        <p style="font-size:24px;"><strong>${otp}</strong></p>
         <p>Do not share this code or forward this email to anyone.</p>
         <p>If this wasn't you, please ignore this message.</p>
         <p>This is an automated message from the Government of British Columbia. Please do not reply.</p>
