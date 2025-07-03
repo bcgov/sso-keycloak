@@ -19,7 +19,7 @@ variable "app_name" {
 variable "rds_scale_down_time" {
   type        = number
   description = "time in seconds of inactivity to scale down the RDS database"
-  default     = 60
+  default     = 3600
 }
 
 variable "rds_max_capacity" {
