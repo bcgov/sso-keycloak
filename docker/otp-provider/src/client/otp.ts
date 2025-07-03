@@ -27,7 +27,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const firstEmptyInput = digitInputs.find((input) => input?.value === '');
       if (firstEmptyInput) firstEmptyInput.focus();
       else digitInputs[0].focus();
-    } else form.submit();
+    } else {
+      loginButton.disabled = true;
+      form.submit();
+    }
   });
 
   digitInputs.forEach((input, i) => {
@@ -52,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const codes = digitInputs.map((input) => input.value);
         const [, error] = otpValidator(codes);
         if (error) setFormError(errorEl, loginButton, error as string);
-        else form.submit();
+        else form.requestSubmit();
       }
     });
 
