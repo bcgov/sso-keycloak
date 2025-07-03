@@ -2,8 +2,8 @@ nameOverride: sso-backup-storage
 fullnameOverride: sso-backup-storage
 
 image:
-  repository: bcgovimages/backup-container
-  tag: 2.9.0
+  repository: ghcr.io/bcgov/backup-container
+  tag: 2.10.3
   pullPolicy: Always
 
 backupConfig: |
@@ -28,7 +28,7 @@ env:
   ENVIRONMENT_NAME:
     value: eb75ad-test
   WEBHOOK_URL:
-    # value: '<<WEBHOOK URL FOR ROCKETCHAT>>'
+   # value: '<<WEBHOOK URL FOR ROCKETCHAT>>'
     secure: true
 
   DAILY_BACKUPS:
