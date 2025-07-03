@@ -1,12 +1,10 @@
 package com.github.bcgov.keycloak.protocol.saml.mappers;
 
 import org.keycloak.dom.saml.v2.assertion.AttributeStatementType;
-import org.keycloak.dom.saml.v2.assertion.AttributeStatementType.ASTChoiceType;
 import org.keycloak.models.AuthenticatedClientSessionModel;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.ProtocolMapperModel;
 import org.keycloak.models.UserSessionModel;
-import org.keycloak.protocol.saml.SamlProtocol;
 import org.keycloak.protocol.saml.mappers.AbstractSAMLProtocolMapper;
 import org.keycloak.protocol.saml.mappers.AttributeStatementHelper;
 import org.keycloak.protocol.saml.mappers.SAMLAttributeStatementMapper;
@@ -38,12 +36,24 @@ public class PPIDAttributeMapper extends AbstractSAMLProtocolMapper implements S
 
   public static final String ATTRIBUTE_NAME = "attribute.name";
 
-  public static final String PRIVACY_ZONE_MAPPER = "privacy_zone";
+  public static final String PRIVACY_ZONE = "privacy_zone";
 
   static {
-    configProperties.add(new ProviderConfigProperty(ATTRIBUTE_NAME, "Attribute Name",
-        "Assertion attribute name containing the ppid identifier of the authenticated subject.",
-        ProviderConfigProperty.STRING_TYPE, "ppid"));
+    ProviderConfigProperty attributeName = new ProviderConfigProperty();
+    attributeName.setName(ATTRIBUTE_NAME);
+    attributeName.setLabel("Attribute Name");
+    attributeName.setType(ProviderConfigProperty.STRING_TYPE);
+    attributeName.setDefaultValue("sub");
+    attributeName.setHelpText("Assertion attribute name containing the ppid identifier of the authenticated subject.");
+    configProperties.add(attributeName);
+
+    ProviderConfigProperty privacyZone = new ProviderConfigProperty();
+    privacyZone.setName(PRIVACY_ZONE);
+    privacyZone.setLabel("Privacy Zone");
+    privacyZone.setType(ProviderConfigProperty.STRING_TYPE);
+    privacyZone.setDefaultValue("");
+    privacyZone.setHelpText("Client privacy zone required to fetch ppid identifier of the authenticated subject.");
+    configProperties.add(privacyZone);
   }
 
   @Override
@@ -78,33 +88,24 @@ public class PPIDAttributeMapper extends AbstractSAMLProtocolMapper implements S
     try {
       String idp = userSession.getNotes().get("identity_provider");
       if (idp.equalsIgnoreCase("otp")) {
-        ProtocolMapperModel pzMapper = clientSession.getClient()
-            .getProtocolMapperByName(SamlProtocol.LOGIN_PROTOCOL, PRIVACY_ZONE_MAPPER);
-        if (pzMapper != null) {
+        if (!StringUtil.isNullOrEmpty(mappingModel.getConfig().get(PRIVACY_ZONE))) {
           String ppid = PPID.getPpid(applicationProperties.getIssuer(idp), userSession.getUser().getEmail(),
-              pzMapper.getConfig().get(ATTRIBUTE_VALUE));
+              mappingModel.getConfig().get(PRIVACY_ZONE));
           if (!StringUtil.isNullOrEmpty(ppid)) {
-            AttributeType attribute = new AttributeType(ppidKey.trim());
-            attribute.setNameFormat(JBossSAMLURIConstants.ATTRIBUTE_FORMAT_BASIC.get());
-            attribute.addAttributeValue(ppid);
-            attributeStatement.addAttribute(new AttributeStatementType.ASTChoiceType(attribute));
+            addAttribute(attributeStatement, ppidKey.trim(), ppid);
           }
         } else
-          logger.errorf("Could not find %s mapper", PRIVACY_ZONE_MAPPER);
+          logger.error("Privacy zone is required to fetch ppid.");
       }
-      // remove privacy zone attribute
-      List<ASTChoiceType> attributes = attributeStatement.getAttributes();
-      for (int i = attributes.size(); i-- > 0;) {
-        AttributeStatementType.ASTChoiceType attribute = attributes.get(i);
-        String name = attribute.getAttribute().getName();
-        if (name.equals(PRIVACY_ZONE_MAPPER)) {
-          attributeStatement.removeAttribute(attribute);
-          break;
-        }
-      }
-
     } catch (Exception e) {
       logger.errorf("Failed to add assertion %s to the token", ppidKey);
     }
+  }
+
+  private void addAttribute(AttributeStatementType attributeStatement, String attributeName, Object attributeValue) {
+    AttributeType attribute = new AttributeType(attributeName.trim());
+    attribute.setNameFormat(JBossSAMLURIConstants.ATTRIBUTE_FORMAT_BASIC.get());
+    attribute.addAttributeValue(attributeValue);
+    attributeStatement.addAttribute(new AttributeStatementType.ASTChoiceType(attribute));
   }
 }

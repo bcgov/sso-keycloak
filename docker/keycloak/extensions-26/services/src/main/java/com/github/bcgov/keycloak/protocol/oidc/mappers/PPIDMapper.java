@@ -31,14 +31,31 @@ public class PPIDMapper extends AbstractOIDCProtocolMapper
 
   public static final String CLAIM_VALUE = "claim.value";
 
-  public static final String PRIVACY_ZONE_MAPPER = "privacy_zone";
+  public static final String PRIVACY_ZONE = "privacy_zone";
+
+  public static final String PREFERRED_USERNAME = "preferred_username";
 
   private static final List<ProviderConfigProperty> configProperties = new ArrayList<ProviderConfigProperty>();
 
   static {
-    configProperties.add(new ProviderConfigProperty(CLAIM_NAME, "Claim Name",
-        "Token claim name containing the ppid identifier of the authenticated subject.",
-        ProviderConfigProperty.STRING_TYPE, "ppid"));
+    ProviderConfigProperty property;
+    property = new ProviderConfigProperty();
+    property.setName(CLAIM_NAME);
+    property.setLabel("Claim Name");
+    property.setHelpText(
+        "Token claim name containing the ppid identifier of the authenticated subject.");
+    property.setType(ProviderConfigProperty.STRING_TYPE);
+    property.setDefaultValue("sub");
+    configProperties.add(property);
+
+    property = new ProviderConfigProperty();
+    property.setName(PRIVACY_ZONE);
+    property.setLabel("Privacy Zone");
+    property.setHelpText(
+        "Client privacy zone required to fetch ppid identifier of the authenticated subject.");
+    property.setType(ProviderConfigProperty.STRING_TYPE);
+    property.setDefaultValue("");
+    configProperties.add(property);
 
     OIDCAttributeMapperHelper.addIncludeInTokensConfig(configProperties, IDPUserinfoMapper.class);
   }
@@ -80,19 +97,22 @@ public class PPIDMapper extends AbstractOIDCProtocolMapper
     try {
       String idp = userSession.getNotes().get("identity_provider");
       if (idp.equalsIgnoreCase("otp")) {
-        ProtocolMapperModel pzMapper = clientSessionCtx.getClientSession().getClient()
-            .getProtocolMapperByName(OIDCLoginProtocol.LOGIN_PROTOCOL, PRIVACY_ZONE_MAPPER);
 
-        if (pzMapper != null) {
+        Map<String, Object> otherClaims = token.getOtherClaims();
+
+        if (!StringUtil.isNullOrEmpty(mappingModel.getConfig().get(PRIVACY_ZONE))) {
           String ppid = PPID.getPpid(applicationProperties.getIssuer(idp), userSession.getUser().getEmail(),
-              pzMapper.getConfig().get(CLAIM_VALUE));
+              mappingModel.getConfig().get(PRIVACY_ZONE));
 
           if (!StringUtil.isNullOrEmpty(ppid)) {
-            Map<String, Object> otherClaims = token.getOtherClaims();
             otherClaims.put(tokenClaim, ppid);
+
+            if (otherClaims.containsKey(PREFERRED_USERNAME)) {
+              otherClaims.replace(PREFERRED_USERNAME, ppid);
+            }
           }
         } else
-          logger.errorf("Could not find %s mapper", PRIVACY_ZONE_MAPPER);
+          logger.error("Privacy zone is required to fetch ppid.");
       }
     } catch (Exception e) {
       logger.errorf("Failed to add claim %s to the token", tokenClaim);
@@ -120,4 +140,8 @@ public class PPIDMapper extends AbstractOIDCProtocolMapper
     return mapper;
   }
 
+  @Override
+  public int getPriority() {
+    return 100;
+  }
 }
