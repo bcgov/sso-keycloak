@@ -8,13 +8,13 @@ In BC Government, the Pathfinder SSO Keycloak server acts as an Open ID Connect 
 
 Keycloak is organized by _realms_ which manages discrete sets of users that are logically isolated from one another and provides a linkage between the client application and a BC Government Identity Provider.
 
-[Clients of our Standard Service via the CSS App](https://bcgov.github.io/sso-requests/) are configured to be part of a Standard Realm where certain realm parameters can be configured by clients and users can only authenticate to the realm in which they belong.
+[Clients of our Standard Service via the CSS App](https://sso-requests.apps.gold.devops.gov.bc.ca/) are configured to be part of a Standard Realm where certain realm parameters can be configured by clients and users can only authenticate to the realm in which they belong.
 
 TLDR - Try our Standard Service and if it doesn't meet your needs, pop us a message on rocketchat.
 
 # Learn More
 The Pathfinder SSO service is build on the foundations of Keycloak /Redhat SSO.
 
-* [Request an integration](https://bcgov.github.io/sso-requests/)
+* [Request an integration](https://sso-requests.apps.gold.devops.gov.bc.ca/)
 * [An overview of our CSS App](index)
 * [Additional References](Useful-References)

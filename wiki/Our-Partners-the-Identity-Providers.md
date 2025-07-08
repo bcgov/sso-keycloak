@@ -67,7 +67,7 @@ The IDIM team that manages BCSC integration is responsible for safeguarding the 
 ??? info "Integrate with Standard Service and BC Services Card"
     You can now integrate with our Standard Service and BC Services Card.
     To integrate BCSC in the common realm, developers can request an integration here:
-    <ul><li><a href="https://bcgov.github.io/sso-requests">Common Hosted Single Sign On App</a></li></ul></>
+    <ul><li><a href="https://sso-requests.apps.gold.devops.gov.bc.ca/">Common Hosted Single Sign On App</a></li></ul></>
 
     If your ministry/sector is not available, please reach out the IDIM Consulting team as they will help you get sorted.
 

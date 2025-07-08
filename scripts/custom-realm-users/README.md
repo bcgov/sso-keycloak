@@ -4,7 +4,7 @@
 
 - Request a custom realm by creating an issue [here](https://github.com/bcgov/sso-keycloak/issues/new?assignees=tzhang200%2Czsamji&labels=gold%2Ccustom&template=silver-custom-gold-custom-request.yml&title=%5BGold+Custom%5D%3A+)
 
-- Create an integration request [here](https://bcgov.github.io/sso-requests) to access idps of your choice
+- Create an integration request [here](https://sso-requests.apps.gold.devops.gov.bc.ca/) to access idps of your choice
 
 - After your custom realm is approved, follow this [guide](https://stackoverflow.developer.gov.bc.ca/questions/864/891) to add required idps to your realm
 

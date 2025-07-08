@@ -67,7 +67,7 @@ body:
     attributes:
       value: |
         ## Additional Information ##
-        Please create your IDP via our [Common Hosted Single Sign on App](https://bcgov.github.io/sso-requests)
+        Please create your IDP via our [Common Hosted Single Sign on App](https://sso-requests.apps.gold.devops.gov.bc.ca/)
         [How to guide can be found here](https://stackoverflow.developer.gov.bc.ca/questions/864)
   - type: checkboxes
     id: terms
