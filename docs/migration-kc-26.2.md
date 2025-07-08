@@ -20,4 +20,4 @@
 
 ### Required image changes
 
-- Set `spi-admin-allowed-system-variables` with any custom env vars used. Example: PPID secrets
+- Switch to using `jdbc-ping` as kubernetes has been deprecated.
