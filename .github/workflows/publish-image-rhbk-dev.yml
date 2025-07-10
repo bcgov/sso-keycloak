@@ -3,7 +3,7 @@ name: Create and publish Keycloak Docker image - Dev
 on:
   push:
     branches:
-      - 'SSOTEAM-2368'
+      - 'feature/quarkus'
 
 env:
   GITHUB_REGISTRY: ghcr.io
