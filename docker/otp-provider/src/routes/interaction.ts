@@ -19,7 +19,7 @@ export const oidcRouter = async (oidcProvider: Provider) => {
       let errorMessage = 'An unexpected error occurred';
       let errorStatus = 500;
       if (err instanceof LoginTimeoutError) {
-        errorStatus = err.status || 440;
+        errorStatus = err.status || 408;
         errorMessage = err.message;
       } else if (err instanceof errors.InvalidRequest) {
         errorMessage = 'Invalid request parameters sent.';

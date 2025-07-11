@@ -35,7 +35,7 @@ export class LoginTimeoutError extends Error {
   ) {
     super(message);
     this.name = 'LoginTimeoutError';
-    this.status = 440;
+    this.status = 408;
     Object.setPrototypeOf(this, LoginTimeoutError.prototype);
   }
 }
