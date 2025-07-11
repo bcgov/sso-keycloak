@@ -4,6 +4,8 @@ import { requestNewOtp, validateOtp } from '../services/otp';
 import { canRequestOtp, secondsRemainingToRequestNewOtp } from '../utils/otp';
 import { emailValidator, otpValidator } from '../utils/shared';
 import { errors } from '../modules/errors';
+import { getInteractionById } from '../modules/sequelize/queries/interaction';
+import { LoginTimeoutError } from '../utils/helpers';
 
 export const authorize = async (oidcProvider: Provider) => {
   return async (req: Request, res: Response, next: NextFunction) => {
@@ -35,6 +37,8 @@ export const authorize = async (oidcProvider: Provider) => {
 export const generateOtp = async (oidcProvider: Provider) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
+      if (req.params?.uid && (await isInteractionSessionExpired(String(req.params?.uid))))
+        throw new LoginTimeoutError();
       const {
         uid,
         prompt: { name },
@@ -54,7 +58,7 @@ export const generateOtp = async (oidcProvider: Provider) => {
             error,
             nonce: res.locals.cspNonce,
             waitTime: 0,
-          })
+          });
         }
 
         if (!error) {
@@ -99,7 +103,6 @@ export const generateOtp = async (oidcProvider: Provider) => {
           },
         } as any);
 
-
         return res.render('otp', {
           uid,
           email,
@@ -119,6 +122,9 @@ export const generateOtp = async (oidcProvider: Provider) => {
 export const login = async (oidcProvider: Provider) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
+      if (req.params?.uid && (await isInteractionSessionExpired(String(req.params?.uid))))
+        throw new LoginTimeoutError();
+
       const {
         uid,
         prompt: { name },
@@ -131,20 +137,21 @@ export const login = async (oidcProvider: Provider) => {
 
       if (name === 'login') {
         let validatedOtp = { verified: false, attemptsLeft: 0, expired: false };
-        const { code1, code2, code3, code4, code5, code6,  } = req.body;
+        const { code1, code2, code3, code4, code5, code6 } = req.body;
         const email = (oidcResult?.login?.email as string) || '';
 
         // Run form validation server side
         const [otp, otpError] = otpValidator([code1, code2, code3, code4, code5, code6]);
-        if (otpError) return res.render('otp', {
+        if (otpError)
+          return res.render('otp', {
             uid,
             email,
             nonce: res.locals.cspNonce,
             waitTime: time,
             disableResend: false,
             disableForm: false,
-            error: otpError
-        });
+            error: otpError,
+          });
 
         let disableResend = false;
         validatedOtp = await validateOtp(otp as string, email);
@@ -209,4 +216,10 @@ export const abortLogin = async (oidcProvider: Provider) => {
       next(error);
     }
   };
+};
+
+const isInteractionSessionExpired = async (interactionUid: string) => {
+  const interaction = await getInteractionById(interactionUid);
+  if (interaction && new Date().getTime() >= new Date(interaction.expiresAt).getTime()) return true;
+  return false;
 };

@@ -1,7 +1,7 @@
 import express, { NextFunction, Request, Response, urlencoded } from 'express';
 import Provider from 'oidc-provider';
 import { authorize, generateOtp, login, abortLogin } from '../controllers/auth-controller';
-import { setNoCache } from '../utils/helpers';
+import { LoginTimeoutError, setNoCache } from '../utils/helpers';
 import { errors } from 'oidc-provider';
 import logger from '../modules/winston.config';
 
@@ -18,7 +18,10 @@ export const oidcRouter = async (oidcProvider: Provider) => {
       logger.error('OIDC interaction error:', err);
       let errorMessage = 'An unexpected error occurred';
       let errorStatus = 500;
-      if (err instanceof errors.InvalidRequest) {
+      if (err instanceof LoginTimeoutError) {
+        errorStatus = err.status || 440;
+        errorMessage = err.message;
+      } else if (err instanceof errors.InvalidRequest) {
         errorMessage = 'Invalid request parameters sent.';
         errorStatus = err.status || 400;
       } else if (err instanceof errors.InvalidGrant) {

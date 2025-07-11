@@ -121,8 +121,8 @@ export const getConfig = (): Configuration => {
       Session: 36000, // 10 hours
       AccessToken: 300, // 5 minutes
       AuthorizationCode: 60, // 1 minute
-      RefreshToken: 1800, // 2 seconds
-      Interaction: 36000, // 10 hours
+      RefreshToken: 1800, // 30 minutes
+      Interaction: 1800, // 30 minutes
       IdToken: 300, // 5 minutes
       //Grant controls how long the authorization grant (which includes tokens and scopes) is valid. This affects token reuse and refresh behavior.
       Grant: 36000, // 10 hours - client session max
