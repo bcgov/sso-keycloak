@@ -8,7 +8,7 @@
     "build": "tsup --config src/tsup.config.ts",
     "start": "node ./build/server.js",
     "dev": "nodemon",
-    "test:server": "NODE_ENV=test OTP_RESEND_INTERVAL_MINUTES=[1,2,3,4] nodemon",
+    "test:server": "NODE_ENV=test OTP_RESEND_INTERVAL_MINUTES=[1,2,3,4] DB_NAME=otp_test nodemon",
     "test": "cross-env NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest --runInBand",
     "tailwind:build": "npx @tailwindcss/cli -i ./src/public/css/main.css -o ./src/public/css/output.css --minify",
     "tailwind": "npx @tailwindcss/cli -i ./src/public/css/main.css -o ./src/public/css/output.css --minify --watch"
