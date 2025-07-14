@@ -72,12 +72,15 @@ jobs:
 
       - name: Install Playwright Browsers
         run: yarn playwright install --with-deps
+        working-directory: ./docker/otp-provider
 
       - name: start test server
         run: yarn test:server
+        working-directory: ./docker/otp-provider
 
       - name: Run Playwright tests
         run: yarn playwright test
+        working-directory: ./docker/otp-provider
 
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
@@ -85,3 +88,4 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 30
+        working-directory: ./docker/otp-provider
