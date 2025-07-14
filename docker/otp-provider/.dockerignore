@@ -1,7 +1,7 @@
-output.css
-
-# Playwright
-node_modules/
+build
+node_modules
+e2e
+terraform
 /test-results/
 /playwright-report/
 /blob-report/

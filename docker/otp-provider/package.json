@@ -8,6 +8,7 @@
     "build": "tsup --config src/tsup.config.ts",
     "start": "node ./build/server.js",
     "dev": "nodemon",
+    "test:server": "NODE_ENV=test OTP_RESEND_INTERVAL_MINUTES=[1,2,3,4] nodemon",
     "test": "cross-env NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest --runInBand",
     "tailwind:build": "npx @tailwindcss/cli -i ./src/public/css/main.css -o ./src/public/css/output.css --minify",
     "tailwind": "npx @tailwindcss/cli -i ./src/public/css/main.css -o ./src/public/css/output.css --minify --watch"
@@ -34,6 +35,7 @@
   },
   "devDependencies": {
     "@jest/test-sequencer": "^30.0.0",
+    "@playwright/test": "^1.54.1",
     "@tailwindcss/cli": "^4.1.10",
     "@types/compression": "^1.8.1",
     "@types/cors": "^2.8.17",
@@ -41,6 +43,7 @@
     "@types/jest": "^29.5.14",
     "@types/lodash.isempty": "^4.4.9",
     "@types/morgan": "^1.9.9",
+    "@types/node": "^24.0.13",
     "@types/nodemailer": "^6.4.17",
     "@types/oidc-provider": "^8.8.1",
     "@types/pg": "^8.15.2",

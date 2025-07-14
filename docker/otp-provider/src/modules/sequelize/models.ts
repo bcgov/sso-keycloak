@@ -73,4 +73,35 @@ mappedModels.set(
   }),
 );
 
+mappedModels.set(
+  'Event',
+  sequelize.define(
+    'Event',
+    {
+      id: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+      },
+      eventType: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      timestamp: {
+        type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.NOW,
+      },
+      email: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+    },
+    {
+      timestamps: false,
+    },
+  ),
+);
+
 export default mappedModels;

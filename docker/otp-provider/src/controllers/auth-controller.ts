@@ -1,9 +1,9 @@
 import Provider from 'oidc-provider';
 import { NextFunction, Request, Response } from 'express';
-import { requestNewOtp, validateOtp } from '../services/otp';
-import { canRequestOtp, secondsRemainingToRequestNewOtp } from '../utils/otp';
+import { getOtpWaitTime, requestOtp, verifyOtp } from '../utils/otp';
 import { emailValidator, otpValidator } from '../utils/shared';
 import { errors } from '../modules/errors';
+import { sendEmail } from '../mailer';
 
 export const authorize = async (oidcProvider: Provider) => {
   return async (req: Request, res: Response, next: NextFunction) => {
@@ -42,70 +42,53 @@ export const generateOtp = async (oidcProvider: Provider) => {
       } = await oidcProvider.interactionDetails(req, res);
 
       if (name === 'login') {
-        let time = 0;
         const email = (oidcResult?.login?.email as string) || req.body.email;
-        const { otpType } = req.body;
-
         // Rerender signin page with email error if invalid
-        let [emailValid, error] = emailValidator(email);
+        let [emailValid, emailValidityError] = emailValidator(email);
         if (!emailValid) {
           return res.render(`signin`, {
             uid,
-            error,
+            error: emailValidityError,
             nonce: res.locals.cspNonce,
             waitTime: 0,
-          })
+          });
         }
 
-        if (!error) {
-          const canRequest = await canRequestOtp(email);
-          if (!canRequest) {
-            error = errors.OTPS_LIMIT_REACHED;
-          } else {
-            time = await secondsRemainingToRequestNewOtp(email);
-            // Render a message with time to wait to get a new code
-            if (time > 0) {
-              return res.render('signin', {
-                uid,
-                error,
-                nonce: res.locals.cspNonce,
-                waitTime: time,
-              });
-            }
-          }
-        }
+        const delayMultiplier = process.env.NODE_ENV === 'test' ? 1 : 60
+        const { waitTime, error, newOtp } = await requestOtp(email, delayMultiplier);
 
         if (error) {
-          if (otpType !== 'resend') {
-            return res.render('signin', {
-              uid,
-              error,
-              nonce: res.locals.cspNonce,
-              waitTime: time,
-            });
-          }
+          return res.render(`signin`, {
+            uid,
+            error: errors[error],
+            nonce: res.locals.cspNonce,
+            waitTime,
+          });
         }
 
-        if (!error && time === 0) {
-          await requestNewOtp(email);
-          const canRequest = await canRequestOtp(email);
-          if (canRequest) time = await secondsRemainingToRequestNewOtp(email);
-        }
-
-        // Store email in the interaction
-        oidcProvider.interactionResult(req, res, {
+        await oidcProvider.interactionResult(req, res, {
           login: {
             email,
           },
         } as any);
 
+        await sendEmail({
+          to: [email],
+          body: `<p>Copy and enter this 6-digit verification code to the One Time Passcode login page. This code will expire in 5 minutes.</p>
+          <p style="font-size:24px;"><strong>${newOtp}</strong></p>
+          <p>Do not share this code or forward this email to anyone.</p>
+          <p>If this wasn't you, please ignore this message.</p>
+          <p>This is an automated message from the Government of British Columbia. Please do not reply.</p>
+          `,
+          subject: `${newOtp} is your verification code.`,
+        });
 
         return res.render('otp', {
           uid,
           email,
-          error,
+          error: '',
           nonce: res.locals.cspNonce,
-          waitTime: error ? 0 : time,
+          waitTime,
           disableResend: false,
           disableForm: false,
         });
@@ -125,70 +108,44 @@ export const login = async (oidcProvider: Provider) => {
         result: oidcResult,
       } = await oidcProvider.interactionDetails(req, res);
 
-      let result;
-      let time = 0;
-      let error = '';
-
       if (name === 'login') {
-        let validatedOtp = { verified: false, attemptsLeft: 0, expired: false };
-        const { code1, code2, code3, code4, code5, code6,  } = req.body;
+        const { code1, code2, code3, code4, code5, code6 } = req.body;
         const email = (oidcResult?.login?.email as string) || '';
 
         // Run form validation server side
         const [otp, otpError] = otpValidator([code1, code2, code3, code4, code5, code6]);
-        if (otpError) return res.render('otp', {
+        if (otpError) {
+          const waitTime = getOtpWaitTime(email, process.env.NODE_ENV === 'test' ? 1 : 60);
+          return res.render('otp', {
             uid,
             email,
             nonce: res.locals.cspNonce,
-            waitTime: time,
+            waitTime,
             disableResend: false,
             disableForm: false,
-            error: otpError
-        });
-
-        let disableResend = false;
-        validatedOtp = await validateOtp(otp as string, email);
-        const canRequest = await canRequestOtp(email);
-        if (canRequest) time = await secondsRemainingToRequestNewOtp(email);
-
-        if (validatedOtp.expired) {
-          return res.render('expired', {
-            email,
-            uid,
-            nonce: res.locals.cspNonce,
-            waitTime: time,
+            error: otpError,
           });
         }
 
-        if (!validatedOtp.verified) {
-          const otpRenderParams = {
+        const { waitTime, error } = await verifyOtp(email, otp as string, process.env.NODE_ENV === 'test' ? 1 : 60);
+        if (error) {
+          return res.render('otp', {
             uid,
             email,
-            error,
             nonce: res.locals.cspNonce,
-            waitTime: time,
-            disableResend,
-            disableForm: false,
-          };
-          if (validatedOtp.attemptsLeft > 0) {
-            error = errors.INVALID_OTP;
-            return res.render('otp', { ...otpRenderParams, error });
-          } else if (validatedOtp.attemptsLeft === 0 && (await canRequestOtp(email))) {
-            error = errors.EXPIRED_OTP_WITH_RESEND;
-            return res.render('otp', { ...otpRenderParams, error, disableForm: true });
-          } else {
-            result = {
-              error: 'Invalid or expired OTP',
-              error_description: 'Invalid or expired OTP',
-            };
-          }
-        } else {
-          result = {
-            login: {
-              accountId: email,
-            },
-          };
+            waitTime,
+            disableResend: false,
+            disableForm: error === 'EXPIRED_OTP_WITH_RESEND',
+            error: errors[error],
+          });
         }
+
+        const result = {
+          login: {
+            accountId: email,
+          },
+        };
+
         return oidcProvider.interactionFinished(req, res, result, { mergeWithLastSubmission: false });
       }
     } catch (error) {

@@ -28,6 +28,11 @@ app.use((_, res, next) => {
 const directives = helmet.contentSecurityPolicy.getDefaultDirectives();
 delete directives['form-action'];
 
+// Webkit in playwright will enforce https on asset requests even if the app is running on http. Needs to remove the directive. Interestingly chrome and firefox don't respect this one.
+if (process.env.NODE_ENV === 'test') {
+  delete directives['upgrade-insecure-requests'];
+}
+
 app.use(
   helmet({
     contentSecurityPolicy: {

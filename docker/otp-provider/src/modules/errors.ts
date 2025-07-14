@@ -3,5 +3,8 @@ export const errors = {
   EMAIL_REQUIRED: 'Email is required.',
   INVALID_EMAIL: 'Invalid email.',
   EXPIRED_OTP_WITH_RESEND: `You've tried too many times. Please send a new code.`,
-  INVALID_OTP: 'Invalid code entered. Please try again or send a new code.'
+  INVALID_OTP: 'Invalid code entered. Please try again or send a new code.',
 };
+
+type Errors = typeof errors;
+export type ErrorKeys = keyof Errors;

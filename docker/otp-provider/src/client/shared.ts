@@ -34,6 +34,12 @@ export const createResendCodeForm = (uid: string, confirmEl: 'btn' | 'link') => 
   if (confirmEl === 'link') form.classList = 'inline';
   if (confirmEl === 'btn') form.classList = 'w-full';
 
+  const input = document.createElement('input');
+  input.type = 'hidden';
+  input.name = 'resend';
+  input.value = 'true';
+  form.appendChild(input);
+
   const submitBtn = document.createElement('button');
   let classList = confirmEl;
   if (confirmEl === 'btn') classList += ' w-full';
