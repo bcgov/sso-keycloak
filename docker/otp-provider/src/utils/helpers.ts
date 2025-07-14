@@ -27,3 +27,15 @@ export const setNoCache = (req: Request, res: Response, next: NextFunction) => {
   res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
   next();
 };
+
+export class LoginTimeoutError extends Error {
+  status: number;
+  constructor(
+    message = 'Your session has timed out, please close this window and log in again using a new browser window',
+  ) {
+    super(message);
+    this.name = 'LoginTimeoutError';
+    this.status = 408;
+    Object.setPrototypeOf(this, LoginTimeoutError.prototype);
+  }
+}

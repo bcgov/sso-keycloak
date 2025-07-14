@@ -4,6 +4,8 @@ import { getOtpWaitTime, requestOtp, verifyOtp } from '../utils/otp';
 import { emailValidator, otpValidator } from '../utils/shared';
 import { errors } from '../modules/errors';
 import { sendEmail } from '../mailer';
+import { getInteractionById } from '../modules/sequelize/queries/interaction';
+import { LoginTimeoutError } from '../utils/helpers';
 
 export const authorize = async (oidcProvider: Provider) => {
   return async (req: Request, res: Response, next: NextFunction) => {
@@ -35,6 +37,8 @@ export const authorize = async (oidcProvider: Provider) => {
 export const generateOtp = async (oidcProvider: Provider) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
+      if (req.params?.uid && (await isInteractionSessionExpired(String(req.params?.uid))))
+        throw new LoginTimeoutError();
       const {
         uid,
         prompt: { name },
@@ -102,6 +106,9 @@ export const generateOtp = async (oidcProvider: Provider) => {
 export const login = async (oidcProvider: Provider) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
+      if (req.params?.uid && (await isInteractionSessionExpired(String(req.params?.uid))))
+        throw new LoginTimeoutError();
+
       const {
         uid,
         prompt: { name },
@@ -166,4 +173,10 @@ export const abortLogin = async (oidcProvider: Provider) => {
       next(error);
     }
   };
+};
+
+const isInteractionSessionExpired = async (interactionUid: string) => {
+  const interaction = await getInteractionById(interactionUid);
+  if (interaction && new Date().getTime() >= new Date(interaction.expiresAt).getTime()) return true;
+  return false;
 };
