@@ -75,7 +75,9 @@ jobs:
         working-directory: ./docker/otp-provider
 
       - name: start test server
-        run: yarn test:server
+        run: |
+          yarn tailwind:build
+          yarn test:server
         working-directory: ./docker/otp-provider
 
       - name: Run Playwright tests
