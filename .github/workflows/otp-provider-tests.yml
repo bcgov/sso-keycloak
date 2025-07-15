@@ -84,7 +84,7 @@ jobs:
         run: |
           yarn tailwind:build
           yarn build
-          node ./build/migrate.js
+          node DB_NAME=otp_test ./build/migrate.js
           done
         working-directory: ./docker/otp-provider
 
