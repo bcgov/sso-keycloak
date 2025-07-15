@@ -1,9 +1,8 @@
 import sequelize from './src/modules/sequelize/config';
 import { createMigrator } from './src/modules/sequelize/umzug';
-import logger from './src/modules/winston.config';
 
 export default async function () {
-  const migrator = await createMigrator(logger);
+  const migrator = await createMigrator();
   await migrator.up();
   await sequelize.query(`
       INSERT
