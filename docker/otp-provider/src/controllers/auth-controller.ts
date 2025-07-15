@@ -7,6 +7,8 @@ import { sendEmail } from '../mailer';
 import { getInteractionById } from '../modules/sequelize/queries/interaction';
 import { LoginTimeoutError } from '../utils/helpers';
 
+const delayMultiplier = process.env.NODE_ENV === 'test' ? 1 : 60;
+
 export const authorize = async (oidcProvider: Provider) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -58,7 +60,6 @@ export const generateOtp = async (oidcProvider: Provider) => {
           });
         }
 
-        const delayMultiplier = process.env.NODE_ENV === 'test' ? 1 : 60
         const { waitTime, error, newOtp } = await requestOtp(email, delayMultiplier);
 
         if (error) {
@@ -122,7 +123,7 @@ export const login = async (oidcProvider: Provider) => {
         // Run form validation server side
         const [otp, otpError] = otpValidator([code1, code2, code3, code4, code5, code6]);
         if (otpError) {
-          const waitTime = getOtpWaitTime(email, process.env.NODE_ENV === 'test' ? 1 : 60);
+          const waitTime = getOtpWaitTime(email, delayMultiplier);
           return res.render('otp', {
             uid,
             email,
@@ -134,7 +135,7 @@ export const login = async (oidcProvider: Provider) => {
           });
         }
 
-        const { waitTime, error } = await verifyOtp(email, otp as string, process.env.NODE_ENV === 'test' ? 1 : 60);
+        const { waitTime, error } = await verifyOtp(email, otp as string, delayMultiplier);
         if (error) {
           return res.render('otp', {
             uid,

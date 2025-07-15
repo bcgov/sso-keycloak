@@ -185,7 +185,6 @@ export const up = async (queryInterface: QueryInterface) => {
       IF NOT FOUND THEN
         INSERT INTO "Event" (email, "eventType", timestamp)
         VALUES (email_input, 'NO_ACTIVE_OTP', NOW());
-        -- Need to think about handling here. There should always be an active otp, although folks can post here direct.
         RETURN QUERY SELECT false, -1, 'NO_ACTIVE_OTP';
         RETURN;
       END IF;
