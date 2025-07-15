@@ -67,9 +67,9 @@ app.disable('x-powered-by');
 
 export const initializeApp = async (app: Express) => {
   try {
-    const migrator = await createMigrator(logger);
-    logger.info('Migrating pending migrations:', await migrator.pending());
-    await migrator.up();
+    // const migrator = await createMigrator(logger);
+    // logger.info('Migrating pending migrations:', await migrator.pending());
+    // await migrator.up();
   } catch (err) {
     logger.error('Error during database migration:', err);
   }
