@@ -82,6 +82,7 @@ jobs:
 
       - name: Migrate DB
         run: |
+          yarn tailwind:build
           yarn build
           for file in ./build/migrations/*.js; do
             echo "Running $file"
@@ -92,11 +93,6 @@ jobs:
       - name: Seed DB
         run: psql -U postgres -d otp_test -f ./seed.sql
         working-directory: ./docker/otp-provider/e2e
-
-      - name: prep tailwind
-        run: |
-          yarn tailwind:build
-        working-directory: ./docker/otp-provider
 
       - name: Run Playwright tests
         run: DB_NAME=otp_test yarn playwright test
