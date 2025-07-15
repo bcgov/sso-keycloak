@@ -42,14 +42,6 @@ jobs:
       - name: Install asdf
         uses: asdf-vm/actions/install@v3
 
-      - name: Install app specific asdf plugins
-        run: |
-          cat .tool-versions | cut -f 1 -d ' ' | xargs -n 1 asdf plugin-add || true
-          asdf plugin-update --all
-          asdf install
-          asdf reshim
-        working-directory: ./docker/otp-provider
-
       - name: Install dependencies
         run: yarn install
         working-directory: ./docker/otp-provider
@@ -68,6 +60,14 @@ jobs:
       #   run: |
       #     yarn test
       #   working-directory: ./docker/otp-provider
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
 
       - name: Install Playwright Browsers
         run: yarn playwright install --with-deps
