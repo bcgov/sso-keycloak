@@ -4,6 +4,7 @@ import { createMigrator } from './src/modules/sequelize/umzug';
 export default async function () {
   const migrator = await createMigrator();
   await migrator.up();
+  console.log('MIGRATIONS COMPLETE')
   await sequelize.query(`
       INSERT
   	INTO
