@@ -85,7 +85,6 @@ jobs:
           yarn tailwind:build
           yarn build
           DB_NAME=otp_test node ./build/migrate.js
-          done
         working-directory: ./docker/otp-provider
 
       - name: Seed DB
