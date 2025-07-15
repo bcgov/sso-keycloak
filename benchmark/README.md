@@ -27,6 +27,8 @@
 
 ### Generate Data
 
+These creation commands must be run in Bruno, they do not work as bash commands.
+
 ```sh
 export KC_BASE_URL=
 
@@ -84,20 +86,27 @@ There are four runs we have done with the previous versions of keycloak.  In ord
 
 ### Run 1
 
-ADDITIONAL_CONFIG := "--users-per-sec=34 --ramp-up=300 --users-per-realm=101 --measurement=1800 --clients-per-realm=101"
+`SCENARIO=keycloak.scenario.authentication.AuthorizationCode`
+
+`ADDITIONAL_CONFIG := "--users-per-sec=34 --ramp-up=300 --users-per-realm=101 --measurement=1800 --clients-per-realm=101"`
 
 ### Run 2
---users-per-sec=100 --ramp-up=300 --users-per-realm=5001 --measurement=1800 --clients-per-realm=301
-`
+
+`SCENARIO=keycloak.scenario.authentication.AuthorizationCode`
+
+`--users-per-sec=100 --ramp-up=300 --users-per-realm=5001 --measurement=1800 --clients-per-realm=301`
 
 ### Run 3
---users-per-sec=200 --ramp-up=300 --users-per-realm=9000 --measurement=1800 --clients-per-realm=301
+`SCENARIO=keycloak.scenario.authentication.AuthorizationCode`
+
+`--users-per-sec=200 --ramp-up=300 --users-per-realm=9000 --measurement=1800 --clients-per-realm=301`
 
 ### Run 4
 This is a different scenerio, it is not an Auth Code flow like the other tests. The new environment vars are:
 
-SCENARIO := "keycloak.scenario.authentication.ClientSecret"
-ADDITIONAL_CONFIG := "--users-per-sec=500 --ramp-up=300 --users-per-realm=9995 --measurement=1800 --clients-per-realm=395"
+`SCENARIO := "keycloak.scenario.authentication.ClientSecret"`
+
+`ADDITIONAL_CONFIG := "--users-per-sec=500 --ramp-up=300 --users-per-realm=9995 --measurement=1800 --clients-per-realm=395"`
 
 ## Reports
 
