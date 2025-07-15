@@ -43,17 +43,17 @@ export default defineConfig({
       workers: 1,
     },
 
-    // {
-    //   name: 'firefox',
-    //   use: { ...devices['Desktop Firefox'] },
-    //   workers: 1,
-    // },
+    {
+      name: 'firefox',
+      use: { ...devices['Desktop Firefox'] },
+      workers: 1,
+    },
 
-    // {
-    //   name: 'webkit',
-    //   use: { ...devices['Desktop Safari'] },
-    //   workers: 1,
-    // },
+    {
+      name: 'webkit',
+      use: { ...devices['Desktop Safari'] },
+      workers: 1,
+    },
 
     /* Test against mobile viewports. */
     // {

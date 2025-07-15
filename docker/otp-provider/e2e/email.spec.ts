@@ -9,7 +9,7 @@ test.beforeEach(async () => {
   await otpModel.destroy({where: {}});
 });
 
-test.only('Email Validations', async ({ page }, testInfo) => {
+test('Email Validations', async ({ page }, testInfo) => {
   await page.goto(initURL);
   await expect(page.locator('#signin-form')).toMatchAriaSnapshot(`- textbox "Email"`);
 
