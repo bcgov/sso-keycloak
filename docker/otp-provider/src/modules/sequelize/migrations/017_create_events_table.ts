@@ -76,9 +76,10 @@ export const up = async (queryInterface: QueryInterface) => {
 
             RETURN QUERY
             SELECT
+                -- Can only request if there is no wait time
                 current_wait_seconds = 0,
                 -- Note that wait_seconds is the current wait time if in cooldown, or the resend wait time should one be created.
-                -- If there is a wait time currently then return in
+                -- If there is a wait time currently then return it
                 -- If there is no wait time, the resend wait will be the next in the array
                 CASE
                     when current_wait_seconds = 0 then (delays ->> otp_count)::int * delay_multiplier
@@ -183,7 +184,7 @@ export const up = async (queryInterface: QueryInterface) => {
 
       IF NOT FOUND THEN
         INSERT INTO "Event" (email, "eventType", timestamp)
-        VALUES (email_input, 'no_active_otp', NOW());
+        VALUES (email_input, 'NO_ACTIVE_OTP', NOW());
         -- Need to think about handling here. There should always be an active otp, although folks can post here direct.
         RETURN QUERY SELECT false, -1, 'NO_ACTIVE_OTP';
         RETURN;
