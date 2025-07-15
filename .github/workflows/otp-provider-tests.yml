@@ -41,6 +41,7 @@ jobs:
 
       - name: Install asdf
         uses: asdf-vm/actions/install@v3
+        working-directory: ./docker/otp-provider
 
       - name: Install dependencies
         run: yarn install
