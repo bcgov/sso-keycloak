@@ -79,6 +79,10 @@ jobs:
         run: yarn playwright install --with-deps
         working-directory: ./docker/otp-provider
 
+      - name: Seed DB
+        run: psql -d otp_test -f ./seed.sql
+        working-directory: ./docker/otp-provider/e2e
+
       - name: prep tailwind
         run: |
           yarn tailwind:build
