@@ -84,9 +84,7 @@ jobs:
         run: |
           yarn tailwind:build
           yarn build
-          for file in ./build/migrations/*.js; do
-            echo "Running $file"
-            node "$file"
+          node ./build/migrate.js
           done
         working-directory: ./docker/otp-provider
 
