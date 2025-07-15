@@ -80,7 +80,7 @@ jobs:
       #   working-directory: ./docker/otp-provider
 
       # - name: Run Playwright tests
-      #   run: yarn playwright test
+      #   run: DB_NAME=otp_test yarn playwright test
       #   working-directory: ./docker/otp-provider
 
       # - uses: actions/upload-artifact@v4
