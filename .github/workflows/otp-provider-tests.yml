@@ -77,7 +77,7 @@ jobs:
             ${{ runner.os }}-playwright-
 
       - name: Install Playwright Browsers
-        run: yarn playwright install
+        run: yarn playwright install --install-deps
         working-directory: ./docker/otp-provider
 
       - name: Migrate DB
