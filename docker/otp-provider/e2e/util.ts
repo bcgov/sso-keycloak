@@ -3,11 +3,12 @@
  */
 export const redirectURI = 'http://localhost:3001';
 
+export const clientId = 'pub-client';
+
 /**
  * Dummy URL to initiate login. Ensure the seeding for the dummy public client from the readme has run.
-*/
-export const initURL =
-  `http://localhost:3000/auth?client_id=pub-client&redirect_uri=http://localhost:3001&response_type=code&scope=openid&code_challenge=TaU8J2MHlztGnfuA7N1JSDlGp9Q9kI9JhEVeE-pL3QA&code_challenge_method=S256`;
+ */
+export const initURL = `http://localhost:3000/auth?client_id=${clientId}&redirect_uri=http://localhost:3001&response_type=code&scope=openid&code_challenge=TaU8J2MHlztGnfuA7N1JSDlGp9Q9kI9JhEVeE-pL3QA&code_challenge_method=S256`;
 
 /**
  * Get a wrong otp for testing to avoid that 1 in a million flaky failure
@@ -28,7 +29,14 @@ export const changeOTP = (otp: string) => {
 export const fillOTP = async (otp: string, correctOTP: boolean, page: any) => {
   for (let i = 0; i < 6; i++) {
     await page.getByRole('textbox', { name: `Digit ${i + 1}` }).fill(otp[i]);
-    // Last digit auto-submits, wait for page to reload if testing error messages
-    if (!correctOTP && i === 5) await page.waitForURL('**/login');
+
+    // Last digit auto-submits, wait for page to reload (back to login if incorrect or to the redirect uri if correct)
+    if (i === 5) {
+      if (!correctOTP) await page.waitForURL('**/login');
+      else
+        await page.waitForRequest((req) => {
+          return req.url().startsWith(redirectURI);
+        });
+    }
   }
 };

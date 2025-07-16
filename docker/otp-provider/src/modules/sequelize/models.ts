@@ -97,6 +97,10 @@ mappedModels.set(
         type: Sequelize.STRING,
         allowNull: false,
       },
+      clientId: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      }
     },
     {
       timestamps: false,

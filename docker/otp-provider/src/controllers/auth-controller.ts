@@ -1,6 +1,6 @@
 import Provider from 'oidc-provider';
 import { NextFunction, Request, Response } from 'express';
-import { getOtpWaitTime, requestOtp, verifyOtp } from '../utils/otp';
+import { getOtpWaitTime, requestOtp, verifyOtp } from '../services/otp';
 import { emailValidator, otpValidator } from '../utils/shared';
 import { errors } from '../modules/errors';
 import { sendEmail } from '../mailer';
@@ -45,10 +45,13 @@ export const generateOtp = async (oidcProvider: Provider) => {
         uid,
         prompt: { name },
         result: oidcResult,
+        params: {client_id: clientID}
       } = await oidcProvider.interactionDetails(req, res);
 
       if (name === 'login') {
-        const email = (oidcResult?.login?.email as string) || req.body.email;
+        // Use the provided email falling back to session email. Session email applies when regenerating codes after already reaching the OTP entry screen.
+        const email = req.body.email || (oidcResult?.login?.email) || '';
+
         // Rerender signin page with email error if invalid
         let [emailValid, emailValidityError] = emailValidator(email);
         if (!emailValid) {
@@ -60,7 +63,7 @@ export const generateOtp = async (oidcProvider: Provider) => {
           });
         }
 
-        const { waitTime, error, newOtp } = await requestOtp(email, delayMultiplier);
+        const { waitTime, error, newOtp } = await requestOtp(email, clientID as string, delayMultiplier);
 
         if (error) {
           return res.render(`signin`, {
@@ -71,6 +74,7 @@ export const generateOtp = async (oidcProvider: Provider) => {
           });
         }
 
+        // Store the email in the interaction session
         await oidcProvider.interactionResult(req, res, {
           login: {
             email,
@@ -114,6 +118,7 @@ export const login = async (oidcProvider: Provider) => {
         uid,
         prompt: { name },
         result: oidcResult,
+        params: {client_id: clientID}
       } = await oidcProvider.interactionDetails(req, res);
 
       if (name === 'login') {
@@ -135,7 +140,7 @@ export const login = async (oidcProvider: Provider) => {
           });
         }
 
-        const { waitTime, error } = await verifyOtp(email, otp as string, delayMultiplier);
+        const { waitTime, error } = await verifyOtp(email, otp as string, clientID as string, delayMultiplier);
         if (error) {
           return res.render('otp', {
             uid,

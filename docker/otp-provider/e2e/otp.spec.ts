@@ -1,13 +1,15 @@
 import { test, expect } from '@playwright/test';
 import models from '../src/modules/sequelize/models';
 import { config } from '../src/config';
-import { changeOTP, fillOTP, redirectURI, initURL } from './util';
+import { changeOTP, fillOTP, initURL, clientId } from './util';
 
 const otpModel = models.get('Otp');
+const eventModel = models.get('Event');
 
 test.beforeEach(async () => {
   // Reset all OTPs between tests
   await otpModel.destroy({ where: {} });
+  await eventModel.destroy({ where: {} });
 });
 
 test('OTP Validations', async ({ page }, testInfo) => {
@@ -96,20 +98,22 @@ test('OTP Attempts Limit', async ({ page }, testInfo) => {
 });
 
 test('OTP Success', async ({ page }, testInfo) => {
+  const email = `${testInfo.project.name}@b.com`
   await page.goto(initURL);
-
   // Enter email and go to OTP page
-  await page.getByRole('textbox', { name: 'Email' }).fill(`${testInfo.project.name}@b.com`);
+  await page.getByRole('textbox', { name: 'Email' }).fill(email);
   await page.getByRole('button', { name: 'Continue' }).click();
   await page.waitForURL('**/otp');
   await expect(page.getByRole('heading')).toMatchAriaSnapshot(`- heading "Enter your verification code" [level=2]`);
 
+  let verifiedOTPEvents = await eventModel.findAll({ where: { eventType: 'OTP_VERIFIED', email, clientId } });
+  expect(verifiedOTPEvents.length).toBe(0);
+
   const currentOtp = await otpModel
-    .findOne({ where: { email: `${testInfo.project.name}@b.com`, active: true } })
+    .findOne({ where: { email: email, active: true } })
     .then((res) => res.otp);
 
   await fillOTP(currentOtp, true, page);
-  await page.waitForRequest((req) => {
-    return req.url().startsWith(redirectURI);
-  });
+  verifiedOTPEvents = await eventModel.findAll({ where: { eventType: 'OTP_VERIFIED', email, clientId } });
+  expect(verifiedOTPEvents.length).toBe(1);
 });

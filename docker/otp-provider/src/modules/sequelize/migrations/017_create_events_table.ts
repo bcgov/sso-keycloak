@@ -25,6 +25,10 @@ export const up = async (queryInterface: QueryInterface) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
+    clientId: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    }
   });
 
   await queryInterface.sequelize.query(`
@@ -97,6 +101,7 @@ export const up = async (queryInterface: QueryInterface) => {
       email_input TEXT,
       delay_minutes_json JSON,
       otp_input TEXT,
+      client_id TEXT,
       delay_multiplier INT DEFAULT 60
     )
     RETURNS TABLE (
@@ -115,16 +120,16 @@ export const up = async (queryInterface: QueryInterface) => {
       INTO can_request, wait_seconds, otp_count from get_otp_wait_time(email_input, delay_minutes_json::JSON, delay_multiplier) as w;
 
       IF otp_count >= json_array_length(delay_minutes_json) THEN
-        INSERT INTO "Event" ("eventType", timestamp, email)
-        VALUES ('MAX_RESENDS', NOW(), email_input);
+        INSERT INTO "Event" ("eventType", "clientId",  timestamp, email)
+        VALUES ('MAX_RESENDS', client_id, NOW(), email_input);
 
         RETURN QUERY SELECT NULL::TEXT, NULL::INT, 'OTPS_LIMIT_REACHED';
         RETURN;
       END IF;
 
       IF otp_count = 0 THEN
-        INSERT INTO "Event" ("eventType", timestamp, email)
-        VALUES ('REQUEST_OTP', NOW(), email_input);
+        INSERT INTO "Event" ("eventType", "clientId", timestamp, email)
+        VALUES ('REQUEST_OTP', client_id, NOW(), email_input);
 
         INSERT INTO "Otp" (id, email, otp)
         VALUES (gen_random_uuid(), email_input, otp_input);
@@ -134,8 +139,8 @@ export const up = async (queryInterface: QueryInterface) => {
       END IF;
 
       IF can_request THEN
-        INSERT INTO "Event" ("eventType", timestamp, email)
-        VALUES ('RESEND_OTP', NOW(), email_input);
+        INSERT INTO "Event" ("eventType", "clientId", timestamp, email)
+        VALUES ('RESEND_OTP', client_id, NOW(), email_input);
 
         -- Deactivate any existing otps for the email
         UPDATE "Otp" set active = false where email = email_input;
@@ -155,6 +160,7 @@ export const up = async (queryInterface: QueryInterface) => {
     CREATE OR REPLACE FUNCTION validate_otp(
       email_input TEXT,
       code_input TEXT,
+      client_id TEXT,
       max_attempts INT,
       delay_minutes_json JSON,
       delay_multiplier INT DEFAULT 60
@@ -183,15 +189,15 @@ export const up = async (queryInterface: QueryInterface) => {
       LIMIT 1;
 
       IF NOT FOUND THEN
-        INSERT INTO "Event" (email, "eventType", timestamp)
-        VALUES (email_input, 'NO_ACTIVE_OTP', NOW());
+        INSERT INTO "Event" (email, "clientId", "eventType", timestamp)
+        VALUES (email_input, client_id, 'NO_ACTIVE_OTP', NOW());
         RETURN QUERY SELECT false, -1, 'NO_ACTIVE_OTP';
         RETURN;
       END IF;
 
       IF active_otp.attempts >= max_attempts THEN
-        INSERT INTO "Event" (email, "eventType", timestamp)
-        VALUES (email_input, 'INVALID_OTP', NOW()), (email_input, 'MAX_ATTEMPTS', NOW());
+        INSERT INTO "Event" (email, "clientId", "eventType", timestamp)
+        VALUES (email_input, client_id, 'INVALID_OTP', NOW()), (email_input, client_id, 'MAX_ATTEMPTS', NOW());
 
         RETURN QUERY SELECT false, wait_seconds, 'EXPIRED_OTP_WITH_RESEND';
         RETURN;
@@ -203,8 +209,8 @@ export const up = async (queryInterface: QueryInterface) => {
         SET attempts = attempts + 1
         WHERE id = active_otp.id;
 
-        INSERT INTO "Event" (email, "eventType", timestamp)
-        VALUES (email_input, 'INVALID_OTP', NOW());
+        INSERT INTO "Event" (email, "clientId", "eventType", timestamp)
+        VALUES (email_input, client_id, 'INVALID_OTP', NOW());
 
         RETURN QUERY SELECT false, wait_seconds, 'INVALID_OTP';
         RETURN;
@@ -212,8 +218,8 @@ export const up = async (queryInterface: QueryInterface) => {
 
       -- Step 4: Code matches — check expiration
       IF now_ts - active_otp."createdAt" > INTERVAL '5 minutes' THEN
-        INSERT INTO "Event" (email, "eventType", timestamp)
-        VALUES (email_input, 'EXPIRED_OTP', NOW());
+        INSERT INTO "Event" (email, "clientId", "eventType", timestamp)
+        VALUES (email_input, client_id, 'EXPIRED_OTP', NOW());
 
         RETURN QUERY SELECT false, wait_seconds, 'EXPIRED_OTP';
         RETURN;
@@ -222,8 +228,8 @@ export const up = async (queryInterface: QueryInterface) => {
       -- Step 5: All checks passed — success
       DELETE FROM "Otp" WHERE email = email_input;
 
-      INSERT INTO "Event" (email, "eventType", timestamp)
-      VALUES (email_input, 'OTP_VERIFIED', NOW());
+      INSERT INTO "Event" (email, "clientId", "eventType", timestamp)
+      VALUES (email_input, client_id, 'OTP_VERIFIED', NOW());
 
       RETURN QUERY SELECT true, 0, NULL::TEXT;
     END;
@@ -235,8 +241,8 @@ export const up = async (queryInterface: QueryInterface) => {
 export const down = async (queryInterface: QueryInterface) => {
   await queryInterface.dropTable(tableName);
   await queryInterface.sequelize.query(`DROP FUNCTION IF EXISTS get_otp_wait_time(text, json, int);`);
-  await queryInterface.sequelize.query(`DROP FUNCTION IF EXISTS generate_otp_with_delays(text,json,text, int);`);
-  await queryInterface.sequelize.query(`DROP FUNCTION IF EXISTS validate_otp(text,text,int,json,int);`);
+  await queryInterface.sequelize.query(`DROP FUNCTION IF EXISTS generate_otp_with_delays(text,json,text,text,int);`);
+  await queryInterface.sequelize.query(`DROP FUNCTION IF EXISTS validate_otp(text,text,text,int,json,int);`);
 };
 
 export default { name, up, down };
