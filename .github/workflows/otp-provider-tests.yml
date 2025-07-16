@@ -58,6 +58,7 @@ jobs:
           pg_ctl start
           createdb runner || true
           chmod +x ./db-setup.sh
+          psql -U postgres -c 'drop database if exists otp_test';
           ./db-setup.sh otp_test
         working-directory: ./docker/otp-provider/.bin
 
