@@ -29,11 +29,8 @@ test('OTP Validations', async ({ page }, testInfo) => {
     .then((res) => res.otp);
   const wrongOTP = changeOTP(String(currentOtp));
 
-  for (let i = 0; i < 6; i++) {
-    await page.getByRole('textbox', { name: `Digit ${i + 1}` }).fill(wrongOTP[i]);
-    // Last digit auto-submits, so wait for reload
-    if (i === 5) await page.waitForURL('**/otp');
-  }
+  await fillOTP(wrongOTP, false, page);
+
   await expect(page.locator('#otp-error')).toMatchAriaSnapshot(
     `- text: Invalid code entered. Please try again or send a new code.`,
   );
