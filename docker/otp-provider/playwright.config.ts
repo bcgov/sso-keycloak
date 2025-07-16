@@ -79,6 +79,6 @@ export default defineConfig({
   webServer: {
     command: 'yarn test:server',
     url: 'http://localhost:3000/auth',
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: false,
   },
 });
