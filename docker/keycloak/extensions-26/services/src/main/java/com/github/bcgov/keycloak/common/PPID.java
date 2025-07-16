@@ -49,6 +49,7 @@ public class PPID {
     formparams.add(new BasicNameValuePair("grant_type", "client_credentials"));
     formparams.add(new BasicNameValuePair("client_id", applicationProperties.getPPIDClientID()));
     formparams.add(new BasicNameValuePair("client_secret", applicationProperties.getPPIDClientSecret()));
+    formparams.add(new BasicNameValuePair("scope", "ppids-api"));
 
     try {
       UrlEncodedFormEntity form = new UrlEncodedFormEntity(formparams, StandardCharsets.UTF_8);
