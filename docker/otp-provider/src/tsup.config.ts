@@ -35,6 +35,12 @@ export default defineConfig([
     splitting: true,
   },
   {
+    entry: ['src/modules/sequelize/migrate.ts'],
+    format: ['esm'],
+    outDir: 'build',
+    splitting: true,
+  },
+  {
     entry: ['src/client/*.ts',],
     format: ['esm'],
     sourcemap: false,

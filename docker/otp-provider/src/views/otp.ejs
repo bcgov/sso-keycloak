@@ -30,9 +30,6 @@
                       required
                       id="code-digit-<%= i %>"
                       aria-label="Digit <%= i %>">
-                      <% if (i === 3) { %>
-                        <span class="flex items-center font-bold text-lg leading-10">-</span>
-                      <% } %>
                     <% } %>
                 </div>
                 <span id="otp-error" class="text-danger min-h-20 py-12" data-wait-time="<%= waitTime %>">

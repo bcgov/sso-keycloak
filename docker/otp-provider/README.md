@@ -83,6 +83,20 @@ The app runs locally using tsup to compile the server and client files into the 
     'none');
   ```
 
+## End to End Tests
+
+End to end testing is done with playwright. As prerequisite the end-to-end tests need a seeded db. Run the folowing from this directory:
+- `psql -c 'create database otp_test'`;
+- `yarn build && DB_NAME=otp_test node build/migrate.js`
+- `psql -d otp_test -f e2e/seed.sql`
+
+This is only needed the first time to initialize the db. To run the tests run `yarn test:e2e`
+
+For debugging, you can run `yarn playwright test --debug`. This is useful alongside adding `test.only` on the test to debug.
+For auto-generating tests, you can run `yarn playwright codegen` to click through the app and generate a test.
+
+The test-version of the server has a few settings, using the env vars `NODE_ENV=test OTP_RESEND_INTERVAL_MINUTES=[2,3,3,4]`. When NODE_ENV is set to test, code resend intervals will be in seconds instead of minutes, useful for testing lockout functionality. You can adjust the `OTP_RESEND_INTERVAL_MINUTES` array to desired intervals in seconds then. It will also skip the CHES email callouts while in test mode.
+
 ## References
 
 - https://github.com/panva/node-oidc-provider
