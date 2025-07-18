@@ -37,7 +37,7 @@ A realm manages a set of users, credentials, roles, and groups. A user belongs t
 
 ### Standard Realm
 
-Clients created through our [CSS App](https://bcgov.github.io/sso-requests) will be configured into the standard realm, which includes a default set of optional IDP's and configurations suitable for most applications. Additional client-level configurations can be made through the webapp.
+Clients created through our [CSS App](https://sso-requests.apps.gold.devops.gov.bc.ca/) will be configured into the standard realm, which includes a default set of optional IDP's and configurations suitable for most applications. Additional client-level configurations can be made through the webapp.
 
 ### Custom Realm
 
