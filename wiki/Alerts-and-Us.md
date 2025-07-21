@@ -90,7 +90,7 @@ The Pathfinder SSO Team responds to 4 levels of incidents. The team responds to 
 
 As a very responsive team, you will see our metrics over the years and that we respond  very quickly [2024 and 2025 Recap of Alerts/Incidents](Alerts-and-Us.md#metrics)
 
-It should be noted that our current version of Redhat SSO does not enable us to offer zero downtime aka [blue green deployments](https://docs.aws.amazon.com/whitepapers/latest/introduction-devops-aws/blue-green-deployments.html). As a result, when we need to upgrade our Redhat SSO version or need to apply a patch, we advise our clients in advance via [RocketChat](https://chat.developer.gov.bc.ca/channel/sso) with a note that active sessions may be lost ie: end users may have to login again.
+It should be noted that our current version of Redhat Build of Keycloak does not enable us to offer zero downtime aka [blue green deployments](https://docs.aws.amazon.com/whitepapers/latest/introduction-devops-aws/blue-green-deployments.html). As a result, when we need to upgrade our Redhat Build of Keycloak version or need to apply a patch, we advise our clients in advance via [RocketChat](https://chat.developer.gov.bc.ca/channel/sso) with a note that active sessions may be lost ie: end users may have to login again.
 
 
 **Change Communications**
@@ -398,7 +398,7 @@ Pathfinder Team commits to acknowledging issue within 15 -20 mins and resolving 
 | April      |  7 | 2m22s       | 6m48s| April 4 uptime time out issue. April 5 Prod fixes by us. April 11 uptime Global script execution timeout |
 | May      |  21 | 6m08s       | 20m57s| May 24 CPU surge that may have been caused by logging, May 28 STMS work triggered timeouts |
 | June     |  1 | 0m01s       | 0m01s| June 12: CPU spike over 5, not outage, Gold Upgrade Day |
-| July     |  2 | 0m31s       | 4m09s| July 28: CPU spike over 5, and Idir login failure. Caused by CPU surge in the Keycloak Pods, discussion with RedHat to resolve root cause |
+| July     |  2 | 0m31s       | 4m09s| July 28: CPU spike over 5, and Idir login failure. Caused by CPU surge in the Keycloak Pods, discussion with Redhat to resolve root cause |
 | August |  1 | 0m39s       | 3m28s| Aug 1: Uptime failed check, carryover from July outage|
 | September|  0 | 0       | 0| NA|
 | October|  3 | 2m12s       | 19m55s| Oct 16 CPU spike causing lag on login (end-users still able to log in, system slow) Oct 18 short uptime misfire in alerting |
