@@ -81,7 +81,7 @@ Note: It is totally possible for your application to integrate with any or all o
 
 ## Our Service
 
-The Pathfinder SSO service (also known as "KeyCloak" or "RedHat SSO") consists of two offerings: Standard and Custom.
+The Pathfinder SSO service (also known as "KeyCloak" or "Redhat Build of Keycloak") consists of two offerings: Standard and Custom.
 
 Our standard service makes use of one "standard" realm. When you complete a request in our [common hosted single sign on app](https://sso-requests.apps.gold.devops.gov.bc.ca/), you receive a pre-configured client inside an existing realm. Some of the features of this service:
 

@@ -1,4 +1,5 @@
 # Introduction to Terms
+
 This section covers general terms used throughout this documentation. Note to developers, you can find our [technical documentation here](https://bcgov.github.io/sso-docs) .
 
 Here's a shortcut to additional [resources and links](#more-resources) for learning about and using this service.
@@ -23,11 +24,12 @@ An Identity Provider is the holder of the identity that is used to log in with. 
 
 ### Keycloak
 
-[Keycloak](https://www.keycloak.org/) is an open source identity and access management tool. Our team runs [Red Hat SSO](https://access.redhat.com/products/red-hat-single-sign-on/), a component built on top of keycloak, and this documentation may use the terms interchangeably. [See here](What-is-Keycloak-at-BC-Government#what-is-keycloak) for a general overview of how we use keycloak.
+[Keycloak](https://www.keycloak.org/) is an open source identity and access management tool. Our team runs [Redhat Build of Keycloak](https://access.redhat.com/products/red-hat-build-of-keycloak/), a component built on top of keycloak, and this documentation may use the terms interchangeably. [See here](What-is-Keycloak-at-BC-Government#what-is-keycloak) for a general overview of how we use keycloak.
 
 ### Client
 
 Clients are entities that can request Keycloak to authenticate a user. Most often, clients are applications and services that want to use Keycloak to secure themselves and provide a single sign-on solution. Clients can also be entities that just want to request identity information or an access token so that they can securely invoke other services on the network that are secured by Keycloak. Clients can be either public or confidential:
+
 - **Public Clients** are unable to use registered client secrets, for example applications running in the browser.
 - **Confidential Clients** are applications that are able to securely store a client secret, such as server-rendered web applications.
 
@@ -66,17 +68,17 @@ Custom realms are regular keycloak realms, which may be required by some clients
 
 ### Learn about Keycloak and its APIs:
 
-* [Red Hat SSO (Keycloak)](https://access.redhat.com/documentation/en-us/red_hat_single_sign-on/7.6/)
-* [Realm Admin guide](https://access.redhat.com/documentation/en-us/red_hat_single_sign-on/7.6/html/server_administration_guide/index)
-
+- [Redhat Build of Keycloak (Keycloak)](https://access.redhat.com/products/red-hat-build-of-keycloak/)
+- [Realm Admin guide](https://access.redhat.com/documentation/en-us/red_hat_single_sign-on/7.6/html/server_administration_guide/index)
 
 ### Technical Common Hosted Single Sign On Material
+
 - [Technical Documentation](https://bcgov.github.io/sso-docs)
 
 ### Q&A with Us:
 
 - [Github Discussions Q&A on Gold](https://github.com/bcgov/sso-keycloak/discussions/categories/gold-q-a)
-- [Stackover flow Collection 1 on Keycloak/RedHat SSO](https://stackoverflow.developer.gov.bc.ca/collections/179)
+- [Stackover flow Collection 1 on Keycloak/Redhat Build of Keycloak](https://stackoverflow.developer.gov.bc.ca/collections/179)
 - [Stackover flow Collection 2 on Custom Realms](https://stackoverflow.developer.gov.bc.ca/search?q=custom+realm)
 
-_**Have any questions? We would love to hear from you.**_ ![Chat Bubble](./img/chat-bubble.png)   <a href="mailto:bcgov.sso@gov.bc.ca">![Email](./img/email.png)</a>
+_**Have any questions? We would love to hear from you.**_ ![Chat Bubble](./img/chat-bubble.png) <a href="mailto:bcgov.sso@gov.bc.ca">![Email](./img/email.png)</a>
