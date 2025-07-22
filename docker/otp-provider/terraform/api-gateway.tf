@@ -53,6 +53,7 @@ resource "aws_apigatewayv2_api_mapping" "this" {
 # Grafana
 
 resource "aws_apigatewayv2_integration" "grafana" {
+  count              = var.enable_grafana ? 1 : 0
   api_id             = aws_apigatewayv2_api.this.id
   integration_type   = "HTTP_PROXY"
   connection_id      = aws_apigatewayv2_vpc_link.this.id
@@ -62,7 +63,8 @@ resource "aws_apigatewayv2_integration" "grafana" {
 }
 
 resource "aws_apigatewayv2_route" "grafana" {
+  count     = var.enable_grafana ? 1 : 0
   api_id    = aws_apigatewayv2_api.this.id
   route_key = "ANY /grafana/{proxy+}"
-  target    = "integrations/${aws_apigatewayv2_integration.grafana.id}"
+  target    = "integrations/${aws_apigatewayv2_integration.grafana[0].id}"
 }

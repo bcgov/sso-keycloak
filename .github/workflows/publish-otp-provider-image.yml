@@ -85,6 +85,7 @@ jobs:
           otp_resends_allowed_per_day="4"
           otp_resend_interval_minutes="[1,2,5,60]"
           grafana_admin_password="${{env.GRAFANA_ADMIN_PASS}}"
+          enable_grafana=true
           EOF
 
         working-directory: ./docker/otp-provider/terraform

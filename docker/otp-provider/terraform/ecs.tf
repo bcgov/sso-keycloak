@@ -217,11 +217,13 @@ data "aws_secretsmanager_secret_version" "this" {
 # Grafana
 
 resource "aws_ecs_cluster" "grafana" {
-  name = "grafana-cluster"
+  count = var.enable_grafana ? 1 : 0
+  name  = "grafana-cluster"
 }
 
 resource "aws_iam_role" "ecs_task_execution" {
-  name = "ecsTaskExecutionRole-grafana"
+  count = var.enable_grafana ? 1 : 0
+  name  = "ecsTaskExecutionRole-grafana"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -236,11 +238,13 @@ resource "aws_iam_role" "ecs_task_execution" {
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_task_execution_attach" {
-  role       = aws_iam_role.ecs_task_execution.name
+  count      = var.enable_grafana ? 1 : 0
+  role       = aws_iam_role.ecs_task_execution[0].name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
 resource "aws_ecs_task_definition" "grafana" {
+  count                    = var.enable_grafana ? 1 : 0
   family                   = "grafana-task"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
@@ -248,7 +252,7 @@ resource "aws_ecs_task_definition" "grafana" {
   cpu    = "256"
   memory = "512"
 
-  execution_role_arn = aws_iam_role.ecs_task_execution.arn
+  execution_role_arn = aws_iam_role.ecs_task_execution[0].arn
 
   container_definitions = jsonencode([
     {
@@ -280,9 +284,10 @@ resource "aws_ecs_task_definition" "grafana" {
 }
 
 resource "aws_ecs_service" "grafana" {
+  count           = var.enable_grafana ? 1 : 0
   name            = "grafana-service"
-  cluster         = aws_ecs_cluster.grafana.id
-  task_definition = aws_ecs_task_definition.grafana.arn
+  cluster         = aws_ecs_cluster.grafana[0].id
+  task_definition = aws_ecs_task_definition.grafana[0].arn
   desired_count   = 1
   launch_type     = "FARGATE"
 
@@ -293,7 +298,7 @@ resource "aws_ecs_service" "grafana" {
   }
 
   load_balancer {
-    target_group_arn = aws_lb_target_group.grafana.arn
+    target_group_arn = aws_lb_target_group.grafana[0].arn
     container_name   = "grafana"
     container_port   = 3000
   }

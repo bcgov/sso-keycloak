@@ -45,6 +45,7 @@ resource "aws_alb_target_group" "this" {
 # Grafana
 
 resource "aws_lb_target_group" "grafana" {
+  count       = var.enable_grafana ? 1 : 0
   name        = "${var.app_name}-grafana"
   port        = 3000
   protocol    = "HTTP"
@@ -62,12 +63,13 @@ resource "aws_lb_target_group" "grafana" {
 }
 
 resource "aws_alb_listener_rule" "grafana" {
+  count        = var.enable_grafana ? 1 : 0
   listener_arn = aws_alb_listener.this.arn
   priority     = 100
 
   action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.grafana.arn
+    target_group_arn = aws_lb_target_group.grafana[0].arn
   }
 
   condition {
