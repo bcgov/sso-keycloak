@@ -114,3 +114,24 @@ test('OTP Success', async ({ page }, testInfo) => {
   verifiedOTPEvents = await eventModel.findAll({ where: { eventType: 'OTP_VERIFIED', email, clientId } });
   expect(verifiedOTPEvents.length).toBe(1);
 });
+
+test('OTP Expired', async ({ page }, testInfo) => {
+  await page.goto(initURL);
+  const email = `${testInfo.project.name}@b.com`;
+
+  // Enter email and go to OTP page
+  await page.getByRole('textbox', { name: 'Email' }).fill(email);
+  await page.getByRole('button', { name: 'Continue' }).click();
+  await page.waitForURL('**/otp');
+
+  const currentOtp = await otpModel
+    .findOne({ where: { email: `${testInfo.project.name}@b.com`, active: true } });
+
+  // Set OTP timestamp to make it expired
+  const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
+  await otpModel.update({createdAt: fiveMinutesAgo}, {where: {id: currentOtp.id}} );
+
+  // assert filling in otp creates event
+  await fillOTP(currentOtp.otp, false, page);
+  await expect(page.locator('body')).toMatchAriaSnapshot(`- paragraph: The verification code sent to ${email} has expired after five minutes.`);
+});

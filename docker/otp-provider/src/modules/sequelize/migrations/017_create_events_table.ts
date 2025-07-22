@@ -199,7 +199,10 @@ export const up = async (queryInterface: QueryInterface) => {
         INSERT INTO "Event" (email, "clientId", "eventType", timestamp)
         VALUES (email_input, client_id, 'INVALID_OTP', NOW()), (email_input, client_id, 'MAX_ATTEMPTS', NOW());
 
-        RETURN QUERY SELECT false, wait_seconds, 'EXPIRED_OTP_WITH_RESEND';
+        RETURN QUERY SELECT
+          false,
+          CASE WHEN can_request THEN 0 ELSE wait_seconds END,
+          'EXPIRED_OTP_WITH_RESEND';
         RETURN;
       END IF;
 
@@ -212,7 +215,10 @@ export const up = async (queryInterface: QueryInterface) => {
         INSERT INTO "Event" (email, "clientId", "eventType", timestamp)
         VALUES (email_input, client_id, 'INVALID_OTP', NOW());
 
-        RETURN QUERY SELECT false, wait_seconds, 'INVALID_OTP';
+        RETURN QUERY SELECT
+          false,
+          CASE WHEN can_request THEN 0 ELSE wait_seconds END,
+          'INVALID_OTP';
         RETURN;
       END IF;
 
@@ -221,7 +227,10 @@ export const up = async (queryInterface: QueryInterface) => {
         INSERT INTO "Event" (email, "clientId", "eventType", timestamp)
         VALUES (email_input, client_id, 'EXPIRED_OTP', NOW());
 
-        RETURN QUERY SELECT false, wait_seconds, 'EXPIRED_OTP';
+        RETURN QUERY SELECT
+          false,
+          CASE WHEN can_request THEN 0 ELSE wait_seconds END,
+          'EXPIRED_OTP';
         RETURN;
       END IF;
 
