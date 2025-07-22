@@ -213,3 +213,90 @@ resource "aws_ecs_service" "this" {
 data "aws_secretsmanager_secret_version" "this" {
   secret_id = aws_secretsmanager_secret.this.id
 }
+
+# Grafana
+
+resource "aws_ecs_cluster" "grafana" {
+  name = "grafana-cluster"
+}
+
+resource "aws_iam_role" "ecs_task_execution" {
+  name = "ecsTaskExecutionRole-grafana"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Action = "sts:AssumeRole",
+      Effect = "Allow",
+      Principal = {
+        Service = "ecs-tasks.amazonaws.com"
+      }
+    }]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_task_execution_attach" {
+  role       = aws_iam_role.ecs_task_execution.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+}
+
+resource "aws_ecs_task_definition" "grafana" {
+  family                   = "grafana-task"
+  network_mode             = "awsvpc"
+  requires_compatibilities = ["FARGATE"]
+  # This is a lightweight image so running the minimum allowed fargate container
+  cpu    = "256"
+  memory = "512"
+
+  execution_role_arn = aws_iam_role.ecs_task_execution.arn
+
+  container_definitions = jsonencode([
+    {
+      name      = "grafana"
+      image     = "grafana/grafana:latest"
+      essential = true
+      portMappings = [
+        {
+          containerPort = 3000
+          protocol      = "tcp"
+        }
+      ]
+      environment = [
+        {
+          name  = "GF_SECURITY_ADMIN_PASSWORD"
+          value = var.grafana_admin_password
+        },
+        {
+          name  = "GF_SERVER_ROOT_URL"
+          value = "https://${var.custom_domain_name}/grafana/"
+        },
+        {
+          name  = "GF_SERVER_SERVE_FROM_SUB_PATH"
+          value = "true"
+        }
+      ]
+    }
+  ])
+}
+
+resource "aws_ecs_service" "grafana" {
+  name            = "grafana-service"
+  cluster         = aws_ecs_cluster.grafana.id
+  task_definition = aws_ecs_task_definition.grafana.arn
+  desired_count   = 1
+  launch_type     = "FARGATE"
+
+  network_configuration {
+    security_groups  = [data.aws_security_group.app.id]
+    subnets          = [data.aws_subnet.a.id, data.aws_subnet.b.id]
+    assign_public_ip = false
+  }
+
+  load_balancer {
+    target_group_arn = aws_lb_target_group.grafana.arn
+    container_name   = "grafana"
+    container_port   = 3000
+  }
+
+  depends_on = [aws_alb_listener_rule.grafana]
+}

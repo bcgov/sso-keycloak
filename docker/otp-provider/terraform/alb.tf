@@ -41,3 +41,38 @@ resource "aws_alb_target_group" "this" {
   }
   tags = var.app_tags
 }
+
+# Grafana
+
+resource "aws_lb_target_group" "grafana" {
+  name        = "${var.app_name}-grafana"
+  port        = 3000
+  protocol    = "HTTP"
+  vpc_id      = data.aws_vpc.selected.id
+  target_type = "ip"
+
+  health_check {
+    path                = "/"
+    matcher             = "200-399"
+    interval            = 30
+    timeout             = 5
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+  }
+}
+
+resource "aws_alb_listener_rule" "grafana" {
+  listener_arn = aws_alb_listener.this.arn
+  priority     = 100
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.grafana.arn
+  }
+
+  condition {
+    path_pattern {
+      values = ["/grafana/*"]
+    }
+  }
+}

@@ -49,3 +49,20 @@ resource "aws_apigatewayv2_api_mapping" "this" {
   domain_name = aws_apigatewayv2_domain_name.this.id
   stage       = "$default"
 }
+
+# Grafana
+
+resource "aws_apigatewayv2_integration" "grafana" {
+  api_id             = aws_apigatewayv2_api.this.id
+  integration_type   = "HTTP_PROXY"
+  connection_id      = aws_apigatewayv2_vpc_link.this.id
+  connection_type    = "VPC_LINK"
+  integration_method = "ANY"
+  integration_uri    = aws_alb_listener.this.arn
+}
+
+resource "aws_apigatewayv2_route" "grafana" {
+  api_id    = aws_apigatewayv2_api.this.id
+  route_key = "ANY /grafana/{proxy+}"
+  target    = "integrations/${aws_apigatewayv2_integration.grafana.id}"
+}
