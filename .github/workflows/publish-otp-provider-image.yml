@@ -28,6 +28,7 @@ jobs:
           CORS_ORIGINS=https://dev.sandbox.loginproxy.gov.bc.ca,https://test.sandbox.loginproxy.gov.bc.ca,https://sandbox.loginproxy.gov.bc.ca,https://sso-playground.apps.gold.devops.gov.bc.ca
           NODE_ENV=production
           HASH_SALT=${{ secrets.DEV_HASH_SALT }}
+          GRAFANA_ADMIN_PASS=${{secrets.DEV_GRAFANA_ADMIN_PASS}}
 
           EOF
       - name: Checkout repository
@@ -83,6 +84,8 @@ jobs:
           otp_attempts_allowed="5"
           otp_resends_allowed_per_day="4"
           otp_resend_interval_minutes="[1,2,5,60]"
+          grafana_admin_password="${{env.GRAFANA_ADMIN_PASS}}"
+          enable_grafana=true
           EOF
 
         working-directory: ./docker/otp-provider/terraform

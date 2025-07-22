@@ -185,3 +185,13 @@ variable "otp_resend_interval_minutes" {
   type        = string
   default     = ""
 }
+
+variable "grafana_admin_password" {
+  sensitive = true
+  type      = string
+}
+
+variable "enable_grafana" {
+  type    = bool
+  default = true
+}
