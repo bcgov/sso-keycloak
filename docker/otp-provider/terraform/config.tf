@@ -1,13 +1,6 @@
 terraform {
   required_version = ">= 0.15.3"
 
-  backend "s3" {
-    bucket         = "xgr00q-dev-sso-otp-provider"
-    key            = "sso-otp-provider.tfstate"
-    region         = "ca-central-1"
-    dynamodb_table = "xgr00q-dev-otp-state-locking"
-  }
-
   required_providers {
     aws = {
       source  = "hashicorp/aws"
