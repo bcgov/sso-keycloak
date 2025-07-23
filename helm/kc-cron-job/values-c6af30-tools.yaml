@@ -17,12 +17,15 @@ enableRemoveInactiveUsersJob: true
 
 enableRemoveVcUsersJob: true
 
+enableSiteminderTests: false
+
 namespace:
   eventLogs:
     - 'c6af30-dev'
   activeSessions: 'c6af30-tools'
   rmInactiveUsers: 'c6af30-tools'
   rmVcUsers: 'c6af30-tools'
+  siteminderTests: 'c6af30-tools'
 
 pvc:
   name: sso-keycloak-logs
