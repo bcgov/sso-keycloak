@@ -1,16 +1,15 @@
-const {
-  removeStaleUsersByEnv,
-  checkUserExistsAtIDIM,
+import { vi, expect, describe, it, beforeEach } from 'vitest';
+import {
   removeUserFromCssApp,
-  MAX_DELETED_USERS_PER_RUNNER
-} = require('../remove-inactive-idir-users');
-const { getAdminClient, removeUserFromKc, getUserRolesMappings } = require('../helpers');
-const axios = require('axios');
+  MAX_DELETED_USERS_PER_RUNNER,
+  removeStaleUsersByEnv
+} from '../remove-inactive-idir-users.js';
+import axios from 'axios';
 
 const pgMock = {
-  connect: jest.fn(() => Promise.resolve(true)),
-  query: jest.fn(() => Promise.resolve(true)),
-  end: jest.fn(() => Promise.resolve(true))
+  connect: vi.fn(() => Promise.resolve(true)),
+  query: vi.fn(() => Promise.resolve(true)),
+  end: vi.fn(() => Promise.resolve(true))
 };
 
 const mockUser = {
@@ -30,29 +29,49 @@ const clientRoles = [
   }
 ];
 
-jest.mock('../helpers', () => {
+vi.mock('../utils/bceid-webservice.js', () => ({
+  checkUserExistsAtIDIM: vi.fn(() => Promise.resolve('notexists'))
+}));
+
+vi.mock('pg', async () => {
+  const actual = await vi.importActual('pg');
   return {
-    ...jest.requireActual('../helpers'),
-    getAdminClient: jest.fn(() =>
+    ...actual,
+    default: {
+      ...actual.default,
+      Client: vi.fn().mockImplementation(() => ({
+        connect: vi.fn(),
+        query: vi.fn(),
+        end: vi.fn()
+      }))
+    }
+  };
+});
+
+vi.mock('../helpers.js', async () => {
+  const originalModule = await vi.importActual('../helpers.js');
+  return {
+    ...originalModule,
+    getAdminClient: vi.fn(() =>
       Promise.resolve({
         users: {
-          find: jest.fn(() => {
+          find: vi.fn(() => {
             const users = Array(100).fill(mockUser);
             return Promise.resolve(users);
           }),
-          listRoleMappings: jest.fn(() =>
+          listRoleMappings: vi.fn(() =>
             Promise.resolve({
               realmMappings: [],
               clientMappings: []
             })
           ),
-          del: jest.fn(() => Promise.resolve(true))
+          del: vi.fn(() => Promise.resolve(true))
         },
-        reauth: jest.fn()
+        reauth: vi.fn()
       })
     ),
-    removeUserFromKc: jest.fn(() => Promise.resolve()),
-    getUserRolesMappings: jest.fn(() =>
+    removeUserFromKc: vi.fn(() => Promise.resolve()),
+    getUserRolesMappings: vi.fn(() =>
       Promise.resolve({
         clientRoles,
         realmRoles
@@ -61,23 +80,13 @@ jest.mock('../helpers', () => {
   };
 });
 
-jest.mock('../utils/bceid-webservice', () => {
-  const actualModule = jest.requireActual('../utils/bceid-webservice');
-  return {
-    ...actualModule,
-    checkUserExistsAtIDIM: jest.fn(() => Promise.resolve('notexists'))
-  };
-});
-
-jest.mock('axios', () => {
-  return {
-    ...jest.requireActual('axios'),
-    post: jest.fn(() => Promise.resolve({ status: 200 }))
-  };
-});
+vi.mock('axios', () => ({
+  default: vi.fn()
+}));
 
 describe('removeUserFromCssApp', () => {
   it('Calls the CSS api with userdata, clientdata and environment', async () => {
+    axios.post = vi.fn().mockResolvedValue({ status: 200 });
     const user = { id: 1, username: 'test' };
     const clientData = [{ client: 'client', roles: ['role1', 'role2'] }];
     await removeUserFromCssApp({ id: 1, username: 'test' }, [{ client: 'client', roles: ['role1', 'role2'] }], 'dev');
@@ -90,16 +99,19 @@ describe('removeUserFromCssApp', () => {
 
 describe('removeStaleUsersByEnv', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('Stops deleting once maximum is reached', async () => {
+    axios.post = vi.fn().mockResolvedValue({ status: 200 });
+    const { removeUserFromKc } = await import('../helpers.js');
     await removeStaleUsersByEnv('dev', pgMock, 'runnername', 0, () => {});
     expect(removeUserFromKc).toHaveBeenCalledTimes(MAX_DELETED_USERS_PER_RUNNER);
     expect(axios.post).toHaveBeenCalledTimes(MAX_DELETED_USERS_PER_RUNNER);
   });
 
   it('Saves deletion record to the database', async () => {
+    axios.post = vi.fn().mockResolvedValue({ status: 200 });
     await removeStaleUsersByEnv('dev', pgMock, 'runnername', 0, () => {});
     expect(pgMock.connect).toHaveBeenCalledTimes(1);
 
@@ -124,8 +136,9 @@ describe('removeStaleUsersByEnv', () => {
   });
 
   it('Records whether CSS App callout was successful to the database', async () => {
+    const { removeStaleUsersByEnv } = await import('../remove-inactive-idir-users.js');
     // Fail axios calls with not found
-    axios.post.mockResolvedValue({ status: 404 });
+    axios.post = vi.fn().mockResolvedValue({ status: 404 });
     await removeStaleUsersByEnv('test', pgMock, 'runnername', 0, () => {});
 
     expect(pgMock.query).toHaveBeenCalledTimes(MAX_DELETED_USERS_PER_RUNNER);

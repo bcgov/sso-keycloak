@@ -1,5 +1,5 @@
-const { getAdminClient, log, getPgClient, sendRcNotification, handleError, deleteLegacyData } = require('./helpers');
-const async = require('async');
+import { getAdminClient, log, getPgClient, sendRcNotification, handleError, deleteLegacyData } from './helpers.js';
+import { parallel, reflectAll } from 'async';
 
 const STANDARD_REALM = 'standard';
 
@@ -54,8 +54,8 @@ async function removeDcUsers(runnerName, pgClient, env = 'dev', callback) {
   }
 }
 async function main() {
-  async.parallel(
-    async.reflectAll([
+  parallel(
+    reflectAll([
       function (cb) {
         removeDcUsers('dev', getPgClient(), 'dev', cb);
       },

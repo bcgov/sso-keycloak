@@ -19,6 +19,9 @@ jobs:
   run-siteminder-tests:
     name: ${{ matrix.name }}
     runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      packages: write
     strategy:
       matrix:
         name: ['KAMLOOPS', 'CALGARY']

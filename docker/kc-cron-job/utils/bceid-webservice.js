@@ -1,10 +1,13 @@
-const { promisify } = require('util');
-const { parseString } = require('xml2js');
-const axios = require('axios');
+import { promisify } from 'util';
+import { parseString } from 'xml2js';
+import axios from 'axios';
+import lodash from 'lodash';
+import { log } from '../helpers.js';
+
 const parseStringSync = promisify(parseString);
-const _ = require('lodash');
-const { log } = require('../helpers');
-function getWebServiceInfo({ env = 'dev' }) {
+const { get } = lodash;
+
+export function getWebServiceInfo({ env = 'dev' }) {
   const requestHeaders = {
     'Content-Type': 'text/xml;charset=UTF-8',
     authorization: `Basic ${process.env.BCEID_SERVICE_BASIC_AUTH}`
@@ -28,7 +31,7 @@ function getWebServiceInfo({ env = 'dev' }) {
   return { requestHeaders, requesterIdirGuid, serviceUrl, serviceId };
 }
 
-const generateXML = (
+export const generateXML = (
   {
     property = 'userId',
     matchKey = '',
@@ -88,7 +91,7 @@ const generateXML = (
   }
 };
 
-async function checkUserExistsAtIDIM({ property = 'userGuid', matchKey = '', env = 'prod' }) {
+export const checkUserExistsAtIDIM = async ({ property = 'userGuid', matchKey = '', env = 'prod' }) => {
   const { requestHeaders, requesterIdirGuid, serviceUrl, serviceId } = getWebServiceInfo({ env });
   const xml = generateXML({ property, matchKey, serviceId, requesterIdirGuid }, 'getAccountDetail');
 
@@ -101,12 +104,12 @@ async function checkUserExistsAtIDIM({ property = 'userGuid', matchKey = '', env
     const { data: body } = response;
 
     const result = await parseStringSync(body);
-    const data = _.get(result, 'soap:Envelope.soap:Body.0.getAccountDetailResponse.0.getAccountDetailResult.0');
+    const data = get(result, 'soap:Envelope.soap:Body.0.getAccountDetailResponse.0.getAccountDetailResult.0');
     if (!data) throw Error('no data');
 
-    const status = _.get(data, 'code.0');
-    const failureCode = _.get(data, 'failureCode.0');
-    const failMessage = _.get(data, 'message.0');
+    const status = get(data, 'code.0');
+    const failureCode = get(data, 'failureCode.0');
+    const failMessage = get(data, 'message.0');
     if (status === 'Success' && failureCode === 'Void') {
       return 'exists';
     } else if (status === 'Failed' && failureCode === 'NoResults') {
@@ -118,10 +121,4 @@ async function checkUserExistsAtIDIM({ property = 'userGuid', matchKey = '', env
   } catch (error) {
     throw new Error(error);
   }
-}
-
-module.exports = {
-  getWebServiceInfo,
-  generateXML,
-  checkUserExistsAtIDIM
 };

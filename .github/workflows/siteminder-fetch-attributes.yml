@@ -6,6 +6,9 @@ jobs:
   run-siteminder-script:
     name: Fetch Attributes from SAML Response
     runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      packages: write
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
