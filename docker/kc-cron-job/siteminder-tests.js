@@ -33,6 +33,10 @@ async function main() {
   await octokit.rest.apps.getAuthenticated();
 
   await runTests(octokit, 'DEV');
+
+  await runTests(octokit, 'TEST');
+
+  if (new Date().getDay() === 0) await runTests(octokit, 'PROD');
 }
 
 main();
