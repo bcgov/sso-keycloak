@@ -13,9 +13,12 @@ enableRemoveInactiveUsersJob: true
 
 enableRemoveVcUsersJob: true
 
+enableSiteminderTests: true
+
 namespace:
   rmInactiveUsers: 'eb75ad-tools'
   rmVcUsers: 'eb75ad-tools'
+  siteminderTests: 'eb75ad-tools'
 
 pvc:
   name: sso-keycloak-logs

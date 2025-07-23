@@ -5,14 +5,14 @@ import fs from 'fs';
 
 dotenv.config();
 
-const privateKey = fs.readFileSync('./sso-cronjobs-siteminder-tests.2025-07-22.private-key.pem', 'utf8');
+const privateKey = fs.readFileSync('./github-siteminder-tests-private-key.pem', 'utf8');
 
 async function runTests(octokit, environment) {
   await octokit.rest.actions.createWorkflowDispatch({
     owner: 'bcgov',
     repo: 'sso-keycloak',
     workflow_id: 'siteminder-tests.yml',
-    ref: 'SSOTEAM-2386',
+    ref: 'dev',
     inputs: {
       environment,
       cluster: 'GOLD'
@@ -26,7 +26,7 @@ async function main() {
     auth: {
       appId: process.env.GH_SITMINDER_TESTS_APP_ID,
       privateKey,
-      installationId: 77187483
+      installationId: process.env.GH_SITMINDER_TESTS_INSTALLATION_ID
     }
   });
 
