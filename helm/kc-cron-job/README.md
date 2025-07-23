@@ -8,7 +8,16 @@ The two jobs preserve the number of active sessions in the application and the e
 
 The deployment steps for a new namespace follow:
 
-## 1. Create `kc-cron-job-secret` secret
+## Pre-requisites
+
+### Github App for Siteminder Tests
+
+- Navigate to SSO Team's Github account profile settings and create a Github App
+- Assign `Actions: read, write` permissions
+- Install the app on the user account
+- Generate a private key and save it in the root of the crob job repo (`./sso-keycloak/docker/kc-cron-job`) with name `github-siteminder-tests-private-key.pem`
+
+### Create `kc-cron-job-secret` secret
 
 - **This step is optional and can be ignored if not installing `cron-remove-inactive-users.yaml`**
 
@@ -33,16 +42,18 @@ export CSS_API_AUTH_SECRET=
 export RC_WEBHOOK=
 export DC_USERS_RETENTION_DAYS=
 export INACTIVE_IDIR_USERS_RETENTION_DAYS=
+export GH_SITMINDER_TESTS_APP_ID=
+export GH_SITMINDER_TESTS_INSTALLATION_ID=
 
 # update <namespace> and run to create the secret
 make kc-cron-job-secret NAMESPACE=<namespace>
 ```
 
-## 2. Expand the resources in the namespace
+## Expand the resources in the namespace
 
 If there is not enough space in the tools namespace for the logs you may need to request more. This can be done through the (Platform Services Registry)[https://registry.developer.gov.bc.ca/]
 
-## 3. Create a service account
+## Create a service account
 
 Create a service account in key cloak. This should eventually be set up in terraform, but for now do it manually. In the `master` realm create the following client if it does not exist:
 
@@ -67,7 +78,7 @@ CLIENTNAME=<client_name> \
 CLIENTSECRET=<credential_secret>
 ```
 
-## 4. Install the helm chart for `kc-cron-job`
+## Install the helm chart for `kc-cron-job`
 
 In the `helm/kc-cron-job` folder you will need to run:
 
@@ -89,7 +100,7 @@ make uninstall NAMESPACE=<namespace>
 
 Note, unistall process may be slightly buggy and will not remove the helm patroni deployments.
 
-## 5. Create the patroni secret in other namespaces.
+## Create the patroni secret in other namespaces.
 
 - `cron-event-logs.yaml` expects `kc-cron-patroni` secret to be available in the namespace so repeat below step in all the namespaces where the `cron-event-logs.yaml` has to run
 - To create the secret in the relevant namespace: `kc-cron-patroni` run:

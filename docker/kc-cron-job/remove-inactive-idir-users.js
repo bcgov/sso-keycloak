@@ -1,7 +1,5 @@
-const _ = require('lodash');
-const async = require('async');
-const axios = require('axios');
-const {
+import { parallel, reflectAll } from 'async';
+import {
   getAdminClient,
   log,
   getPgClient,
@@ -10,18 +8,17 @@ const {
   deleteLegacyData,
   removeUserFromKc,
   getUserRolesMappings
-} = require('./helpers');
-const jwt = require('jsonwebtoken');
-const { ConfidentialClientApplication } = require('@azure/msal-node');
-const { checkUserExistsAtIDIM } = require('./utils/bceid-webservice');
+} from './helpers.js';
+import { decode } from 'jsonwebtoken';
+import { ConfidentialClientApplication } from '@azure/msal-node';
+import { checkUserExistsAtIDIM } from './utils/bceid-webservice.js';
+import axios from 'axios';
 
 const MS_GRAPH_URL = 'https://graph.microsoft.com';
 const MS_GRAPH_IDIR_GUID_ATTRIBUTE = 'onPremisesExtensionAttributes/extensionAttribute12';
 
-require('dotenv').config();
-
 // NOTE: this is per runner, e.g with 5 in prod 50 is the total user deletion limit
-const MAX_DELETED_USERS_PER_RUNNER = 30;
+export const MAX_DELETED_USERS_PER_RUNNER = 30;
 
 let devMsalInstance;
 let testMsalInstance;
@@ -90,7 +87,7 @@ async function getAzureAccessToken(env) {
     }
     const response = await msalInstance.acquireTokenByClientCredential(request);
     msTokenCache[env].token = response.accessToken;
-    msTokenCache[env].decoded = jwt.decode(response.accessToken);
+    msTokenCache[env].decoded = decode(response.accessToken);
     return response.accessToken;
   } catch (error) {
     console.error(error);
@@ -102,6 +99,7 @@ async function getAzureAccessToken(env) {
   This function checks existence using MS Graph. Currently has issues with being out of sync with IDIM, so is unused.
   Keeping the function in case the sync issue can be resolved.
 */
+// eslint-disable-next-line no-unused-vars
 async function checkUserExistsAtEntra({ property = MS_GRAPH_IDIR_GUID_ATTRIBUTE, matchKey = '', env }) {
   try {
     const accessToken = await getAzureAccessToken(env);
@@ -123,12 +121,12 @@ async function checkUserExistsAtEntra({ property = MS_GRAPH_IDIR_GUID_ATTRIBUTE,
     console.error(`unexpected response from ms graph:  ${result}`);
     return 'error';
   } catch (error) {
-    console.log(error?.response?.data || error);
+    console.error(error?.response?.data || error);
     throw new Error(error);
   }
 }
 
-async function removeUserFromCssApp(userData, clientData, env) {
+export async function removeUserFromCssApp(userData, clientData, env) {
   try {
     const headers = {
       'Content-Type': 'application/json',
@@ -157,7 +155,7 @@ async function userFetchWithRetry(env, username, first, max) {
   }
 }
 
-async function removeStaleUsersByEnv(env = 'dev', pgClient, runnerName, startFrom, callback) {
+export async function removeStaleUsersByEnv(env = 'dev', pgClient, runnerName, startFrom, callback) {
   try {
     let deletedUserCount = 0;
     await pgClient.connect();
@@ -235,8 +233,8 @@ async function removeStaleUsersByEnv(env = 'dev', pgClient, runnerName, startFro
 }
 
 async function main() {
-  async.parallel(
-    async.reflectAll([
+  parallel(
+    reflectAll([
       function (cb) {
         removeStaleUsersByEnv('dev', getPgClient(), 'dev', 0, cb);
       },
@@ -274,13 +272,4 @@ async function main() {
   await deleteLegacyData('kc_deleted_users', process.env.INACTIVE_IDIR_USERS_RETENTION_DAYS || 60);
 }
 
-if (require.main === module) {
-  main();
-}
-
-module.exports = {
-  removeStaleUsersByEnv,
-  checkUserExistsAtIDIM,
-  removeUserFromCssApp,
-  MAX_DELETED_USERS_PER_RUNNER
-};
+main();

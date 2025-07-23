@@ -1,17 +1,15 @@
-const { promisify } = require('util');
-const { parseString } = require('xml2js');
-const { getAdminClient } = require('./helpers');
-const { generateXML, getWebServiceInfo } = require('./utils/bceid-webservice');
-const axios = require('axios');
+import { promisify } from 'util';
+import { parseString } from 'xml2js';
+import { getAdminClient } from './helpers.js';
+import { generateXML, getWebServiceInfo } from './utils/bceid-webservice.js';
+import axios from 'axios';
 const parseStringSync = promisify(parseString);
-const _ = require('lodash');
-//const fs = require('fs');
-//const path = require('path');
-const async = require('async');
-
-//const basePath = path.join(__dirname, 'exports');
+import lodash from 'lodash';
+import { parallel, reflectAll } from 'async';
 
 const env = 'prod';
+const { get } = lodash;
+const { post } = axios;
 
 const callSoapService = async (user) => {
   const { requestHeaders, requesterIdirGuid, serviceUrl, serviceId } = getWebServiceInfo({ env });
@@ -24,7 +22,7 @@ const callSoapService = async (user) => {
         requesterIdirGuid
       });
 
-      const response = await axios.post(`${serviceUrl}/webservices/client/V10/BCeIDService.asmx?WSDL`, soapPayload, {
+      const response = await post(`${serviceUrl}/webservices/client/V10/BCeIDService.asmx?WSDL`, soapPayload, {
         headers: requestHeaders,
         timeout: 10000
       });
@@ -62,17 +60,17 @@ const verifyKeycloakUsers = async (name, start, callback) => {
           const { data: body } = await callSoapService(users[x]);
 
           const result = await parseStringSync(body);
-          const data = _.get(
+          const data = get(
             result,
             'soap:Envelope.soap:Body.0.searchInternalAccountResponse.0.searchInternalAccountResult.0'
           );
 
           if (!data) throw Error('no data');
 
-          const status = _.get(data, 'code.0');
+          const status = get(data, 'code.0');
 
           if (status === 'Success') {
-            const email = _.get(data, 'accountList.0.BCeIDAccount.0.contact.0.email.0.value.0');
+            const email = get(data, 'accountList.0.BCeIDAccount.0.contact.0.email.0.value.0');
             if (!users[x].email || !email) {
               continue;
             }
@@ -87,7 +85,7 @@ const verifyKeycloakUsers = async (name, start, callback) => {
           } else {
             console.log('Skipping user:', users[x].username);
             console.log('Status:', status);
-            console.log('Failure Code:', _.get(data, 'failureCode.0'));
+            console.log('Failure Code:', get(data, 'failureCode.0'));
             continue;
           }
         }
@@ -107,8 +105,8 @@ const verifyKeycloakUsers = async (name, start, callback) => {
 };
 
 async function main() {
-  async.parallel(
-    async.reflectAll([
+  parallel(
+    reflectAll([
       function (cb) {
         verifyKeycloakUsers('prod-01', 0, cb);
       },
