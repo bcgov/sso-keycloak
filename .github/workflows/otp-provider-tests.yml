@@ -5,7 +5,7 @@ on:
     branches:
       - dev
     paths:
-      - 'docker/otp-provider'
+      - 'docker/otp-provider/**'
       - '.github/workflows/otp-provider-tests.yml'
 
 jobs:
