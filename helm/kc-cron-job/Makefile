@@ -60,4 +60,7 @@ kc-cron-job-secret:
 		--from-literal=inactive-idir-users-retention-days=${INACTIVE_IDIR_USERS_RETENTION_DAYS} \
 		--from-literal=dev-kc-url=${DEV_KEYCLOAK_URL} \
 		--from-literal=test-kc-url=${TEST_KEYCLOAK_URL} \
-		--from-literal=prod-kc-url=${PROD_KEYCLOAK_URL}
+		--from-literal=prod-kc-url=${PROD_KEYCLOAK_URL} \
+		--from-literal=github-siteminder-tests-app-id=${GH_SITMINDER_TESTS_APP_ID} \
+		--from-literal=github-siteminder-tests-installation-id=${GH_SITMINDER_TESTS_INSTALLATION_ID} \
+		--from-file=github-siteminder-tests-private-key=github-siteminder-tests-private-key.pem
