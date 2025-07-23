@@ -142,7 +142,9 @@ export const login = async (oidcProvider: Provider) => {
 
         const { waitTime, error } = await verifyOtp(email, otp as string, clientID as string, delayMultiplier);
         if (error) {
-          return res.render('otp', {
+          // Expiry page has a customized view, all others use the default.
+          const view = error === 'EXPIRED_OTP' ? 'expired' : 'otp';
+          return res.render(view, {
             uid,
             email,
             nonce: res.locals.cspNonce,
