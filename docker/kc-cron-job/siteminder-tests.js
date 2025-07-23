@@ -12,7 +12,7 @@ async function runTests(octokit, environment) {
     owner: 'bcgov',
     repo: 'sso-keycloak',
     workflow_id: 'siteminder-tests.yml',
-    ref: 'dev',
+    ref: 'SSOTEAM-2386',
     inputs: {
       environment,
       cluster: 'GOLD'
