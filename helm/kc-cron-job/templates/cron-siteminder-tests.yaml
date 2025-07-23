@@ -39,6 +39,11 @@ spec:
                     secretKeyRef:
                       name: kc-cron-job-secret
                       key: github-siteminder-tests-installation-id
+                - name: RC_WEBHOOK
+                  valueFrom:
+                    secretKeyRef:
+                      name: kc-cron-job-secret
+                      key: rc-webhook
               volumeMounts:
                 - name: github-siteminder-tests-private-key
                   mountPath: "/usr/src/app"

@@ -13,7 +13,7 @@ enableRemoveInactiveUsersJob: false
 
 enableRemoveVcUsersJob: true
 
-enableSiteminderTests: false
+enableSiteminderTests: true
 
 namespace:
   rmInactiveUsers: 'e4ca1d-tools'
