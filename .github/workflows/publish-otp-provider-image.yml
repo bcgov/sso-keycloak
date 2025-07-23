@@ -29,11 +29,9 @@ jobs:
           CORS_ORIGINS=https://dev.sandbox.loginproxy.gov.bc.ca,https://test.sandbox.loginproxy.gov.bc.ca,https://sandbox.loginproxy.gov.bc.ca,https://sso-playground.apps.gold.devops.gov.bc.ca
           NODE_ENV=production
           HASH_SALT=${{ secrets.DEV_HASH_SALT }}
-
           GRAFANA_OAUTH_CLIENT_SECRET=${{secrets.DEV_GRAFANA_OAUTH_CLIENT_SECRET}}
           GRAFANA_OATH_CLIENT_ID=${{secrets.DEV_GRAFANA_OATH_CLIENT_ID}}
           KEYCLOAK_BASE_URL=${{secrets.DEV_KEYCLOAK_BASE_URL}}
-
           EOF
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -90,9 +88,9 @@ jobs:
           otp_resend_interval_minutes="[1,2,5,60]"
           grafana_admin_password="${{env.GRAFANA_ADMIN_PASS}}"
           enable_grafana=true
-          grafana_oauth_client_secret=${{env.GRAFANA_OAUTH_CLIENT_SECRET}}
-          grafana_oath_client_id=${{env.GRAFANA_OATH_CLIENT_ID}}
-          keycloak_base_url=${{env.KEYCLOAK_BASE_URL}}
+          grafana_oauth_client_secret="${{env.GRAFANA_OAUTH_CLIENT_SECRET}}"
+          grafana_oath_client_id="${{env.GRAFANA_OATH_CLIENT_ID}}"
+          keycloak_base_url="${{env.KEYCLOAK_BASE_URL}}"
           EOF
 
         working-directory: ./docker/otp-provider/terraform
