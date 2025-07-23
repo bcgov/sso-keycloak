@@ -42,6 +42,13 @@ MS_GRAPH_API_CLIENT_SECRET_PROD=
 
 will be required. They are not currently needed.
 
+### Github App for Siteminder Tests
+
+- Navigate to SSO Team's Github account profile settings and create a Github App. Choose `Any account` for this app to be installed.
+- Assign `Actions: read, write` permissions
+- Install the app on the `bcgov` org and `sso-keycloak` repository
+- Generate a private key and save it in the `keys` folder inside root of the crob job repo (`./sso-keycloak/docker/kc-cron-job`) with name `github-siteminder-tests-private-key.pem`
+
 ## Deployment
 
 The cron jobs can be redeployed from the [helm chart](../../helm/kc-cron-job/README.md). The repository contains make commands for deploying and upgrading.
