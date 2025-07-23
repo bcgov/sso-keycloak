@@ -12,9 +12,9 @@ The deployment steps for a new namespace follow:
 
 ### Github App for Siteminder Tests
 
-- Navigate to SSO Team's Github account profile settings and create a Github App
+- Navigate to SSO Team's Github account profile settings and create a Github App. Choose `Any account` for this app to be installed.
 - Assign `Actions: read, write` permissions
-- Install the app on the user account
+- Install the app on the `bcgov` org and `sso-keycloak` repository
 - Generate a private key and save it in the root of the crob job repo (`./sso-keycloak/docker/kc-cron-job`) with name `github-siteminder-tests-private-key.pem`
 
 ### Create `kc-cron-job-secret` secret

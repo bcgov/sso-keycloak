@@ -6,7 +6,7 @@ import { sendRcNotification } from './helpers.js';
 
 dotenv.config();
 
-const privateKey = fs.readFileSync('./github-siteminder-tests-private-key.pem', 'utf8');
+const privateKey = fs.readFileSync('./keys/github-siteminder-tests-private-key.pem', 'utf8');
 
 async function runTests(octokit, environment) {
   try {
@@ -31,9 +31,11 @@ async function runTests(octokit, environment) {
 }
 
 async function main() {
+  console.info('Starting siteminder-tests');
   try {
     let octokit;
     try {
+      console.info('Authenticating with github application');
       octokit = new Octokit({
         authStrategy: createAppAuth,
         auth: {
@@ -49,11 +51,13 @@ async function main() {
       throw new Error('Failed to authenticate with github application');
     }
 
+    console.info('Starting siteminder tests...');
     await runTests(octokit, 'DEV');
 
     await runTests(octokit, 'TEST');
 
     if (new Date().getDay() === 0) await runTests(octokit, 'PROD');
+    console.info('Completed');
   } catch (err) {
     console.error(err);
     await sendRcNotification('siteminder-tests', `**${err}** \n\n` + JSON.stringify(err), true);
