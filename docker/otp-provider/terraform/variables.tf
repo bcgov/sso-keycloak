@@ -186,9 +186,17 @@ variable "otp_resend_interval_minutes" {
   default     = ""
 }
 
-variable "grafana_admin_password" {
+variable "grafana_oauth_client_secret" {
   sensitive = true
   type      = string
+}
+
+variable "grafana_oath_client_id" {
+  type = string
+}
+
+variable "keycloak_base_url" {
+  type = string
 }
 
 variable "enable_grafana" {

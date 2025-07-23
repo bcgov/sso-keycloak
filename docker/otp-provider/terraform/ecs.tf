@@ -228,12 +228,53 @@ resource "aws_iam_role" "ecs_task_execution" {
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
     Statement = [{
-      Action = "sts:AssumeRole",
+      Action = [
+        "sts:AssumeRole"
+      ],
       Effect = "Allow",
       Principal = {
         Service = "ecs-tasks.amazonaws.com"
       }
     }]
+  })
+}
+
+resource "aws_iam_role" "grafana_task_role" {
+  count = var.enable_grafana ? 1 : 0
+  name  = "grafana-task-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "ecs-tasks.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy" "grafana_task_policy" {
+  count = var.enable_grafana ? 1 : 0
+  name  = "grafana-task-policy"
+  role  = aws_iam_role.grafana_task_role[0].id
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "elasticfilesystem:ClientMount",
+          "elasticfilesystem:ClientWrite",
+          "elasticfilesystem:ClientRootAccess"
+        ]
+        Resource = "*"
+      }
+    ]
   })
 }
 
@@ -253,6 +294,7 @@ resource "aws_ecs_task_definition" "grafana" {
   memory = "512"
 
   execution_role_arn = aws_iam_role.ecs_task_execution[0].arn
+  task_role_arn      = aws_iam_role.grafana_task_role[0].arn
 
   container_definitions = jsonencode([
     {
@@ -265,11 +307,14 @@ resource "aws_ecs_task_definition" "grafana" {
           protocol      = "tcp"
         }
       ]
-      environment = [
+      mountPoints = [
         {
-          name  = "GF_SECURITY_ADMIN_PASSWORD"
-          value = var.grafana_admin_password
-        },
+          sourceVolume  = "efs-volume"
+          containerPath = "/var/lib/grafana"
+          readOnly      = false
+        }
+      ]
+      environment = [
         {
           name  = "GF_SERVER_ROOT_URL"
           value = "https://${var.custom_domain_name}/grafana/"
@@ -277,10 +322,87 @@ resource "aws_ecs_task_definition" "grafana" {
         {
           name  = "GF_SERVER_SERVE_FROM_SUB_PATH"
           value = "true"
-        }
+        },
+        {
+          name  = "GF_AUTH_GENERIC_OAUTH_NAME",
+          value = "SSO Pathfinder${var.app_env == "development" ? " Sandbox" : ""}"
+        },
+        {
+          name  = "GF_AUTH_GENERIC_OAUTH_ENABLED",
+          value = "true"
+        },
+        {
+          name  = "GF_AUTH_GENERIC_OAUTH_AUTH_URL",
+          value = "${var.keycloak_base_url}/auth/realms/standard/protocol/openid-connect/auth"
+        },
+        {
+          name  = "GF_AUTH_GENERIC_OAUTH_API_URL",
+          value = "${var.keycloak_base_url}/auth/realms/standard/protocol/openid-connect/userinfo"
+        },
+        {
+          name  = "GF_AUTH_GENERIC_OAUTH_LOGIN_ATTRIBUTE_PATH",
+          value = "preferred_username"
+        },
+        {
+          name  = "GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH",
+          value = "contains(client_roles[*], 'grafanaadmin') && 'GrafanaAdmin' || contains(client_roles[*], 'admin') && 'Admin' || contains(client_roles[*], 'editor') && 'Editor'"
+        },
+        {
+          name  = "GF_AUTH_GENERIC_OAUTH_TOKEN_URL",
+          value = "${var.keycloak_base_url}/auth/realms/standard/protocol/openid-connect/token"
+        },
+        {
+          name  = "GF_AUTH_GENERIC_OAUTH_SCOPES",
+          value = "openid"
+        },
+        {
+          name  = "GF_AUTH_GENERIC_OAUTH_EMPTY_SCOPES",
+          value = "false"
+        },
+        {
+          name  = "GF_AUTH_GENERIC_OAUTH_USE_PKCE",
+          value = "true"
+        },
+        {
+          name  = "GF_AUTH_GENERIC_OAUTH_EMAIL_ATTRIBUTE_PATH",
+          value = "email"
+        },
+        {
+          name  = "GF_AUTH_GENERIC_OAUTH_NAME_ATTRIBUTE_PATH",
+          value = "display_name"
+        },
+        {
+          name  = "GF_AUTH_OAUTH_ALLOW_INSECURE_EMAIL_LOOKUP",
+          value = "true"
+        },
+        {
+          name  = "GF_AUTH_GENERIC_OAUTH_CLIENT_ID",
+          value = var.grafana_oath_client_id
+        },
+        {
+          name  = "GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET",
+          value = var.grafana_oauth_client_secret
+        },
+        {
+          name  = "GF_AUTH_DISABLE_LOGIN_FORM",
+          value = "true"
+        },
       ]
     }
   ])
+
+  volume {
+    name = "efs-volume"
+
+    efs_volume_configuration {
+      file_system_id     = aws_efs_file_system.grafana[0].id
+      transit_encryption = "ENABLED"
+      authorization_config {
+        access_point_id = aws_efs_access_point.grafana[0].id
+        iam             = "ENABLED"
+      }
+    }
+  }
 }
 
 resource "aws_ecs_service" "grafana" {
