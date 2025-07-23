@@ -46,7 +46,7 @@ spec:
                       key: rc-webhook
               volumeMounts:
                 - name: github-siteminder-tests-private-key
-                  mountPath: "/usr/src/app"
+                  mountPath: "/usr/src/app/keys"
                   readOnly: true
           volumes:
           - name: github-siteminder-tests-private-key
