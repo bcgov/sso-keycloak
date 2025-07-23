@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - 'dev'
+      - fix/gh-actions
 
 env:
   IMAGE_NAME: bcgov-sso/otp-provider
@@ -16,7 +17,7 @@ jobs:
 
     steps:
       - name: Set env to development
-        if: (github.ref == 'refs/heads/dev' && github.event_name == 'push')
+        # if: (github.ref == 'refs/heads/dev' && github.event_name == 'push')
         run: |
           cat >> $GITHUB_ENV <<EOF
           APP_ENV=development
@@ -45,20 +46,20 @@ jobs:
           role-to-assume: ${{ secrets.DEV_OTP_TF_DEPLOY_ROLE_ARN }}
           aws-region: ca-central-1
 
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
+      # - name: Login to Amazon ECR
+      #   id: login-ecr
+      #   uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Build, tag, and push docker image to Amazon ECR
-        env:
-          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          REPOSITORY: ${{ env.IMAGE_NAME }}
-          IMAGE_TAG: latest
-        run: |
-          echo "Building and pushing Docker image to ECR..."
-          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
-          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
-        working-directory: ./docker/otp-provider
+      # - name: Build, tag, and push docker image to Amazon ECR
+      #   env:
+      #     REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+      #     REPOSITORY: ${{ env.IMAGE_NAME }}
+      #     IMAGE_TAG: latest
+      #   run: |
+      #     echo "Building and pushing Docker image to ECR..."
+      #     docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
+      #     docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+      #   working-directory: ./docker/otp-provider
 
       - name: Terraform Variables
         run: |
@@ -89,11 +90,9 @@ jobs:
           otp_resend_interval_minutes="[1,2,5,60]"
           grafana_admin_password="${{env.GRAFANA_ADMIN_PASS}}"
           enable_grafana=true
-
           grafana_oauth_client_secret=${{env.GRAFANA_OAUTH_CLIENT_SECRET}}
           grafana_oath_client_id=${{env.GRAFANA_OATH_CLIENT_ID}}
           keycloak_base_url=${{env.KEYCLOAK_BASE_URL}}
-
           EOF
 
         working-directory: ./docker/otp-provider/terraform
@@ -109,11 +108,11 @@ jobs:
         working-directory: ./docker/otp-provider/terraform
         continue-on-error: true
 
-      - name: Terraform Plan Status
-        if: steps.plan.outcome == 'failure'
-        run: exit 1
+      # - name: Terraform Plan Status
+      #   if: steps.plan.outcome == 'failure'
+      #   run: exit 1
 
-      - name: Terraform Apply
-        if: github.event_name == 'push'
-        run: terraform apply -auto-approve
-        working-directory: ./docker/otp-provider/terraform
+      # - name: Terraform Apply
+      #   if: github.event_name == 'push'
+      #   run: terraform apply -auto-approve
+      #   working-directory: ./docker/otp-provider/terraform
