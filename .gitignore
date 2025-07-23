@@ -60,3 +60,4 @@ site
 venv
 build
 secrets.auto.tfvars
+**/*.pem

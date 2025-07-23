@@ -13,7 +13,7 @@ enableRemoveInactiveUsersJob: true
 
 enableRemoveVcUsersJob: true
 
-enableSiteminderTests: true
+enableSiteminderTests: false
 
 namespace:
   rmInactiveUsers: 'eb75ad-tools'
