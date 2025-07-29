@@ -32,6 +32,7 @@ We've made this the #1 feature of this service. You can get your DEV, TEST, and 
 - GitHub associated with BC Gov Org -- Allows login of GitHub BC Gov Org members
 - Digital Credentials -- Allows login via _BC Wallet_
 - BC Services Card -- Allows login via _BC Services Card App_
+- OTP (One-Time Password) -- Allows users to login with a temporary code sent via email
 
 ### OIDC protocol
 
