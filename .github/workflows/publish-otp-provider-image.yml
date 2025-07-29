@@ -1,9 +1,20 @@
 name: Create and publish Otp Provider Docker image
 
 on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Choose environment'
+        required: true
+        default: 'development'
+        type: choice
+        options:
+          - development
+          - production
   push:
     branches:
       - 'dev'
+      - 'main'
 
 env:
   IMAGE_NAME: bcgov-sso/otp-provider
@@ -16,7 +27,7 @@ jobs:
 
     steps:
       - name: Set env to development
-        if: (github.ref == 'refs/heads/dev' && github.event_name == 'push')
+        if: (github.ref == 'refs/heads/dev' && github.event_name == 'push') || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'development')
         run: |
           cat >> $GITHUB_ENV <<EOF
           APP_ENV=development
@@ -32,6 +43,26 @@ jobs:
           GRAFANA_OAUTH_CLIENT_SECRET=${{secrets.DEV_GRAFANA_OAUTH_CLIENT_SECRET}}
           GRAFANA_OATH_CLIENT_ID=${{secrets.DEV_GRAFANA_OATH_CLIENT_ID}}
           KEYCLOAK_BASE_URL=${{secrets.DEV_KEYCLOAK_BASE_URL}}
+
+          EOF
+
+      - name: Set env to production
+        if: (github.ref == 'refs/heads/main' && github.event_name == 'push') || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'production')
+        run: |
+          cat >> $GITHUB_ENV <<EOF
+          APP_ENV=production
+          APP_URL=https://otp.loginproxy.gov.bc.ca
+          TF_STATE_BUCKET=xgr00q-prod-sso-otp-provider
+          TF_STATE_BUCKET_KEY=sso-otp-provider.tfstate
+          TF_STATE_DYNAMODB_TABLE=xgr00q-prod-otp-state-locking
+          CUSTOM_DOMAIN_NAME=otp.loginproxy.gov.bc.ca
+          CORS_ORIGINS=https://dev.loginproxy.gov.bc.ca,https://test.loginproxy.gov.bc.ca,https://loginproxy.gov.bc.ca,https://sso-playground.apps.gold.devops.gov.bc.ca
+          NODE_ENV=production
+          HASH_SALT=${{ secrets.PROD_HASH_SALT }}
+
+          GRAFANA_OAUTH_CLIENT_SECRET=${{secrets.PROD_GRAFANA_OAUTH_CLIENT_SECRET}}
+          GRAFANA_OATH_CLIENT_ID=${{secrets.PROD_GRAFANA_OATH_CLIENT_ID}}
+          KEYCLOAK_BASE_URL=${{secrets.PROD_KEYCLOAK_BASE_URL}}
 
           EOF
       - name: Checkout repository
@@ -86,7 +117,7 @@ jobs:
           otp_validity_minutes="5"
           otp_attempts_allowed="5"
           otp_resends_allowed_per_day="4"
-          otp_resend_interval_minutes="[1,2,5,60]"
+          otp_resend_interval_minutes="[1,2,5,25]"
           grafana_admin_password="${{env.GRAFANA_ADMIN_PASS}}"
           enable_grafana=true
           grafana_oauth_client_secret="${{env.GRAFANA_OAUTH_CLIENT_SECRET}}"
