@@ -11,10 +11,13 @@ on:
         options:
           - development
           - production
+      version:
+        description: 'Image tag (e.g. v1.2.3)'
+        required: true
+        default: 'latest'
   push:
     branches:
       - 'dev'
-      - 'main'
 
 env:
   IMAGE_NAME: bcgov-sso/otp-provider
@@ -47,7 +50,7 @@ jobs:
           EOF
 
       - name: Set env to production
-        if: (github.ref == 'refs/heads/main' && github.event_name == 'push') || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'production')
+        if: (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'production')
         run: |
           cat >> $GITHUB_ENV <<EOF
           APP_ENV=production
@@ -61,7 +64,7 @@ jobs:
           HASH_SALT=${{ secrets.PROD_HASH_SALT }}
 
           GRAFANA_OAUTH_CLIENT_SECRET=${{secrets.PROD_GRAFANA_OAUTH_CLIENT_SECRET}}
-          GRAFANA_OATH_CLIENT_ID=${{secrets.PROD_GRAFANA_OATH_CLIENT_ID}}
+          GRAFANA_OATH_CLIENT_ID=${{secrets.PROD_GRAFANA_OAUTH_CLIENT_ID}}
           KEYCLOAK_BASE_URL=${{secrets.PROD_KEYCLOAK_BASE_URL}}
 
           EOF
@@ -70,10 +73,18 @@ jobs:
 
       - uses: hashicorp/setup-terraform@v3
 
-      - name: Configure AWS Credentials
+      - name: Configure AWS Dev Credentials
+        if: (github.ref == 'refs/heads/dev' && github.event_name == 'push') || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'development')
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.DEV_OTP_TF_DEPLOY_ROLE_ARN }}
+          aws-region: ca-central-1
+
+      - name: Configure AWS Prod Credentials
+        if: (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'production')
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.PROD_OTP_TF_DEPLOY_ROLE_ARN }}
           aws-region: ca-central-1
 
       - name: Login to Amazon ECR
@@ -84,7 +95,7 @@ jobs:
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: ${{ env.IMAGE_NAME }}
-          IMAGE_TAG: latest
+          IMAGE_TAG: ${{ github.event.inputs.version || 'latest' }}
         run: |
           echo "Building and pushing Docker image to ECR..."
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
@@ -123,6 +134,7 @@ jobs:
           grafana_oauth_client_secret="${{env.GRAFANA_OAUTH_CLIENT_SECRET}}"
           grafana_oath_client_id="${{env.GRAFANA_OATH_CLIENT_ID}}"
           keycloak_base_url="${{env.KEYCLOAK_BASE_URL}}"
+          image_tag="${{ github.event.inputs.version || 'latest' }}"
 
           EOF
 
