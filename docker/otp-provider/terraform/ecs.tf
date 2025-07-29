@@ -377,7 +377,7 @@ resource "aws_ecs_task_definition" "grafana" {
         },
         {
           name  = "GF_AUTH_GENERIC_OAUTH_CLIENT_ID",
-          value = var.grafana_oath_client_id
+          value = var.grafana_oauth_client_id
         },
         {
           name  = "GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET",

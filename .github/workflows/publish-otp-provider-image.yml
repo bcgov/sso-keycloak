@@ -44,7 +44,7 @@ jobs:
           HASH_SALT=${{ secrets.DEV_HASH_SALT }}
 
           GRAFANA_OAUTH_CLIENT_SECRET=${{secrets.DEV_GRAFANA_OAUTH_CLIENT_SECRET}}
-          GRAFANA_OATH_CLIENT_ID=${{secrets.DEV_GRAFANA_OATH_CLIENT_ID}}
+          GRAFANA_OAUTH_CLIENT_ID=${{secrets.DEV_GRAFANA_OAUTH_CLIENT_ID}}
           KEYCLOAK_BASE_URL=${{secrets.DEV_KEYCLOAK_BASE_URL}}
 
           EOF
@@ -64,7 +64,7 @@ jobs:
           HASH_SALT=${{ secrets.PROD_HASH_SALT }}
 
           GRAFANA_OAUTH_CLIENT_SECRET=${{secrets.PROD_GRAFANA_OAUTH_CLIENT_SECRET}}
-          GRAFANA_OATH_CLIENT_ID=${{secrets.PROD_GRAFANA_OAUTH_CLIENT_ID}}
+          GRAFANA_OAUTH_CLIENT_ID=${{secrets.PROD_GRAFANA_OAUTH_CLIENT_ID}}
           KEYCLOAK_BASE_URL=${{secrets.PROD_KEYCLOAK_BASE_URL}}
 
           EOF
@@ -132,7 +132,7 @@ jobs:
           grafana_admin_password="${{env.GRAFANA_ADMIN_PASS}}"
           enable_grafana=true
           grafana_oauth_client_secret="${{env.GRAFANA_OAUTH_CLIENT_SECRET}}"
-          grafana_oath_client_id="${{env.GRAFANA_OATH_CLIENT_ID}}"
+          grafana_oauth_client_id="${{env.GRAFANA_OAUTH_CLIENT_ID}}"
           keycloak_base_url="${{env.KEYCLOAK_BASE_URL}}"
           image_tag="${{ github.event.inputs.version || 'latest' }}"
 
