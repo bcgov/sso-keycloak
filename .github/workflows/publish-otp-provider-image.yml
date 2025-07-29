@@ -141,6 +141,8 @@ jobs:
           image_tag="${{ github.event.inputs.version || 'latest' }}"
           subnet_a="${{env.SUBNET_A}}"
           subnet_b="${{env.SUBNET_B}}"
+          lock_table_name="${{env.TF_STATE_DYNAMODB_TABLE}}"
+          bucket_name="${{env.TF_STATE_BUCKET}}"
 
           EOF
 
