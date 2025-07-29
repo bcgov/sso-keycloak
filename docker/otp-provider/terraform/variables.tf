@@ -191,7 +191,7 @@ variable "grafana_oauth_client_secret" {
   type      = string
 }
 
-variable "grafana_oath_client_id" {
+variable "grafana_oauth_client_id" {
   type = string
 }
 
