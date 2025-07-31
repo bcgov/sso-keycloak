@@ -91,7 +91,12 @@ test('OTP Attempts Limit', async ({ page }, testInfo) => {
   await expect(page.locator('#otp-error')).toMatchAriaSnapshot(
     `- text: You've tried too many times. Please send a new code.`,
   );
-  await expect(page.getByRole('button', { name: 'Continue' })).toBeDisabled();
+  // Assert all inputs are disabled
+  const inputs = await page.$$('input');
+  for (const input of inputs) {
+    const isDisabled = await input.isDisabled();
+    expect(isDisabled).toBe(true);
+  }
 });
 
 test('OTP Success', async ({ page }, testInfo) => {
