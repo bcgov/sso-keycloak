@@ -7,6 +7,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const waitTimeElement = document.getElementById('wait-time-text') as HTMLElement | null;
   const codeContainer = document.getElementById('new-code-text');
   const loginButton = document.getElementById('login-button') as HTMLButtonElement;
+  let submitting = false;
+  if (loginButton) loginButton.remove();
+
   if (!form || !errorEl) return;
 
   form.setAttribute('novalidate', '');
@@ -20,15 +23,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
+    if (submitting) {
+      return;
+    }
+    submitting = true;
     const codes = digitInputs.map((input) => input.value).filter((val) => val !== '');
     const [, error] = otpValidator(codes);
     if (error) {
-      setFormError(errorEl, loginButton, error as string);
+      setFormError(errorEl, error as string);
+      submitting = false;
       const firstEmptyInput = digitInputs.find((input) => input?.value === '');
       if (firstEmptyInput) firstEmptyInput.focus();
       else digitInputs[0].focus();
     } else {
-      loginButton.disabled = true;
       form.submit();
     }
   });
@@ -41,9 +48,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const value = e.data;
       if (!value) return;
 
-      clearFormError(errorEl, loginButton);
+      clearFormError(errorEl);
       if (!otpValidDigits.includes(value)) {
-        setFormError(errorEl, loginButton, errors.OTP_TYPES);
+        setFormError(errorEl, errors.OTP_TYPES);
         (e.target as HTMLInputElement)?.focus();
         return;
       }
@@ -54,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
       else {
         const codes = digitInputs.map((input) => input.value);
         const [, error] = otpValidator(codes);
-        if (error) setFormError(errorEl, loginButton, error as string);
+        if (error) setFormError(errorEl, error as string);
         else form.requestSubmit();
       }
     });
@@ -77,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const [, error] = otpValidator(fullCode);
       if (error) {
-        setFormError(errorEl, loginButton, error as string);
+        setFormError(errorEl, error as string);
         return;
       }
 
@@ -90,12 +97,15 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         form.requestSubmit();
       }
-      if (e.key === 'Backspace' && input.value === '') {
+      if (e.key === 'Backspace') {
         e.preventDefault();
-        clearFormError(errorEl, loginButton);
-        if (i > 0) {
+        clearFormError(errorEl);
+        // When passed the first input and hitting backspace on an empty field, want to clear and focus the previous input
+        if (input.value === '' && i > 0) {
           digitInputs[i - 1].value = '';
           digitInputs[i - 1].focus();
+        } else {
+          input.value = '';
         }
       }
     });
