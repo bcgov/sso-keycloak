@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const [emailValid, error] = emailValidator(emailContent);
 
     if (!emailValid) {
-      setFormError(errorField, submitButton, error as string);
+      setFormError(errorField, error as string, submitButton);
       return;
     }
     form.submit();

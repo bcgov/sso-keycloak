@@ -55,18 +55,21 @@ export const getUID = () => location.pathname.split('/')[location.pathname.split
 /**
  * Set the form error message.
  * @param errorEl The HTML Element in which to render the message.
- * @param submitButton The HTML Button Element to submit the form.
  * @param errorText The error message to display.
+ * @param submitButton The HTML Button Element to submit the form.
  */
-export const setFormError = (errorEl: HTMLElement, submitButton: HTMLButtonElement, errorText: string) => {
+export const setFormError = (errorEl: HTMLElement, errorText: string, submitButton?: HTMLButtonElement,) => {
   clearFormError(errorEl, submitButton);
-  submitButton.disabled = true;
-  const img = document.createElement('img');
-  img.src = '/img/caution.svg';
-  img.alt = 'Caution';
-  img.className = 'w-16 h-16';
-  submitButton.appendChild(img);
   errorEl.textContent = errorText;
+
+  if (submitButton) {
+    submitButton.disabled = true;
+    const img = document.createElement('img');
+    img.src = '/img/caution.svg';
+    img.alt = 'Caution';
+    img.className = 'w-16 h-16';
+    submitButton.appendChild(img);
+  }
 };
 
 /**
@@ -74,9 +77,11 @@ export const setFormError = (errorEl: HTMLElement, submitButton: HTMLButtonEleme
  * @param errorEl The HTML Element in which to render the message.
  * @param submitButton The HTML Button Element to submit the form.
  */
-export const clearFormError = (errorEl: HTMLElement, submitButton: HTMLButtonElement) => {
+export const clearFormError = (errorEl: HTMLElement, submitButton?: HTMLButtonElement) => {
   errorEl.textContent = '';
-  submitButton.disabled = false;
-  const cautionImg = submitButton.querySelector('img');
-  if (cautionImg) cautionImg.remove();
+  if (submitButton) {
+    submitButton.disabled = false;
+    const cautionImg = submitButton.querySelector('img');
+    if (cautionImg) cautionImg.remove();
+  }
 };
