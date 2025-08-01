@@ -54,10 +54,10 @@ test('OTP submits when all digits are filled regardless of order', async ({ page
     await page.getByRole('textbox', { name: `Digit ${i + 1}` }).fill(currentOtp[i]);
   }
   // Fill the 6th digit
-  await page.getByRole('textbox', { name: `Digit ${6}` }).fill(currentOtp[5]);
+  await page.getByRole('textbox', { name: "Digit 6" }).fill(currentOtp[5]);
 
   // Fill the 5th digit.
-  await page.getByRole('textbox', { name: `Digit ${5}` }).fill(currentOtp[4]);
+  await page.getByRole('textbox', { name: "Digit 5" }).fill(currentOtp[4]);
 
   // Submission should run and send to the redirect
   await page.waitForRequest((req) => {
