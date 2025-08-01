@@ -1,7 +1,8 @@
 import { test, expect } from '@playwright/test';
 import models from '../src/modules/sequelize/models';
 import { config } from '../src/config';
-import { changeOTP, fillOTP, initURL, clientId } from './util';
+import {errors} from '../src/utils/shared'
+import { changeOTP, fillOTP, initURL, clientId, redirectURI } from './util';
 
 const otpModel = models.get('Otp');
 const eventModel = models.get('Event');
@@ -22,8 +23,7 @@ test('OTP Validations', async ({ page }, testInfo) => {
   await expect(page.getByRole('heading')).toMatchAriaSnapshot(`- heading "Enter your verification code" [level=2]`);
 
   await page.getByRole('textbox', { name: 'Digit 1' }).fill('a');
-  await expect(page.locator('#otp-error')).toMatchAriaSnapshot(`- text: OTP Must only include digits [0-9].`);
-
+  await expect(page.locator('#otp-error')).toHaveText(errors.OTP_TYPES);
   const currentOtp = await otpModel
     .findOne({ where: { email: `${testInfo.project.name}@b.com`, active: true } })
     .then((res) => res.otp);
@@ -46,27 +46,26 @@ test('OTP Submission Order', async ({ page }, testInfo) => {
   await expect(page.getByRole('heading')).toMatchAriaSnapshot(`- heading "Enter your verification code" [level=2]`);
 
   await page.getByRole('textbox', { name: 'Digit 1' }).fill('a');
-  await expect(page.locator('#otp-error')).toMatchAriaSnapshot(`- text: OTP Must only include digits [0-9].`);
+  await expect(page.locator('#otp-error')).toHaveText(errors.OTP_TYPES);
 
   const currentOtp = await otpModel
     .findOne({ where: { email: `${testInfo.project.name}@b.com`, active: true } })
     .then((res) => res.otp);
-  const wrongOTP = changeOTP(String(currentOtp));
 
   // Fill the first 4 digits
   for (let i = 0; i < 4; i++) {
-    await page.getByRole('textbox', { name: `Digit ${i + 1}` }).fill(wrongOTP[i]);
+    await page.getByRole('textbox', { name: `Digit ${i + 1}` }).fill(currentOtp[i]);
   }
   // Fill the 6th digit
-  await page.getByRole('textbox', { name: `Digit ${6}` }).fill(wrongOTP[5]);
+  await page.getByRole('textbox', { name: `Digit ${6}` }).fill(currentOtp[5]);
 
-  // Fill the 5th digit. Validation should run as this completes the entry
-  await page.getByRole('textbox', { name: `Digit ${5}` }).fill(wrongOTP[4]);
-  await page.waitForURL('**/login');
+  // Fill the 5th digit.
+  await page.getByRole('textbox', { name: `Digit ${5}` }).fill(currentOtp[4]);
 
-  await expect(page.locator('#otp-error')).toMatchAriaSnapshot(
-    `- text: Invalid code entered. Please try again or send a new code.`,
-  );
+  // Submission should run and send to the redirect
+  await page.waitForRequest((req) => {
+    return req.url().startsWith(redirectURI);
+  });
 });
 
 test('OTP Resend Code Countdown', async ({ page }, testInfo) => {
