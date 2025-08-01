@@ -45,12 +45,12 @@ export const generateOtp = async (oidcProvider: Provider) => {
         uid,
         prompt: { name },
         result: oidcResult,
-        params: {client_id: clientID}
+        params: { client_id: clientID },
       } = await oidcProvider.interactionDetails(req, res);
 
       if (name === 'login') {
         // Use the provided email falling back to session email. Session email applies when regenerating codes after already reaching the OTP entry screen.
-        const email = req.body.email || (oidcResult?.login?.email) || '';
+        const email = req.body.email || oidcResult?.login?.email || '';
 
         // Rerender signin page with email error if invalid
         let [emailValid, emailValidityError] = emailValidator(email);
@@ -118,7 +118,7 @@ export const login = async (oidcProvider: Provider) => {
         uid,
         prompt: { name },
         result: oidcResult,
-        params: {client_id: clientID}
+        params: { client_id: clientID },
       } = await oidcProvider.interactionDetails(req, res);
 
       if (name === 'login') {
@@ -128,7 +128,7 @@ export const login = async (oidcProvider: Provider) => {
         // Run form validation server side
         const [otp, otpError] = otpValidator([code1, code2, code3, code4, code5, code6]);
         if (otpError) {
-          const waitTime = getOtpWaitTime(email, delayMultiplier);
+          const waitTime = getOtpWaitTime(email, clientID as string, delayMultiplier);
           return res.render('otp', {
             uid,
             email,

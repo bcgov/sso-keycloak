@@ -19,9 +19,9 @@ export const requestOtp = async (email: string, clientID: string, delayMultiplie
   return { waitTime, error, newOtp };
 };
 
-export const getOtpWaitTime = async (email: string, delayMultiplier: number = 60) => {
-  const waitTimeResponse = (await sequelize.query(`select * from get_otp_wait_time(?,?,?)`, {
-    replacements: [email, OTP_RESEND_INTERVAL_MINUTES, delayMultiplier],
+export const getOtpWaitTime = async (email: string, clientId: string, delayMultiplier: number = 60) => {
+  const waitTimeResponse = (await sequelize.query(`select * from get_otp_wait_time(?,?,?,?)`, {
+    replacements: [email, OTP_RESEND_INTERVAL_MINUTES, clientId, delayMultiplier],
   })) as [{ can_request: boolean; wait_seconds: number; otp_count: number }[], unknown];
   return waitTimeResponse[0][0].wait_seconds;
 };
@@ -31,6 +31,6 @@ export const verifyOtp = async (email: string, otp: string, clientID: string, de
     replacements: [email, otp, clientID, OTP_ATTEMPTS_ALLOWED, OTP_RESEND_INTERVAL_MINUTES, delayMultiplier],
   })) as [{ success: boolean; wait_time: number; error: ErrorKeys | null }, unknown][];
 
-  const {  wait_time: waitTime, error } = queryResult[0][0];
-  return {waitTime, error}
+  const { wait_time: waitTime, error } = queryResult[0][0];
+  return { waitTime, error };
 };
