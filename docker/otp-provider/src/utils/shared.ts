@@ -10,7 +10,7 @@ export const errors = {
   INVALID_EMAIL: 'Invalid email.',
   EXPIRED_OTP_WITH_RESEND: 'Your OTP has expired. Please request a new one to continue.',
   OTP_LENGTH: 'Please provide 6 digits.',
-  OTP_TYPES: 'OTP Must only include digits [0-9].'
+  OTP_TYPES: 'OTP must only include digits.'
 };
 
 export const emailValidator = (email?: string): [boolean, null | string] => {
