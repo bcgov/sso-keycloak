@@ -1,7 +1,8 @@
 import { test, expect } from '@playwright/test';
 import models from '../src/modules/sequelize/models';
 import { config } from '../src/config';
-import { changeOTP, fillOTP, initURL, clientId } from './util';
+import {errors} from '../src/utils/shared'
+import { changeOTP, fillOTP, initURL, clientId, redirectURI } from './util';
 
 const otpModel = models.get('Otp');
 const eventModel = models.get('Event');
@@ -22,8 +23,7 @@ test('OTP Validations', async ({ page }, testInfo) => {
   await expect(page.getByRole('heading')).toMatchAriaSnapshot(`- heading "Enter your verification code" [level=2]`);
 
   await page.getByRole('textbox', { name: 'Digit 1' }).fill('a');
-  await expect(page.locator('#otp-error')).toMatchAriaSnapshot(`- text: OTP Must only include digits [0-9].`);
-
+  await expect(page.locator('#otp-error')).toHaveText(errors.OTP_TYPES);
   const currentOtp = await otpModel
     .findOne({ where: { email: `${testInfo.project.name}@b.com`, active: true } })
     .then((res) => res.otp);
@@ -34,6 +34,35 @@ test('OTP Validations', async ({ page }, testInfo) => {
   await expect(page.locator('#otp-error')).toMatchAriaSnapshot(
     `- text: Invalid code entered. Please try again or send a new code.`,
   );
+});
+
+test('OTP submits when all digits are filled regardless of order', async ({ page }, testInfo) => {
+  await page.goto(initURL);
+
+  // Enter email and go to OTP page
+  await page.getByRole('textbox', { name: 'Email' }).fill(`${testInfo.project.name}@b.com`);
+  await page.getByRole('button', { name: 'Continue' }).click();
+  await page.waitForURL('**/otp');
+  await expect(page.getByRole('heading')).toMatchAriaSnapshot(`- heading "Enter your verification code" [level=2]`);
+
+  const currentOtp = await otpModel
+    .findOne({ where: { email: `${testInfo.project.name}@b.com`, active: true } })
+    .then((res) => res.otp);
+
+  // Fill the first 4 digits
+  for (let i = 0; i < 4; i++) {
+    await page.getByRole('textbox', { name: `Digit ${i + 1}` }).fill(currentOtp[i]);
+  }
+  // Fill the 6th digit
+  await page.getByRole('textbox', { name: "Digit 6" }).fill(currentOtp[5]);
+
+  // Fill the 5th digit.
+  await page.getByRole('textbox', { name: "Digit 5" }).fill(currentOtp[4]);
+
+  // Submission should run and send to the redirect
+  await page.waitForRequest((req) => {
+    return req.url().startsWith(redirectURI);
+  });
 });
 
 test('OTP Resend Code Countdown', async ({ page }, testInfo) => {

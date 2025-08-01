@@ -57,13 +57,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
       (e.target as HTMLInputElement).value = value;
       const nextInput = digitInputs[i + 1];
-      if (nextInput) nextInput.focus();
-      else {
+      // Validate and submit whenever all inputs are filled
+      if (digitInputs.every(input => input.value !== '')) {
         const codes = digitInputs.map((input) => input.value);
         const [, error] = otpValidator(codes);
         if (error) setFormError(errorEl, error as string);
         else form.requestSubmit();
       }
+      else if (nextInput) nextInput.focus();
     });
 
     input.addEventListener('paste', (e) => {
