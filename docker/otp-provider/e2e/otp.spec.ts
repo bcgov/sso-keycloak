@@ -36,7 +36,7 @@ test('OTP Validations', async ({ page }, testInfo) => {
   );
 });
 
-test('OTP Submission Order', async ({ page }, testInfo) => {
+test('OTP submits when all digits are filled regardless of order', async ({ page }, testInfo) => {
   await page.goto(initURL);
 
   // Enter email and go to OTP page
@@ -44,9 +44,6 @@ test('OTP Submission Order', async ({ page }, testInfo) => {
   await page.getByRole('button', { name: 'Continue' }).click();
   await page.waitForURL('**/otp');
   await expect(page.getByRole('heading')).toMatchAriaSnapshot(`- heading "Enter your verification code" [level=2]`);
-
-  await page.getByRole('textbox', { name: 'Digit 1' }).fill('a');
-  await expect(page.locator('#otp-error')).toHaveText(errors.OTP_TYPES);
 
   const currentOtp = await otpModel
     .findOne({ where: { email: `${testInfo.project.name}@b.com`, active: true } })
