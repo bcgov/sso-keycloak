@@ -2,35 +2,170 @@ import { config } from '../config';
 import { ErrorKeys, errors } from '../modules/errors';
 import { generateOtp } from '../utils/helpers';
 import sequelize from '../modules/sequelize/config';
+import {
+  createOtp,
+  deleteOtpsByEmail,
+  disableActiveOtp,
+  getActiveOtp,
+  getOtpCountAndRecentDate,
+  updateOtpAttempts,
+} from '../modules/sequelize/queries/otp';
+import { createEvent } from '../modules/sequelize/queries/event';
 
 const { OTP_RESEND_INTERVAL_MINUTES, OTP_ATTEMPTS_ALLOWED } = config;
 
-/**
- *
- * @param email
- * @param delayMultiplier Optional parameter setting the seconds per minute to wait on code resends. Can be reduced in test and local environments to avoid long delays. E.g. set to 1 in test workflows to delay in seconds and not minutes.
- */
-export const requestOtp = async (email: string, clientID: string, delayMultiplier: number = 60) => {
-  const newOtp = generateOtp();
-  const result = (await sequelize.query('select * from generate_otp_with_delays(?,?,?,?,?)', {
-    replacements: [email, OTP_RESEND_INTERVAL_MINUTES, newOtp, clientID, delayMultiplier],
-  })) as [{ code: string; wait_time: number; error: ErrorKeys | null }[], unknown];
-  const { wait_time: waitTime, error } = result[0][0];
-  return { waitTime, error, newOtp };
+const otpResendIntervalMinutes = JSON.parse(OTP_RESEND_INTERVAL_MINUTES || '[]');
+
+export const requestOtp = async (email: string, clientId: string) => {
+  const transaction = await sequelize.transaction();
+  let response = { waitTime: 0, error: '', newOtp: null };
+  try {
+    const otps = await getOtpCountAndRecentDate(email, clientId);
+
+    if (otps[0].otpCount > otpResendIntervalMinutes.length) {
+      await createEvent(
+        {
+          eventType: 'MAX_RESENDS',
+          clientId,
+          email,
+        },
+        transaction,
+      );
+      response.error = 'OTPS_LIMIT_REACHED';
+    } else if (otps[0].otpCount === '0') {
+      await createEvent(
+        {
+          eventType: 'REQUEST_OTP',
+          clientId,
+          email,
+        },
+        transaction,
+      );
+
+      const otp = await createOtp({ otp: generateOtp(), email, clientId }, transaction);
+      response.newOtp = otp.otp;
+    } else {
+      const currentWaitSeconds = await getOtpWaitTime(email, clientId);
+      if (currentWaitSeconds === 0) {
+        await createEvent(
+          {
+            eventType: 'RESEND_OTP',
+            clientId,
+            email,
+          },
+          transaction,
+        );
+        await disableActiveOtp({ email, clientId }, transaction);
+        const otp = await createOtp({ otp: generateOtp(), email, clientId }, transaction);
+        response.newOtp = otp.otp;
+      } else {
+        response = { ...response, waitTime: currentWaitSeconds, error: 'RESEND_TIMEOUT' };
+      }
+    }
+    await transaction.commit();
+    if (!response.error) response.waitTime = await getOtpWaitTime(email, clientId);
+    return response;
+  } catch (err) {
+    transaction.rollback();
+    throw new Error('Failed to create OTP');
+  }
 };
 
-export const getOtpWaitTime = async (email: string, clientId: string, delayMultiplier: number = 60) => {
-  const waitTimeResponse = (await sequelize.query(`select * from get_otp_wait_time(?,?,?,?)`, {
-    replacements: [email, OTP_RESEND_INTERVAL_MINUTES, clientId, delayMultiplier],
-  })) as [{ can_request: boolean; wait_seconds: number; otp_count: number }[], unknown];
-  return waitTimeResponse[0][0].wait_seconds;
+//delayMultiplier: seconds per minute to wait on code resends. Can be reduced in test and local environments to avoid long delays. E.g. set to 1 in test workflows to delay in seconds and not minutes.
+export const getOtpWaitTime = async (email: string, clientId: string) => {
+  const delayMultiplier = process.env.NODE_ENV === 'test' ? 1 : 60;
+
+  const otps = await getOtpCountAndRecentDate(email, clientId);
+
+  if (otps[0].otpCount === 0) return parseInt(otpResendIntervalMinutes[0]) * delayMultiplier;
+  else if (otps[0].otpCount > otpResendIntervalMinutes.length) return 0;
+
+  const secondsElapsedSinceLastRequest = Math.ceil(
+    (new Date().getTime() - new Date(otps[0].lastCreatedAt).getTime()) / 1000,
+  );
+
+  return Math.max(
+    parseInt(otpResendIntervalMinutes[otps[0].otpCount - 1]) * delayMultiplier - secondsElapsedSinceLastRequest,
+    0,
+  );
 };
 
-export const verifyOtp = async (email: string, otp: string, clientID: string, delayMultiplier: number = 60) => {
-  const queryResult = (await sequelize.query('select * from validate_otp(?,?,?,?,?,?)', {
-    replacements: [email, otp, clientID, OTP_ATTEMPTS_ALLOWED, OTP_RESEND_INTERVAL_MINUTES, delayMultiplier],
-  })) as [{ success: boolean; wait_time: number; error: ErrorKeys | null }, unknown][];
+export const verifyOtp = async (email: string, otp: string, clientId: string) => {
+  let response = { waitTime: 0, error: '' };
+  const transaction = await sequelize.transaction();
+  try {
+    const activeOtp = await getActiveOtp({ email, clientId });
+    if (!activeOtp) {
+      await createEvent(
+        {
+          eventType: 'NO_ACTIVE_OTP',
+          clientId,
+          email,
+        },
+        transaction,
+      );
 
-  const { wait_time: waitTime, error } = queryResult[0][0];
-  return { waitTime, error };
+      response = { ...response, error: 'NO_ACTIVE_OTP' };
+    } else {
+      if (activeOtp.attempts >= OTP_ATTEMPTS_ALLOWED) {
+        ['INVALID_OTP', 'MAX_ATTEMPTS'].forEach(async (eventType) => {
+          await createEvent(
+            {
+              eventType,
+              clientId,
+              email,
+            },
+            transaction,
+          );
+        });
+
+        response = {
+          ...response,
+          waitTime: await getOtpWaitTime(email, clientId),
+          error: 'EXPIRED_OTP_WITH_RESEND',
+        };
+      } else if (activeOtp.otp !== otp) {
+        await updateOtpAttempts({ otp: activeOtp.otp, email, clientId, attempts: activeOtp.attempts + 1 }, transaction);
+        await createEvent(
+          {
+            eventType: 'INVALID_OTP',
+            clientId,
+            email,
+          },
+          transaction,
+        );
+        response = { ...response, waitTime: await getOtpWaitTime(email, clientId), error: 'INVALID_OTP' };
+      } else if (
+        new Date(activeOtp.createdAt).getTime() + parseInt(config.OTP_VALIDITY_MINUTES) * 60 * 1000 <
+        new Date().getTime()
+      ) {
+        await createEvent(
+          {
+            eventType: 'EXPIRED_OTP',
+            clientId,
+            email,
+          },
+          transaction,
+        );
+        response = { ...response, waitTime: await getOtpWaitTime(email, clientId), error: 'EXPIRED_OTP' };
+      } else {
+        await deleteOtpsByEmail({ email, clientId }, transaction);
+
+        await createEvent(
+          {
+            eventType: 'OTP_VERIFIED',
+            clientId,
+            email,
+          },
+          transaction,
+        );
+      }
+    }
+    await transaction.commit();
+    return response;
+  } catch (err) {
+    await transaction.rollback();
+    console.log(err);
+    throw new Error('Failed to verify OTP');
+  }
 };

@@ -1,64 +1,92 @@
-import { Op, QueryOptions } from 'sequelize';
+import { QueryOptions, Transaction } from 'sequelize';
 import models from '../models';
 import { config } from '../../../config';
+import sequelize from '../config';
+import { v4 as UUIDV4 } from 'uuid';
 
 const { OTP_VALIDITY_MINUTES, OTP_ATTEMPTS_ALLOWED } = config;
 
 const otpModel = models.get('Otp');
 
-export const createOtp = async (otp: string, email: string) => {
-  return await otpModel.create({
-    otp,
-    email,
-  });
+type OtpType = {
+  otp?: string;
+  email: string;
+  clientId: string;
+  attempts?: number;
+  active?: boolean;
 };
 
-export const updateOtpAttempts = async (otp: string, email: string, attempts: number) => {
-  await otpModel.update(
+export const createOtp = async (otp: OtpType, transaction?: Transaction) => {
+  return await otpModel.create(
     {
-      attempts,
-      updatedAt: new Date(),
+      id: UUIDV4(),
+      otp: otp.otp,
+      email: otp.email,
+      clientId: otp.clientId,
     },
     {
-      where: { otp, email },
+      transaction,
     },
   );
 };
 
-export const disableOtpsByEmail = async (email: string) => {
+export const updateOtpAttempts = async (otp: OtpType, transaction?: Transaction) => {
+  await otpModel.update(
+    {
+      attempts: otp.attempts,
+      updatedAt: new Date(),
+    },
+    {
+      where: { otp: otp.otp, email: otp.email, clientId: otp.clientId },
+    },
+    {
+      transaction,
+    },
+  );
+};
+
+export const disableActiveOtp = async (otp: OtpType, transaction?: Transaction) => {
   await otpModel.update(
     {
       active: false,
       updatedAt: new Date(),
     },
     {
-      where: { email },
+      where: { email: otp.email, clientId: otp.clientId },
+    },
+    {
+      transaction,
     },
   );
 };
 
-export const deleteOtpsByEmail = async (email: string) => {
+export const deleteOtpsByEmail = async (otp: OtpType, transaction?: Transaction) => {
   await otpModel.destroy({
-    where: { email },
+    where: { email: otp.email, clientId: otp.clientId },
   });
 };
 
-export const getActiveOtp = async (email: string, options: QueryOptions = { raw: true }) => {
+export const getActiveOtp = async (otp: OtpType, options: QueryOptions = { raw: true }) => {
   return await otpModel.findOne({
     where: {
-      email,
+      email: otp.email,
       active: true,
+      clientId: otp.clientId,
     },
     ...options,
   });
 };
 
-export const listAllOtpsByEmail = async (email: string, options: QueryOptions = { raw: true }) => {
-  return await otpModel.findAll({
+export const getOtpCountAndRecentDate = (email: string, clientId: string) => {
+  return otpModel.findAll({
+    attributes: [
+      [sequelize.fn('COUNT', sequelize.col('id')), 'otpCount'],
+      [sequelize.fn('MAX', sequelize.col('createdAt')), 'lastCreatedAt'],
+    ],
     where: {
       email,
+      clientId,
     },
-    order: [['createdAt', 'DESC']],
-    ...options,
+    raw: true,
   });
 };

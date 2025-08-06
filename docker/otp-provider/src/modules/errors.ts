@@ -6,6 +6,7 @@ export const errors = {
   INVALID_OTP: 'Invalid code entered. Please try again or send a new code.',
   // Expired OTP error has a customized view
   EXPIRED_OTP: '',
+  NO_ACTIVE_OTP: '',
 };
 
 type Errors = typeof errors;
