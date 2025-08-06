@@ -12,7 +12,7 @@ import {
 } from '../modules/sequelize/queries/otp';
 import { createEvent } from '../modules/sequelize/queries/event';
 
-const { OTP_RESEND_INTERVAL_MINUTES, OTP_ATTEMPTS_ALLOWED } = config;
+const { OTP_RESEND_INTERVAL_MINUTES, OTP_ATTEMPTS_ALLOWED, NODE_ENV } = config;
 
 const otpResendIntervalMinutes = JSON.parse(OTP_RESEND_INTERVAL_MINUTES || '[]');
 
@@ -74,7 +74,7 @@ export const requestOtp = async (email: string, clientId: string) => {
 
 //delayMultiplier: seconds per minute to wait on code resends. Can be reduced in test and local environments to avoid long delays. E.g. set to 1 in test workflows to delay in seconds and not minutes.
 export const getOtpWaitTime = async (email: string, clientId: string) => {
-  const delayMultiplier = 60;
+  const delayMultiplier = NODE_ENV === 'test' ? 2 : 60;
 
   const otps = await getOtpCountAndRecentDate(email, clientId);
 
