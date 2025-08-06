@@ -34,8 +34,9 @@ export const getActiveOtp = async (email: string) => {
   });
 };
 
-export const createTestClient = async () => {
-  await sequelize.query(`INSERT INTO public."ClientConfig"
+export const createTestClients = async () => {
+  ['pub-client', 'test-client'].forEach(async (client) => {
+    await sequelize.query(`INSERT INTO public."ClientConfig"
       ("clientId",
       "grantTypes",
       "redirectUris",
@@ -45,7 +46,7 @@ export const createTestClient = async () => {
       "allowedCorsOrigins",
       "postLogoutRedirectUris",
       "tokenEndpointAuthMethod")
-      VALUES('pub-client',
+      VALUES('${client}',
         '{authorization_code, refresh_token}',
         '{http://localhost:3000/cb}',
         'openid email',
@@ -54,4 +55,5 @@ export const createTestClient = async () => {
         '{http://localhost:3000}',
         '{http://localhost:3000}',
         'none')`);
+  });
 };
