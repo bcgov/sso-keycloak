@@ -12,19 +12,19 @@ export const cleanUpOtps = async () => {
   await sequelize.query(`TRUNCATE TABLE public."Otp"`);
 };
 
-export const createOtps = async (email: string, count: number) => {
+export const createOtps = async (email: string, count: number, clientId: string) => {
   for (let i = 0; i < count; i++) {
     const active = i === count - 1 ? 'true' : 'false';
     await sequelize.query(
-      `INSERT INTO public."Otp"("id", "otp", "email", "active") VALUES('${crypto.randomUUID()}', '${generateOtp()}', '${email}', '${active}')`,
+      `INSERT INTO public."Otp"("id", "otp", "email", "active", "clientId") VALUES('${crypto.randomUUID()}', '${generateOtp()}', '${email}', '${active}', '${clientId}')`,
     );
   }
 };
 
-export const createActiveOtp = async (email: string) => {
+export const createActiveOtp = async (email: string, clientId: string) => {
   await sequelize.query(`UPDATE public."Otp" SET "active"='false' where email='${email}'`);
   await sequelize.query(
-    `INSERT INTO public."Otp"("id", "otp", "email", "active") VALUES('${crypto.randomUUID()}', '${generateOtp()}', '${email}', 'true')`,
+    `INSERT INTO public."Otp"("id", "otp", "email", "active", "clientId") VALUES('${crypto.randomUUID()}', '${generateOtp()}', '${email}', 'true', '${clientId}')`,
   );
 };
 

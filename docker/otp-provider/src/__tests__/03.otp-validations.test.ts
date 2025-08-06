@@ -7,6 +7,8 @@ import { cleanUpOtps, createActiveOtp, createOtps, getOtpsByEmail } from './help
 
 const userEmail = 'test-user-1@gov.bc.ca';
 
+const clientId = 'pub-client';
+
 describe('validations', () => {
   let agent: Agent;
   let interactionPath = '';
@@ -19,7 +21,7 @@ describe('validations', () => {
   });
   it('should perform email validations', async () => {
     const authRes = await agent.get('/auth').query({
-      client_id: 'pub-client',
+      client_id: clientId,
       scope: 'openid',
       response_type: 'code',
       redirect_uri: 'http://localhost:3000/cb',
@@ -40,9 +42,9 @@ describe('validations', () => {
   });
 
   it('should not send a new otp if already sent within 60 seconds', async () => {
-    await createOtps(userEmail, 1);
+    await createOtps(userEmail, 1, clientId);
     const res = await agent.get('/auth').query({
-      client_id: 'pub-client',
+      client_id: clientId,
       scope: 'openid',
       response_type: 'code',
       redirect_uri: 'http://localhost:3000/cb',
@@ -62,9 +64,9 @@ describe('validations', () => {
 
   it('should throw error on signin page if otp requests reach the limit', async () => {
     await cleanUpOtps();
-    await createOtps(userEmail, 5);
+    await createOtps(userEmail, 5, clientId);
     const res = await agent.get('/auth').query({
-      client_id: 'pub-client',
+      client_id: clientId,
       scope: 'openid',
       response_type: 'code',
       redirect_uri: 'http://localhost:3000/cb',
@@ -81,9 +83,9 @@ describe('validations', () => {
 
   it('should throw error on otp page when resending otp if otp requests has reached limit', async () => {
     await cleanUpOtps();
-    await createOtps(userEmail, 4);
+    await createOtps(userEmail, 4, clientId);
     const res = await agent.get('/auth').query({
-      client_id: 'pub-client',
+      client_id: clientId,
       scope: 'openid',
       response_type: 'code',
       redirect_uri: 'http://localhost:3000/cb',
@@ -96,7 +98,7 @@ describe('validations', () => {
     let loginRes = await agent.post(`${interactionPath}/otp`).type('form').send({ email: userEmail });
     expect(loginRes.status).toEqual(200);
 
-    await createActiveOtp(userEmail);
+    await createActiveOtp(userEmail, clientId);
 
     loginRes = await agent.post(`${interactionPath}/otp`).type('form').send({ email: userEmail, otpType: 'resend' });
     expect(loginRes.status).toEqual(200);

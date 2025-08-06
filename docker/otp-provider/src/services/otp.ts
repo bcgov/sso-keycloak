@@ -73,7 +73,7 @@ export const requestOtp = async (email: string, clientId: string) => {
 
 //delayMultiplier: seconds per minute to wait on code resends. Can be reduced in test and local environments to avoid long delays. E.g. set to 1 in test workflows to delay in seconds and not minutes.
 export const getOtpWaitTime = async (email: string, clientId: string) => {
-  const delayMultiplier = process.env.NODE_ENV === 'test' ? 1 : 60;
+  const delayMultiplier = 60;
 
   const otps = await getOtpCountAndRecentDate(email, clientId);
 
