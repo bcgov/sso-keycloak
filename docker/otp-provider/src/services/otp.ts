@@ -67,6 +67,7 @@ export const requestOtp = async (email: string, clientId: string) => {
     return response;
   } catch (err) {
     transaction.rollback();
+    console.error(err);
     throw new Error('Failed to create OTP');
   }
 };
@@ -105,7 +106,7 @@ export const verifyOtp = async (email: string, otp: string, clientId: string) =>
         transaction,
       );
 
-      response = { ...response, error: 'NO_ACTIVE_OTP' };
+      response.error = 'NO_ACTIVE_OTP';
     } else {
       if (activeOtp.attempts >= OTP_ATTEMPTS_ALLOWED) {
         ['INVALID_OTP', 'MAX_ATTEMPTS'].forEach(async (eventType) => {
@@ -119,11 +120,8 @@ export const verifyOtp = async (email: string, otp: string, clientId: string) =>
           );
         });
 
-        response = {
-          ...response,
-          waitTime: await getOtpWaitTime(email, clientId),
-          error: 'EXPIRED_OTP_WITH_RESEND',
-        };
+        response.waitTime = await getOtpWaitTime(email, clientId);
+        response.error = 'EXPIRED_OTP_WITH_RESEND';
       } else if (activeOtp.otp !== otp) {
         await updateOtpAttempts({ otp: activeOtp.otp, email, clientId, attempts: activeOtp.attempts + 1 }, transaction);
         await createEvent(
@@ -134,7 +132,8 @@ export const verifyOtp = async (email: string, otp: string, clientId: string) =>
           },
           transaction,
         );
-        response = { ...response, waitTime: await getOtpWaitTime(email, clientId), error: 'INVALID_OTP' };
+        response.waitTime = await getOtpWaitTime(email, clientId);
+        response.error = 'INVALID_OTP';
       } else if (
         new Date(activeOtp.createdAt).getTime() + parseInt(config.OTP_VALIDITY_MINUTES) * 60 * 1000 <
         new Date().getTime()
@@ -147,7 +146,8 @@ export const verifyOtp = async (email: string, otp: string, clientId: string) =>
           },
           transaction,
         );
-        response = { ...response, waitTime: await getOtpWaitTime(email, clientId), error: 'EXPIRED_OTP' };
+        response.waitTime = await getOtpWaitTime(email, clientId);
+        response.error = 'EXPIRED_OTP';
       } else {
         await deleteOtpsByEmail({ email, clientId }, transaction);
 
@@ -165,7 +165,7 @@ export const verifyOtp = async (email: string, otp: string, clientId: string) =>
     return response;
   } catch (err) {
     await transaction.rollback();
-    console.log(err);
+    console.error(err);
     throw new Error('Failed to verify OTP');
   }
 };
