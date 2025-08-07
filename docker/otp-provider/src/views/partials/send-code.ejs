@@ -1,15 +1,3 @@
-
 <% if (waitTime > 0) { %>
-    <span id="wait-text">Please wait <span id="wait-time-text" data-wait-time="<%= waitTime %>"><%= waitTime %></span> seconds before requesting a new code for this email address.</span>
-    <% } else { %>
-        <form
-            class="inline"
-            id="signin-form"
-            action="/interaction/<%= uid %>/otp"
-            method="POST"
-            autocomplete="off"
-            class="w-full flex flex-col gap-24 items-start"
-        >
-        <button class="link inline">Send a new code</button>
-        </form>
+<span id="wait-text">Please wait <span id="wait-time-text" data-wait-time="<%= waitTime %>"><%= waitTime %></span> seconds before requesting a new code for this email address.</span>
 <% } %>

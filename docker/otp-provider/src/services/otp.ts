@@ -79,7 +79,7 @@ export const getOtpWaitTime = async (email: string, clientId: string) => {
   const otps = await getOtpCountAndRecentDate(email, clientId);
 
   if (otps[0].otpCount === 0) return parseInt(otpResendIntervalMinutes[0]) * delayMultiplier;
-  else if (otps[0].otpCount > otpResendIntervalMinutes.length) return 0;
+  else if (otps[0].otpCount > otpResendIntervalMinutes.length) return -1;
 
   const secondsElapsedSinceLastRequest = Math.ceil(
     (new Date().getTime() - new Date(otps[0].lastCreatedAt).getTime()) / 1000,

@@ -96,8 +96,9 @@ export const generateOtp = async (oidcProvider: Provider) => {
           error: '',
           nonce: res.locals.cspNonce,
           waitTime,
-          disableResend: false,
+          disableResend: waitTime === -1 ? true : false,
           disableForm: false,
+          disableResendError: waitTime === -1 ? errors['OTPS_LIMIT_REACHED'] : '',
         });
       }
     } catch (error) {
@@ -126,15 +127,16 @@ export const login = async (oidcProvider: Provider) => {
         // Run form validation server side
         const [otp, otpError] = otpValidator([code1, code2, code3, code4, code5, code6]);
         if (otpError) {
-          const waitTime = getOtpWaitTime(email, clientID as string);
+          const waitTime = await getOtpWaitTime(email, clientID as string);
           return res.render('otp', {
             uid,
             email,
             nonce: res.locals.cspNonce,
             waitTime,
-            disableResend: false,
+            disableResend: waitTime === -1 ? true : false,
             disableForm: false,
             error: otpError,
+            disableResendError: waitTime === -1 ? errors['OTPS_LIMIT_REACHED'] : '',
           });
         }
 
@@ -147,9 +149,10 @@ export const login = async (oidcProvider: Provider) => {
             email,
             nonce: res.locals.cspNonce,
             waitTime,
-            disableResend: false,
+            disableResend: waitTime === -1 ? true : false,
             disableForm: error === 'EXPIRED_OTP_WITH_RESEND',
             error: errors[error as keyof typeof errors],
+            disableResendError: waitTime === -1 ? errors['OTPS_LIMIT_REACHED'] : '',
           });
         }
 

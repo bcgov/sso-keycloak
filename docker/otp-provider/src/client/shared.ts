@@ -39,7 +39,7 @@ export const createResendCodeForm = (uid: string, confirmEl: 'btn' | 'link') => 
   if (confirmEl === 'btn') classList += ' w-full';
   if (confirmEl === 'link') classList += ' inline';
   submitBtn.classList = classList;
-  submitBtn.innerText = 'Resend code';
+  submitBtn.innerText = 'Send a new code';
 
   form.appendChild(submitBtn);
 
@@ -58,7 +58,7 @@ export const getUID = () => location.pathname.split('/')[location.pathname.split
  * @param errorText The error message to display.
  * @param submitButton The HTML Button Element to submit the form.
  */
-export const setFormError = (errorEl: HTMLElement, errorText: string, submitButton?: HTMLButtonElement,) => {
+export const setFormError = (errorEl: HTMLElement, errorText: string, submitButton?: HTMLButtonElement) => {
   clearFormError(errorEl, submitButton);
   errorEl.textContent = errorText;
 

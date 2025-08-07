@@ -58,13 +58,12 @@ document.addEventListener('DOMContentLoaded', () => {
       (e.target as HTMLInputElement).value = value;
       const nextInput = digitInputs[i + 1];
       // Validate and submit whenever all inputs are filled
-      if (digitInputs.every(input => input.value !== '')) {
+      if (digitInputs.every((input) => input.value !== '')) {
         const codes = digitInputs.map((input) => input.value);
         const [, error] = otpValidator(codes);
         if (error) setFormError(errorEl, error as string);
         else form.requestSubmit();
-      }
-      else if (nextInput) nextInput.focus();
+      } else if (nextInput) nextInput.focus();
     });
 
     input.addEventListener('paste', (e) => {
@@ -113,12 +112,17 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   const cooldownPeriod = Number(errorEl.getAttribute('data-wait-time'));
-
-  if (waitTimeElement && codeContainer)
+  const uid = getUID();
+  if (waitTimeElement && codeContainer) {
     countdown(cooldownPeriod, waitTimeElement, () => {
-      const uid = getUID();
       document.getElementById('wait-text')?.remove();
       const submitForm = createResendCodeForm(uid, 'link');
       codeContainer.appendChild(submitForm);
     });
+  } else if (!waitTimeElement) {
+    const submitForm = createResendCodeForm(uid, 'link');
+    if (codeContainer) {
+      codeContainer.appendChild(submitForm);
+    }
+  }
 });

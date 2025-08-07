@@ -1,71 +1,57 @@
     <%- include("./partials/header") %>
 
-      <div class="size-full flex flex-row justify-center">
-        <div class="card">
-          <h2 class="text-lg font-bold text-center">Enter your verification code</h2>
-          <form
-            action="/interaction/<%= uid %>/login"
-            method="POST"
-            autocomplete="off"
-            class="w-full flex flex-col gap-24 items-center"
-            id="otp-form"
-            <% if (disableForm) { %> disabled <% } %>
-          >
-            <fieldset class="flex flex-col items-center" aria-describedby="code-hint">
-              <legend class="text-center mt-24">A 6-digit verification code was just sent to <%= email %>. Please enter the code within five minutes.</legend>
+    <div class="size-full flex flex-row justify-center">
+      <div class="card">
+        <h2 class="text-lg font-bold text-center">Enter your verification code</h2>
+        <form action="/interaction/<%= uid %>/login" method="POST" autocomplete="off" class="w-full flex flex-col gap-24 items-center" id="otp-form" <% if (disableForm) { %> disabled <% } %>>
+          <fieldset class="flex flex-col items-center" aria-describedby="code-hint">
+            <legend class="text-center mt-24">A 6-digit verification code was just sent to <%= email %>. Please enter the code within five minutes.</legend>
 
-              <div class="flex flex-col w-270">
-                <div class="flex flex-row gap-8 mt-24 justify-between" role="group" aria-label="Verification code">
-                  <% for (let i = 1; i <= 6; i++) { %>
-                    <input
-                      <% if (i === 1) { %> autofocus <% } %>
-                      class="text-center border border-light-grey border-1 p-2 rounded-[4px] font-bold text-lg w-34 h-56"
-                      type="text"
-                      pattern="\d*"
-                      name="code<%= i %>"
-                      inputmode="numeric"
-                      pattern="[0-9]*"
-                      <% if (disableForm) { %> disabled <% } %>
-                      maxlength="1"
-                      required
-                      id="code-digit-<%= i %>"
-                      aria-label="Digit <%= i %>">
-                    <% } %>
+            <div class="flex flex-col w-270">
+              <div class="flex flex-row gap-8 mt-24 justify-between" role="group" aria-label="Verification code">
+                <% for (let i = 1; i <= 6; i++) { %>
+                <input <% if (i === 1) { %> autofocus <% } %> class="text-center border border-light-grey border-1 p-2 rounded-[4px] font-bold text-lg w-34 h-56" type="text" pattern="\d*" name="code<%= i %>" inputmode="numeric" pattern="[0-9]*" <% if (disableForm) { %> disabled <% } %> maxlength="1" required id="code-digit-<%= i %>" aria-label="Digit <%= i %>">
+                <% } %>
+              </div>
+              <span id="otp-error" class="text-danger min-h-20 py-12" data-wait-time="<%= waitTime %>">
+                <% if (error) { %>
+                <%= error %>
+                <% } %>
+              </span>
+              <div class="flex flex-col md:flex-row justify-between items-center gap-16">
+                <div>
+                  <a href="https://gmail.com/" target="_blank" rel="noopener noreferrer">
+                    <img class="inline pb-2" src="/img/gmail.png" alt="Google Mail"><span class="ml-4">Open Gmail</span>
+                  </a>
                 </div>
-                <span id="otp-error" class="text-danger min-h-20 py-12" data-wait-time="<%= waitTime %>">
-                  <% if (error) { %>
-                    <%= error %>
-                  <% } %>
-                </span>
-                <div class="flex flex-col md:flex-row justify-between items-center gap-16">
-                  <div>
-                    <a href="https://gmail.com/" target="_blank" rel="noopener noreferrer">
-                      <img class="inline pb-2" src="/img/gmail.png" alt="Google Mail"><span class="ml-4">Open Gmail</span>
-                    </a>
-                  </div>
-                  <div>
-                    <a href="https://outlook.office.com/" target="_blank" rel="noopener noreferrer">
-                      <img class="inline pb-2" src="/img/outlook.png" alt="Outlook"><span class="ml-4">Open Outlook</span>
-                    </a>
-                  </div>
+                <div>
+                  <a href="https://outlook.office.com/" target="_blank" rel="noopener noreferrer">
+                    <img class="inline pb-2" src="/img/outlook.png" alt="Outlook"><span class="ml-4">Open Outlook</span>
+                  </a>
                 </div>
               </div>
-            </fieldset>
-            <button class="btn" <% if (disableForm) { %> disabled <% } %>  type="submit" name="login" id="login-button">
-              Continue
+            </div>
+          </fieldset>
+          <button class="btn" <% if (disableForm) { %> disabled <% } %> type="submit" name="login" id="login-button">
+            Continue
             <% if (disableForm) { %>
-              <img src="/img/caution.svg" alt="Caution" class="w-16 h-16">
+            <img src="/img/caution.svg" alt="Caution" class="w-16 h-16">
             <% } %>
-            </button>
-          </form>
-          <hr class="bg-light-grey border-none w-full h-1"/>
-          <% if (!disableResend) { %>
-          <span id="new-code-text" class="inline"> Can't find the code?
-                <%- include("./partials/send-code") %>
-          </span>
-          <% } %>
-        </div>
+          </button>
+        </form>
+        <hr class="bg-light-grey border-none w-full h-1" />
+        <% if (!disableResend) { %>
+        <span id="new-code-text" class="inline"> Can't find the code?
+          <%- include("./partials/send-code") %>
+        </span>
+        <% } %>
+        <% if (disableResendError) { %>
+        <span id="disable-resend-error" class="inline">
+          <%= disableResendError %>
+        </span>
+        <% } %>
       </div>
+    </div>
     </body>
     <script src="/js/otp.js" type="module" nonce="<%= nonce %>"></script>
 

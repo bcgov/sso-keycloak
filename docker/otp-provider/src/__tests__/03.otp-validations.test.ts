@@ -102,7 +102,7 @@ describe('validations', () => {
 
     await createActiveOtp(userEmail, clientId);
 
-    loginRes = await agent.post(`${interactionPath}/otp`).type('form').send({ email: userEmail, otpType: 'resend' });
+    loginRes = await agent.post(`${interactionPath}/otp`).type('form').send({ email: userEmail });
     expect(loginRes.status).toEqual(200);
     expect(loginRes.text).toContain(errors.OTPS_LIMIT_REACHED);
   });
