@@ -88,7 +88,7 @@ test('OTP Resend Code Countdown', async ({ page }, testInfo) => {
     { timeout: 63000 },
   );
   // Resending code shows the countdown for the next interval
-  await page.getByRole('button', { name: 'Resend code' }).click();
+  await page.getByRole('button', { name: 'Send a new code' }).click();
   await page.waitForURL('**/otp');
   await expect(page.locator('#new-code-text')).toMatchAriaSnapshot(
     `- text: /Can't find the code\\? Please wait \\d+ seconds before requesting a new code for this email address\\./`,
