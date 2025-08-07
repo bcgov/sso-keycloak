@@ -8,7 +8,7 @@
       <form id="signin-form" action="/interaction/<%= uid %>/otp" method="POST" class="w-full flex flex-col gap-24 items-start">
         <div class="flex flex-col items-start gap-4 w-full">
           <input class="border border-light-grey border-1 p-2 rounded-[4px] w-full p-8" placeholder="Enter an email" id="email-input" name="email" value="" autofocus aria-label="Email" dir="ltr" data-wait-time="<%= waitTime %>" type="email" autocomplete="email" required />
-          <span id="email-error" class="text-danger text-sm">
+          <span id="email-error" class="text-danger text-sm min-h-20">
             <% if (error) { %>
             <%= error %>
             <% } else if (waitTime > 0) { %>
