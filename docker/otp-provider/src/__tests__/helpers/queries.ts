@@ -12,19 +12,19 @@ export const cleanUpOtps = async () => {
   await sequelize.query(`TRUNCATE TABLE public."Otp"`);
 };
 
-export const createOtps = async (email: string, count: number) => {
+export const createOtps = async (email: string, count: number, clientId: string) => {
   for (let i = 0; i < count; i++) {
     const active = i === count - 1 ? 'true' : 'false';
     await sequelize.query(
-      `INSERT INTO public."Otp"("id", "otp", "email", "active") VALUES('${crypto.randomUUID()}', '${generateOtp()}', '${email}', '${active}')`,
+      `INSERT INTO public."Otp"("id", "otp", "email", "active", "clientId") VALUES('${crypto.randomUUID()}', '${generateOtp()}', '${email}', '${active}', '${clientId}')`,
     );
   }
 };
 
-export const createActiveOtp = async (email: string) => {
+export const createActiveOtp = async (email: string, clientId: string) => {
   await sequelize.query(`UPDATE public."Otp" SET "active"='false' where email='${email}'`);
   await sequelize.query(
-    `INSERT INTO public."Otp"("id", "otp", "email", "active") VALUES('${crypto.randomUUID()}', '${generateOtp()}', '${email}', 'true')`,
+    `INSERT INTO public."Otp"("id", "otp", "email", "active", "clientId") VALUES('${crypto.randomUUID()}', '${generateOtp()}', '${email}', 'true', '${clientId}')`,
   );
 };
 
@@ -34,8 +34,9 @@ export const getActiveOtp = async (email: string) => {
   });
 };
 
-export const createTestClient = async () => {
-  await sequelize.query(`INSERT INTO public."ClientConfig"
+export const createTestClients = async () => {
+  ['pub-client', 'test-client'].forEach(async (client) => {
+    await sequelize.query(`INSERT INTO public."ClientConfig"
       ("clientId",
       "grantTypes",
       "redirectUris",
@@ -45,7 +46,7 @@ export const createTestClient = async () => {
       "allowedCorsOrigins",
       "postLogoutRedirectUris",
       "tokenEndpointAuthMethod")
-      VALUES('pub-client',
+      VALUES('${client}',
         '{authorization_code, refresh_token}',
         '{http://localhost:3000/cb}',
         'openid email',
@@ -54,4 +55,5 @@ export const createTestClient = async () => {
         '{http://localhost:3000}',
         '{http://localhost:3000}',
         'none')`);
+  });
 };

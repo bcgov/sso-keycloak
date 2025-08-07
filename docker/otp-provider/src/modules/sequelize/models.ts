@@ -70,6 +70,7 @@ mappedModels.set(
     active: { type: Sequelize.BOOLEAN, defaultValue: true },
     createdAt: { type: Sequelize.DATE, defaultValue: Sequelize.NOW },
     updatedAt: { type: Sequelize.DATE, defaultValue: Sequelize.NOW },
+    clientId: { type: Sequelize.STRING, allowNull: false },
   }),
 );
 
@@ -100,7 +101,7 @@ mappedModels.set(
       clientId: {
         type: Sequelize.STRING,
         allowNull: false,
-      }
+      },
     },
     {
       timestamps: false,

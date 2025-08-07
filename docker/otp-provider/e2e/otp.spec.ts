@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import models from '../src/modules/sequelize/models';
 import { config } from '../src/config';
-import {errors} from '../src/utils/shared'
+import { errors } from '../src/utils/shared';
 import { changeOTP, fillOTP, initURL, clientId, redirectURI } from './util';
 
 const otpModel = models.get('Otp');
@@ -54,10 +54,10 @@ test('OTP submits when all digits are filled regardless of order', async ({ page
     await page.getByRole('textbox', { name: `Digit ${i + 1}` }).fill(currentOtp[i]);
   }
   // Fill the 6th digit
-  await page.getByRole('textbox', { name: "Digit 6" }).fill(currentOtp[5]);
+  await page.getByRole('textbox', { name: 'Digit 6' }).fill(currentOtp[5]);
 
   // Fill the 5th digit.
-  await page.getByRole('textbox', { name: "Digit 5" }).fill(currentOtp[4]);
+  await page.getByRole('textbox', { name: 'Digit 5' }).fill(currentOtp[4]);
 
   // Submission should run and send to the redirect
   await page.waitForRequest((req) => {
@@ -83,12 +83,12 @@ test('OTP Resend Code Countdown', async ({ page }, testInfo) => {
   await expect(page.locator('#new-code-text')).toMatchAriaSnapshot(
     `
     - text: Can't find the code?
-    - button "Resend code"
+    - button "Send a new code"
     `,
     { timeout: 63000 },
   );
   // Resending code shows the countdown for the next interval
-  await page.getByRole('button', { name: 'Resend code' }).click();
+  await page.getByRole('button', { name: 'Send a new code' }).click();
   await page.waitForURL('**/otp');
   await expect(page.locator('#new-code-text')).toMatchAriaSnapshot(
     `- text: /Can't find the code\\? Please wait \\d+ seconds before requesting a new code for this email address\\./`,
@@ -129,7 +129,7 @@ test('OTP Attempts Limit', async ({ page }, testInfo) => {
 });
 
 test('OTP Success', async ({ page }, testInfo) => {
-  const email = `${testInfo.project.name}@b.com`
+  const email = `${testInfo.project.name}@b.com`;
   await page.goto(initURL);
   // Enter email and go to OTP page
   await page.getByRole('textbox', { name: 'Email' }).fill(email);
@@ -140,9 +140,7 @@ test('OTP Success', async ({ page }, testInfo) => {
   let verifiedOTPEvents = await eventModel.findAll({ where: { eventType: 'OTP_VERIFIED', email, clientId } });
   expect(verifiedOTPEvents.length).toBe(0);
 
-  const currentOtp = await otpModel
-    .findOne({ where: { email: email, active: true } })
-    .then((res) => res.otp);
+  const currentOtp = await otpModel.findOne({ where: { email: email, active: true } }).then((res) => res.otp);
 
   await fillOTP(currentOtp, true, page);
   verifiedOTPEvents = await eventModel.findAll({ where: { eventType: 'OTP_VERIFIED', email, clientId } });
@@ -158,14 +156,15 @@ test('OTP Expired', async ({ page }, testInfo) => {
   await page.getByRole('button', { name: 'Continue' }).click();
   await page.waitForURL('**/otp');
 
-  const currentOtp = await otpModel
-    .findOne({ where: { email: `${testInfo.project.name}@b.com`, active: true } });
+  const currentOtp = await otpModel.findOne({ where: { email: `${testInfo.project.name}@b.com`, active: true } });
 
   // Set OTP timestamp to make it expired
   const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
-  await otpModel.update({createdAt: fiveMinutesAgo}, {where: {id: currentOtp.id}} );
+  await otpModel.update({ createdAt: fiveMinutesAgo }, { where: { id: currentOtp.id } });
 
   // assert filling in otp creates event
   await fillOTP(currentOtp.otp, false, page);
-  await expect(page.locator('body')).toMatchAriaSnapshot(`- paragraph: The verification code sent to ${email} has expired after five minutes.`);
+  await expect(page.locator('body')).toMatchAriaSnapshot(
+    `- paragraph: The verification code sent to ${email} has expired after five minutes.`,
+  );
 });

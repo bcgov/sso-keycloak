@@ -12,7 +12,6 @@ test.beforeEach(async () => {
   await eventModel.destroy({ where: {} });
 });
 
-
 test('Send Code Event', async ({ page }, testInfo) => {
   await page.goto(initURL);
   const email = `${testInfo.project.name}@b.com`;
@@ -31,14 +30,15 @@ test('Send Code Event', async ({ page }, testInfo) => {
 
   // The variable OTP_RESENDS_ALLOWED_PER_DAY is actually sends per day, including the initial. Hence the minus 1 here
   // Check each new resend creates an event
-  for (let i = 0; i < Number(config.OTP_RESENDS_ALLOWED_PER_DAY) - 1; i++) {
+  for (let i = 0; i < Number(config.OTP_RESENDS_ALLOWED_PER_DAY); i++) {
     await expect(page.locator('#new-code-text')).toMatchAriaSnapshot(
       `
         - text: Can't find the code?
-        - button "Resend code"
+        - button "Send a new code"
         `,
+      { timeout: 25000 },
     );
-    await page.getByRole('button', { name: 'Resend code' }).click();
+    await page.getByRole('button', { name: 'Send a new code' }).click();
     await page.waitForURL('**/otp');
     resendCodeEvents = await eventModel.findAll({ where: { eventType: 'RESEND_OTP', email, clientId } });
     expect(resendCodeEvents.length).toBe(i + 1);
@@ -57,11 +57,11 @@ test('Send Code Event', async ({ page }, testInfo) => {
     - button "Continue"
     `);
 
-    maxResendEvents = await eventModel.findAll({ where: { eventType: 'MAX_RESENDS', email, clientId } });
-    expect(maxResendEvents.length).toBe(1);
+  maxResendEvents = await eventModel.findAll({ where: { eventType: 'MAX_RESENDS', email, clientId } });
+  expect(maxResendEvents.length).toBe(1);
 });
 
-test('Retry code event', async ({page}, testInfo) => {
+test('Retry code event', async ({ page }, testInfo) => {
   await page.goto(initURL);
   const email = `${testInfo.project.name}@b.com`;
 
@@ -84,7 +84,7 @@ test('Retry code event', async ({page}, testInfo) => {
 
   for (let i = 0; i <= Number(config.OTP_ATTEMPTS_ALLOWED); i++) {
     await fillOTP(wrongOTP, false, page);
-    await page.waitForSelector('#otp-error')
+    await page.waitForSelector('#otp-error');
     invalidOtpEvents = await eventModel.findAll({ where: { eventType: 'INVALID_OTP', email, clientId } });
     expect(invalidOtpEvents.length).toBe(i + 1);
 
@@ -95,8 +95,7 @@ test('Retry code event', async ({page}, testInfo) => {
   }
 });
 
-
-test('Expired OTP Event', async ({page}, testInfo) => {
+test('Expired OTP Event', async ({ page }, testInfo) => {
   await page.goto(initURL);
   const email = `${testInfo.project.name}@b.com`;
 
@@ -105,12 +104,11 @@ test('Expired OTP Event', async ({page}, testInfo) => {
   await page.getByRole('button', { name: 'Continue' }).click();
   await page.waitForURL('**/otp');
 
-  const currentOtp = await otpModel
-    .findOne({ where: { email: `${testInfo.project.name}@b.com`, active: true } });
+  const currentOtp = await otpModel.findOne({ where: { email: `${testInfo.project.name}@b.com`, active: true } });
 
   // Set OTP timestamp to make it expired
   const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
-  await otpModel.update({createdAt: fiveMinutesAgo}, {where: {id: currentOtp.id}} );
+  await otpModel.update({ createdAt: fiveMinutesAgo }, { where: { id: currentOtp.id } });
 
   // Verify at zero to start
   let expiredOtpEvents = await eventModel.findAll({ where: { eventType: 'EXPIRED_OTP', email, clientId } });

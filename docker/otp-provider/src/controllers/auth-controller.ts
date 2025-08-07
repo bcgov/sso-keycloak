@@ -2,12 +2,10 @@ import Provider from 'oidc-provider';
 import { NextFunction, Request, Response } from 'express';
 import { getOtpWaitTime, requestOtp, verifyOtp } from '../services/otp';
 import { emailValidator, otpValidator } from '../utils/shared';
-import { errors } from '../modules/errors';
 import { sendEmail } from '../mailer';
 import { getInteractionById } from '../modules/sequelize/queries/interaction';
 import { LoginTimeoutError } from '../utils/helpers';
-
-const delayMultiplier = process.env.NODE_ENV === 'test' ? 1 : 60;
+import { errors } from '../modules/errors';
 
 export const authorize = async (oidcProvider: Provider) => {
   return async (req: Request, res: Response, next: NextFunction) => {
@@ -45,12 +43,12 @@ export const generateOtp = async (oidcProvider: Provider) => {
         uid,
         prompt: { name },
         result: oidcResult,
-        params: {client_id: clientID}
+        params: { client_id: clientID },
       } = await oidcProvider.interactionDetails(req, res);
 
       if (name === 'login') {
         // Use the provided email falling back to session email. Session email applies when regenerating codes after already reaching the OTP entry screen.
-        const email = req.body.email || (oidcResult?.login?.email) || '';
+        const email = req.body.email || oidcResult?.login?.email || '';
 
         // Rerender signin page with email error if invalid
         let [emailValid, emailValidityError] = emailValidator(email);
@@ -63,12 +61,12 @@ export const generateOtp = async (oidcProvider: Provider) => {
           });
         }
 
-        const { waitTime, error, newOtp } = await requestOtp(email, clientID as string, delayMultiplier);
+        const { waitTime, error, newOtp } = await requestOtp(email, clientID as string);
 
         if (error) {
           return res.render(`signin`, {
             uid,
-            error: errors[error],
+            error: errors[error as keyof typeof errors],
             nonce: res.locals.cspNonce,
             waitTime,
           });
@@ -98,8 +96,9 @@ export const generateOtp = async (oidcProvider: Provider) => {
           error: '',
           nonce: res.locals.cspNonce,
           waitTime,
-          disableResend: false,
+          disableResend: waitTime === -1 ? true : false,
           disableForm: false,
+          disableResendError: waitTime === -1 ? errors['OTPS_LIMIT_REACHED'] : '',
         });
       }
     } catch (error) {
@@ -118,7 +117,7 @@ export const login = async (oidcProvider: Provider) => {
         uid,
         prompt: { name },
         result: oidcResult,
-        params: {client_id: clientID}
+        params: { client_id: clientID },
       } = await oidcProvider.interactionDetails(req, res);
 
       if (name === 'login') {
@@ -128,19 +127,20 @@ export const login = async (oidcProvider: Provider) => {
         // Run form validation server side
         const [otp, otpError] = otpValidator([code1, code2, code3, code4, code5, code6]);
         if (otpError) {
-          const waitTime = getOtpWaitTime(email, delayMultiplier);
+          const waitTime = await getOtpWaitTime(email, clientID as string);
           return res.render('otp', {
             uid,
             email,
             nonce: res.locals.cspNonce,
             waitTime,
-            disableResend: false,
+            disableResend: waitTime === -1 ? true : false,
             disableForm: false,
             error: otpError,
+            disableResendError: waitTime === -1 ? errors['OTPS_LIMIT_REACHED'] : '',
           });
         }
 
-        const { waitTime, error } = await verifyOtp(email, otp as string, clientID as string, delayMultiplier);
+        const { waitTime, error } = await verifyOtp(email, otp as string, clientID as string);
         if (error) {
           // Expiry page has a customized view, all others use the default.
           const view = error === 'EXPIRED_OTP' ? 'expired' : 'otp';
@@ -149,9 +149,10 @@ export const login = async (oidcProvider: Provider) => {
             email,
             nonce: res.locals.cspNonce,
             waitTime,
-            disableResend: false,
+            disableResend: waitTime === -1 ? true : false,
             disableForm: error === 'EXPIRED_OTP_WITH_RESEND',
-            error: errors[error],
+            error: errors[error as keyof typeof errors],
+            disableResendError: waitTime === -1 ? errors['OTPS_LIMIT_REACHED'] : '',
           });
         }
 

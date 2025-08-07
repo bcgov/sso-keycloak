@@ -13,15 +13,15 @@ const codes = {
   code4: '1',
   code5: '1',
   code6: '1',
-}
+};
 
 const formatCode = (otp: string) => {
-  const codes: any = {}
+  const codes: any = {};
   otp.split('').forEach((char, i) => {
-    codes[`code${i+1}`] = char;
+    codes[`code${i + 1}`] = char;
   });
   return codes;
-}
+};
 
 describe('otp login test', () => {
   let agent: Agent;
@@ -71,7 +71,7 @@ describe('otp login test', () => {
   });
 
   it('should accept the invalid passcode at the otp interaction and return the expected error', async () => {
-    const data = { email: 'testuser@gmail.com', ...codes, };
+    const data = { email: 'testuser@gmail.com', ...codes };
     const res = await agent.post(`${interactionPath}/login`).type('form').send(data);
     expect(res.status).toEqual(200);
     expect(res.text).toContain(errors.INVALID_OTP);
@@ -104,15 +104,13 @@ describe('otp login test', () => {
       type: QueryTypes.SELECT,
     });
 
-    const codes = formatCode(otpRecords[0].otp)
+    const codes = formatCode(otpRecords[0].otp);
     const data = { email: 'testuser@gmail.com', ...codes };
     const res = await agent.post(`${interactionPath}/login`).type('form').send(data).redirects(0);
 
     const resumeUrl = new URL(res.headers.location).pathname;
 
-    const redirectToClient = await agent
-      .get(resumeUrl)
-      .redirects(0);
+    const redirectToClient = await agent.get(resumeUrl).redirects(0);
 
     expect(redirectToClient.status).toBe(303);
 

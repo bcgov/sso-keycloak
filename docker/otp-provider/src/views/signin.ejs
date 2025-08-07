@@ -1,55 +1,33 @@
   <%- include("./partials/header") %>
 
-    <div class="size-full flex flex-row justify-center">
-      <div class="card">
-        <h2 class="text-lg font-bold">Enter an email</h2>
-        <p>A code will be sent for a password-free login.</p>
+  <div class="size-full flex flex-row justify-center">
+    <div class="card">
+      <h2 class="text-lg font-bold">Enter an email</h2>
+      <p>A code will be sent for a password-free login.</p>
 
-        <form
-          id="signin-form"
-          action="/interaction/<%= uid %>/otp"
-          method="POST"
-          class="w-full flex flex-col gap-24 items-start"
-        >
-          <div class="flex flex-col items-start gap-4 w-full">
-            <input
-              class="border border-light-grey border-1 p-2 rounded-[4px] w-full p-8"
-              placeholder="Enter an email"
-              id="email-input"
-              name="email"
-              value=""
-              autofocus
-              aria-label="Email"
-              dir="ltr"
-              data-wait-time="<%= waitTime %>"
-              type="email"
-              autocomplete="email"
-              required
-            />
-            <span id="email-error" class="text-danger text-sm min-h-40">
-              <% if (error) { %>
-                <%= error %>
-              <% } else if (waitTime > 0) { %>
-                Please wait  <span id="wait-time-text"><%= waitTime %></span> seconds before requesting a new code for this email address.
-              <% } %>
-            </span>
-            <!-- <span id="email-error" class="text-danger text-sm min-h-20"> Email invalid </span> -->
-          </div>
-          <!-- <input type="hidden" id="id-hidden-input" name="credentialId" /> -->
-          <button
-            class="btn"
-            type="submit"
-            name="login"
-            id="submit-button"
-          >
-            Continue
-          </button>
-        </form>
-        <p class="bg-lightest-grey p-16">
-          Your personal information is being collected for the purposes of providing user authentication under section 26(c) of the Freedom of Information and Protection of Privacy Act. Should you have any questions, please contact dt.support@gov.bc.ca. By proceeding, you acknowledge and agree that your email address will be shared with the application you are accessing.
-        </p>
-      </div>
+      <form id="signin-form" action="/interaction/<%= uid %>/otp" method="POST" class="w-full flex flex-col gap-24 items-start">
+        <div class="flex flex-col items-start gap-4 w-full">
+          <input class="border border-light-grey border-1 p-2 rounded-[4px] w-full p-8" placeholder="Enter an email" id="email-input" name="email" value="" autofocus aria-label="Email" dir="ltr" data-wait-time="<%= waitTime %>" type="email" autocomplete="email" required />
+          <span id="email-error" class="text-danger text-sm min-h-20">
+            <% if (error) { %>
+            <%= error %>
+            <% } else if (waitTime > 0) { %>
+            Please wait <span id="wait-time-text"><%= waitTime %></span> seconds before requesting a new code for this email address.
+            <% } %>
+          </span>
+          <!-- <span id="email-error" class="text-danger text-sm min-h-20"> Email invalid </span> -->
+        </div>
+        <!-- <input type="hidden" id="id-hidden-input" name="credentialId" /> -->
+        <button class="btn" type="submit" name="login" id="submit-button">
+          Continue
+        </button>
+      </form>
+      <p class="bg-lightest-grey p-16">
+        Your personal information is being collected for the purposes of providing user authentication under section 26(c) of the Freedom of Information and Protection of Privacy Act. Should you have any questions, please contact dt.support@gov.bc.ca. By proceeding, you acknowledge and agree that your email address will be shared with the application you are accessing.
+      </p>
     </div>
+  </div>
   </body>
   <script src="/js/signin.js" type="module" nonce="<%= nonce %>"></script>
-</html>
+
+  </html>
