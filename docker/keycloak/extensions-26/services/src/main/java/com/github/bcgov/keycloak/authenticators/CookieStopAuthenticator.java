@@ -1,6 +1,8 @@
 package com.github.bcgov.keycloak.authenticators;
 
 import jakarta.ws.rs.core.MultivaluedMap;
+
+import org.jboss.logging.Logger;
 import org.keycloak.authentication.AuthenticationFlowContext;
 import org.keycloak.authentication.Authenticator;
 import org.keycloak.constants.AdapterConstants;
@@ -14,6 +16,8 @@ import java.util.Map;
 /** @author <a href="mailto:junmin@button.is">Junmin Ahn</a> */
 public class CookieStopAuthenticator implements Authenticator {
 
+  private static final Logger logger = Logger.getLogger(CookieStopAuthenticator.class);
+
   @Override
   public boolean requiresUser() {
     return false;
@@ -21,6 +25,7 @@ public class CookieStopAuthenticator implements Authenticator {
 
   @Override
   public void authenticate(AuthenticationFlowContext context) {
+
     AuthenticationManager.AuthResult authResult = AuthenticationManager.authenticateIdentityCookie(
         context.getSession(), context.getRealm(), true);
 
@@ -71,19 +76,22 @@ public class CookieStopAuthenticator implements Authenticator {
     AuthenticatedClientSessionModel clientSessionModel = authResult.getSession()
         .getAuthenticatedClientSessionByClient(clientUUID);
 
-    // 4. If the authenticating user has a session with other client in the same
-    // realm then remove it
-    if (authResult != null) {
-      if (authResult.getSession() != null) {
-        authResult.getSession().getAuthenticatedClientSessions().forEach((k, v) -> {
-          if (!k.equals(clientUUID)) {
-            UserSessionProvider userSessionProvider = context.getSession().sessions();
-            userSessionProvider.removeUserSession(context.getRealm(), authResult.getSession());
-          }
-        });
-        context.attempted();
-        return;
-      }
+    UserSessionModel userSession = context.getSession().sessions().getUserSession(context.getRealm(),
+        context.getAuthenticationSession().getParentSession().getId());
+
+    // 4. Upon invalid parent session, If the authenticating user has a session with
+    // other client in the same realm then remove it
+    // Example: when azure users are not logged out completely
+    if (userSession == null && authResult != null && authResult.getSession() != null) {
+      authResult.getSession().getAuthenticatedClientSessions().forEach((k, v) -> {
+        if (!k.equals(clientUUID)) {
+          UserSessionProvider userSessionProvider = context.getSession().sessions();
+          userSessionProvider.removeUserSession(context.getRealm(),
+              authResult.getSession());
+        }
+      });
+      context.attempted();
+      return;
     }
 
     // 5. If no Cookie session with the authenticating client, proceed to login
@@ -94,7 +102,8 @@ public class CookieStopAuthenticator implements Authenticator {
     }
 
     // 6. Otherwise, attach the exisiting session to the user
-    context.getAuthenticationSession().setAuthNote(AuthenticationManager.SSO_AUTH, "true");
+    context.getAuthenticationSession().setAuthNote(AuthenticationManager.SSO_AUTH,
+        "true");
     context.setUser(authResult.getUser());
     context.attachUserSession(authResult.getSession());
     context.success();
