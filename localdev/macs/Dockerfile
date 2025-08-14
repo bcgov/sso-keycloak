@@ -4,7 +4,7 @@ COPY ./docker/keycloak/extensions-26 /tmp/
 WORKDIR /tmp/
 RUN mvn -B clean package --file pom.xml -Dmaven.test.skip=true
 
-FROM registry.redhat.io/rhbk/keycloak-rhel9:26.0-3 AS builder
+FROM registry.redhat.io/rhbk/keycloak-rhel9:26.2-4 AS builder
 
 # Enable health and metrics support
 ENV KC_HEALTH_ENABLED=true

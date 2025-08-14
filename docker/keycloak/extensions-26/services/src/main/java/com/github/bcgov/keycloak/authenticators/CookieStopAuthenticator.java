@@ -71,14 +71,29 @@ public class CookieStopAuthenticator implements Authenticator {
     AuthenticatedClientSessionModel clientSessionModel = authResult.getSession()
         .getAuthenticatedClientSessionByClient(clientUUID);
 
-    // 4. If no Cookie session with the authenticating client, proceed to login
+    // 4. If the authenticating user has a session with other client in the same
+    // realm then remove it
+    if (authResult != null) {
+      if (authResult.getSession() != null) {
+        authResult.getSession().getAuthenticatedClientSessions().forEach((k, v) -> {
+          if (!k.equals(clientUUID)) {
+            UserSessionProvider userSessionProvider = context.getSession().sessions();
+            userSessionProvider.removeUserSession(context.getRealm(), authResult.getSession());
+          }
+        });
+        context.attempted();
+        return;
+      }
+    }
+
+    // 5. If no Cookie session with the authenticating client, proceed to login
     // process
     if (clientSessionModel == null) {
       context.attempted();
       return;
     }
 
-    // 5. Otherwise, attach the exisiting session to the user
+    // 6. Otherwise, attach the exisiting session to the user
     context.getAuthenticationSession().setAuthNote(AuthenticationManager.SSO_AUTH, "true");
     context.setUser(authResult.getUser());
     context.attachUserSession(authResult.getSession());
