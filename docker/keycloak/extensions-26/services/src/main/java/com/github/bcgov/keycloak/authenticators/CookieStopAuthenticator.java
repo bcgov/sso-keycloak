@@ -9,6 +9,7 @@ import org.keycloak.constants.AdapterConstants;
 import org.keycloak.models.*;
 import org.keycloak.protocol.LoginProtocol;
 import org.keycloak.services.managers.AuthenticationManager;
+import org.keycloak.services.messages.Messages;
 import org.keycloak.sessions.AuthenticationSessionModel;
 
 import java.util.Map;
@@ -35,12 +36,36 @@ public class CookieStopAuthenticator implements Authenticator {
       return;
     }
 
-    AuthenticationSessionModel authSession = context.getAuthenticationSession();
-    LoginProtocol protocol = context.getSession().getProvider(LoginProtocol.class, authSession.getProtocol());
-    context.setUser(authResult.getUser());
+    AuthenticationSessionModel currentAuthSession = context.getAuthenticationSession();
+
+    LoginProtocol protocol = context.getSession().getProvider(LoginProtocol.class, currentAuthSession.getProtocol());
+
+    UserSessionModel parentAuthUserSession = context.getSession().sessions().getUserSession(context.getRealm(),
+        context.getAuthenticationSession().getParentSession().getId());
+    String clientUUID = currentAuthSession.getClient().getId();
+    AuthenticatedClientSessionModel clientSessionModel = authResult.getSession()
+        .getAuthenticatedClientSessionByClient(clientUUID);
+
+    UserSessionProvider userSessionProvider = context.getSession().sessions();
+
+    String existingSessionIdp = authResult.getSession().getNotes().get("identity_provider");
+
+    Map<String, ClientScopeModel> clientScopes = context.getAuthenticationSession().getClient().getClientScopes(true);
+
+    // Attach user to this flow only when user has a valid parent authentication
+    // session and,
+    // - Current client session exists or,
+    // - Current client session does not exist and client scopes contains
+    // authenticated IDP
+    if (parentAuthUserSession != null && (clientSessionModel != null
+        || (clientSessionModel == null && clientScopes.containsKey(existingSessionIdp)))) {
+      context.setUser(authResult.getUser());
+    }
 
     // 2. if re-authentication is required, proceed to login process
-    if (protocol.requireReauthentication(authResult.getSession(), authSession)) {
+    if (protocol.requireReauthentication(authResult.getSession(), currentAuthSession)) {
+      currentAuthSession.setAuthNote(AuthenticationManager.FORCED_REAUTHENTICATION, "true");
+      context.setForwardedInfoMessage(Messages.REAUTHENTICATE);
       context.attempted();
       return;
     }
@@ -54,17 +79,15 @@ public class CookieStopAuthenticator implements Authenticator {
     // then, logout the user from the current session and proceed to login process
     if (queryParams.containsKey(AdapterConstants.KC_IDP_HINT)) {
       String authIdp = queryParams.getFirst(AdapterConstants.KC_IDP_HINT);
-      String sessIdp = authResult.getSession().getNotes().get("identity_provider");
 
       if (authIdp != null && !authIdp.trim().isEmpty()) {
         IdentityProviderModel idp = context.getSession().identityProviders().getByAlias(authIdp);
-        Map<String, ClientScopeModel> scopes = context.getAuthenticationSession().getClient().getClientScopes(true);
 
         if (idp != null
             && idp.isEnabled()
-            && (scopes.containsKey(authIdp) || scopes.containsKey(authIdp + "-saml"))
-            && authIdp != sessIdp) {
-          UserSessionProvider userSessionProvider = context.getSession().sessions();
+            && (clientScopes.containsKey(authIdp) || clientScopes.containsKey(authIdp + "-saml"))
+            && authIdp != existingSessionIdp) {
+
           userSessionProvider.removeUserSession(context.getRealm(), authResult.getSession());
           context.attempted();
           return;
@@ -72,41 +95,19 @@ public class CookieStopAuthenticator implements Authenticator {
       }
     }
 
-    String clientUUID = authSession.getClient().getId();
-    AuthenticatedClientSessionModel clientSessionModel = authResult.getSession()
-        .getAuthenticatedClientSessionByClient(clientUUID);
-
-    UserSessionModel userSession = context.getSession().sessions().getUserSession(context.getRealm(),
-        context.getAuthenticationSession().getParentSession().getId());
-
-    // 4. Upon invalid parent session, If the authenticating user has a session with
-    // other client in the same realm then remove it
-    // Example: when azure users are not logged out completely
-    if (userSession == null && authResult != null && authResult.getSession() != null) {
-      authResult.getSession().getAuthenticatedClientSessions().forEach((k, v) -> {
-        if (!k.equals(clientUUID)) {
-          UserSessionProvider userSessionProvider = context.getSession().sessions();
-          userSessionProvider.removeUserSession(context.getRealm(),
-              authResult.getSession());
-        }
-      });
+    // If parent authentication session is valid and client session exists or if
+    // current client session does not exist but contains authenticated IDP
+    if (parentAuthUserSession != null && (clientSessionModel != null
+        || (clientSessionModel == null && clientScopes.containsKey(existingSessionIdp)))) {
+      context.getAuthenticationSession().setAuthNote(AuthenticationManager.SSO_AUTH,
+          "true");
+      context.attachUserSession(authResult.getSession());
+      context.success();
+    } else {
+      userSessionProvider.removeUserSession(context.getRealm(), authResult.getSession());
       context.attempted();
       return;
     }
-
-    // 5. If no Cookie session with the authenticating client, proceed to login
-    // process
-    if (clientSessionModel == null) {
-      context.attempted();
-      return;
-    }
-
-    // 6. Otherwise, attach the exisiting session to the user
-    context.getAuthenticationSession().setAuthNote(AuthenticationManager.SSO_AUTH,
-        "true");
-    context.setUser(authResult.getUser());
-    context.attachUserSession(authResult.getSession());
-    context.success();
   }
 
   @Override
