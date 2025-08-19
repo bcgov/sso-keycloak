@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function (event) {
   // restart login
-  forceRestartLogin();
+  // forceRestartLogin();
   // use gov icon for tab:
   updateFavIcon();
 
