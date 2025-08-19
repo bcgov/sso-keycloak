@@ -86,7 +86,7 @@ public class CookieStopAuthenticator implements Authenticator {
         if (idp != null
             && idp.isEnabled()
             && (clientScopes.containsKey(authIdp) || clientScopes.containsKey(authIdp + "-saml"))
-            && authIdp != existingSessionIdp) {
+            && !authIdp.equalsIgnoreCase(existingSessionIdp)) {
 
           userSessionProvider.removeUserSession(context.getRealm(), authResult.getSession());
           context.attempted();
