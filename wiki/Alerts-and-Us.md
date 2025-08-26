@@ -150,11 +150,11 @@ Uptime will calculate the total downtime for the alert
 | January   2025 |    0s    |
 | February  2025 |    0s    |
 | March     2025 |    5m 8s |
-| **April     2025** | **10m 30s**  |
-| May       2025 |  |
-| June      2025 |  |
-| July      2025 |  |
-| August    2025 |  |
+| April     2025 | 10m 30s  |
+| May       2025 |    0s    |
+| June      2025 |    0s    |
+| July      2025 |    0s    |
+| **August    2025** | **0s** |
 | September 2025 |  |
 | October   2025 |  |
 | November  2025 |  |
@@ -199,11 +199,11 @@ Uptime will calculate the total downtime for the alert
 | January   2025 |   9m 28s |
 | February  2025 |    0s    |
 | March     2025 |   5m 14s |
-| **April     2025** | **28m 50s** |
-| May       2025 |  |
-| June      2025 |  |
-| July      2025 |  |
-| August    2025 |  |
+| April     2025 | 28m 50s  |
+| May       2025 | 18m 28s  |
+| June      2025 |    0s    |
+| July      2025 |    0s    |
+| **August    2025** | **0s** |
 | September 2025 |  |
 | October   2025 |  |
 | November  2025 |  |
@@ -244,6 +244,8 @@ Note: January outage was due to a testing password renewal and did not effect cl
 
 ## 2025
 
+As of May 2025 The analytics are no longer provided by JSM
+
 
 ##### P1 Stats
 | Month      | Number of Alerts | Acknowledge Time | Resolve Time    | Notes |
@@ -252,10 +254,10 @@ Note: January outage was due to a testing password renewal and did not effect cl
 | February  | 0 | NA | NA | NA  |
 | March  | 4 |  | 5m 50s | All related to short outage caused by production upgrade.  Also many related to BCeID checks |
 | April  | 5 | 8m 24s | 19m 22s | Caused by network outage on April 13 which resulted in successful switch to GoldDR and an IDIR login failure on April 22  |
-| May  |  |  |  |   |
-| June  |  |  |  |   |
-| July  |  |  |  |   |
-| August |  |  |  |   |
+| May  | 4 |  |  | IDIR outage on the 5 is largely responsible for the P1 alert. Two alerts on may 4th were from route changes and resolve in under 4 min each.  |
+| June  | 0 | NA | NA | NA  |
+| July  | 0 | NA | NA | NA  |
+| August | 0 | NA | NA | NA  |
 | September   |  |  |  |   |
 | October  |  |  |  |   |
 | November  |  |  |  |   |
@@ -268,10 +270,10 @@ Note: January outage was due to a testing password renewal and did not effect cl
 | February  | 2 | 31s | 31s | CPU spike on Feb 18, no user impact |
 | March  | 0 | NA | NA | NA  |
 | April  | 0 | NA | NA | NA  |
-| May  |  |  |  |   |
-| June  |  |  |  |   |
-| July  |  |  |  |   |
-| August |  |  |  |   |
+| May  | 0 | NA | NA | NA  |
+| June  | 1 | 1m | 1m | Not a real pod outage, new sysdig monitoring takes time to add new kc pods to the count  |
+| July  | 5 | NA | NA | All false low pod warnings except one elevated CPU warning. No outage associated.   |
+| August | 0 | NA | NA | NA  |
 | September   |  |  |  |   |
 | October  |  |  |  |   |
 | November  |  |  |  |   |
@@ -284,10 +286,10 @@ Note: January outage was due to a testing password renewal and did not effect cl
 | February  | 7 | NA | NA |  Some data lost on these alerts due to migration.  All patroni pod warnings and Dev warnings due to upgrade. Unavoidable impact to developers done after working hours.   |
 | March  | 5 | 14m 5s | 14m 5s | dev and test idir monitoring were down for short intervals  |
 | April  | 11 | NA | NA | Some data lost on these alerts due to migration.  Mostly due to dev and test IDIR checks failing.  |
-| May  |  |  |  |   |
-| June  |  |  |  |   |
-| July  |  |  |  |   |
-| August |  |  |  |   |
+| May  | 2 | NA | NA | Two idir test env outages on may 5th  |
+| June  | 3 | NA | NA | All ready pod low warnings during roll outs. No service impact  |
+| July  | 1 | NA | NA |  DB pod low warning |
+| August | 0 | NA | NA | NA  |
 | September   |  |  |  |   |
 | October  |  |  |  |   |
 | November  |  |  |  |   |
@@ -300,10 +302,10 @@ Note: January outage was due to a testing password renewal and did not effect cl
 | February  | 17 | NA | NA | Some data lost on these alerts due to migration. No enduser impact all internal warnings.  |
 | March  | 7 | 4m 42s | 1h 49m 25s | All warnings about elevated CPU and filesystem. No enduser impact  |
 | April  | 0 | NA | NA | NA  |
-| May  |  |  |  |   |
-| June  |  |  |  |   |
-| July  |  |  |  |   |
-| August |  |  |  |   |
+| May  | 0 | NA | NA | NA  |
+| June  | 0 | NA | NA | NA  |
+| July  | 1 | NA | NA | Sustained elevated CPU warning, no outage, due to pod rollover  |
+| August | 0 | NA | NA | NA  |
 | September   |  |  |  |   |
 | October  |  |  |  |   |
 | November  |  |  |  |   |
