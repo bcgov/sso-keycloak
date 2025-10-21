@@ -207,7 +207,12 @@ public class IDPUserinfoMapper extends AbstractOIDCProtocolMapper
             if (userAttributesArr.length > 0) {
               Map<String, Object> otherClaims = token.getOtherClaims();
               for (String userAttribute : userAttributesArr) {
-                otherClaims.put(userAttribute.trim(), userInfo.get(userAttribute.trim()));
+                if(userAttribute.equalsIgnoreCase("picture")){
+                  //Specialized logic for BCSC picture
+                  otherClaims.put(userAttribute.trim(), userInfo.get(userAttribute.trim()) + "?access_token=" + brokerAccessToken.getToken());
+                }else {
+                  otherClaims.put(userAttribute.trim(), userInfo.get(userAttribute.trim()));
+                }
               }
             }
           } else {
