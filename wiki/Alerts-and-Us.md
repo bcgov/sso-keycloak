@@ -37,9 +37,9 @@ We have a healthy relationship with our Access Directory Management Services (AD
 
 Here are the things to check:
 
-1. Check our uptime status at https://status.loginproxy.gov.bc.ca
-2.  if you see the IDIR/siteminder uptime alert in red, there may be a larger goverment wide issue. We will provide live updates as we learn more in our [rocketchat channel](https://chat.developer.gov.bc.ca/channel/sso)
-3.  if you see the other alerts please know we are working to resolve this. We will post in [rocketchat channel](https://chat.developer.gov.bc.ca/channel/sso) and update the history and incident section
+1. Check our Status Cake status at TBD
+2. We will provide live updates as we learn more in our [rocketchat channel](https://chat.developer.gov.bc.ca/channel/sso)
+3. If you see the other alerts please know we are working to resolve this. We will post in [rocketchat channel](https://chat.developer.gov.bc.ca/channel/sso) and update the history and incident section
 4. you can always reach a human via our [rocketchat channel](https://chat.developer.gov.bc.ca/channel/sso) or by emailing us at bcgov.sso@gov.bc.ca
 
 <p style="text-align: center" markdown>
@@ -141,9 +141,16 @@ Uptime will calculate the total downtime for the alert
 </p>
 
 
+### Gold Keycloak SSO Prod Service Uptime
 
+| Month          | Downtime |
+| -------------- | -------  |
+| September 2025 | 0s |
+| October   2025 |  |
+| November  2025 |  |
+| December  2025 |  |
 
-### Gold Keycloak SSO Prod End User Access Uptime
+### Gold Keycloak SSO Prod End User Access Uptime (Retired metric as of September 2025)
 
 | Month          | Downtime |
 | -------------- | -------  |
@@ -154,11 +161,7 @@ Uptime will calculate the total downtime for the alert
 | May       2025 |    0s    |
 | June      2025 |    0s    |
 | July      2025 |    0s    |
-| **August    2025** | **0s** |
-| September 2025 |  |
-| October   2025 |  |
-| November  2025 |  |
-| December  2025 |  |
+| August    2025 |    0s    |
 
 | Month          | Downtime |
 | -------------- | -------  |
@@ -192,7 +195,7 @@ Uptime will calculate the total downtime for the alert
 | November  2023 | 0s |
 | December  2023 | 0s |
 
-### Gold KeyCloak SSO Prod and IDIR siteminder Uptime
+### Gold KeyCloak SSO Prod and IDIR siteminder Uptime (Retired metric as of September 2025)
 
 | Month          | Downtime |
 | -------------- | -------  |
@@ -203,11 +206,7 @@ Uptime will calculate the total downtime for the alert
 | May       2025 | 18m 28s  |
 | June      2025 |    0s    |
 | July      2025 |    0s    |
-| **August    2025** | **0s** |
-| September 2025 |  |
-| October   2025 |  |
-| November  2025 |  |
-| December  2025 |  |
+| August    2025 |    0s    |
 
 Note: January outage was due to a testing password renewal and did not effect clients
 
