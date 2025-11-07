@@ -2,7 +2,7 @@
 Here's an overview of our Service Levels and Metrics on our acknowledge and response times:
 
 ## Service Levels
-We often get questions about our Service Level Agreement and over the years we've come to realize the answer is not that simple. This is an attempt to use plain language to explain our Service Levels, other systems that impact our SLA as we are a subset of a larger system, our approach to keep system stable and reliable, and our future thinking.
+We often get questions about our Service Level Agreement and over the years we've come to realize the answer is not that simple. This is an attempt to use plain language to explain our Service Levels, other systems that impact our SLA as we are a subset of a larger system, our approach to keep the system stable and reliable, and our future thinking.
 
 ## What is our Service
 Our service, the Pathfinder SSO ensures that our Keycloak server acts as an [Open ID Connect OIDC](https://openid.net/connect/) based Identity Provider, mediating with an enterprise user directory or 3rd-party SSO providers for identity information and applications via standards-based tokens and identity assertions.

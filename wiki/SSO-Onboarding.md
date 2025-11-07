@@ -18,7 +18,7 @@ Please visit [BCGov Cloud Services](https://digital.gov.bc.ca/technology/cloud/)
 
 ## Start Using your OIDC Client Configuration
 
-Once you have your client details, you can configure your application to use the service for your application login. For helpful advice on integration see [Getting Started](https://bcgov.github.io/sso-docs/category/getting-started) or **if you are eager**, check out our [keycloak example apps](https://github.com/bcgov/keycloak-example-apps)0
+Once you have your client details, you can configure your application to use the service for your application login. For helpful advice on integration see [Getting Started](https://bcgov.github.io/sso-docs/category/getting-started) or **if you are eager**, check out our [keycloak example apps](https://github.com/bcgov/keycloak-example-apps)
 
 #### *Have any questions? We would love to hear from you.* [![Chat Bubble](./img/chat-bubble.png)][2]   <a href="mailto:bcgov.sso@gov.bc.ca">![Email](./img/email.png)</a>
 [2]: https://chat.developer.gov.bc.ca/channel/sso
