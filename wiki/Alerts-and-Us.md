@@ -2,12 +2,12 @@
 Here's an overview of our Service Levels and Metrics on our acknowledge and response times:
 
 ## Service Levels
-We often get questions about our Service Level Agreement and over the years we've come to realize the answer is not that simple. This an attempt to plain language our Service Levels, other systems that impact our SLA as we are a subset of a larger system, our approach to keeping systems stable and reliable, and our future thinking.
+We often get questions about our Service Level Agreement and over the years we've come to realize the answer is not that simple. This is an attempt to use plain language to explain our Service Levels, other systems that impact our SLA as we are a subset of a larger system, our approach to keep system stable and reliable, and our future thinking.
 
 ## What is our Service
 Our service, the Pathfinder SSO ensures that our Keycloak server acts as an [Open ID Connect OIDC](https://openid.net/connect/) based Identity Provider, mediating with an enterprise user directory or 3rd-party SSO providers for identity information and applications via standards-based tokens and identity assertions.
 
-Specifically, we make use of the RHBK 26.0.9
+Specifically, we make use of the RHBK 26.2.5
 
 **Other systems we rely on**
 
@@ -99,7 +99,7 @@ When a change occurs on our service, we will provide notification in advance in 
 
 **Minor changes** are announced 24 hours in advance in the [Rocket.Chat #sso channel.](https://chat.developer.gov.bc.ca/channel/sso) An example of a minor change is tied to small bug fixes or other low-impact changes.
 
-**Emergency change**s are announced as soon as possible in advance in the [Rocket.Chat #sso channel.](https://chat.developer.gov.bc.ca/channel/sso)  channel. An emergency change is performed to recover a failed service, prevent a failure or address a security vulnerability.
+**Emergency changes** are announced as soon as possible in advance in the [Rocket.Chat #sso channel.](https://chat.developer.gov.bc.ca/channel/sso). An emergency change is performed to recover a failed service, prevent a failure or address a security vulnerability.
 
 **Medium/Major changes** are announced five (5) business days in advance in the [Rocket.Chat #sso channel.](https://chat.developer.gov.bc.ca/channel/sso)  channel. An example of a medium change is an upgrade to the keycloak version number, with limited impacts.
 

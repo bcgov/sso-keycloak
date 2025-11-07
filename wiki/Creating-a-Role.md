@@ -15,12 +15,7 @@ You can use roles to enable access to specific pages or data to only those users
 
 ### Alternative to using the UI of the CSS App?
 
-The SSO CSS API let's you interact with CSS Application in a RESTful way for both user and role management. To get the access to this API, an admin from a team needs to request CSS API Account through CSS Application
-
-<<insert updated link>>
-
-
-
+The SSO CSS API let's you interact with CSS Application in a RESTful way for both user and role management. To get the access to this API, an admin from a team needs to request CSS API Account through CSS Application. Click [Here](https://bcgov.github.io/sso-docs/integrating-your-application/css-app-api) for details.
 
 
 
@@ -52,10 +47,8 @@ The SSO CSS API let's you interact with CSS Application in a RESTful way for bot
 1. You have the ability to create different roles for each of the different environment(s) in your integration
 1. When you select a role, the right hand side will show users assigned to that role
 1. By deleting a role, you are also removing the role from the users assigned to the role....it’s on our backlog to allow to delete one user at a time
-1. Any Team Member within your integration can create OR delete roles *
-1. Any Team Member within your integration can see all users assigned to role
-
-( * ) we've got it in our backlog to configure team admins to handle role management( create/delete roles) and team members to handle user assignment (add/remove users to roles)
+1. Any Team Admin within your integration can handle role management (create/edit/delete roles), and user role assignment (add / remove users to roles)
+1. Any Team Member or Team Admin within your integration can handle user role assignment (view / add / remove users to roles)
 
 
 ## Service Account Role Management

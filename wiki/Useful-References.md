@@ -77,8 +77,6 @@ Custom realms are regular keycloak realms, which may be required by some clients
 
 ### Q&A with Us:
 
-- [Github Discussions Q&A on Gold](https://github.com/bcgov/sso-keycloak/discussions/categories/gold-q-a)
-- [Stackover flow Collection 1 on Keycloak/Redhat Build of Keycloak](https://stackoverflow.developer.gov.bc.ca/collections/179)
-- [Stackover flow Collection 2 on Custom Realms](https://stackoverflow.developer.gov.bc.ca/search?q=custom+realm)
+- [SSO FAQs](https://bcgov.github.io/sso-docs/category/faqs)
 
 _**Have any questions? We would love to hear from you.**_ ![Chat Bubble](./img/chat-bubble.png) <a href="mailto:bcgov.sso@gov.bc.ca">![Email](./img/email.png)</a>

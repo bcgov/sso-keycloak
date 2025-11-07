@@ -5,7 +5,7 @@ You can get started by making a request in our Common Hosted Single Sign On appl
 <ol>
   <li>The names of your product owner and technical contact.</li>
   <li>Someone on your team who knows about OpenID connect. You can learn here too <a href="https://www.youtube.com/playlist?list=PL9CV_8JBQHirMRjBk62jeYUE_MpE4unU8">OIDC Explained by Pathfinder SSO</a>.</li>
-  <li>A rough idea on the identity providers that you want to use. Learn more here <a href="../Our-Partners-the-Identity-Providers#what-are-identity-providers">Our Partners</a>.
+  <li>A rough idea on the identity providers that you want to use. Learn more here <a href="../Our-Partners-the-Identity-Providers#what-are-identity-providers">Our Partners the Identity Providers</a>.
   <li>There are some parts of the request where you may need to work with your developer/technical contact:
     <ul>
       <li>Which usecase/scenario do you need a request for?</li>
@@ -18,16 +18,16 @@ You can get started by making a request in our Common Hosted Single Sign On appl
   <li>When the request is complete, you can log in to access your installation json file. Your developer/technical contact will take the details in this file and make use of the details within your application code.
     <ul>
       <li> <a href="https://github.com/bcgov/keycloak-example-apps/tree/dev">GitHub - bcgov/keycloak-example-apps: Example applications for integrating with keycloak</a></li>
-      <li>You can use roles to enable access to specific pages or data to only those users who connect, with efficiency, data security and simplicity under consideration. <a href="#Creating-a-Role">Learn more</a></li>
+      <li>You can use roles to enable access to specific pages or data to only those users who connect, with efficiency, data security and simplicity under consideration. <a href="../Creating-a-Role">Learn more</a></li>
     </ul>
   </li>
   <li>Here is a link to our <a href="https://bcgov.github.io/sso-docs/">developer/technical documentation</a></li>
 </ol>
 
 ### Openshift Clusters
-In mid 2022, we moved our keycloak instance from the Platform Services **Silver Openshift cluster** to their **Gold Openshift cluster**. As of June 15, 2023, all of our services will live in Gold.
+In mid 2022, we moved our keycloak instance from the Platform Services **Silver Openshift cluster** to their **Gold Openshift cluster**. As of June 15, 2023, all of our services live in Gold.
 
-As part of the [Private Cloud Platform Openshift community](https://cloud.gov.bc.ca/private-cloud/) our service sits in the Gold Cluster which enables us to ensure our service is up 24/7. [Check out our up-to-date system health](https://uptime.com/s/bcgov-sso-gold)
+As part of the [Private Cloud Platform Openshift community](https://digital.gov.bc.ca/technology/cloud/private/) our service sits in the Gold Cluster which enables us to ensure our service is up 24/7. [Check out our up-to-date system health](https://uptime.com/s/bcgov-sso-gold)
 
 #### Redhat Build of Keycloak Version
 

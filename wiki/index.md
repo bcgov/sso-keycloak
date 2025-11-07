@@ -87,8 +87,8 @@ The Pathfinder SSO service (also known as "KeyCloak" or "Redhat Build of Keycloa
 Our standard service makes use of one "standard" realm. When you complete a request in our [common hosted single sign on app](https://sso-requests.apps.gold.devops.gov.bc.ca/), you receive a pre-configured client inside an existing realm. Some of the features of this service:
 
 - [Role based access control, ie authorization](Creating-a-Role)
-- [Situations where you use our service](Using-Your-SSO-Client#usecases)
-- [If you need to interact with the CSS App in a RESTful way](CSS-API-Account)
+- [Situations where you use our service](Using-Your-SSO-Client)
+- [If you need to interact with the CSS App in a RESTful way](https://bcgov.github.io/sso-docs/integrating-your-application/css-app-api)
 - [CSS APP my Teams](CSS-App-My-Teams)
 - [CSS APP valid redirect URI Format](https://bcgov.github.io/sso-docs/integrating-your-application/redirects#valid-redirect-format)
 - [Are you Part of GitHub BC Gov Org](Are-you-part-of-the-GitHub-BC-Gov-Org)
@@ -106,7 +106,7 @@ New customers will now be added to one of the specially configured standard real
 We provide:
 
 - Self-registration
-- 20-minute access to a developer, test, and production environment
+- 5-minute access to a developer, test, and production environment
 - Default settings
 - Architecture best practices
 - Access to developer support
@@ -131,7 +131,7 @@ Your responsibilities:
 - Bug fixes
 - Any other hidden or overhead costs or resources
 
-Learn more about the differences between Custom and Standard [here](https://github.com/bcgov/sso-keycloak/wiki/Understanding-the-Difference-Between-Custom-and-Standard-Realms)
+Learn more about the differences between Custom and Standard [here](Understanding-the-Difference-Between-Custom-and-Standard-Realms)
 
 ## History
 
