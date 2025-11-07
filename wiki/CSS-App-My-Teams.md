@@ -50,7 +50,7 @@ Users with the **Admin** role can manage teams.
 
 **Admins** can add new users to a Team, and assign users as either Admins or Members.
 
-To add a new Team member, **Admins** must use a government email address, to ensure the user can login to the app. Once an invitation is sent, the new team member have 2 business days to login to the CSS App to be added to the team. If the team member is unable to login within this time period, their invitation link will expire. In this case, Admins can resend the invitation link from the Dashboard, under the “My Teams” tab.
+To add a new Team member, **Admins** must use a government email address, to ensure the user can login to the app. Once an invitation is sent, the new team member have 2 business days to login to the CSS App to be added to the team. If the team member is unable to accept the invitation within this time period, their invitation link will expire. In this case, Admins can resend the invitation link from the Dashboard, under the “My Teams” tab.
 
 <p style="text-align: center" markdown>
   ![Add Team Member](./img/add-team-member-dec2023.svg)
@@ -82,7 +82,7 @@ Here's a table to show the difference between what a Team Admin and a Team Membe
 
 #### Managing a Role associated to Integration
 
-When creating an integration, some teams may want to create roles associated to the integration. More on roles here https://github.com/bcgov/sso-keycloak/wiki/Creating-a-Role
+When creating an integration, some teams may want to create roles associated to the integration. More on roles [here](Creating-a-Role).
 
 Only an **Admin** can create roles and once the roles are created, Admins and Members can assign users to the role.
 
@@ -116,14 +116,14 @@ Only an **Admin** can create roles and once the roles are created, Admins and Me
 
 Your CSS App team composition may change and here are some reminders on offboarding
 
-##### Team member or Teama admin leaves your work area
+##### Team member or Team admin leaves your work area
 
-1. Remove the individual from your team
+- Remove the individual from your team
 <p style="text-align: center" markdown>
   ![Remove Team Member](./img/delete-team-member-dec2023.svg)
 </p>
 
-2. Add any new individual to your team
+- Add any new individual to your team if needed
 
 
 ##### Last person on a team

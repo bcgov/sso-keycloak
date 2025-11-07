@@ -15,7 +15,7 @@ TLDR - Try our Standard Service and if it doesn't meet your needs, pop us a mess
 
 # Learn More
 
-The Pathfinder SSO service is build on the foundations of Keycloak /Redhat Build of Keycloak.
+The Pathfinder SSO service is build on the foundations of Keycloak / Redhat Build of Keycloak.
 
 - [Request an integration](https://sso-requests.apps.gold.devops.gov.bc.ca/)
 - [An overview of our CSS App](index)
