@@ -1,1 +1,2 @@
 com.github.bcgov.keycloak.social.github.CustomGitHubUserAttributeMapper
+com.github.bcgov.keycloak.protocol.oidc.mappers.IDPAliasModifierMapper
