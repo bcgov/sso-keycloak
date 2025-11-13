@@ -77,23 +77,9 @@ public class IDPAliasModifierMapper extends AbstractIdentityProviderMapper {
 
     context.getIdpConfig().setAlias(mapperModel.getConfig().get("idpAlias"));
 
-    String username = context.getUsername();
+    context.setBrokerUserId(mapperModel.getConfig().get("idpAlias") + "." + context.getUsername());
 
-    logger.infof("Preprocessing federated identity for user '%s' in realm '%s'", username, realm.getName());
-
-    ObjectMapper mapper = new ObjectMapper();
-
-    try {
-      logger.info(mapper.writeValueAsString(context.getContextData()));
-      logger.info(context.getBrokerSessionId());
-      logger.info(mapper.writeValueAsString(context.getIdpConfig()));
-      logger.info(context.getId());
-      logger.info(context.getBrokerUserId());
-      logger.info(context.getModelUsername());
-
-    } catch (JsonProcessingException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
+    logger.infof("Preprocessing federated identity for user '%s' in realm '%s'", context.getUsername(),
+        realm.getName());
   }
 }
