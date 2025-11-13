@@ -37,6 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
       else digitInputs[0].focus();
     } else {
       form.submit();
+      digitInputs.forEach(input => input.disabled = true);
     }
   });
 
@@ -44,6 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!input) return;
 
     input.addEventListener('beforeinput', (e) => {
+      if (submitting) return;
       e.preventDefault();
       const value = e.data;
       if (!value) return;
@@ -67,6 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     input.addEventListener('paste', (e) => {
+      if (submitting) return;
       e.preventDefault();
       const pasted = e.clipboardData?.getData('text');
       if (!pasted) return;
@@ -92,6 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     input.addEventListener('keydown', (e) => {
+      if (submitting) return;
       // beforeinput override blocks enter submission. Need to allow here
       if (e.key === 'Enter') {
         e.preventDefault();
