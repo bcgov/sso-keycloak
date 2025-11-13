@@ -3,20 +3,25 @@ package com.github.bcgov.keycloak.protocol.oidc.mappers;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jboss.logging.Logger;
 import org.keycloak.broker.oidc.KeycloakOIDCIdentityProviderFactory;
 import org.keycloak.broker.oidc.OIDCIdentityProviderFactory;
 import org.keycloak.broker.provider.AbstractIdentityProviderMapper;
 import org.keycloak.models.IdentityProviderMapperModel;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
+import org.keycloak.models.UserModel;
 import org.keycloak.protocol.oidc.mappers.OIDCAttributeMapperHelper;
 import org.keycloak.provider.ProviderConfigProperty;
 import org.keycloak.broker.provider.BrokeredIdentityContext;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.bcgov.keycloak.broker.oidc.CustomOIDCIdentityProviderFactory;
 
 public class IDPAliasModifierMapper extends AbstractIdentityProviderMapper {
 
+  private static final Logger logger = Logger.getLogger(IDPAliasModifierMapper.class);
   public static final String PROVIDER_ID = "idp-alias-modifier-mapper";
   private static final List<ProviderConfigProperty> configProperties = new ArrayList<>();
   public static final String[] COMPATIBLE_PROVIDERS = {
@@ -69,6 +74,26 @@ public class IDPAliasModifierMapper extends AbstractIdentityProviderMapper {
   @Override
   public void preprocessFederatedIdentity(KeycloakSession session, RealmModel realm,
       IdentityProviderMapperModel mapperModel, BrokeredIdentityContext context) {
+
     context.getIdpConfig().setAlias(mapperModel.getConfig().get("idpAlias"));
+
+    String username = context.getUsername();
+
+    logger.infof("Preprocessing federated identity for user '%s' in realm '%s'", username, realm.getName());
+
+    ObjectMapper mapper = new ObjectMapper();
+
+    try {
+      logger.info(mapper.writeValueAsString(context.getContextData()));
+      logger.info(context.getBrokerSessionId());
+      logger.info(mapper.writeValueAsString(context.getIdpConfig()));
+      logger.info(context.getId());
+      logger.info(context.getBrokerUserId());
+      logger.info(context.getModelUsername());
+
+    } catch (JsonProcessingException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
   }
 }
