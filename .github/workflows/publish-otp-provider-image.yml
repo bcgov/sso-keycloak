@@ -49,6 +49,8 @@ jobs:
           SUBNET_A=App_Dev_aza_net
           SUBNET_B=App_Dev_azb_net
 
+          RDS_MIN_CAPACITY=0
+
           EOF
 
       - name: Set env to production
@@ -70,6 +72,8 @@ jobs:
           KEYCLOAK_BASE_URL=${{secrets.PROD_KEYCLOAK_BASE_URL}}
           SUBNET_A=App_Prod_aza_net
           SUBNET_B=App_Prod_azb_net
+
+          RDS_MIN_CAPACITY=0.5
 
           EOF
       - name: Checkout repository
@@ -143,6 +147,7 @@ jobs:
           subnet_b="${{env.SUBNET_B}}"
           lock_table_name="${{env.TF_STATE_DYNAMODB_TABLE}}"
           bucket_name="${{env.TF_STATE_BUCKET}}"
+          rds_min_capacity="${{env.RDS_MIN_CAPACITY}}"
 
           EOF
 
