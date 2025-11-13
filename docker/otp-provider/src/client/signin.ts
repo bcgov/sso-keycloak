@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const errorField = document.getElementById('email-error') as HTMLElement;
   const waitTimeElement = document.getElementById('wait-time-text');
   const submitButton = document.getElementById('submit-button') as HTMLButtonElement;
+  let submitting = false;
 
   if (!form || !emailInput || !errorField || !submitButton || !errorField) return;
   emailInput.addEventListener('input', () => {
@@ -24,7 +25,12 @@ document.addEventListener('DOMContentLoaded', () => {
       setFormError(errorField, error as string, submitButton);
       return;
     }
-    form.submit();
+
+    if (!submitting) {
+      submitting = true;
+      submitButton.disabled = true;
+      form.submit();
+    }
   });
 
   const cooldownPeriod = Number(emailInput.getAttribute('data-wait-time'));

@@ -108,6 +108,10 @@ export const initializeApp = async (app: Express) => {
     },
   });
 
+  app.get('/terms-of-use', (req, res) => {
+    res.render('terms-of-use');
+  });
+
   const oidcRoutes = await oidcRouter(provider);
   app.use('/interaction', oidcRoutes);
 
