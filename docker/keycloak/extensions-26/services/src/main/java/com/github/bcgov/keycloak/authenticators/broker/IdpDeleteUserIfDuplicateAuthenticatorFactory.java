@@ -18,7 +18,7 @@ public class IdpDeleteUserIfDuplicateAuthenticatorFactory implements Authenticat
       Requirement.REQUIRED, Requirement.ALTERNATIVE, Requirement.DISABLED
   };
 
-  private static final List<ProviderConfigProperty> configProperties = new ArrayList<>();
+  private static final List<ProviderConfigProperty> configProperties = new ArrayList<ProviderConfigProperty>();
 
   static {
     ProviderConfigProperty property;
@@ -76,7 +76,7 @@ public class IdpDeleteUserIfDuplicateAuthenticatorFactory implements Authenticat
 
   @Override
   public boolean isConfigurable() {
-    return false;
+    return true;
   }
 
   @Override
