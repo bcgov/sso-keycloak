@@ -91,10 +91,9 @@ public class IdpDeleteUserIfDuplicateAuthenticator extends AbstractIdpAuthentica
       session.users().removeUser(realm, federatedUser);
     }
 
-    // create a POJO to hold roles
-    Map<String, Object> saved = new HashMap<>();
-    saved.put("realmRoles", realmRoles);
-    saved.put("clientRoles", clientRoles);
+    Map<String, Object> userRoles = new HashMap<>();
+    userRoles.put("realmRoles", realmRoles);
+    userRoles.put("clientRoles", clientRoles);
 
     logger.debugf(
         "No duplication detected. Creating account for user '%s' and linking with identity provider '%s' .",
@@ -112,7 +111,7 @@ public class IdpDeleteUserIfDuplicateAuthenticator extends AbstractIdpAuthentica
     if (Boolean.valueOf(authConfig.getConfig().get("preserveRealmRoles"))) {
       // Reapply roles
       // 1) realm roles
-      Set<String> rr = (Set<String>) saved.get("realmRoles");
+      Set<String> rr = (Set<String>) userRoles.get("realmRoles");
       if (rr != null) {
         for (String roleName : rr) {
           RoleModel roleModel = realm.getRole(roleName);
@@ -124,7 +123,7 @@ public class IdpDeleteUserIfDuplicateAuthenticator extends AbstractIdpAuthentica
     }
     if (Boolean.valueOf(authConfig.getConfig().get("preserveClientRoles"))) {
       // 2) client roles
-      Map<String, Set<String>> cr = (Map<String, Set<String>>) saved.get("clientRoles");
+      Map<String, Set<String>> cr = (Map<String, Set<String>>) userRoles.get("clientRoles");
       if (cr != null) {
         for (Map.Entry<String, Set<String>> e : cr.entrySet()) {
           String clientId = e.getKey();
