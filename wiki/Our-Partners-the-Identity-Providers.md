@@ -2,7 +2,7 @@
 
 We provide our service with the support of our Identity Provider Partners. An "Identity Provider" is the holder of the identity that is used to log in with. Learn more about our partners and relevant identity provider information.
 
-Your technical team may need to know the identity provider attributes provided, [please visit here to learn more on what we get from our Identity Partners](identity-Provider-Attribute-Mapping)
+Your technical team may need to know the identity provider attributes provided, [please visit here to learn more on what we get from our Identity Partners](Identity-Provider-Attribute-Mapping)
 
 ## What are Identity Providers?
 
@@ -12,9 +12,9 @@ Your technical team may need to know the identity provider attributes provided, 
   - User Experience: IDIR account with the added the benefit of MFA (multi-factor authentication). i.e use an IDIR username, password and mfa for logging in.
   - Architecture/Developer note: The authentication mechanism is azure cloud [More on MFA registration](https://intranet.gov.bc.ca/thehub/ocio/ocio-enterprise-services/information-security-branch/information-security-mfa/mfa-registration)
 
-- **BCeID** BCeID Accounts enable people to access government services using a single identifier and password.[More on BCeID ](https://www2.gov.bc.ca/gov/content/governments/services-for-government/information-management-technology/identity-and-authentication-services/bceid-authentication-service)
+- **BCeID** BCeID Accounts enable people to access government services using a single identifier and password. [More on BCeID ](https://www2.gov.bc.ca/gov/content/governments/services-for-government/information-management-technology/identity-and-authentication-services/bceid-authentication-service)
 
-- **BCSC (BC Services Card)** The BC Services Card provides access to government services for B.C. residents [More on BC Services Card Login](https://www2.gov.bc.ca/gov/content/governments/government-id/bcservicescardapp)
+- **BCSC (BC Services Card)** The BC Services Card provides access to government services for B.C. residents. [More on BC Services Card Login](https://www2.gov.bc.ca/gov/content/governments/government-id/bcservicescardapp)
 
 - **Digital Credential** Digital credentials are the digital equivalents of things like licenses, identities and permits. Use them for secure access, streamlined service delivery, and more. Learn more about [how digital credentials can improve your service](https://digital.gov.bc.ca/design/digital-trust/digital-credentials/)
 
