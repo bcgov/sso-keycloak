@@ -26,6 +26,8 @@ services:
       PPID_CLIENT_ID:
       PPID_CLIENT_SECRET:
       PPID_API_URL: https://idsit.gov.bc.ca/iis-apis/v1/ppids
+      RBA_API_URL:
+      RBA_API_SECRET:
     volumes:
       - ../../docker/keycloak/extensions-26/themes/src/main/resources/theme:/opt/keycloak/themes/
 

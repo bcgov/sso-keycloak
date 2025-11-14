@@ -14,12 +14,20 @@ public class ApplicationProperties {
   private String ppidClientId;
   private String ppidClinetSecret;
 
+  private String rbaApiUrl;
+  private String rbaApiSecret;
+
   public ApplicationProperties() {
+    // ppid
     ppidApiTokenUrl = System.getenv().getOrDefault("PPID_API_TOKEN_URL", "MissingPpidApiTokenUrl");
     ppidOtpIssuer = System.getenv().getOrDefault("PPID_OTP_ISSUER", "MissingOtpIssuer");
     ppidClientId = System.getenv().getOrDefault("PPID_CLIENT_ID", "MissingPpidClientId");
     ppidClinetSecret = System.getenv().getOrDefault("PPID_CLIENT_SECRET", "MissingPpidClinetSecret");
     ppidApiUrl = System.getenv().getOrDefault("PPID_API_URL", "MissingPpidApiUrl");
+
+    // rba
+    rbaApiUrl = System.getenv().getOrDefault("RBA_API_URL", "MissingRbaApiUrl");
+    rbaApiSecret = System.getenv().getOrDefault("RBA_API_SECRET", "MissingRbaApiSecret");
   }
 
   public String getPPIDApiTokenUrl() {
@@ -44,4 +52,11 @@ public class ApplicationProperties {
     return ppidClinetSecret;
   }
 
+  public String getRbaApiUrl() {
+    return rbaApiUrl;
+  }
+
+  public String getRbaApiSecret() {
+    return rbaApiSecret;
+  }
 }
