@@ -106,13 +106,13 @@ export const generateEvents = (provider: Provider) => {
 
   // capture all the error events
   eventTypes.map((event) => {
-    if (event.endsWith('.error')) {
+    if (event.endsWith('error')) {
       provider.on(event, (ctx: KoaContextWithOIDC, error: ErrorOut) => {
         logger.error({
           event,
           error: error?.error,
           message: error?.error_description,
-          user_agent: ctx?.request?.headers['user-agent'],
+          user_agent: ctx?.request?.headers?.['user-agent'],
           ip: ctx?.request?.ip,
           method: ctx?.request?.method,
           url: ctx?.request?.url,
