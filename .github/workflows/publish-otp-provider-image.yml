@@ -49,7 +49,8 @@ jobs:
           SUBNET_A=App_Dev_aza_net
           SUBNET_B=App_Dev_azb_net
 
-          RDS_MIN_CAPACITY=0
+          RDS_MIN_CAPACITY=0.5
+          LOG_LEVEL=debug
 
           EOF
 
@@ -72,6 +73,7 @@ jobs:
           KEYCLOAK_BASE_URL=${{secrets.PROD_KEYCLOAK_BASE_URL}}
           SUBNET_A=App_Prod_aza_net
           SUBNET_B=App_Prod_azb_net
+          LOG_LEVEL=info
 
           RDS_MIN_CAPACITY=0.5
 
@@ -148,6 +150,7 @@ jobs:
           lock_table_name="${{env.TF_STATE_DYNAMODB_TABLE}}"
           bucket_name="${{env.TF_STATE_BUCKET}}"
           rds_min_capacity="${{env.RDS_MIN_CAPACITY}}"
+          log_level="${{env.LOG_LEVEL}}"
 
           EOF
 
