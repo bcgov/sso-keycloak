@@ -2,7 +2,7 @@ import Provider, { AccessToken, ErrorOut, KoaContextWithOIDC, RefreshToken } fro
 import logger from './modules/winston.config';
 import { config } from './config';
 
-const { NODE_ENV } = config;
+const { NODE_ENV, LOG_LEVEL } = config;
 
 export const generateEvents = (provider: Provider) => {
   logger.info('Generating events for OIDC provider');
@@ -62,6 +62,25 @@ export const generateEvents = (provider: Provider) => {
     'session.saved',
     'userinfo.error',
   ];
+
+  // Log all OIDC events on debug
+  if (LOG_LEVEL === 'debug') {
+    eventTypes.map((event) => {
+      provider.on(event, (ctx: KoaContextWithOIDC) => {
+        logger.info({
+          event,
+          client_id: ctx?.oidc?.client?.clientId,
+          user_agent: ctx?.request?.headers['user-agent'],
+          ip: ctx?.request?.ip,
+          method: ctx?.request?.method,
+          url: ctx?.request?.url,
+        });
+      });
+    });
+    return;
+  }
+
+
 
   eventTypes.map((event) => {
     if (
