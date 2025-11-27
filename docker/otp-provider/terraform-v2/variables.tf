@@ -145,6 +145,13 @@ variable "otp_cwlogs_group" {
   default     = "/aws/ecs/fargate/otp-provider"
 }
 
+variable "otp_image_tag" {
+  description = "Name of the otp provider image tag"
+  type        = string
+  default     = "latest"
+}
+
+
 variable "dev_app_url" {
   description = "DEV app url"
   type        = string

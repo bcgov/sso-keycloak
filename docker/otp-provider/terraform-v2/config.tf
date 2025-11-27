@@ -13,12 +13,3 @@ terraform {
     }
   }
 }
-
-terraform {
-  backend "s3" {
-    bucket       = "otp-provider-tf"
-    key          = "otp-provider.tfstate"
-    region       = "ca-central-1"
-    use_lockfile = true
-  }
-}

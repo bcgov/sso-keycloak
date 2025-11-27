@@ -61,7 +61,7 @@ module "dev" {
   task_execution_role_arn = aws_iam_role.otp_task_execution_role.arn
   task_role_arn           = aws_iam_role.otp_task_role.arn
   aws_ecr_uri             = module.ecr.repository_url
-  image_tag               = "latest"
+  image_tag               = var.otp_image_tag
   rds_max_capacity        = var.dev_rds_max_capacity
   rds_min_capacity        = var.dev_rds_min_capacity
   rds_scale_down_time     = var.dev_rds_scale_down_time
@@ -93,7 +93,7 @@ module "test" {
   task_execution_role_arn = aws_iam_role.otp_task_execution_role.arn
   task_role_arn           = aws_iam_role.otp_task_role.arn
   aws_ecr_uri             = module.ecr.repository_url
-  image_tag               = "latest"
+  image_tag               = var.otp_image_tag
   rds_max_capacity        = var.test_rds_max_capacity
   rds_min_capacity        = var.test_rds_min_capacity
   rds_scale_down_time     = var.test_rds_scale_down_time
@@ -125,7 +125,7 @@ module "prod" {
   task_execution_role_arn = aws_iam_role.otp_task_execution_role.arn
   task_role_arn           = aws_iam_role.otp_task_role.arn
   aws_ecr_uri             = module.ecr.repository_url
-  image_tag               = "latest"
+  image_tag               = var.otp_image_tag
   rds_max_capacity        = var.prod_rds_max_capacity
   rds_min_capacity        = var.prod_rds_min_capacity
   rds_scale_down_time     = var.prod_rds_scale_down_time

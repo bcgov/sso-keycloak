@@ -35,11 +35,14 @@ jobs:
           TF_VAR_ches_username=${{ secrets.CHES_USERNAME }}
           TF_VAR_ches_password=${{ secrets.CHES_PASSWORD }}
           TF_VAR_otp_cwlogs_group=/aws/ecs/fargate/otp-provider
+          TF_STATE_BUCKET_KEY=otp-provider.tfstate
+          TF_STATE_BUCKET_REGION=ca-central-1
           EOF
       - name: Set sandbox environment variables
         if: (github.ref == 'refs/heads/dev' && github.event_name == 'push') || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'development')
         run: |
           cat >> $GITHUB_ENV <<EOF
+          TF_STATE_BUCKET_NAME=otp-provider-tf-sandbox
           TF_VAR_dev_app_url=https://dev.sandbox.otp.loginproxy.gov.bc.ca
           TF_VAR_dev_custom_domain_name=dev.sandbox.otp.loginproxy.gov.bc.ca
           TF_VAR_dev_cors_origins=https://dev.sandbox.loginproxy.gov.bc.ca
@@ -85,6 +88,7 @@ jobs:
         if: (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'production')
         run: |
           cat >> $GITHUB_ENV <<EOF
+          TF_VAR_otp_image_tag=${{ github.event.inputs.version || 'latest' }}
           TF_VAR_dev_app_url=https://dev.otp.loginproxy.gov.bc.ca
           TF_VAR_dev_custom_domain_name=dev.otp.loginproxy.gov.bc.ca
           TF_VAR_dev_cors_origins=https://dev.loginproxy.gov.bc.ca
@@ -158,6 +162,20 @@ jobs:
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
         working-directory: ./docker/otp-provider
+
+      - name: Terraform Variables
+        run: |
+          cat >"config.tf" <<EOF
+          terraform {
+            backend "s3" {
+              bucket         = "${{ env.TF_STATE_BUCKET_NAME }}"
+              key            = "${{ env.TF_STATE_BUCKET_KEY }}"
+              region         = "${{ env.TF_STATE_BUCKET_REGION }}"
+              use_lockfile   = true
+            }
+          }
+          EOF
+        working-directory: ./docker/otp-provider/terraform-v2
 
       - name: Terraform Init
         id: init
