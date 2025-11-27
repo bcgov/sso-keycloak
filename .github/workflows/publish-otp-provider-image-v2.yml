@@ -43,6 +43,10 @@ jobs:
         run: |
           cat >> $GITHUB_ENV <<EOF
           TF_STATE_BUCKET_NAME=otp-provider-tf-sandbox
+          TF_VAR_otp_image_tag=latest
+          TF_VAR_subnet_a=Dev-App-A
+          TF_VAR_subnet_b=Dev-App-B
+
           TF_VAR_dev_app_url=https://dev.sandbox.otp.loginproxy.gov.bc.ca
           TF_VAR_dev_custom_domain_name=dev.sandbox.otp.loginproxy.gov.bc.ca
           TF_VAR_dev_cors_origins=https://dev.sandbox.loginproxy.gov.bc.ca
@@ -90,6 +94,9 @@ jobs:
           cat >> $GITHUB_ENV <<EOF
           TF_STATE_BUCKET_NAME=otp-provider-tf-production
           TF_VAR_otp_image_tag=${{ github.event.inputs.version || 'latest' }}
+          TF_VAR_subnet_a=Prod-App-A
+          TF_VAR_subnet_b=Prod-App-B
+
           TF_VAR_dev_app_url=https://dev.otp.loginproxy.gov.bc.ca
           TF_VAR_dev_custom_domain_name=dev.otp.loginproxy.gov.bc.ca
           TF_VAR_dev_cors_origins=https://dev.loginproxy.gov.bc.ca
