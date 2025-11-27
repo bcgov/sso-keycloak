@@ -88,6 +88,7 @@ jobs:
         if: (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'production')
         run: |
           cat >> $GITHUB_ENV <<EOF
+          TF_STATE_BUCKET_NAME=otp-provider-tf-production
           TF_VAR_otp_image_tag=${{ github.event.inputs.version || 'latest' }}
           TF_VAR_dev_app_url=https://dev.otp.loginproxy.gov.bc.ca
           TF_VAR_dev_custom_domain_name=dev.otp.loginproxy.gov.bc.ca
