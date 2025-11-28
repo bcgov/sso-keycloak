@@ -107,7 +107,7 @@ jobs:
           TF_VAR_dev_task_container_port=3000
           TF_VAR_dev_rds_min_capacity=0.5
           TF_VAR_dev_rds_max_capacity=2
-          TF_VAR_dev_rds_scale_down_time=3600
+          TF_VAR_dev_rds_scale_down_time=36000
 
           TF_VAR_test_app_url=https://test.otp.loginproxy.gov.bc.ca
           TF_VAR_test_custom_domain_name=test.otp.loginproxy.gov.bc.ca
@@ -119,7 +119,7 @@ jobs:
           TF_VAR_test_task_container_port=3000
           TF_VAR_test_rds_min_capacity=0.5
           TF_VAR_test_rds_max_capacity=2
-          TF_VAR_test_rds_scale_down_time=3600
+          TF_VAR_test_rds_scale_down_time=36000
 
           TF_VAR_prod_app_url=https://otp.loginproxy.gov.bc.ca
           TF_VAR_prod_custom_domain_name=otp.loginproxy.gov.bc.ca
@@ -131,7 +131,7 @@ jobs:
           TF_VAR_prod_task_container_port=3000
           TF_VAR_prod_rds_min_capacity=0.5
           TF_VAR_prod_rds_max_capacity=2
-          TF_VAR_prod_rds_scale_down_time=3600
+          TF_VAR_prod_rds_scale_down_time=36000
           TF_VAR_enable_grafana=true
           TF_VAR_grafana_kc_url=${{secrets.PROD_KEYCLOAK_BASE_URL}}
           TF_VAR_grafana_kc_client_id=${{secrets.PROD_GRAFANA_OAUTH_CLIENT_SECRET}}
