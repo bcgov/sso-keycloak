@@ -47,7 +47,7 @@ For IDIR and GitHub, your users will use "real" credentials in all three environ
 #### BCeID Accounts
 
 
-**With our GOLD Service** - please ensure you have BCeID accounts mapped to the correct BCeID environment listed below. For questions on test accounts, please reach out to our IDIM partners at idim.consulting@gov.bc.ca or visit [BC Gov Stack Overflow](https://stackoverflow.developer.gov.bc.ca/questions/704)
+**With our GOLD Service** - please ensure you have BCeID accounts mapped to the correct BCeID environment listed below. For questions on test accounts, please reach out to our IDIM partners at idim.consulting@gov.bc.ca or visit [here](https://stackoverflow.developer.gov.bc.ca/questions/704)
 
 | SSO CSS APP GOLD        | BCeID Env           | Visual Clue          |
 | ------------- |:-------------:| :-----: |
