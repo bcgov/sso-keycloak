@@ -46,6 +46,10 @@ const fetchChesToken = async () => {
 export const sendEmail = async ({ from = 'no-reply-sso@gov.bc.ca', to, body, ...rest }: EmailOptions) => {
   try {
     if (process.env.NODE_ENV === 'test') return true;
+    if (process.env.TEST_MODE === 'true' && to[0] === 'test@mail.com') {
+      console.log('test user detected, skipping...')
+      return true;
+    }
     const [accessToken, error] = await fetchChesToken();
     if (error) {
       throw new Error('unable to fetch ches token');

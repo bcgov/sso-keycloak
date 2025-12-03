@@ -91,7 +91,7 @@ jobs:
         working-directory: ./docker/otp-provider/e2e
 
       - name: Run Playwright tests
-        run: DB_NAME=otp_test yarn playwright test
+        run: DB_NAME=otp_test yarn playwright test "!e2e/live.spec.ts"
         working-directory: ./docker/otp-provider
 
       - uses: actions/upload-artifact@v4

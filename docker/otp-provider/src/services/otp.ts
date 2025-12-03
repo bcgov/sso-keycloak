@@ -93,6 +93,12 @@ export const getOtpWaitTime = async (email: string, clientId: string) => {
 
 export const verifyOtp = async (email: string, otp: string, clientId: string) => {
   let response = { waitTime: 0, error: '' };
+
+  if (process.env.TEST_MODE === 'true' && email === 'test@mail.com' && otp === '111111') {
+        await deleteOtpsByEmail({ email, clientId });
+        return response;
+  }
+
   const transaction = await sequelize.transaction();
   try {
     const activeOtp = await getActiveOtp({ email, clientId });
