@@ -29,13 +29,3 @@ for (let i = 0; i < 200; i++) {
         await expect(page).toHaveURL('https://bcgov.github.io/keycloak-example-apps/', {timeout: 10_000})
     });
 }
-
-
-// {
-//   "confidential-port": 0,
-//   "auth-server-url": "https://dev.sandbox.loginproxy.gov.bc.ca/auth",
-//   "realm": "standard",
-//   "ssl-required": "external",
-//   "public-client": true,
-//   "resource": "otp-prod-approve-20153"
-// }
