@@ -83,9 +83,9 @@ jobs:
           TF_VAR_prod_rds_max_capacity=2
           TF_VAR_prod_rds_scale_down_time=3600
           TF_VAR_enable_grafana=true
-          TF_VAR_grafana_kc_url=${{secrets.DEV_KEYCLOAK_BASE_URL}}
-          TF_VAR_grafana_kc_client_id=${{secrets.DEV_GRAFANA_OAUTH_CLIENT_SECRET}}
-          TF_VAR_grafana_kc_client_secret=${{secrets.DEV_GRAFANA_OAUTH_CLIENT_ID}}
+          TF_VAR_grafana_kc_url=${{ secrets.DEV_KEYCLOAK_BASE_URL }}
+          TF_VAR_grafana_kc_client_id=${{ secrets.DEV_GRAFANA_OAUTH_CLIENT_ID }}
+          TF_VAR_grafana_kc_client_secret=${{ secrets.DEV_GRAFANA_OAUTH_CLIENT_SECRET }}
           EOF
 
       - name: Set env to production
@@ -133,9 +133,9 @@ jobs:
           TF_VAR_prod_rds_max_capacity=2
           TF_VAR_prod_rds_scale_down_time=36000
           TF_VAR_enable_grafana=true
-          TF_VAR_grafana_kc_url=${{secrets.PROD_KEYCLOAK_BASE_URL}}
-          TF_VAR_grafana_kc_client_id=${{secrets.PROD_GRAFANA_OAUTH_CLIENT_SECRET}}
-          TF_VAR_grafana_kc_client_secret=${{secrets.PROD_GRAFANA_OAUTH_CLIENT_ID}}
+          TF_VAR_grafana_kc_url=${{ secrets.PROD_KEYCLOAK_BASE_URL}}
+          TF_VAR_grafana_kc_client_id=${{ secrets.PROD_GRAFANA_OAUTH_CLIENT_ID }}
+          TF_VAR_grafana_kc_client_secret=${{ secrets.PROD_GRAFANA_OAUTH_CLIENT_SECRET }}
           EOF
       - name: Checkout repository
         uses: actions/checkout@v3
