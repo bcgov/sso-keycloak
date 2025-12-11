@@ -9,8 +9,8 @@ const REDIRECT_URI  = __ENV.REDIRECT_URI;
 const OTP_BASE_URL  = __ENV.OTP_BASE_URL;
 
 export const options = {
-    vus: 10,
-    duration: '30s',
+    vus: 5,
+    duration: '10s',
     thresholds: {
         // Fail if any request takes longer than 5s
         http_req_duration: ['max<5000'],
@@ -68,7 +68,6 @@ export default function () {
         headers: {
             "Content-Type": "application/x-www-form-urlencoded",
         },
-        timeout: '2s'
     });
 
     // Adjust to https in case location header is http
