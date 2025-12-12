@@ -2,7 +2,10 @@ build
 node_modules
 e2e
 terraform
+terraform-v2
 /test-results/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+test-results
+.env

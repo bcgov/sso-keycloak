@@ -95,7 +95,17 @@ export const verifyOtp = async (email: string, otp: string, clientId: string) =>
   let response = { waitTime: 0, error: '' };
   const transaction = await sequelize.transaction();
   try {
-    const activeOtp = await getActiveOtp({ email, clientId });
+    let activeOtp = await getActiveOtp({ email, clientId });
+    if (process.env.TEST_MODE === 'true') {
+      activeOtp =
+      {
+        id: '1',
+        otp: '111111',
+        email,
+        attempts: 0,
+        active: true,
+      };
+    }
     if (!activeOtp) {
       await createEvent(
         {
