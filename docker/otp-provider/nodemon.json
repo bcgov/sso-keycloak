@@ -1,6 +1,0 @@
-{
-  "watch": ["src", ".env"],
-  "ext": "ts,ejs,css",
-  "ignore": ["build"],
-  "exec": "yarn build && yarn start"
-}
