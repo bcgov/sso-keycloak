@@ -1,8 +1,0 @@
-build
-node_modules
-e2e
-terraform
-/test-results/
-/playwright-report/
-/blob-report/
-/playwright/.cache/
