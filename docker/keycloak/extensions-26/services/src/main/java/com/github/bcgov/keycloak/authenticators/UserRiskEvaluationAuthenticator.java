@@ -28,6 +28,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.bcgov.keycloak.common.ApplicationProperties;
+import com.github.bcgov.keycloak.common.RBA;
 
 import jakarta.ws.rs.core.Response;
 
@@ -109,10 +110,12 @@ public class UserRiskEvaluationAuthenticator implements Authenticator {
   }
 
   public double fetchRiskScore(ObjectNode payload) throws IOException {
+
+    String token = RBA.getAccessToken();
     CloseableHttpClient httpClient = HttpClients.createDefault();
     CloseableHttpResponse response;
     HttpPost postRqst = new HttpPost(applicationProperties.getRbaApiUrl());
-    postRqst.addHeader("Authorization", "Bearer " + applicationProperties.getRbaApiSecret());
+    postRqst.addHeader("Authorization", "Bearer " + token);
     String json = MAPPER.writeValueAsString(payload);
     postRqst.setEntity(new StringEntity(json, "UTF-8"));
     response = httpClient.execute(postRqst);
