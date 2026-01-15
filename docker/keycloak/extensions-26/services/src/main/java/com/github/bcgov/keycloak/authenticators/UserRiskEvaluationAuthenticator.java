@@ -62,6 +62,7 @@ public class UserRiskEvaluationAuthenticator implements Authenticator {
     ObjectNode dataNode = payload.putObject("data");
     payload.put("event", "login");
     dataNode.put("clientId", clientId);
+    dataNode.put("realm", realm);
     dataNode.put("account", username);
     dataNode.put("userId", userId);
     dataNode.put("ip", userIp);
@@ -73,7 +74,7 @@ public class UserRiskEvaluationAuthenticator implements Authenticator {
     try {
       riskScore = fetchRiskScore(payload);
     } catch (IOException e) {
-      logger.error("Could not fetch risk score");
+      logger.error("Could not fetch risk score", e);
       context.failure(AuthenticationFlowError.INTERNAL_ERROR);
       return;
     }
@@ -123,7 +124,7 @@ public class UserRiskEvaluationAuthenticator implements Authenticator {
     response = httpClient.execute(postRqst);
     int status = response.getStatusLine().getStatusCode();
     if (!(status >= 200 && status < 400)) {
-      throw new RuntimeException("Invalid status received from userinfo endpoint= " + status);
+      throw new RuntimeException("Invalid status received from RBA API: " + status);
     }
     try {
       try {
