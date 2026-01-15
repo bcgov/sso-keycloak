@@ -28,6 +28,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.bcgov.keycloak.common.ApplicationProperties;
+import com.github.bcgov.keycloak.common.RBA;
 
 import jakarta.ws.rs.core.Response;
 
@@ -57,26 +58,29 @@ public class UserRiskEvaluationAuthenticator implements Authenticator {
     String userIp = context.getConnection().getRemoteAddr();
 
     ObjectNode payload = MAPPER.createObjectNode();
-    payload.put("realm", realm);
-    payload.put("clientId", clientId);
-    payload.put("username", username);
-    payload.put("userId", userId);
-    payload.put("userIp", userIp);
-    payload.put("timestamp", Instant.now().toString());
-    payload.put("authMethod", authSession.getProtocol()); // e.g., "openid-connect"
-    payload.put("sessionId", authSession.getParentSession().getId());
+
+    ObjectNode dataNode = payload.putObject("data");
+    payload.put("event", "login");
+    dataNode.put("clientId", clientId);
+    dataNode.put("realm", realm);
+    dataNode.put("account", username);
+    dataNode.put("userId", userId);
+    dataNode.put("ip", userIp);
+    dataNode.put("timestamp", Instant.now().toString());
+    dataNode.put("authMethod", authSession.getProtocol()); // e.g., "openid-connect"
+    dataNode.put("sessionId", authSession.getParentSession().getId());
 
     double riskScore;
     try {
       riskScore = fetchRiskScore(payload);
     } catch (IOException e) {
-      logger.error("Could not fetch risk score");
+      logger.error("Could not fetch risk score", e);
       context.failure(AuthenticationFlowError.INTERNAL_ERROR);
       return;
     }
 
     if (riskScore != -1 && riskScore < 0.5) {
-      context.success();
+      context.attempted();
     } else {
       String errorMessage = Optional.ofNullable(context.getAuthenticatorConfig())
           .map(AuthenticatorConfigModel::getConfig)
@@ -109,16 +113,18 @@ public class UserRiskEvaluationAuthenticator implements Authenticator {
   }
 
   public double fetchRiskScore(ObjectNode payload) throws IOException {
+
+    String token = RBA.getAccessToken();
     CloseableHttpClient httpClient = HttpClients.createDefault();
     CloseableHttpResponse response;
     HttpPost postRqst = new HttpPost(applicationProperties.getRbaApiUrl());
-    postRqst.addHeader("Authorization", "Bearer " + applicationProperties.getRbaApiSecret());
+    postRqst.addHeader("Authorization", "Bearer " + token);
     String json = MAPPER.writeValueAsString(payload);
     postRqst.setEntity(new StringEntity(json, "UTF-8"));
     response = httpClient.execute(postRqst);
     int status = response.getStatusLine().getStatusCode();
     if (!(status >= 200 && status < 400)) {
-      throw new RuntimeException("Invalid status received from userinfo endpoint= " + status);
+      throw new RuntimeException("Invalid status received from RBA API: " + status);
     }
     try {
       try {
