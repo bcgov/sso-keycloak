@@ -79,7 +79,7 @@ public class UserRiskEvaluationAuthenticator implements Authenticator {
     }
 
     if (riskScore != -1 && riskScore < 0.5) {
-      context.success();
+      context.attempted();
     } else {
       String errorMessage = Optional.ofNullable(context.getAuthenticatorConfig())
           .map(AuthenticatorConfigModel::getConfig)
