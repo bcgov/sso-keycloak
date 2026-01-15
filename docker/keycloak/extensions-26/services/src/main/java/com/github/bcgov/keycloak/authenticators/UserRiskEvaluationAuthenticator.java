@@ -58,14 +58,16 @@ public class UserRiskEvaluationAuthenticator implements Authenticator {
     String userIp = context.getConnection().getRemoteAddr();
 
     ObjectNode payload = MAPPER.createObjectNode();
-    payload.put("realm", realm);
-    payload.put("clientId", clientId);
-    payload.put("username", username);
-    payload.put("userId", userId);
-    payload.put("userIp", userIp);
-    payload.put("timestamp", Instant.now().toString());
-    payload.put("authMethod", authSession.getProtocol()); // e.g., "openid-connect"
-    payload.put("sessionId", authSession.getParentSession().getId());
+
+    ObjectNode dataNode = payload.putObject("data");
+    payload.put("event", "login");
+    dataNode.put("clientId", clientId);
+    dataNode.put("account", username);
+    dataNode.put("userId", userId);
+    dataNode.put("ip", userIp);
+    dataNode.put("timestamp", Instant.now().toString());
+    dataNode.put("authMethod", authSession.getProtocol()); // e.g., "openid-connect"
+    dataNode.put("sessionId", authSession.getParentSession().getId());
 
     double riskScore;
     try {
