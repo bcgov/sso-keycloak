@@ -44,11 +44,11 @@ public class PPID {
     ApplicationProperties applicationProperties = new ApplicationProperties();
 
     CloseableHttpClient httpClient = HttpClients.createDefault();
-    HttpPost httpPost = new HttpPost(applicationProperties.getPPIDApiTokenUrl());
+    HttpPost httpPost = new HttpPost(applicationProperties.getPpidTokenUrl());
     List<NameValuePair> formparams = new LinkedList<>();
     formparams.add(new BasicNameValuePair("grant_type", "client_credentials"));
-    formparams.add(new BasicNameValuePair("client_id", applicationProperties.getPPIDClientID()));
-    formparams.add(new BasicNameValuePair("client_secret", applicationProperties.getPPIDClientSecret()));
+    formparams.add(new BasicNameValuePair("client_id", applicationProperties.getPpidClientID()));
+    formparams.add(new BasicNameValuePair("client_secret", applicationProperties.getPpidClientSecret()));
     formparams.add(new BasicNameValuePair("scope", "ppids-api"));
 
     try {
@@ -81,7 +81,7 @@ public class PPID {
       String token = getAccessToken();
       if (!StringUtil.isNullOrEmpty(token)) {
         CloseableHttpClient httpClient = HttpClients.createDefault();
-        HttpPost httpPost = new HttpPost(applicationProperties.getPPIDApiUrl());
+        HttpPost httpPost = new HttpPost(applicationProperties.getPpidApiUrl());
         httpPost.addHeader(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", token));
         String jsonBody = String.format("{\"iss\": \"%s\", \"sub\": \"%s\", \"privacy_zone_uri\": \"%s\"}", issuer,
             sub,

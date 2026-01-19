@@ -19,8 +19,8 @@ public class ApplicationProperties {
 
   public ApplicationProperties() {
     // ppid
-    ppidApiTokenUrl = System.getenv().getOrDefault("PPID_API_TOKEN_URL", "MissingPpidApiTokenUrl");
-    ppidOtpIssuer = System.getenv().getOrDefault("PPID_OTP_ISSUER", "MissingOtpIssuer");
+    ppidTokenUrl = System.getenv().getOrDefault("PPID_TOKEN_URL", "MissingPpidTokenUrl");
+    ppidIssuer = System.getenv().getOrDefault("PPID_ISSUER", "MissingIssuer");
     ppidClientId = System.getenv().getOrDefault("PPID_CLIENT_ID", "MissingPpidClientId");
     ppidClientSecret = System.getenv().getOrDefault("PPID_CLIENT_SECRET", "MissingPpidClientSecret");
     ppidApiUrl = System.getenv().getOrDefault("PPID_API_URL", "MissingPpidApiUrl");
@@ -32,25 +32,25 @@ public class ApplicationProperties {
     rbaClientSecret = System.getenv().getOrDefault("RBA_CLIENT_SECRET", "MissingRbaClientSecret");
   }
 
-  public String getPPIDApiTokenUrl() {
-    return ppidApiTokenUrl;
+  public String getPpidTokenUrl() {
+    return ppidTokenUrl;
   }
 
-  public String getPPIDApiUrl() {
+  public String getPpidApiUrl() {
     return ppidApiUrl;
   };
 
   public String getIssuer(String idp) {
     if (idp.contains("otp"))
-      return ppidOtpIssuer;
+      return ppidIssuer;
     return "";
   }
 
-  public String getPPIDClientID() {
+  public String getPpidClientID() {
     return ppidClientId;
   }
 
-  public String getPPIDClientSecret() {
+  public String getPpidClientSecret() {
     return ppidClientSecret;
   }
 
