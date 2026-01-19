@@ -6,9 +6,9 @@ public class ApplicationProperties {
 
   private static final Logger logger = Logger.getLogger(ApplicationProperties.class);
 
-  private String ppidApiTokenUrl;
+  private String ppidTokenUrl;
   private String ppidApiUrl;
-  private String ppidOtpIssuer;
+  private String ppidIssuer;
   private String ppidClientId;
   private String ppidClientSecret;
 
