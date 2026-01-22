@@ -4,9 +4,9 @@ fullnameOverride: k6-patroni
 
 image:
   # see https://github.com/zalando/spilo/releases
-  repository: ghcr.io/zalando/spilo-15
+  repository: ghcr.io/bcgov/sso-spilo-17
   pullPolicy: Always
-  tag: 3.2-p1
+  tag: 4.0-p3
 
 replicaCount: 1
 
