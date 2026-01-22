@@ -26,8 +26,8 @@ services:
       PPID_API_URL: https://idsit.gov.bc.ca/iis-apis/v1/ppids
       RBA_API_URL: http://localhost:8081/event # http://host.docker.internal:8081/event - required if container needs to access host machine
       RBA_TOKEN_URL: https://dev.sandbox.loginproxy.gov.bc.ca/auth/realms/standard/protocol/openid-connect/token
-      RBA_CLIENT_ID: 
-      RBA_CLIENT_SECRET: 
+      RBA_CLIENT_ID:
+      RBA_CLIENT_SECRET:
     volumes:
       - ../../docker/keycloak/extensions-26/themes/src/main/resources/theme:/opt/keycloak/themes/
     extra_hosts:
