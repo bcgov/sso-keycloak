@@ -3,7 +3,7 @@ name: Create and publish Keycloak Docker image - Dev
 on:
   push:
     branches:
-      - 'feature/quarkus'
+      - 'SSOTEAM-2547'
 
 env:
   GITHUB_REGISTRY: ghcr.io
@@ -51,7 +51,7 @@ jobs:
         with:
           context: docker/keycloak
           push: true
-          tags: ${{ env.GITHUB_REGISTRY }}/${{env.IMAGE_NAME}}:dev-rhbk-26-2-4
+          tags: ${{ env.GITHUB_REGISTRY }}/${{env.IMAGE_NAME}}:dev-rhbk-26-4
           file: docker/keycloak/Dockerfile-26
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
