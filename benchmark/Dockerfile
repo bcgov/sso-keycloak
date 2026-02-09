@@ -3,12 +3,12 @@ FROM eclipse-temurin:21
 RUN apt-get update \
   && apt-get install -y wget tar gzip bash jq uuid-runtime curl
 
-ENV KEYCLOAK_BENCHMARK_VERSION=keycloak-benchmark-0.15-SNAPSHOT
+ENV KEYCLOAK_BENCHMARK_VERSION=keycloak-benchmark-26.4.0-SNAPSHOT
 
 # Set working directory
 WORKDIR /app
 
-RUN wget https://github.com/keycloak/keycloak-benchmark/releases/download/0.15-SNAPSHOT/${KEYCLOAK_BENCHMARK_VERSION}.tar.gz
+RUN wget https://github.com/keycloak/keycloak-benchmark/releases/download/26.4.0-SNAPSHOT/${KEYCLOAK_BENCHMARK_VERSION}.tar.gz
 
 # Extract the archive
 RUN tar -xzf ${KEYCLOAK_BENCHMARK_VERSION}.tar.gz

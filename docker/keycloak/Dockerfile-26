@@ -1,10 +1,10 @@
-FROM maven:3.9.9-eclipse-temurin-21 AS extensions-builder
+FROM maven:3.9.12-eclipse-temurin-21 AS extensions-builder
 
 COPY ./extensions-26 /tmp/
 WORKDIR /tmp/
 RUN mvn -B clean package --file pom.xml
 
-FROM registry.redhat.io/rhbk/keycloak-rhel9:26.2-4 AS builder
+FROM registry.redhat.io/rhbk/keycloak-rhel9:26.4 AS builder
 
 # Enable health and metrics support
 ENV KC_HEALTH_ENABLED=true
