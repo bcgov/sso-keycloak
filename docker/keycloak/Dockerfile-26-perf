@@ -4,9 +4,14 @@ COPY ./extensions-26 /tmp/
 WORKDIR /tmp/
 RUN mvn -B clean package --file pom.xml
 
-FROM registry.redhat.io/rhbk/keycloak-rhel9:26.4 AS builder
+FROM registry.redhat.io/ubi9/ubi AS deps-builder
 
-RUN dnf install -y wget
+RUN dnf install -y wget \
+    && dnf clean all
+
+RUN wget https://github.com/keycloak/keycloak-benchmark/releases/download/26.4.0-SNAPSHOT/keycloak-benchmark-dataset-26.4.0-SNAPSHOT.jar
+
+FROM registry.redhat.io/rhbk/keycloak-rhel9:26.4 AS builder
 
 # Enable health and metrics support
 ENV KC_HEALTH_ENABLED=true
@@ -15,7 +20,7 @@ ENV KC_METRICS_ENABLED=true
 # Configure a database vendor
 ENV KC_DB=postgres
 
-RUN wget -O /opt/keycloak/providers/keycloak-benchmark-dataset-26.4.0-SNAPSHOT.jar https://github.com/keycloak/keycloak-benchmark/releases/download/26.4.0-SNAPSHOT/keycloak-benchmark-dataset-26.4.0-SNAPSHOT.jar
+COPY --from=deps-builder /keycloak-benchmark-dataset-26.4.0-SNAPSHOT.jar /opt/keycloak/providers/
 
 COPY --from=extensions-builder /tmp/services/target/bcgov-services-1.0.0.jar /opt/keycloak/providers/
 
