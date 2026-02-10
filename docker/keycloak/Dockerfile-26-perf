@@ -11,7 +11,7 @@ RUN dnf install -y wget \
 
 RUN wget https://github.com/keycloak/keycloak-benchmark/releases/download/26.4.0-SNAPSHOT/keycloak-benchmark-dataset-26.4.0-SNAPSHOT.jar
 
-FROM registry.redhat.io/rhbk/keycloak-rhel9:26.4 AS builder
+FROM registry.redhat.io/rhbk/keycloak-rhel9:26.4-11 AS builder
 
 # Enable health and metrics support
 ENV KC_HEALTH_ENABLED=true
