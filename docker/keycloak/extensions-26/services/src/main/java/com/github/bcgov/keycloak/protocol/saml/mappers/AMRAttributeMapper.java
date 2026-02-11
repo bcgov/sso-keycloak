@@ -1,26 +1,38 @@
 package com.github.bcgov.keycloak.protocol.saml.mappers;
 
-import org.keycloak.dom.saml.v2.assertion.AttributeStatementType;
-import org.keycloak.dom.saml.v2.assertion.AttributeType;
-import org.keycloak.models.AuthenticatedClientSessionModel;
-import org.keycloak.models.KeycloakSession;
-import org.keycloak.models.ProtocolMapperModel;
-import org.keycloak.models.UserSessionModel;
-import org.keycloak.protocol.saml.mappers.AbstractSAMLProtocolMapper;
-import org.keycloak.protocol.saml.mappers.AttributeStatementHelper;
-import org.keycloak.protocol.saml.mappers.SAMLAttributeStatementMapper;
-import org.keycloak.saml.common.constants.JBossSAMLURIConstants;
-
 import com.github.bcgov.keycloak.common.ApplicationProperties;
+
+import java.net.URI;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
+import java.util.Map;
 
 import org.jboss.logging.Logger;
+import org.keycloak.dom.saml.v2.protocol.ResponseType;
+import org.keycloak.dom.saml.v2.assertion.StatementAbstractType;
+import org.keycloak.dom.saml.v2.assertion.AuthnStatementType;
+import org.keycloak.dom.saml.v2.assertion.AuthnContextClassRefType;
+import org.keycloak.models.ClientSessionContext;
+import org.keycloak.models.KeycloakSession;
+import org.keycloak.models.ProtocolMapperContainerModel;
+import org.keycloak.models.ProtocolMapperModel;
+import org.keycloak.models.RealmModel;
+import org.keycloak.models.UserSessionModel;
+import org.keycloak.models.credential.OTPCredentialModel;
+import org.keycloak.models.credential.RecoveryAuthnCodesCredentialModel;
+import org.keycloak.models.credential.WebAuthnCredentialModel;
+import org.keycloak.protocol.ProtocolMapperConfigException;
+import org.keycloak.protocol.saml.mappers.AbstractSAMLProtocolMapper;
+import org.keycloak.protocol.saml.mappers.AttributeStatementHelper;
+import org.keycloak.protocol.saml.mappers.SAMLLoginResponseMapper;
 import org.keycloak.provider.ProviderConfigProperty;
+import org.keycloak.provider.ProviderConfigurationBuilder;
+import org.keycloak.provider.ProviderFactory;
+import org.keycloak.utils.StringUtil;
 
-public class AMRAttributeMapper extends AbstractSAMLProtocolMapper implements SAMLAttributeStatementMapper {
+public class AMRAttributeMapper extends AbstractSAMLProtocolMapper implements SAMLLoginResponseMapper {
 
   private static final Logger logger = Logger.getLogger(AMRAttributeMapper.class);
 
@@ -36,22 +48,16 @@ public class AMRAttributeMapper extends AbstractSAMLProtocolMapper implements SA
 
   public static final String IDP_ALIAS = "idp.alias";
 
+  private static final String SAML_AC_PREFIX = "urn:oasis:names:tc:SAML:2.0:ac:classes:";
+
   static {
     ProviderConfigProperty amrValue = new ProviderConfigProperty();
     amrValue.setName(AMR_VALUE);
     amrValue.setLabel("AMR Value");
     amrValue.setType(ProviderConfigProperty.STRING_TYPE);
     amrValue.setDefaultValue("");
-    amrValue.setHelpText("The AMR value. Use comma-separated values to include multiple, e.g. mfa,pwd.");
+    amrValue.setHelpText("The authentication context class to use, e.g. InternetProtocol. Will be appended to the URI");
     configProperties.add(amrValue);
-
-    ProviderConfigProperty amrName = new ProviderConfigProperty();
-    amrName.setName(AMR_NAME);
-    amrName.setLabel("AMR Attribute Name");
-    amrName.setType(ProviderConfigProperty.STRING_TYPE);
-    amrName.setDefaultValue("AMR");
-    amrName.setHelpText("The AMR attribute name.");
-    configProperties.add(amrName);
 
     ProviderConfigProperty idpAlias = new ProviderConfigProperty();
     idpAlias.setName(IDP_ALIAS);
@@ -88,45 +94,41 @@ public class AMRAttributeMapper extends AbstractSAMLProtocolMapper implements SA
   }
 
   @Override
-  public void transformAttributeStatement(AttributeStatementType attributeStatement, ProtocolMapperModel mappingModel,
-      KeycloakSession keycloakSession, UserSessionModel userSession, AuthenticatedClientSessionModel clientSession) {
-    String idpAlias = mappingModel.getConfig().get(IDP_ALIAS);
-    String rawAMR = mappingModel.getConfig().get(AMR_VALUE);
-    String AMRAttributeName = mappingModel.getConfig().get(AMR_NAME);
-    try {
-      String idp = userSession.getNotes().get("identity_provider");
-      if (idp != null && idp.equalsIgnoreCase(idpAlias) && rawAMR != null) {
-        List<String> amr = Arrays.stream(rawAMR.split(","))
-          .map(String::trim)
-          .filter(s -> !s.isEmpty())
-          .collect(Collectors.toList());
-        if (!amr.isEmpty()) {
-          addAttribute(attributeStatement, AMRAttributeName, amr);
-        }
-      }
-    } catch (Exception e) {
-      logger.errorf("Failed to add amr assertion to the token");
-    }
-  }
-
-  private void addAttribute(AttributeStatementType attributeStatement, String name, List<String> values) {
-      if (values == null || values.isEmpty()) {
-          return;
-      }
-      AttributeType attribute = new AttributeType(name.trim());
-      for (String value : values) {
-          if (value == null || value.isBlank()) {
-              continue;
-          }
-          attribute.addAttributeValue(value);
-      }
-
-      attribute.setNameFormat(JBossSAMLURIConstants.ATTRIBUTE_FORMAT_BASIC.get());
-      attributeStatement.addAttribute(new AttributeStatementType.ASTChoiceType(attribute));
+  public int getPriority() {
+    return 10;
   }
 
   @Override
-  public int getPriority() {
-    return 10;
+  public ResponseType transformLoginResponse(ResponseType response, ProtocolMapperModel mappingModel, KeycloakSession session, UserSessionModel userSession, ClientSessionContext clientSessionCtx) {
+    if (response == null || mappingModel == null || userSession == null) {
+      return response;
+    }
+
+    Map<String, String> config = mappingModel.getConfig();
+    if (config == null) {
+        return response;
+    }
+
+    String idpAlias = config.get(IDP_ALIAS);
+    String rawAMR = config.get(AMR_VALUE);
+    String idp = userSession.getNote("identity_provider");
+
+    // Only apply AMR when the expected identity provider is being used
+    if (idpAlias == null || rawAMR == null || idp == null || !idp.equalsIgnoreCase(idpAlias)) {
+      return response;
+    }
+
+    try {
+      for (ResponseType.RTChoiceType assertion : response.getAssertions()) {
+          for (StatementAbstractType statement : assertion.getAssertion().getStatements()) {
+              if (statement instanceof AuthnStatementType authnStatement) {
+                  authnStatement.getAuthnContext().getSequence().setClassRef(new AuthnContextClassRefType(URI.create(SAML_AC_PREFIX + rawAMR)));
+              }
+          }
+      }
+    } catch (Exception e) {
+      logger.error("Failed to add amr assertion to the token" + e);
+    }
+    return response;
   }
 }
