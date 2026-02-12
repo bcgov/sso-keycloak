@@ -49,7 +49,7 @@ jobs:
         with:
           context: docker/keycloak
           push: true
-          tags: ${{ env.GITHUB_REGISTRY }}/${{env.IMAGE_NAME}}:dev
+          tags: ${{ env.GITHUB_REGISTRY }}/${{env.IMAGE_NAME}}:26.4
           file: docker/keycloak/Dockerfile-26-perf
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new

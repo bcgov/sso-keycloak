@@ -14,6 +14,8 @@ import org.keycloak.services.ServicesLogger;
 import java.util.List;
 import java.util.Map;
 
+import static org.keycloak.broker.provider.AbstractIdentityProvider.BROKER_REGISTERED_NEW_USER;
+
 /** @author <a href="mailto:junmin@button.is">Junmin Ahn</a> */
 public class IdpDeleteUserIfDuplicateAuthenticator extends AbstractIdpAuthenticator {
 
@@ -23,7 +25,8 @@ public class IdpDeleteUserIfDuplicateAuthenticator extends AbstractIdpAuthentica
   protected void actionImpl(
       AuthenticationFlowContext context,
       SerializedBrokeredIdentityContext serializedCtx,
-      BrokeredIdentityContext brokerContext) { /* This is ok */ }
+      BrokeredIdentityContext brokerContext) {
+    /* This is ok */ }
 
   @Override
   protected void authenticateImpl(
@@ -47,8 +50,7 @@ public class IdpDeleteUserIfDuplicateAuthenticator extends AbstractIdpAuthentica
       return;
     }
 
-    ExistingUserInfo duplication =
-        checkExistingUser(context, username, serializedCtx, brokerContext);
+    ExistingUserInfo duplication = checkExistingUser(context, username, serializedCtx, brokerContext);
 
     if (duplication != null) {
       logger.debugf(
@@ -77,7 +79,8 @@ public class IdpDeleteUserIfDuplicateAuthenticator extends AbstractIdpAuthentica
     context.success();
   }
 
-  // Could be overriden to detect duplication based on other criterias (firstName, lastName, ...)
+  // Could be overriden to detect duplication based on other criterias (firstName,
+  // lastName, ...)
   protected ExistingUserInfo checkExistingUser(
       AuthenticationFlowContext context,
       String username,
@@ -85,15 +88,14 @@ public class IdpDeleteUserIfDuplicateAuthenticator extends AbstractIdpAuthentica
       BrokeredIdentityContext brokerContext) {
 
     if (brokerContext.getEmail() != null && !context.getRealm().isDuplicateEmailsAllowed()) {
-      UserModel existingUser =
-          context.getSession().users().getUserByEmail(context.getRealm(), brokerContext.getEmail());
+      UserModel existingUser = context.getSession().users().getUserByEmail(context.getRealm(),
+          brokerContext.getEmail());
       if (existingUser != null) {
         return new ExistingUserInfo(existingUser.getId(), UserModel.EMAIL, existingUser.getEmail());
       }
     }
 
-    UserModel existingUser =
-        context.getSession().users().getUserByUsername(context.getRealm(), username);
+    UserModel existingUser = context.getSession().users().getUserByUsername(context.getRealm(), username);
     if (existingUser != null) {
       return new ExistingUserInfo(
           existingUser.getId(), UserModel.USERNAME, existingUser.getUsername());
