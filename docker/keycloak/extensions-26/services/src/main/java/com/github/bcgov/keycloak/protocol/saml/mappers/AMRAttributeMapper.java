@@ -1,7 +1,5 @@
 package com.github.bcgov.keycloak.protocol.saml.mappers;
 
-import com.github.bcgov.keycloak.common.ApplicationProperties;
-
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,8 +22,6 @@ import org.keycloak.provider.ProviderConfigProperty;
 public class AMRAttributeMapper extends AbstractSAMLProtocolMapper implements SAMLLoginResponseMapper {
 
   private static final Logger logger = Logger.getLogger(AMRAttributeMapper.class);
-
-  ApplicationProperties applicationProperties = new ApplicationProperties();
 
   public static final String PROVIDER_ID = "saml-client-amr-mapper";
 
@@ -88,14 +84,15 @@ public class AMRAttributeMapper extends AbstractSAMLProtocolMapper implements SA
   }
 
   @Override
-  public ResponseType transformLoginResponse(ResponseType response, ProtocolMapperModel mappingModel, KeycloakSession session, UserSessionModel userSession, ClientSessionContext clientSessionCtx) {
+  public ResponseType transformLoginResponse(ResponseType response, ProtocolMapperModel mappingModel,
+      KeycloakSession session, UserSessionModel userSession, ClientSessionContext clientSessionCtx) {
     if (response == null || mappingModel == null || userSession == null) {
       return response;
     }
 
     Map<String, String> config = mappingModel.getConfig();
     if (config == null) {
-        return response;
+      return response;
     }
 
     String idpAlias = config.get(IDP_ALIAS);
@@ -109,11 +106,12 @@ public class AMRAttributeMapper extends AbstractSAMLProtocolMapper implements SA
 
     try {
       for (ResponseType.RTChoiceType assertion : response.getAssertions()) {
-          for (StatementAbstractType statement : assertion.getAssertion().getStatements()) {
-              if (statement instanceof AuthnStatementType authnStatement) {
-                  authnStatement.getAuthnContext().getSequence().setClassRef(new AuthnContextClassRefType(URI.create(SAML_AC_PREFIX + rawAMR)));
-              }
+        for (StatementAbstractType statement : assertion.getAssertion().getStatements()) {
+          if (statement instanceof AuthnStatementType authnStatement) {
+            authnStatement.getAuthnContext().getSequence()
+                .setClassRef(new AuthnContextClassRefType(URI.create(SAML_AC_PREFIX + rawAMR)));
           }
+        }
       }
     } catch (Exception e) {
       logger.error("Failed to add amr assertion to the token" + e);

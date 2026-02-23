@@ -21,8 +21,6 @@ import org.keycloak.protocol.oidc.mappers.UserInfoTokenMapper;
 import org.keycloak.provider.ProviderConfigProperty;
 import org.keycloak.representations.IDToken;
 
-import com.github.bcgov.keycloak.common.ApplicationProperties;
-
 public class AMRAttributeMapper extends AbstractOIDCProtocolMapper
     implements OIDCAccessTokenMapper, OIDCIDTokenMapper, UserInfoTokenMapper {
   private static final Logger logger = Logger.getLogger(AMRAttributeMapper.class);
@@ -53,14 +51,11 @@ public class AMRAttributeMapper extends AbstractOIDCProtocolMapper
     OIDCAttributeMapperHelper.addIncludeInTokensConfig(configProperties, IDPUserinfoMapper.class);
   }
 
-
   public static final String PROVIDER_ID = "oidc-idp-amr-mapper";
 
   public List<ProviderConfigProperty> getConfigProperties() {
     return configProperties;
   }
-
-  ApplicationProperties applicationProperties = new ApplicationProperties();
 
   @Override
   public String getId() {
@@ -93,12 +88,12 @@ public class AMRAttributeMapper extends AbstractOIDCProtocolMapper
       String idp = userSession.getNotes().get("identity_provider");
       if (idp != null && idp.equalsIgnoreCase(idpAlias) && rawAMR != null) {
         List<String> amr = Arrays.stream(rawAMR.split(","))
-          .map(String::trim)
-          .filter(s -> !s.isEmpty())
-          .collect(Collectors.toList());
+            .map(String::trim)
+            .filter(s -> !s.isEmpty())
+            .collect(Collectors.toList());
 
         if (!amr.isEmpty()) {
-            token.getOtherClaims().put("amr", amr);
+          token.getOtherClaims().put("amr", amr);
         }
       }
     } catch (Exception e) {
