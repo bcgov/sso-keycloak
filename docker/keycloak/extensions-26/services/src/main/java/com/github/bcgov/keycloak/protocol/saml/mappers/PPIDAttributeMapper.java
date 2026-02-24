@@ -2,6 +2,7 @@ package com.github.bcgov.keycloak.protocol.saml.mappers;
 
 import org.keycloak.dom.saml.v2.assertion.AttributeStatementType;
 import org.keycloak.models.AuthenticatedClientSessionModel;
+import org.keycloak.models.IdentityProviderModel;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.ProtocolMapperModel;
 import org.keycloak.models.UserSessionModel;
@@ -11,7 +12,6 @@ import org.keycloak.protocol.saml.mappers.SAMLAttributeStatementMapper;
 import org.keycloak.saml.common.constants.JBossSAMLURIConstants;
 import org.keycloak.saml.common.util.StringUtil;
 
-import com.github.bcgov.keycloak.common.ApplicationProperties;
 import com.github.bcgov.keycloak.common.PPID;
 
 import org.keycloak.dom.saml.v2.assertion.AttributeType;
@@ -26,8 +26,6 @@ public class PPIDAttributeMapper extends AbstractSAMLProtocolMapper implements S
 
   private static final Logger logger = Logger.getLogger(PPIDAttributeMapper.class);
 
-  ApplicationProperties applicationProperties = new ApplicationProperties();
-
   public static final String PROVIDER_ID = "saml-idp-ppid-mapper";
 
   private static final List<ProviderConfigProperty> configProperties = new ArrayList<ProviderConfigProperty>();
@@ -38,22 +36,26 @@ public class PPIDAttributeMapper extends AbstractSAMLProtocolMapper implements S
 
   public static final String PRIVACY_ZONE = "privacy_zone";
 
-  static {
-    ProviderConfigProperty attributeName = new ProviderConfigProperty();
-    attributeName.setName(ATTRIBUTE_NAME);
-    attributeName.setLabel("Attribute Name");
-    attributeName.setType(ProviderConfigProperty.STRING_TYPE);
-    attributeName.setDefaultValue("sub");
-    attributeName.setHelpText("Assertion attribute name containing the ppid identifier of the authenticated subject.");
-    configProperties.add(attributeName);
+  public static final String PPID_SERVICE_ACCOUNT_IDP_ALIAS = "ppid-service-account";
 
-    ProviderConfigProperty privacyZone = new ProviderConfigProperty();
-    privacyZone.setName(PRIVACY_ZONE);
-    privacyZone.setLabel("Privacy Zone");
-    privacyZone.setType(ProviderConfigProperty.STRING_TYPE);
-    privacyZone.setDefaultValue("");
-    privacyZone.setHelpText("Client privacy zone required to fetch ppid identifier of the authenticated subject.");
-    configProperties.add(privacyZone);
+  static {
+    ProviderConfigProperty property;
+
+    property = new ProviderConfigProperty();
+    property.setName(ATTRIBUTE_NAME);
+    property.setLabel("Attribute Name");
+    property.setType(ProviderConfigProperty.STRING_TYPE);
+    property.setDefaultValue("sub");
+    property.setHelpText("Assertion attribute name containing the ppid identifier of the authenticated subject.");
+    configProperties.add(property);
+
+    property = new ProviderConfigProperty();
+    property.setName(PRIVACY_ZONE);
+    property.setLabel("Privacy Zone");
+    property.setType(ProviderConfigProperty.STRING_TYPE);
+    property.setDefaultValue("");
+    property.setHelpText("Client privacy zone required to fetch ppid identifier of the authenticated subject.");
+    configProperties.add(property);
   }
 
   @Override
@@ -88,11 +90,26 @@ public class PPIDAttributeMapper extends AbstractSAMLProtocolMapper implements S
     try {
       String idp = userSession.getNotes().get("identity_provider");
       if (idp.equalsIgnoreCase("otp")) {
+        IdentityProviderModel identityProviderModel = keycloakSession.identityProviders()
+            .getByAlias(PPID_SERVICE_ACCOUNT_IDP_ALIAS);
+
+        if (identityProviderModel == null) {
+          logger.error("Identity provider with alias " + PPID_SERVICE_ACCOUNT_IDP_ALIAS + " not found.");
+          return;
+        }
+
         if (!StringUtil.isNullOrEmpty(mappingModel.getConfig().get(PRIVACY_ZONE))) {
-          String ppid = PPID.getPpid(applicationProperties.getIssuer(idp), userSession.getUser().getEmail(),
+          String ppid = PPID.getPpid(identityProviderModel.getConfig().get("tokenUrl"),
+              identityProviderModel.getConfig().get("authorizationUrl"),
+              identityProviderModel.getConfig().get("clientId"),
+              identityProviderModel.getConfig().get("clientSecret"),
+              identityProviderModel.getConfig().get("issuer"),
+              userSession.getUser().getEmail(),
               mappingModel.getConfig().get(PRIVACY_ZONE));
           if (!StringUtil.isNullOrEmpty(ppid)) {
             addAttribute(attributeStatement, ppidKey.trim(), ppid);
+          } else {
+            logger.error("Failed to fetch ppid for the user.");
           }
         } else
           logger.error("Privacy zone is required to fetch ppid.");

@@ -1,6 +1,7 @@
 package com.github.bcgov.keycloak.protocol.saml.mappers;
 
 import org.keycloak.models.ClientSessionContext;
+import org.keycloak.models.IdentityProviderModel;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.UserSessionModel;
 import org.keycloak.protocol.saml.mappers.AbstractSAMLProtocolMapper;
@@ -10,7 +11,6 @@ import org.keycloak.representations.idm.ProtocolMapperRepresentation;
 import org.keycloak.saml.common.constants.JBossSAMLURIConstants;
 import org.keycloak.saml.common.util.StringUtil;
 
-import com.github.bcgov.keycloak.common.ApplicationProperties;
 import com.github.bcgov.keycloak.common.PPID;
 
 import org.keycloak.provider.ProviderConfigProperty;
@@ -37,37 +37,53 @@ public class PPIDAttributeMapperNameId extends AbstractSAMLProtocolMapper
 
   public static final String PRIVACY_ZONE = "privacy_zone";
 
+  public static final String PPID_SERVICE_ACCOUNT_IDP_ALIAS = "ppid-service-account";
+
   private static final List<ProviderConfigProperty> configProperties = new ArrayList<>();
 
-  ApplicationProperties applicationProperties = new ApplicationProperties();
-
   static {
-    ProviderConfigProperty nameIdFormat = new ProviderConfigProperty();
-    nameIdFormat.setName(NAMEID_FORMAT);
-    nameIdFormat.setLabel("NameID Format");
-    nameIdFormat.setType(ProviderConfigProperty.STRING_TYPE);
-    nameIdFormat.setDefaultValue(JBossSAMLURIConstants.NAMEID_FORMAT_PERSISTENT.get());
-    nameIdFormat.setHelpText("The NameID format to use (e.g., persistent, email, transient).");
-    configProperties.add(nameIdFormat);
+    ProviderConfigProperty property = new ProviderConfigProperty();
 
-    ProviderConfigProperty privacyZone = new ProviderConfigProperty();
-    privacyZone.setName(PRIVACY_ZONE);
-    privacyZone.setLabel("Privacy Zone");
-    privacyZone.setType(ProviderConfigProperty.STRING_TYPE);
-    privacyZone.setDefaultValue("");
-    privacyZone.setHelpText("Client privacy zone required to fetch ppid identifier of the authenticated subject.");
-    configProperties.add(privacyZone);
+    property = new ProviderConfigProperty();
+    property.setName(NAMEID_FORMAT);
+    property.setLabel("NameID Format");
+    property.setType(ProviderConfigProperty.STRING_TYPE);
+    property.setDefaultValue(JBossSAMLURIConstants.NAMEID_FORMAT_PERSISTENT.get());
+    property.setHelpText("The NameID format to use (e.g., persistent, email, transient).");
+    configProperties.add(property);
+
+    property = new ProviderConfigProperty();
+    property.setName(PRIVACY_ZONE);
+    property.setLabel("Privacy Zone");
+    property.setType(ProviderConfigProperty.STRING_TYPE);
+    property.setDefaultValue("");
+    property.setHelpText("Client privacy zone required to fetch ppid identifier of the authenticated subject.");
+    configProperties.add(property);
   }
 
   @Override
   public ResponseType transformLoginResponse(ResponseType response,
-      ProtocolMapperModel mappingModel, KeycloakSession session,
+      ProtocolMapperModel mappingModel, KeycloakSession keycloakSession,
       UserSessionModel userSession, ClientSessionContext clientSessionCtx) {
     String idp = userSession.getNotes().get("identity_provider");
     if (idp.equalsIgnoreCase("otp")) {
       String nameIdFormat = mappingModel.getConfig().get(NAMEID_FORMAT);
+
+      IdentityProviderModel identityProviderModel = keycloakSession.identityProviders()
+          .getByAlias(PPID_SERVICE_ACCOUNT_IDP_ALIAS);
+
+      if (identityProviderModel == null) {
+        logger.error("Identity provider with alias " + PPID_SERVICE_ACCOUNT_IDP_ALIAS + " not found.");
+        return response;
+      }
+
       if (!StringUtil.isNullOrEmpty(mappingModel.getConfig().get(PRIVACY_ZONE))) {
-        String ppid = PPID.getPpid(applicationProperties.getIssuer(idp), userSession.getUser().getEmail(),
+        String ppid = PPID.getPpid(identityProviderModel.getConfig().get("tokenUrl"),
+            identityProviderModel.getConfig().get("authorizationUrl"),
+            identityProviderModel.getConfig().get("clientId"),
+            identityProviderModel.getConfig().get("clientSecret"),
+            identityProviderModel.getConfig().get("issuer"),
+            userSession.getUser().getEmail(),
             mappingModel.getConfig().get(PRIVACY_ZONE));
 
         if (!StringUtil.isNullOrEmpty(ppid)) {
@@ -94,6 +110,8 @@ public class PPIDAttributeMapperNameId extends AbstractSAMLProtocolMapper
             }
             response.getAssertions().get(0).getAssertion().setSubject(subject);
           }
+        } else {
+          logger.error("Failed to fetch ppid for the user.");
         }
       } else
         logger.error("Privacy zone is required to fetch ppid.");
