@@ -40,4 +40,4 @@ Make certain the image tag reflects the version of the backup container you inte
 
 These charts can be upgraded using make commands:
 
-`make upgrade NAME=sso-backup NAMESPACE=<<namespace>>`
+`make upgrade NAME=sso-backup-18 NAMESPACE=<<namespace>>`
