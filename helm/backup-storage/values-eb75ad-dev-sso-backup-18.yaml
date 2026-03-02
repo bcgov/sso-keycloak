@@ -1,9 +1,9 @@
-nameOverride: sso-backup-storage
-fullnameOverride: sso-backup-storage
+nameOverride: sso-backup-storage-18
+fullnameOverride: sso-backup-storage-18
 
 image:
   repository: ghcr.io/bcgov/backup-container
-  tag: 2.10.3
+  tag: 2.12.0
   pullPolicy: Always
 
 backupConfig: |
@@ -18,20 +18,22 @@ db:
 
 persistence:
   backup:
-    size: 5Gi
+    size: 10Gi
+  verification:
+    size: 3Gi
 
 env:
   ENVIRONMENT_FRIENDLY_NAME:
-    value: 'SSO Sandbox Client Prod Backup'
+    value: 'SSO Gold Client Dev Backup'
   ENVIRONMENT_NAME:
-    value: e4ca1d-prod
+    value: eb75ad-dev
   WEBHOOK_URL:
-    # value: '<<WEBHOOK URL FOR ROCKETCHAT>>'
+   # value: '<<WEBHOOK URL FOR ROCKETCHAT>>'
     secure: true
 
   DAILY_BACKUPS:
-    value: '3'
+    value: '7'
   WEEKLY_BACKUPS:
-    value: '2'
+    value: '4'
   MONTHLY_BACKUPS:
     value: '1'
