@@ -6,4 +6,3 @@ com.github.bcgov.keycloak.authenticators.UserSessionRemoverFactory
 com.github.bcgov.keycloak.authenticators.UserAttributeAuthenticatorFactory
 com.github.bcgov.keycloak.authenticators.broker.IdpDeleteUserIfDuplicateAuthenticatorFactory
 com.github.bcgov.keycloak.authenticators.browser.IdentityProviderStopFormFactory
-com.github.bcgov.keycloak.authenticators.UserRiskEvaluationAuthenticatorFactory

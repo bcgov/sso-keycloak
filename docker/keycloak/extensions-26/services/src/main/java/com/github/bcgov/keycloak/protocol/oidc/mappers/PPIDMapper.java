@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.jboss.logging.Logger;
 import org.keycloak.models.ClientSessionContext;
+import org.keycloak.models.IdentityProviderModel;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.ProtocolMapperModel;
 import org.keycloak.models.UserSessionModel;
@@ -20,7 +21,6 @@ import org.keycloak.provider.ProviderConfigProperty;
 import org.keycloak.representations.IDToken;
 import org.keycloak.saml.common.util.StringUtil;
 
-import com.github.bcgov.keycloak.common.ApplicationProperties;
 import com.github.bcgov.keycloak.common.PPID;
 
 public class PPIDMapper extends AbstractOIDCProtocolMapper
@@ -34,6 +34,8 @@ public class PPIDMapper extends AbstractOIDCProtocolMapper
   public static final String PRIVACY_ZONE = "privacy_zone";
 
   public static final String PREFERRED_USERNAME = "preferred_username";
+
+  public static final String PPID_SERVICE_ACCOUNT_IDP_ALIAS = "ppid-service-account";
 
   private static final List<ProviderConfigProperty> configProperties = new ArrayList<ProviderConfigProperty>();
 
@@ -65,8 +67,6 @@ public class PPIDMapper extends AbstractOIDCProtocolMapper
   public List<ProviderConfigProperty> getConfigProperties() {
     return configProperties;
   }
-
-  ApplicationProperties applicationProperties = new ApplicationProperties();
 
   @Override
   public String getId() {
@@ -100,8 +100,21 @@ public class PPIDMapper extends AbstractOIDCProtocolMapper
 
         Map<String, Object> otherClaims = token.getOtherClaims();
 
+        IdentityProviderModel identityProviderModel = keycloakSession.identityProviders()
+            .getByAlias(PPID_SERVICE_ACCOUNT_IDP_ALIAS);
+
+        if (identityProviderModel == null) {
+          logger.error("Identity provider with alias " + PPID_SERVICE_ACCOUNT_IDP_ALIAS + " not found.");
+          return;
+        }
+
         if (!StringUtil.isNullOrEmpty(mappingModel.getConfig().get(PRIVACY_ZONE))) {
-          String ppid = PPID.getPpid(applicationProperties.getIssuer(idp), userSession.getUser().getEmail(),
+          String ppid = PPID.getPpid(identityProviderModel.getConfig().get("tokenUrl"),
+              identityProviderModel.getConfig().get("authorizationUrl"),
+              identityProviderModel.getConfig().get("clientId"),
+              identityProviderModel.getConfig().get("clientSecret"),
+              identityProviderModel.getConfig().get("issuer"),
+              userSession.getUser().getEmail(),
               mappingModel.getConfig().get(PRIVACY_ZONE));
 
           if (!StringUtil.isNullOrEmpty(ppid)) {
@@ -110,6 +123,8 @@ public class PPIDMapper extends AbstractOIDCProtocolMapper
             if (otherClaims.containsKey(PREFERRED_USERNAME)) {
               otherClaims.replace(PREFERRED_USERNAME, ppid);
             }
+          } else {
+            logger.error("Failed to fetch ppid for the user.");
           }
         } else
           logger.error("Privacy zone is required to fetch ppid.");
