@@ -1,6 +1,0 @@
-node_modules
-yarn-error.log
-.env
-migrations/*.csv
-migrations/*.json
-custom-realm-users/cleanup.js
