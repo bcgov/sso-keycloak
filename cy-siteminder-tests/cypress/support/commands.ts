@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 
 import { Interception } from 'cypress/types/net-stubbing'
-import { promisify } from 'util'
+import { promisify } from 'node:util';
 import { recurse } from 'cypress-recurse'
 const parseString = require('xml2js').parseString
 const parseStringSync = promisify(parseString)
