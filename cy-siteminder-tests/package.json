@@ -16,7 +16,7 @@
     "@types/mochawesome": "^6.2.1",
     "@types/node": "^18.11.5",
     "cypress": "^10.10.0",
-    "cypress-mochawesome-reporter": "^3.2.2",
+    "cypress-mochawesome-reporter": "^4.0.2",
     "eslint": "^8.26.0",
     "eslint-plugin-cypress": "^2.12.1",
     "mocha": "^10.1.0",
@@ -26,7 +26,13 @@
   "dependencies": {
     "cypress-recurse": "^1.24.0",
     "dotenv": "^16.0.3",
+    "form-data": "^2.5.4",
     "lodash": "^4.17.21",
+    "util": "^0.12.5",
     "xml2js": "^0.4.23"
+  },
+  "resolutions": {
+    "form-data": "^2.5.4",
+    "serialize-javascript": "^7.0.3"
   }
 }
