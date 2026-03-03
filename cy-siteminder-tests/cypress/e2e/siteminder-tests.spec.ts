@@ -1,8 +1,8 @@
 import { idp_config, fetchSsoUrl } from '../app-config/config'
 
 describe('siteminder tests', () => {
-  const env = Cypress.env('ENVIRONMENT').toUpperCase() || 'DEV'
-  const ocp = Cypress.env('CLUSTER').toUpperCase() || 'SILVER'
+  const env = Cypress.env('ENVIRONMENT')?.toUpperCase() || 'DEV'
+  const ocp = Cypress.env('CLUSTER')?.toUpperCase() || 'SILVER'
   const {
     idir_config,
     bceid_basic_config,
