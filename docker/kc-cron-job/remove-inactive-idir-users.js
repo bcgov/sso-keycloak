@@ -9,8 +9,9 @@ import {
   removeUserFromKc,
   getUserRolesMappings
 } from './helpers.js';
-import { decode } from 'jsonwebtoken';
-import { ConfidentialClientApplication } from '@azure/msal-node';
+// // These two libraries must be re-installed if the getAzureAccessToken is re-used
+// import { decode } from 'jsonwebtoken';
+// import { ConfidentialClientApplication } from '@azure/msal-node';
 import { checkUserExistsAtIDIM } from './utils/bceid-webservice.js';
 import axios from 'axios';
 
@@ -39,92 +40,93 @@ let msTokenCache = {
   }
 };
 
-async function getAzureAccessToken(env) {
-  try {
-    const currentTime = Math.floor(Date.now() / 1000);
-    if (msTokenCache[env].decoded && msTokenCache[env].decoded?.exp > currentTime) {
-      return msTokenCache[env].token;
-    }
-    const request = {
-      scopes: [`${MS_GRAPH_URL}/.default`]
-    };
+//// This function is no longer in use so we can remove the msal-node package from our dependencies
+// async function getAzureAccessToken(env) {
+//   try {
+//     const currentTime = Math.floor(Date.now() / 1000);
+//     if (msTokenCache[env].decoded && msTokenCache[env].decoded?.exp > currentTime) {
+//       return msTokenCache[env].token;
+//     }
+//     const request = {
+//       scopes: [`${MS_GRAPH_URL}/.default`]
+//     };
 
-    let msalInstance;
-    switch (env) {
-      case 'dev':
-        msalInstance =
-          devMsalInstance ||
-          new ConfidentialClientApplication({
-            auth: {
-              authority: process.env.MS_GRAPH_API_AUTHORITY_DEV || '',
-              clientId: process.env.MS_GRAPH_API_CLIENT_ID_DEV || '',
-              clientSecret: process.env.MS_GRAPH_API_CLIENT_SECRET_DEV || ''
-            }
-          });
-        break;
-      case 'test':
-        msalInstance =
-          testMsalInstance ||
-          new ConfidentialClientApplication({
-            auth: {
-              authority: process.env.MS_GRAPH_API_AUTHORITY_TEST || '',
-              clientId: process.env.MS_GRAPH_API_CLIENT_ID_TEST || '',
-              clientSecret: process.env.MS_GRAPH_API_CLIENT_SECRET_TEST || ''
-            }
-          });
-        break;
-      case 'prod':
-        msalInstance =
-          prodMsalInstance ||
-          new ConfidentialClientApplication({
-            auth: {
-              authority: process.env.MS_GRAPH_API_AUTHORITY_PROD || '',
-              clientId: process.env.MS_GRAPH_API_CLIENT_ID_PROD || '',
-              clientSecret: process.env.MS_GRAPH_API_CLIENT_SECRET_PROD || ''
-            }
-          });
-        break;
-    }
-    const response = await msalInstance.acquireTokenByClientCredential(request);
-    msTokenCache[env].token = response.accessToken;
-    msTokenCache[env].decoded = decode(response.accessToken);
-    return response.accessToken;
-  } catch (error) {
-    console.error(error);
-    throw new Error('Error acquiring access token');
-  }
-}
+//     let msalInstance;
+//     switch (env) {
+//       case 'dev':
+//         msalInstance =
+//           devMsalInstance ||
+//           new ConfidentialClientApplication({
+//             auth: {
+//               authority: process.env.MS_GRAPH_API_AUTHORITY_DEV || '',
+//               clientId: process.env.MS_GRAPH_API_CLIENT_ID_DEV || '',
+//               clientSecret: process.env.MS_GRAPH_API_CLIENT_SECRET_DEV || ''
+//             }
+//           });
+//         break;
+//       case 'test':
+//         msalInstance =
+//           testMsalInstance ||
+//           new ConfidentialClientApplication({
+//             auth: {
+//               authority: process.env.MS_GRAPH_API_AUTHORITY_TEST || '',
+//               clientId: process.env.MS_GRAPH_API_CLIENT_ID_TEST || '',
+//               clientSecret: process.env.MS_GRAPH_API_CLIENT_SECRET_TEST || ''
+//             }
+//           });
+//         break;
+//       case 'prod':
+//         msalInstance =
+//           prodMsalInstance ||
+//           new ConfidentialClientApplication({
+//             auth: {
+//               authority: process.env.MS_GRAPH_API_AUTHORITY_PROD || '',
+//               clientId: process.env.MS_GRAPH_API_CLIENT_ID_PROD || '',
+//               clientSecret: process.env.MS_GRAPH_API_CLIENT_SECRET_PROD || ''
+//             }
+//           });
+//         break;
+//     }
+//     const response = await msalInstance.acquireTokenByClientCredential(request);
+//     msTokenCache[env].token = response.accessToken;
+//     msTokenCache[env].decoded = decode(response.accessToken);
+//     return response.accessToken;
+//   } catch (error) {
+//     console.error(error);
+//     throw new Error('Error acquiring access token');
+//   }
+// }
+//
+// /*
+//   This function checks existence using MS Graph. Currently has issues with being out of sync with IDIM, so is unused.
+//   Keeping the function in case the sync issue can be resolved.
+// */
+// // eslint-disable-next-line no-unused-vars
+// async function checkUserExistsAtEntra({ property = MS_GRAPH_IDIR_GUID_ATTRIBUTE, matchKey = '', env }) {
+//   try {
+//     const accessToken = await getAzureAccessToken(env);
+//     const options = {
+//       headers: {
+//         Authorization: `Bearer ${accessToken}`,
+//         ConsistencyLevel: 'eventual'
+//       }
+//     };
 
-/*
-  This function checks existence using MS Graph. Currently has issues with being out of sync with IDIM, so is unused.
-  Keeping the function in case the sync issue can be resolved.
-*/
-// eslint-disable-next-line no-unused-vars
-async function checkUserExistsAtEntra({ property = MS_GRAPH_IDIR_GUID_ATTRIBUTE, matchKey = '', env }) {
-  try {
-    const accessToken = await getAzureAccessToken(env);
-    const options = {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        ConsistencyLevel: 'eventual'
-      }
-    };
-
-    const url = `${MS_GRAPH_URL}/v1.0/users?$filter=${property} eq '${matchKey}'&$count=true`;
-    const result = await axios.get(url, options);
-    if (result && result.data?.value?.length === 0) {
-      return 'notexists';
-    }
-    if (result && result.data?.value?.length > 0) {
-      return 'exists';
-    }
-    console.error(`unexpected response from ms graph:  ${result}`);
-    return 'error';
-  } catch (error) {
-    console.error(error?.response?.data || error);
-    throw new Error(error);
-  }
-}
+//     const url = `${MS_GRAPH_URL}/v1.0/users?$filter=${property} eq '${matchKey}'&$count=true`;
+//     const result = await axios.get(url, options);
+//     if (result && result.data?.value?.length === 0) {
+//       return 'notexists';
+//     }
+//     if (result && result.data?.value?.length > 0) {
+//       return 'exists';
+//     }
+//     console.error(`unexpected response from ms graph:  ${result}`);
+//     return 'error';
+//   } catch (error) {
+//     console.error(error?.response?.data || error);
+//     throw new Error(error);
+//   }
+// }
 
 export async function removeUserFromCssApp(userData, clientData, env) {
   try {
