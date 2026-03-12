@@ -1,5 +1,5 @@
-nameOverride: sso-backup-storage
-fullnameOverride: sso-backup-storage
+nameOverride: sso-backup-storage-18
+fullnameOverride: sso-backup-storage-18
 
 image:
   repository: ghcr.io/bcgov/backup-container
@@ -18,9 +18,9 @@ db:
 
 persistence:
   backup:
-    size: 46Gi
+    size: 30Gi
   verification:
-    size: 19Gi
+    size: 15Gi
 
 env:
   ENVIRONMENT_FRIENDLY_NAME:
