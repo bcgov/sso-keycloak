@@ -11,3 +11,4 @@ tflint 0.43.0
 java openjdk-21.0.1
 gradle 7.3.1
 postgres 14.2
+maven 3.8.7
