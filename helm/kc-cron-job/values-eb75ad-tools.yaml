@@ -38,6 +38,10 @@ resources:
     memory: 256M
 
 patroni:
+  image:
+    repository: ghcr.io/bcgov/sso-spilo-17
+    tag: 4.0-p3
+  postgresMajorVersion: 17
   nameOverride: kc-cron-patroni
   fullnameOverride: kc-cron-patroni
   replicaCount: 2
