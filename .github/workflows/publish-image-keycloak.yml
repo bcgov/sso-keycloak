@@ -1,9 +1,11 @@
 name: Create and publish Keycloak Docker image
 
 on:
-  push:
-    tags:
-      - '*'
+  workflow_dispatch:
+# on:
+#   push:
+#     tags:
+#       - '*'
 
 env:
   GITHUB_REGISTRY: ghcr.io

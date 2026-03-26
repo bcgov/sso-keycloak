@@ -121,10 +121,7 @@ export const getAdminClient = async (env: Env = 'dev', { totp = '' } = {}) => {
     const kcAdminClient = new KcAdminClient({
       baseUrl: `${config.url}/auth`,
       realmName: 'master',
-      requestConfig: {
-        /* Axios request config options https://github.com/axios/axios#request-config */
-        timeout: 60000,
-      },
+      timeout: 60000,
     });
 
     await kcAdminClient.auth({
