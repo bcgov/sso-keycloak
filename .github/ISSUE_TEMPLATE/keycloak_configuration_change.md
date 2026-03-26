@@ -7,7 +7,7 @@ assignees: thegentlemanphysicist, junminahn, arcshiftsolutions, zsamji
 
 ---
 ## Step 1
-Confirm that you are submitting the right issue type. 
+Confirm that you are submitting the right issue type.
 * If you are wanting to onboard to Pathfinder SSO, please read the [Onboarding Documentation](https://github.com/bcgov/sso-keycloak/wiki/SSO-Onboarding).
 
 
@@ -21,9 +21,7 @@ Description of the problem or change that is required.
 ## Step 3
 Provide the following information:
 
-* Project Name: 
+* Project Name:
 
 If this is a request related to a dedicated realm (created before summer 2021)
-* Keycloak realm ID: 
-
-
+* Keycloak realm ID:
