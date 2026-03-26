@@ -1,11 +1,10 @@
 name: Create and publish Keycloak Docker image
 
 on:
-  workflow_dispatch:
-# on:
-#   push:
-#     tags:
-#       - '*'
+  push:
+    branches:
+      - 'main'
+      - 'dev'
 
 env:
   GITHUB_REGISTRY: ghcr.io
@@ -37,16 +36,36 @@ jobs:
           username: ${{ secrets.REDHAT_USERNAME }}
           password: ${{ secrets.REDHAT_PASSWORD }}
 
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.GITHUB_REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: |
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
-            type=sha,format=long
+      - name: Extract Keycloak version from Dockerfile
+        if: github.ref == 'refs/heads/main'
+        run: |
+          KEYCLOAK_VERSION=$(sed -n 's/ENV KEYCLOAK_VERSION=\([^ ]*\)/\1/p' Dockerfile-26)
+          echo "Extracted version: $KEYCLOAK_VERSION"
+          git fetch --tags
+          LATEST_BUILD=$(git tag -l "v${KEYCLOAK_VERSION}-build.*" \
+          | sed -E "s/v${KEYCLOAK_VERSION}-build\.//" \
+          | sort -n \
+          | tail -1)
+          if [ -z "$LATEST_BUILD" ]; then
+          NEXT_BUILD=1
+          else
+          NEXT_BUILD=$((LATEST_BUILD + 1))
+          fi
+          NEXT_TAG="v${KEYCLOAK_VERSION}-build.${NEXT_BUILD}"
+          echo "Next release tag: $NEXT_TAG"
+          echo "NEXT_TAG=${NEXT_TAG}" >> $GITHUB_ENV
+        working-directory: docker/keycloak
+
+      - name: Set Image Tag
+        run: |
+          if [[ "${{ github.ref_name }}" == "main" ]]; then
+            echo "TAG=${{ env.NEXT_TAG }}" >> $GITHUB_ENV
+            git tag ${{ env.NEXT_TAG }}
+            git push origin ${{ env.NEXT_TAG }}
+          else
+            echo "TAG=dev" >> $GITHUB_ENV
+          fi
+          echo "Using tag: $TAG"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -64,9 +83,8 @@ jobs:
         with:
           context: docker/keycloak
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          file: docker/keycloak/Dockerfile-${{ startsWith(github.ref, 'refs/tags/7.6') && '7.6' || '26' }}
+          tags: ${{ env.GITHUB_REGISTRY }}/${{env.IMAGE_NAME}}:${{ env.TAG }}
+          file: docker/keycloak/Dockerfile-26
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
 
@@ -77,3 +95,14 @@ jobs:
         run: |
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+      - name: Create Release
+        if: github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.NEXT_TAG }}
+          name: Release ${{ env.NEXT_TAG }}
+          generate_release_notes: true
+          make_latest: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
