@@ -15,7 +15,7 @@ jobs:
   build-and-push-image:
     runs-on: ubuntu-24.04
     permissions:
-      contents: read
+      contents: write
       packages: write
 
     steps:
@@ -101,7 +101,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ env.NEXT_TAG }}
-          name: Release ${{ env.NEXT_TAG }}
+          name: ${{ env.NEXT_TAG }}
           generate_release_notes: true
           make_latest: true
         env:
