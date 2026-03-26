@@ -101,7 +101,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ env.NEXT_TAG }}
-          name: Release ${{ env.NEXT_TAG }}
+          name: ${{ env.NEXT_TAG }}
           generate_release_notes: true
           make_latest: true
         env:
