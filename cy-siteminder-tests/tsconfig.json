@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "lib": ["es5", "dom", "ES2015", "ES6", "ESNext"],
+    "types": ["cypress", "node"],
+    "allowJs": true,
+    "noImplicitAny": true,
+    "strict": true,
+    "module": "commonjs",
+    "baseUrl": "."
+  },
+  "include": ["./cypress/", "**/*.d.ts", "cypress.config.ts"],
+  "exclude": ["./node_modules"],
+  "noEmit": true
+}

@@ -1,0 +1,138 @@
+{{- if .Values.enableRemoveVcUsersJob }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "..fullname" . }}-rm-dc-users
+  namespace: {{ .Values.namespace.rmVcUsers }}
+  labels:
+    app.kubernetes.io/name: {{ include "..name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "..chart" . }}
+spec:
+  # daily at 2 am pst and 9 am utc
+  schedule: "0 9 * * *"
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: {{ include "..name" . }}
+            app.kubernetes.io/instance: {{ .Release.Name }}
+        spec:
+          initContainers:
+            - name: initdb
+              image: postgres:11.6-alpine
+              command: ["bash", "-c"]
+              args:
+                - |
+                  echo starting;
+                  set -euo pipefail;
+                  echo "select 'create database $PGDATABASE' where NOT exists (select from pg_database where datname = '$PGDATABASE')\gexec" | psql -d postgres
+                  psql -d $PGDATABASE -qtA --set ON_ERROR_STOP=1 <<EOF
+                    create table if not exists public.kc_deleted_dc_users (
+                        id serial NOT NULL,
+                        timestamp timestamp with time zone default current_timestamp,
+                        environment varchar(50),
+                        username varchar(255),
+                        realm_id varchar(255),
+                        attributes jsonb
+                    );
+                  EOF
+              env:
+                - name: PGHOST
+                  value: kc-cron-patroni
+                - name: PGPORT
+                  value: "5432"
+                - name: PGUSER
+                  value: postgres
+                - name: PGPASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: kc-cron-patroni
+                      key: password-superuser
+                - name: PGDATABASE
+                  value: rhsso
+          containers:
+            - name: {{ .Chart.Name }}
+              image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+              imagePullPolicy: {{ .Values.image.pullPolicy }}
+              command:
+                - node
+                - remove-dc-users.js
+              env:
+                - name: RELEASE_REVISION
+                  value: "{{ .Release.Revision }}"
+                - name: PGHOST
+                  value: kc-cron-patroni
+                - name: PGPORT
+                  value: "5432"
+                - name: PGUSER
+                  value: postgres
+                - name: PGPASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: kc-cron-patroni
+                      key: password-superuser
+                - name: PGDATABASE
+                  value: rhsso
+                - name: DEV_KEYCLOAK_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: kc-cron-job-secret
+                      key: dev-kc-url
+                - name: DEV_KEYCLOAK_USERNAME
+                  valueFrom:
+                    secretKeyRef:
+                      name: kc-cron-job-secret
+                      key: dev-kc-username
+                - name: DEV_KEYCLOAK_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: kc-cron-job-secret
+                      key: dev-kc-password
+                - name: TEST_KEYCLOAK_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: kc-cron-job-secret
+                      key: test-kc-url
+                - name: TEST_KEYCLOAK_USERNAME
+                  valueFrom:
+                    secretKeyRef:
+                      name: kc-cron-job-secret
+                      key: test-kc-username
+                - name: TEST_KEYCLOAK_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: kc-cron-job-secret
+                      key: test-kc-password
+                - name: PROD_KEYCLOAK_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: kc-cron-job-secret
+                      key: prod-kc-url
+                - name: PROD_KEYCLOAK_USERNAME
+                  valueFrom:
+                    secretKeyRef:
+                      name: kc-cron-job-secret
+                      key: prod-kc-username
+                - name: PROD_KEYCLOAK_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: kc-cron-job-secret
+                      key: prod-kc-password
+                - name: RC_WEBHOOK
+                  valueFrom:
+                    secretKeyRef:
+                      name: kc-cron-job-secret
+                      key: rc-webhook
+                - name: DC_USERS_RETENTION_DAYS
+                  valueFrom:
+                    secretKeyRef:
+                      name: kc-cron-job-secret
+                      key: dc-users-retention-days
+                - name: NAMESPACE
+                  value: {{ .Values.namespace.rmVcUsers }}
+          restartPolicy: Never
+{{- end }}

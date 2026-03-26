@@ -1,0 +1,68 @@
+kind: Template
+apiVersion: v1
+objects:
+  - apiVersion: batch/v1
+    kind: Job
+    spec:
+      backoffLimit: 0
+      template:
+        metadata:
+          creationTimestamp: null
+        spec:
+          volumes:
+            - name: k6-config
+              configMap:
+                name: k6-config
+          containers:
+            - image: ${IMAGE_REPOSITORY}:${IMAGE_TAG}
+              name: ${NAME}
+              args:
+                - 'run'
+                - '-e'
+                - 'CONFIG=/var/opt/config/config.json'
+                - '/home/k6/scripts/constantRateAllFlows.js'
+              env:
+                - name: K6_OUT
+                  value: 'timescaledb=postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}'
+                - name: SCENARIO
+                  value: ${SCENARIO}
+                - name: K6_INFLUXDB_PUSH_INTERVAL
+                  value: '5s'
+              resources:
+                limits:
+                  cpu: 2
+                  memory: 5Gi
+                requests:
+                  cpu: 500m
+                  memory: 500Mi
+              volumeMounts:
+                - name: k6-config
+                  mountPath: /var/opt/config
+          restartPolicy: Never
+    metadata:
+      name: ${NAME}
+      labels:
+        app: ${NAME}
+        component: ${NAME}-job
+parameters:
+  - name: NAME
+    value: sso-k6
+  - name: IMAGE_TAG
+    value: dev
+  - name: IMAGE_REPOSITORY
+    value: ghcr.io/bcgov/sso-k6-runner
+  - name: DB_USER
+    value: ''
+    required: true
+  - name: DB_PASSWORD
+    value: ''
+    required: true
+  - name: DB_NAME
+    value: 'k6loadtests'
+  - name: DB_HOST
+    value: 'k6-patroni'
+  - name: DB_PORT
+    value: '5432'
+  - name: SCENARIO
+    required: true
+    description: The name of the scenario (peakProfile, stressProfile, and soakProfile) to run

@@ -1,39 +1,42 @@
 replicaCount: 1
 
 image:
-  repository: ghcr.io/bcgov/sso-keycloak
+  repository: ghcr.io/bcgov/sso
   tag: dev
   pullPolicy: Always
 
-imagePullSecrets:
-  - name: gh-registry-config
-
+project: sso-keycloak
 nameOverride: sso-keycloak
 fullnameOverride: sso-keycloak
+
+networkPolicies:
+  enabled: true
 
 service:
   type: ClusterIP
   port: 8080
 
+# see https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/7.0/html-single/red_hat_jboss_enterprise_application_platform_for_openshift/index#configuring_dns_ping
+pingService:
+  enabled: true
+  port: 8888
+
 postgres:
   host: sso-pgsql-master
+  database: ssokeycloak
   port: 5432
   credentials:
-    secret: sso-pgsql
-    usernameKey: app-db-username
-    passwordKey: app-db-password
-    dbNameKey: app-db-name
-  admin:
-    secret: sso-admin
-    usernameKey: username
-    passwordKey: password
+    secret:
+    usernameKey: username-superuser
+    passwordKey: password-superuser
+    adminUsername: postgres
+    adminPassword: postgres
   poolSize:
     min: 5
     max: 20
 
-jgroupCluster:
-  secret: sso-jgroups
-  passwordKey: password
+annotations:
+  timeout:
 
 # see https://github.com/keycloak/keycloak-containers/blob/master/server/README.md#start-a-keycloak-instance-with-custom-command-line-options
 additionalServerOptions: "-Dkeycloak.profile.feature.authorization=enabled -Djboss.persistent.log.dir=/var/log/eap"
@@ -41,13 +44,14 @@ additionalServerOptions: "-Dkeycloak.profile.feature.authorization=enabled -Djbo
 # see https://github.com/keycloak/keycloak-containers/blob/master/server/README.md#setting-up-tlsssl
 tls:
   enabled: false
-  path: "/var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt"
+  httpsSecret: sso-x509-https-secret
+  jgroupsSecret: sso-x509-jgroups-secret
 
-# see https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/7.0/html-single/red_hat_jboss_enterprise_application_platform_for_openshift/index#configuring_dns_ping
-dnsPing:
-  enabled: false
-  serviceName: sso-keycloak-ping
-  servicePort: 8888
+persistentLog:
+  enabled: true
+  storageClassName: netapp-file-standard
+  storageClassSize: 5Gi
+  path: /var/log/eap
 
 resources:
   limits:

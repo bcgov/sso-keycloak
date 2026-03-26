@@ -90,3 +90,15 @@ The major workflows are:
 1. `pre-commit`: runs `pre-commit` hooks to ensure the code-quality meets the standard.
 
 - For more details, see [.github/workflows](../.github/workflows) directory.
+
+## Create Release
+
+- Run the below command from the root of the project to create a new release.
+
+```sh
+# update below
+TAG=xxx
+COMMIT_MESSAGE="chore: release"
+
+./push-tag.sh ${TAG} ${COMMIT_MESSAGE}
+```

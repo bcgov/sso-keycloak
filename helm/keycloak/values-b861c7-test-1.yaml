@@ -1,0 +1,61 @@
+replicaCount: 1
+
+image:
+  repository: ghcr.io/bcgov/sso
+  tag: 7.6.5-build.3
+  pullPolicy: IfNotPresent
+
+rollingUpdate:
+  maxSurge: "100%"
+  maxUnavailable: 0
+
+configuration:
+  enabled: true
+  version: "7.6"
+
+project: sso-keycloak
+nameOverride: sso-keycloak-1
+fullnameOverride: sso-keycloak-1
+
+postgres:
+  host: sso-patroni
+  database: ssokeycloak1
+  credentials:
+    secret: sso-patroni-appusers
+    usernameKey: username-appuser1
+    passwordKey: password-appuser1
+
+tls:
+  enabled: false
+
+resources:
+  limits:
+    cpu: 1
+    memory: 1Gi
+  requests:
+    cpu: 0.5
+    memory: 512M
+
+patroni:
+  install: true
+  replicaCount: 3
+
+  additionalCredentials:
+    - username: ssokeycloak1
+      password:
+    - username: ssokeycloak2
+      password:
+    - username: ssokeycloak3
+      password:
+    - username: ssokeycloak4
+      password:
+    - username: ssokeycloak5
+      password:
+    - username: ssokeycloak6
+      password:
+
+  persistentVolume:
+    size: 3Gi
+
+  podDisruptionBudget:
+    enabled: true

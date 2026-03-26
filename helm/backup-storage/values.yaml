@@ -1,0 +1,22 @@
+# see https://github.com/bcgov/helm-charts/blob/master/charts/backup-storage/values.yaml
+nameOverride: "backup-storage"
+fullnameOverride: "backup-storage"
+
+image:
+  repository: ghcr.io/bcgov/backup-container
+  tag: 2.12.0
+  pullPolicy: Always
+
+backupConfig: |
+  postgres=patroni-postgresql-gw:5432/gw
+  0 1 * * * default ./backup.sh -s
+  0 4 * * * default ./backup.sh -s -v all
+
+db:
+  secretName: patroni-credentials
+  usernameKey: username
+  passwordKey: password
+
+env:
+  ENVIRONMENT_FRIENDLY_NAME:
+    value: "SSO Backup"

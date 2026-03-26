@@ -1,0 +1,16 @@
+{
+  "name": "podman-grapher",
+  "version": "1.0.0",
+  "description": "graph util for podman stats",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "jon langlois",
+  "license": "ISC",
+  "dependencies": {
+    "electron": "^26.2.4",
+    "plotly": "^1.0.6",
+    "plotly.js": "^2.26.1"
+  }
+}

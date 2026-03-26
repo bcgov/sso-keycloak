@@ -1,0 +1,21 @@
+{{- if .Values.pingService.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "sso-keycloak.fullname" . }}-ping
+  labels: {{ include "sso-keycloak.labels" . | nindent 4 }}
+  annotations:
+    description: "The JGroups ping port for clustering."
+    service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
+    {{- if .Values.tls.enabled }}
+    service.alpha.openshift.io/serving-cert-secret-name: {{ .Values.tls.jgroupsSecret }}
+    {{- end }}
+spec:
+  clusterIP: None
+  ports:
+    - port: {{ .Values.pingService.port }}
+      name: ping
+      targetPort: ping
+      protocol: TCP
+  selector: {{ include "sso-keycloak.selectorLabels" . | nindent 4 }}
+{{- end }}

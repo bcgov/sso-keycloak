@@ -1,14 +1,30 @@
 replicaCount: 7
 
-postgres:
-  host: sso-pgsql-master-prod
-  credentials:
-    secret: sso-pgsql-prod
-  admin:
-    secret: sso-admin-prod
+project: sso-keycloak
 
-jgroupCluster:
-  secret: sso-jgroups-prod
+image:
+  tag: 7.4-37-rc.3
+
+service:
+  type: ClusterIP
+  port: 8443
+
+postgres:
+  host: sso-pgsql-prod-11-patroni
+  database: rhsso
+  credentials:
+    secret: patroni-11-prod-secret
+    usernameKey: username
+    passwordKey: password
+
+annotations:
+  timeout: 90s
+
+persistentLog:
+  storageClassSize: 15Gi
+
+tls:
+  enabled: true
 
 resources:
   limits:

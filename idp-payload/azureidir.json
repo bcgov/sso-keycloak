@@ -1,0 +1,23 @@
+{
+  "aud": "93b12dbd-4e85-f743-1865-9c298a5e5f8c",
+  "iss": "https://login.microsoftonline.com/2b65f00d-30dd-8a4a-3b60-cde539563da8/v2.0",
+  "iat": 1642019410,
+  "nbf": 1642019410,
+  "exp": 1642023310,
+  "aio": "AcqOu=p/ymZ5Ikn2AUCkVAP3P3AT2v7AK97kFQcgeiA7x8DeYVWqW0pWEpeX83QtDyFqar9+QV2NAmAebtB/xjtC1/Ai2JrXpC0aKjnThJtm0UF5fA0KQ8MY",
+  "email": "sso.admin@gov.bc.ca",
+  "family_name": "SSO",
+  "given_name": "Admin",
+  "name": "SSO, Admin EDUC:EX",
+  "nonce": "C5tMHWgmRTsNh9Rrk6XL39",
+  "oid": "9a676f39-a324-46c6-9d9e-fcf253468763",
+  "preferred_username": "sso.admin@gov.bc.ca",
+  "rh": "0.yNfXVtNqhNGj3otwo0fGAgOHw0a9bOkbATL4BWAFhit5WJOLwhA.",
+  "sub": "ookQvIIpooSPrMukzZXabLCSbXGRgxjamhs9V3a5Y9v",
+  "tid": "05fb260d-dd03-a8a4-6b03-c9d8365de53a",
+  "upn": "sso.admin@gov.bc.ca",
+  "uti": "X3YsqmNBee6UJgxKAEAiGv",
+  "ver": "2.0",
+  "samaccountname": "SSADMIN",
+  "bcgovGUID": "18D1BA09D4BF06B759AD5EF21FE7C906"
+}

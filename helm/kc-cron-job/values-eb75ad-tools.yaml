@@ -1,0 +1,72 @@
+image:
+  repository: ghcr.io/bcgov/kc-cron-job
+  tag: prod
+  pullPolicy: Always
+
+imagePullSecrets:
+  - name: gh-registry-config
+
+nameOverride: kc-cron-job
+fullnameOverride: kc-cron-job
+
+enableRemoveInactiveUsersJob: true
+
+enableRemoveVcUsersJob: true
+
+enableSiteminderTests: false
+
+namespace:
+  rmInactiveUsers: 'eb75ad-tools'
+  rmVcUsers: 'eb75ad-tools'
+  siteminderTests: 'eb75ad-tools'
+
+pvc:
+  name: sso-keycloak-logs
+
+networkPolicy:
+  environment: tools
+  licensePlate: eb75ad
+
+pgHost: kc-cron-patroni.eb75ad-tools.svc.cluster.local
+
+resources:
+  limits:
+    cpu: 0.5
+    memory: 512M
+  requests:
+    cpu: 0.25
+    memory: 256M
+
+patroni:
+  image:
+    repository: ghcr.io/bcgov/sso-spilo-17
+    tag: 4.0-p3
+  postgresMajorVersion: 17
+  nameOverride: kc-cron-patroni
+  fullnameOverride: kc-cron-patroni
+  replicaCount: 2
+  resources:
+    requests:
+      cpu: 100m
+      memory: 400Mi
+    limits:
+      cpu: 200m
+      memory: 600Mi
+  ## Only uncoment on a first install
+  # credentials:
+  #   existingSecret: false
+  #   admin:
+  #     username: admin
+  #     password:
+  #   standby:
+  #     username: standby
+  #     password:
+  #   superuser:
+  #     username: postgres
+  #     password:
+
+  # additionalCredentials:
+  #   - username: rhsso
+  #     password:
+
+rocketChatWebhook:

@@ -1,0 +1,104 @@
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: allow-cron-job
+  namespace: {{ .Values.networkPolicy.licensePlate }}-tools
+spec:
+  podSelector:
+    matchLabels:
+      app: kc-cron-patroni
+  ingress:
+    - from:
+      - namespaceSelector:
+          matchLabels:
+            environment: {{ .Values.networkPolicy.environment }}
+            name: {{ .Values.networkPolicy.licensePlate }}
+      - podSelector:
+          matchLabels:
+            name: {{ .Chart.Name }}
+  policyTypes:
+    - Ingress
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: kc-cron-dev-access
+  namespace: {{ .Values.networkPolicy.licensePlate }}-tools
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/instance: {{.Values.nameOverride}}
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: {{.Values.nameOverride}}
+          namespaceSelector:
+            matchLabels:
+              environment: dev
+              name: {{ .Values.networkPolicy.licensePlate }}
+  policyTypes:
+    - Ingress
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: kc-cron-test-access
+  namespace: {{ .Values.networkPolicy.licensePlate }}-tools
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/instance: {{.Values.nameOverride}}
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: {{.Values.nameOverride}}
+          namespaceSelector:
+            matchLabels:
+              environment: test
+              name: {{ .Values.networkPolicy.licensePlate }}
+  policyTypes:
+    - Ingress
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: kc-cron-prod-access
+  namespace: {{ .Values.networkPolicy.licensePlate }}-tools
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/instance: {{.Values.nameOverride}}
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: {{.Values.nameOverride}}
+          namespaceSelector:
+            matchLabels:
+              environment: prod
+              name: {{ .Values.networkPolicy.licensePlate }}
+  policyTypes:
+    - Ingress
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: kc-cronjob-same-namespace
+  namespace: {{ .Values.networkPolicy.licensePlate }}-tools
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/instance: {{.Values.nameOverride}}
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: {{.Values.nameOverride}}
+          namespaceSelector:
+            matchLabels:
+              environment: tools
+              name: {{ .Values.networkPolicy.licensePlate }}
+  policyTypes:
+    - Ingress

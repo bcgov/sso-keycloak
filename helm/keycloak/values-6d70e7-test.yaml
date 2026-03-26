@@ -1,14 +1,27 @@
 replicaCount: 5
 
-postgres:
-  host: sso-pgsql-master-test
-  credentials:
-    secret: sso-pgsql-test
-  admin:
-    secret: sso-admin-test
+project: sso-keycloak
 
-jgroupCluster:
-  secret: sso-jgroups-test
+image:
+  tag: 7.4-37-rc.3
+
+service:
+  type: ClusterIP
+  port: 8443
+
+postgres:
+  host: sso-pgsql-test-11-patroni
+  database: keycloak
+  credentials:
+    secret: patroni-11-test-secret
+    usernameKey: username
+    passwordKey: password
+
+persistentLog:
+  storageClassSize: 10Gi
+
+tls:
+  enabled: true
 
 resources:
   limits:

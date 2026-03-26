@@ -1,0 +1,16 @@
+{{- if .Values.networkPolicies.enabled }}
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: {{ include "sso-keycloak.project" . }}-intra-project-comms
+  labels: {{ include "sso-keycloak.labels" . | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels:
+      project: {{ include "sso-keycloak.project" . }}
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          project: {{ include "sso-keycloak.project" . }}
+{{- end }}

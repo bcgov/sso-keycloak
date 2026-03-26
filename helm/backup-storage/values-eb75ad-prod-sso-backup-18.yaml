@@ -1,0 +1,38 @@
+nameOverride: sso-backup-storage-18
+fullnameOverride: sso-backup-storage-18
+
+image:
+  repository: ghcr.io/bcgov/backup-container
+  tag: 2.12.0
+  pullPolicy: Always
+
+backupConfig: |
+  sso-patroni:5432/ssokeycloak
+  0 1 * * * default ./backup.sh -s
+  0 4 * * * default ./backup.sh -I -s -v all
+
+db:
+  secretName: sso-patroni-appusers
+  usernameKey: username-appuser1
+  passwordKey: password-appuser1
+
+persistence:
+  backup:
+    size: 30Gi
+  verification:
+    size: 15Gi
+
+env:
+  ENVIRONMENT_FRIENDLY_NAME:
+    value: 'SSO Gold Client Production Backup'
+  ENVIRONMENT_NAME:
+    value: eb75ad-prod
+  WEBHOOK_URL:
+   # value: '<<WEBHOOK URL FOR ROCKETCHAT>>'
+
+  DAILY_BACKUPS:
+    value: '7'
+  WEEKLY_BACKUPS:
+    value: '4'
+  MONTHLY_BACKUPS:
+    value: '1'

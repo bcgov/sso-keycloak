@@ -1,18 +1,22 @@
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
-  name: {{ include "..fullname" . }}
-  labels:
-    app.kubernetes.io/name: {{ include "..name" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
-    helm.sh/chart: {{ include "..chart" . }}
+  name: {{ include "sso-keycloak.fullname" . }}
+  labels: {{ include "sso-keycloak.labels" . | nindent 4 }}
   annotations:
-    description: Route for application's https service.
+    haproxy.router.openshift.io/balance: roundrobin
+    haproxy.router.openshift.io/disable_cookies: 'true'
+    {{ if .Values.annotations.timeout }}
+    haproxy.router.openshift.io/timeout: {{ .Values.annotations.timeout }}
+    {{ end }}
 spec:
   tls:
     insecureEdgeTerminationPolicy: Redirect
+    {{ if .Values.tls.enabled }}
+    termination: reencrypt
+    {{ else }}
     termination: edge
+    {{ end }}
   to:
     kind: Service
-    name: {{ include "..fullname" . }}
+    name: {{ include "sso-keycloak.fullname" . }}

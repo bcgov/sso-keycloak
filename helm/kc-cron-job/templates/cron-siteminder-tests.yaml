@@ -1,0 +1,59 @@
+{{- if .Values.enableSiteminderTests }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "..fullname" . }}-siteminder-tests
+  namespace: {{ .Values.namespace.siteminderTests }}
+  labels:
+    app.kubernetes.io/name: {{ include "..name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "..chart" . }}
+spec:
+  # daily at 8 am pst and 3 pm utc
+  schedule: "0 15 * * *"
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: {{ include "..name" . }}
+            app.kubernetes.io/instance: {{ .Release.Name }}
+        spec:
+          containers:
+            - name: {{ .Chart.Name }}
+              image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+              imagePullPolicy: {{ .Values.image.pullPolicy }}
+              command:
+                - node
+                - siteminder-tests.js
+              env:
+                - name: GH_SITMINDER_TESTS_APP_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: kc-cron-job-secret
+                      key: github-siteminder-tests-app-id
+                - name: GH_SITMINDER_TESTS_INSTALLATION_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: kc-cron-job-secret
+                      key: github-siteminder-tests-installation-id
+                - name: RC_WEBHOOK
+                  valueFrom:
+                    secretKeyRef:
+                      name: kc-cron-job-secret
+                      key: rc-webhook
+              volumeMounts:
+                - name: github-siteminder-tests-private-key
+                  mountPath: "/usr/src/app/keys"
+                  readOnly: true
+          volumes:
+          - name: github-siteminder-tests-private-key
+            secret:
+              secretName: kc-cron-job-secret
+              items:
+                - key: github-siteminder-tests-private-key
+                  path: github-siteminder-tests-private-key.pem
+          restartPolicy: Never
+{{- end }}

@@ -1,111 +1,184 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "..fullname" . }}
-  labels:
-    app.kubernetes.io/name: {{ include "..name" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
-    helm.sh/chart: {{ include "..chart" . }}
+  name: {{ include "sso-keycloak.fullname" . }}
+  labels: {{ include "sso-keycloak.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: "25%" # how many pod we can add at a time
+      maxUnavailable: 0 # how many pod can be unavailable
+  minReadySeconds: 0 # The minimum number of seconds for which a newly created Pod should be ready
   selector:
-    matchLabels:
-      app.kubernetes.io/name: {{ include "..name" . }}
-      app.kubernetes.io/instance: {{ .Release.Name }}
+    matchLabels: {{ include "sso-keycloak.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      labels:
-        app.kubernetes.io/name: {{ include "..name" . }}
-        app.kubernetes.io/instance: {{ .Release.Name }}
+      labels: {{ include "sso-keycloak.labels" . | nindent 8 }}
     spec:
       containers:
-      - name: {{ .Chart.Name }}
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
-        command:
-          - /bin/sh
-          - /opt/eap/bin/openshift-launch.sh
-        env:
-          # Postgres Service Endpoint
-          - name: DB_POSTGRESQL_SERVICE_HOST
-            value: {{ .Values.postgres.host }}
-          - name: DB_POSTGRESQL_SERVICE_PORT
-            value: {{ .Values.postgres.port | quote }}
-          # DB Credentials
-          - name: DB_USERNAME
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Values.postgres.credentials.secret }}
-                key: {{ .Values.postgres.credentials.usernameKey }}
-          - name: DB_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Values.postgres.credentials.secret }}
-                key: {{ .Values.postgres.credentials.passwordKey }}
-          - name: DB_DATABASE
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Values.postgres.credentials.secret }}
-                key: {{ .Values.postgres.credentials.dbNameKey }}
-          # DB Admin Credentials
-          - name: SSO_ADMIN_USERNAME
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Values.postgres.admin.secret }}
-                key: {{ .Values.postgres.admin.usernameKey }}
-          - name: SSO_ADMIN_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Values.postgres.admin.secret }}
-                key: {{ .Values.postgres.admin.passwordKey }}
-          # DB POOL SIZES
-          - name: DB_MIN_POOL_SIZE
-            value: {{ .Values.postgres.poolSize.min | quote }}
-          - name: DB_MAX_POOL_SIZE
-            value: {{ .Values.postgres.poolSize.max | quote }}
-          # JGroups Cluster
-          - name: JGROUPS_CLUSTER_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Values.jgroupCluster.secret }}
-                key: {{ .Values.jgroupCluster.passwordKey }}
-          # Additional server startup options (extension of JAVA_OPTS)
-          - name: JAVA_OPTS_APPEND
-            value: {{ .Values.additionalServerOptions }}
-          {{- if .Values.tls.enabled }}
-          - name: X509_CA_BUNDLE
-            value: {{ .Values.tls.path }}
-          {{- end }}
-          {{- if .Values.dnsPing.enabled }}
-          - name: OPENSHIFT_DNS_PING_SERVICE_NAME
-            value: {{ .Values.dnsPing.serviceName }}
-          - name: OPENSHIFT_DNS_PING_SERVICE_PORT
-            value: {{ .Values.dnsPing.servicePort | quote }}
-          {{- end }}
-          # Other environments
-          - name: DB_JNDI
-            value: java:jboss/datasources/KeycloakDS
-          - name: DB_SERVICE_PREFIX_MAPPING
-            value: db-postgresql=DB
-          - name: TX_DATABASE_PREFIX_MAPPING
-            value: db-postgresql=DB
-          - name: JGROUPS_PING_PROTOCOL
-            value: dns.DNS_PING
-
-        ports:
-          - containerPort: 8778
-            name: jolokia
-            protocol: TCP
-          - containerPort: 8080
-            name: http
-            protocol: TCP
-          - containerPort: 8443
-            name: https
-            protocol: TCP
-          - containerPort: 8888
-            name: ping
-            protocol: TCP
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          command:
+            - /bin/sh
+            - /opt/eap/bin/openshift-launch.sh
+          # see https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/7.3/html/getting_started_with_jboss_eap_for_openshift_container_platform/migration-applications-72-73_default
+          # ideally, it should work with the configurations below, yet as it takes too long to be ready, let's replace it with `tcpSocket` options.
+          # livenessProbe:
+          #   exec:
+          #     command:
+          #     - /bin/bash
+          #     - -c
+          #     - timeout 60 /opt/eap/bin/livenessProbe.sh
+          #   initialDelaySeconds: 300
+          #   periodSeconds: 20
+          #   successThreshold: 1
+          #   failureThreshold: 5
+          # readinessProbe:
+          #   exec:
+          #     command:
+          #     - /bin/bash
+          #     - -c
+          #     - timeout 60 /opt/eap/bin/readinessProbe.sh
+          #   initialDelaySeconds: 200
+          #   periodSeconds: 20
+          #   successThreshold: 1
+          #   failureThreshold: 5
+          livenessProbe:
+            httpGet:
+              path: /auth/realms/master/.well-known/openid-configuration
+              port: 8080
+            initialDelaySeconds: 300
+            periodSeconds: 20
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 5
+          readinessProbe:
+            httpGet:
+              path: /auth/realms/master/.well-known/openid-configuration
+              port: 8080
+            initialDelaySeconds: 200
+            periodSeconds: 20
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 5
+          ports:
+            - containerPort: 8778
+              name: jolokia
+              protocol: TCP
+            - containerPort: 8080
+              name: http
+              protocol: TCP
+            - containerPort: 8443
+              name: https
+              protocol: TCP
+            - containerPort: 8888
+              name: ping
+              protocol: TCP
+          env:
+            # Postgres Service Endpoint
+            - name: DB_POSTGRESQL_SERVICE_HOST
+              value: {{ .Values.postgres.host }}
+            - name: DB_POSTGRESQL_SERVICE_PORT
+              value: {{ .Values.postgres.port | quote }}
+            # DB Credentials
+            - name: DB_USERNAME
+              {{- if and .Values.postgres.credentials.secret .Values.postgres.credentials.usernameKey }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgres.credentials.secret }}
+                  key: {{ .Values.postgres.credentials.usernameKey }}
+              {{- else -}}
+              value: {{ .Values.postgres.credentials.adminUsername }}
+              {{- end }}
+            - name: DB_PASSWORD
+              {{- if and .Values.postgres.credentials.secret .Values.postgres.credentials.passwordKey }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgres.credentials.secret }}
+                  key: {{ .Values.postgres.credentials.passwordKey }}
+              {{- else -}}
+              value: {{ .Values.postgres.credentials.adminPassword }}
+              {{- end }}
+            - name: DB_DATABASE
+              value: {{ .Values.postgres.database }}
+            # DB Admin Credentials
+            - name: SSO_ADMIN_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "sso-keycloak.fullname" . }}-admin-secret
+                  key: username
+            - name: SSO_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "sso-keycloak.fullname" . }}-admin-secret
+                  key: password
+            # DB POOL SIZES
+            - name: DB_MIN_POOL_SIZE
+              value: {{ .Values.postgres.poolSize.min | quote }}
+            - name: DB_MAX_POOL_SIZE
+              value: {{ .Values.postgres.poolSize.max | quote }}
+            # JGroups Cluster
+            - name: JGROUPS_CLUSTER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "sso-keycloak.fullname" . }}-jgroups
+                  key: cluster-password
+            # Additional server startup options (extension of JAVA_OPTS)
+            - name: JAVA_OPTS_APPEND
+              value: {{ .Values.additionalServerOptions }}
+            - name: X509_CA_BUNDLE
+              value: /var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt
+            {{- if .Values.pingService.enabled }}
+            - name: OPENSHIFT_DNS_PING_SERVICE_NAME
+              value: {{ include "sso-keycloak.fullname" . }}-ping
+            - name: OPENSHIFT_DNS_PING_SERVICE_PORT
+              value: {{ .Values.pingService.port | quote }}
+            {{- end }}
+            # Other environments
+            - name: DB_JNDI
+              value: java:jboss/datasources/KeycloakDS
+            - name: DB_SERVICE_PREFIX_MAPPING
+              value: db-postgresql=DB
+            - name: TX_DATABASE_PREFIX_MAPPING
+              value: db-postgresql=DB
+            - name: JGROUPS_PING_PROTOCOL
+              value: dns.DNS_PING
+            - name: TZ
+              value: America/Vancouver
+          volumeMounts:
+            {{- if .Values.tls.enabled }}
+            - mountPath: /etc/x509/https
+              name: sso-x509-https-volume
+              readOnly: true
+            - mountPath: /etc/x509/jgroups
+              name: sso-x509-jgroups-volume
+              readOnly: true
+            {{- end }}
+            {{- if .Values.persistentLog.enabled }}
+            - mountPath: {{ .Values.persistentLog.path }}
+              name: logs-volume
+            {{- end }}
+      volumes:
+        {{- if .Values.tls.enabled }}
+        - name: sso-x509-https-volume
+          secret:
+            defaultMode: 420
+            secretName: {{ .Values.tls.httpsSecret }}
+        - name: sso-x509-jgroups-volume
+          secret:
+            defaultMode: 420
+            secretName: {{ .Values.tls.jgroupsSecret }}
+        {{- end }}
+        {{- if .Values.persistentLog.enabled }}
+        - name: logs-volume
+          persistentVolumeClaim:
+            claimName: {{ include "sso-keycloak.fullname" . }}-logs
+        {{- end }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}

@@ -1,0 +1,27 @@
+nameOverride: k6-patroni
+
+fullnameOverride: k6-patroni
+
+image:
+  # see https://github.com/zalando/spilo/releases
+  repository: ghcr.io/bcgov/sso-spilo-17
+  pullPolicy: Always
+  tag: 4.0-p3
+
+replicaCount: 1
+
+postgresMajorVersion: 15
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 250m
+    memory: 1024Mi
+
+podDisruptionBudget:
+  enabled: false
+
+persistentVolume:
+  size: 500Mi

@@ -1,0 +1,7 @@
+To get your username & password for admin run:
+
+    # admin username
+    ADMIN_USERNAME=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ include "sso-keycloak.fullname" . }}-admin-secret -o jsonpath="{.data.username}" | base64 --decode)
+
+    # admin password
+    ADMIN_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ include "sso-keycloak.fullname" . }}-admin-secret -o jsonpath="{.data.password}" | base64 --decode)

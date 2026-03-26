@@ -1,15 +1,29 @@
 # Secrets Helm Chart
 
+The helm chart installs `Secret` k8s objects with the release name `sso-secrets`.
+
 ## Installing the Chart
 
-To install the chart with the release name `secrets`:
+To install the chart on a specific namespace.
 
 ```bash
-$ helm install secrets . -n <namespace> -f ./values.yaml -f ./values.secret.yaml
+$ make install NAMESPACE=<namespace>
 ```
 
-To uninstall the chart
+To upgrade the chart on a specific namespace.
 
 ```bash
-$ helm uninstall secrets -n <namespace>
+$ make upgrade NAMESPACE=<namespace>
+```
+
+To uninstall the chart on a specific namespace.
+
+```bash
+$ make uninstall NAMESPACE=<namespace>
+```
+
+To lint the chart on a specific namespace.
+
+```bash
+$ make lint NAMESPACE=<namespace>
 ```

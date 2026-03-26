@@ -1,0 +1,48 @@
+name: Create and publish kc-cron-job Docker image
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+    tags:
+      - '*'
+    paths:
+      - 'docker/kc-cron-job/**'
+      - '.github/workflows/publish-image-kc-cron-job.yml'
+
+env:
+  GITHUB_REGISTRY: ghcr.io
+  IMAGE_NAME: bcgov/kc-cron-job
+
+jobs:
+  build-and-push-image:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log in to the GitHub Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.GITHUB_REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.GITHUB_REGISTRY }}/${{ env.IMAGE_NAME }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: docker/kc-cron-job
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}

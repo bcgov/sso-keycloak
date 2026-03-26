@@ -36,21 +36,3 @@ Create data url
 {{- define "..databaseurl" -}}
 {{- printf "host=%s port=%s dbname=%s user=%s password=%s sslmode=require" .Values.postgresql.host .Values.postgresql.port .Values.postgresql.database .Values.postgresql.username .Values.postgresql.password -}}
 {{- end -}}
-
-{{/*
-Create GitHub docker config
-{
-  "auths": {
-    "%s": {
-      "username": "%s",
-      "password": "%s",
-      "auth": "%s"
-    }
-  }
-}
-*/}}
-{{- define "ghdockerconfigjson" }}
-{{- if .Values.docker.github.enabled -}}
-{{- printf "{\"auths\":{\"%s\":{\"username\":\"%s\",\"password\":\"%s\", \"auth\":\"%s\"}}}" .Values.docker.github.registry .Values.docker.github.username .Values.docker.github.password (printf "%s:%s" .Values.docker.github.username .Values.docker.github.password | b64enc) | b64enc }}
-{{- end }}
-{{- end }}
