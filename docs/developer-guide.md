@@ -82,23 +82,8 @@ We use [Terraform fmt](https://www.terraform.io/docs/cli/commands/fmt.html) to f
 
 See the [.pre-commit-config.yaml](../.pre-commit-config.yaml) file for full list of hooks in use.
 
-## CI/CD pipelines
-
-To integrate code into a shared repository and run Terraform scripts continuously, we use Github Actions pipelines.
-The major workflows are:
-
-1. `pre-commit`: runs `pre-commit` hooks to ensure the code-quality meets the standard.
-
-- For more details, see [.github/workflows](../.github/workflows) directory.
-
 ## Create Release
 
-- Run the below command from the root of the project to create a new release.
-
-```sh
-# update below
-TAG=xxx
-COMMIT_MESSAGE="chore: release"
-
-./push-tag.sh ${TAG} ${COMMIT_MESSAGE}
-```
+- Push to `dev` branch creates dev version of the `sso` image
+- Ensure that the keycloak dockerfile consists an envinronmental variable `KEYCLOAK_VERSION=x.x.x` with value reflecting the base image version. Example `26.4-11 -> 26.4.11`
+- Merge to `main` branch creates new tag using `v${KEYCLOAK_VERSION}-build.x` and generates a latest release
