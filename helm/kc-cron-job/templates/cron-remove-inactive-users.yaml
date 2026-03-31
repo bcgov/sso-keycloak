@@ -214,6 +214,11 @@ spec:
                     secretKeyRef:
                       name: kc-cron-job-secret
                       key: css-api-auth-secret
+                - name: REALM_REGISTRY_AUTH_SECRET
+                  valueFrom:
+                    secretKeyRef:
+                      name: kc-cron-job-secret
+                      key: realm-registry-auth-secret
                 - name: RC_WEBHOOK
                   valueFrom:
                     secretKeyRef:

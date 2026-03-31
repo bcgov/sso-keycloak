@@ -160,4 +160,19 @@ describe('removeStaleUsersByEnv', () => {
       ]);
     });
   });
+
+  it('Calls the realm registry at the expected url when users are deleted from production', async () => {
+    const { removeStaleUsersByEnv } = await import('../remove-inactive-idir-users.js');
+    axios.delete = vi.fn().mockResolvedValue({ status: 200 });
+
+    // When deleted from lower env no need to call realm registry
+    await removeStaleUsersByEnv('test', pgMock, 'runnername', 0, () => {});
+    expect(axios.delete).not.toHaveBeenCalled();
+
+    // Should call when deleted from production
+    await removeStaleUsersByEnv('prod', pgMock, 'runnername', 0, () => {});
+    expect(axios.delete).toHaveBeenCalled();
+    const firstCallURL = axios.delete.mock.calls[0][0];
+    expect(firstCallURL).toContain(`/users/${mockUser.attributes.idir_user_guid}`);
+  });
 });
