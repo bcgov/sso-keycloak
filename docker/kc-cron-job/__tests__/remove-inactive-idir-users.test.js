@@ -162,7 +162,6 @@ describe('removeStaleUsersByEnv', () => {
   });
 
   it('Calls the realm registry at the expected url when users are deleted from production', async () => {
-    const { removeStaleUsersByEnv } = await import('../remove-inactive-idir-users.js');
     axios.delete = vi.fn().mockResolvedValue({ status: 200 });
 
     // When deleted from lower env no need to call realm registry
