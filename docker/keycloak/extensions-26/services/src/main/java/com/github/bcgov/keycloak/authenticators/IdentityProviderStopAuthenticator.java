@@ -48,6 +48,11 @@ public class IdentityProviderStopAuthenticator implements Authenticator {
       if (context.getUriInfo().getQueryParameters().containsKey(AdapterConstants.KC_IDP_HINT)) {
         String hintIdp = context.getUriInfo().getQueryParameters().getFirst(AdapterConstants.KC_IDP_HINT);
 
+        // to be removed after excluded-idir is removed
+        if (hintIdp.equalsIgnoreCase("idir") && scopes.containsKey("excluded-idir")) {
+          hintIdp = "excluded-idir";
+        }
+
         if (hintIdp != null && !hintIdp.equals("")) {
           for (IdentityProviderModel aidp : allowedIdps) {
             if (hintIdp.equals(aidp.getAlias())) {
