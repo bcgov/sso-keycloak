@@ -1,0 +1,36 @@
+nameOverride: kc-cron-backup-storage-18
+fullnameOverride: kc-cron-backup-storage-18
+
+image:
+  repository: ghcr.io/bcgov/backup-container
+  tag: 2.12.0
+  pullPolicy: Always
+
+backupConfig: |
+  kc-cron-patroni:5432/rhsso
+  0 1 * * * default ./backup.sh -s
+
+db:
+  secretName: kc-cron-patroni
+  usernameKey: username-superuser
+  passwordKey: password-superuser
+
+persistence:
+  backup:
+    size: 10Gi
+
+env:
+  ENVIRONMENT_FRIENDLY_NAME:
+    value: 'KC Cron Client Sandbox Backup'
+  ENVIRONMENT_NAME:
+    value: e4ca1d-tools
+  WEBHOOK_URL:
+    # value: '<<WEBHOOK URL FOR ROCKETCHAT>>'
+    secure: true
+
+  DAILY_BACKUPS:
+    value: '3'
+  WEEKLY_BACKUPS:
+    value: '2'
+  MONTHLY_BACKUPS:
+    value: '1'
