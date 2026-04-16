@@ -71,5 +71,3 @@ patroni:
   additionalCredentials:
     - username: rhsso
       password:
-
-rocketChatWebhook:
