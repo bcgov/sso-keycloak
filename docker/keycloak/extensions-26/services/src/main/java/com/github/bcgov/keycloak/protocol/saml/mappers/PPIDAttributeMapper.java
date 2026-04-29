@@ -89,7 +89,8 @@ public class PPIDAttributeMapper extends AbstractSAMLProtocolMapper implements S
     String ppidKey = mappingModel.getConfig().get(ATTRIBUTE_NAME);
     try {
       String idp = userSession.getNotes().get("identity_provider");
-      if (idp.equalsIgnoreCase("otp")) {
+      IdentityProviderModel authIdpConfig = keycloakSession.identityProviders().getByAlias(idp);
+      if (idp.equalsIgnoreCase("otp") || authIdpConfig.getDisplayName().equalsIgnoreCase("bc services card")) {
         IdentityProviderModel identityProviderModel = keycloakSession.identityProviders()
             .getByAlias(PPID_SERVICE_ACCOUNT_IDP_ALIAS);
 
