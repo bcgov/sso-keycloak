@@ -66,7 +66,8 @@ public class PPIDAttributeMapperNameId extends AbstractSAMLProtocolMapper
       ProtocolMapperModel mappingModel, KeycloakSession keycloakSession,
       UserSessionModel userSession, ClientSessionContext clientSessionCtx) {
     String idp = userSession.getNotes().get("identity_provider");
-    if (idp.equalsIgnoreCase("otp")) {
+    IdentityProviderModel authIdpConfig = keycloakSession.identityProviders().getByAlias(idp);
+    if (idp.equalsIgnoreCase("otp") || authIdpConfig.getDisplayName().equalsIgnoreCase("bc services card")) {
       String nameIdFormat = mappingModel.getConfig().get(NAMEID_FORMAT);
 
       IdentityProviderModel identityProviderModel = keycloakSession.identityProviders()

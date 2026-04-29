@@ -96,7 +96,8 @@ public class PPIDMapper extends AbstractOIDCProtocolMapper
     String tokenClaim = mappingModel.getConfig().get(CLAIM_NAME);
     try {
       String idp = userSession.getNotes().get("identity_provider");
-      if (idp.equalsIgnoreCase("otp")) {
+      IdentityProviderModel authIdpConfig = keycloakSession.identityProviders().getByAlias(idp);
+      if (idp.equalsIgnoreCase("otp") || authIdpConfig.getDisplayName().equalsIgnoreCase("bc services card")) {
 
         Map<String, Object> otherClaims = token.getOtherClaims();
 
