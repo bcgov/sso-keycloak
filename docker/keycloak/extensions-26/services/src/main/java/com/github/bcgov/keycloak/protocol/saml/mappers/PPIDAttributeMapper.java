@@ -91,6 +91,9 @@ public class PPIDAttributeMapper extends AbstractSAMLProtocolMapper implements S
       String idp = userSession.getNotes().get("identity_provider");
       IdentityProviderModel authIdpConfig = keycloakSession.identityProviders().getByAlias(idp);
       if (idp.equalsIgnoreCase("otp") || authIdpConfig.getDisplayName().equalsIgnoreCase("bc services card")) {
+
+        String authIdp = null;
+
         IdentityProviderModel identityProviderModel = keycloakSession.identityProviders()
             .getByAlias(PPID_SERVICE_ACCOUNT_IDP_ALIAS);
 
@@ -100,13 +103,22 @@ public class PPIDAttributeMapper extends AbstractSAMLProtocolMapper implements S
         }
 
         if (!StringUtil.isNullOrEmpty(mappingModel.getConfig().get(PRIVACY_ZONE))) {
-          String ppid = PPID.getPpid(identityProviderModel.getConfig().get("tokenUrl"),
-              identityProviderModel.getConfig().get("authorizationUrl"),
+
+          if (idp.equalsIgnoreCase("otp")) {
+            authIdp = "otp";
+          } else if (authIdpConfig.getDisplayName().equalsIgnoreCase("bc services card")) {
+            authIdp = "bcsc";
+          } else {
+            logger.error("Unsupported identity provider: " + idp);
+            return;
+          }
+
+          String ppid = PPID.getPpid(authIdp,
               identityProviderModel.getConfig().get("clientId"),
               identityProviderModel.getConfig().get("clientSecret"),
-              identityProviderModel.getConfig().get("issuer"),
               userSession.getUser().getEmail(),
               mappingModel.getConfig().get(PRIVACY_ZONE));
+
           if (!StringUtil.isNullOrEmpty(ppid)) {
             addAttribute(attributeStatement, ppidKey.trim(), ppid);
           } else {
