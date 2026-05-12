@@ -94,6 +94,8 @@ public class PPIDAttributeMapper extends AbstractSAMLProtocolMapper implements S
 
         String authIdp = null;
 
+        String sub = null;
+
         IdentityProviderModel identityProviderModel = keycloakSession.identityProviders()
             .getByAlias(PPID_SERVICE_ACCOUNT_IDP_ALIAS);
 
@@ -106,8 +108,10 @@ public class PPIDAttributeMapper extends AbstractSAMLProtocolMapper implements S
 
           if (idp.equalsIgnoreCase("otp")) {
             authIdp = "otp";
+            sub = userSession.getUser().getEmail();
           } else if (authIdpConfig.getDisplayName().equalsIgnoreCase("bc services card")) {
             authIdp = "bcsc";
+            sub = userSession.getUser().getUsername().split("@")[0].toUpperCase();
           } else {
             logger.error("Unsupported identity provider: " + idp);
             return;
@@ -116,7 +120,7 @@ public class PPIDAttributeMapper extends AbstractSAMLProtocolMapper implements S
           String ppid = PPID.getPpid(authIdp,
               identityProviderModel.getConfig().get("clientId"),
               identityProviderModel.getConfig().get("clientSecret"),
-              userSession.getUser().getEmail(),
+              sub,
               mappingModel.getConfig().get(PRIVACY_ZONE));
 
           if (!StringUtil.isNullOrEmpty(ppid)) {
