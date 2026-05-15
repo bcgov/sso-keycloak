@@ -3,7 +3,6 @@ name: Create and publish kc-cron-job Docker image
 on:
   push:
     branches:
-      - main
       - dev
     tags:
       - '*'

@@ -3,7 +3,6 @@ name: Create and publish Benchmark Runner Docker image
 on:
   push:
     branches:
-      - main
       - dev
     paths:
       - 'benchmark/**'

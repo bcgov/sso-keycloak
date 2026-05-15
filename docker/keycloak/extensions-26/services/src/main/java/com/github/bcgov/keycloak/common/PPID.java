@@ -98,10 +98,14 @@ public class PPID {
     }
   }
 
-  public static String getPpid(String ppidTokenUrl, String ppidApiUrl, String clientId, String clientSecret,
-      String issuer, String sub, String privacyZoneUri) {
+  public static String getPpid(String idp, String clientId, String clientSecret,
+      String sub, String privacyZoneUri) {
     String ppid = null;
+    ApplicationProperties applicationProperties = new ApplicationProperties();
     try {
+      String ppidTokenUrl = applicationProperties.getPpidTokenUrl();
+      String ppidApiUrl = applicationProperties.getPpidApiUrl();
+      String issuer = applicationProperties.getIssuer(idp);
       if (StringUtil.isNullOrEmpty(ppidTokenUrl) || StringUtil.isNullOrEmpty(ppidApiUrl)
           || StringUtil.isNullOrEmpty(clientId) || StringUtil.isNullOrEmpty(clientSecret)
           || StringUtil.isNullOrEmpty(issuer)) {
