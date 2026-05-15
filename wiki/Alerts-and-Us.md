@@ -38,9 +38,9 @@ We have a healthy relationship with our Access Directory Management Services (AD
 Here are the things to check:
 
 1. Check our Status Cake status at TBD
-2. We will provide live updates as we learn more in our [rocketchat channel](https://chat.developer.gov.bc.ca/channel/sso)
-3. If you see the other alerts please know we are working to resolve this. We will post in [rocketchat channel](https://chat.developer.gov.bc.ca/channel/sso) and update the history and incident section
-4. you can always reach a human via our [rocketchat channel](https://chat.developer.gov.bc.ca/channel/sso) or by emailing us at bcgov.sso@gov.bc.ca
+2. We will provide live updates as we learn more in our [Our Microsoft teams Keycloak How-to Channel](https://teams.microsoft.com/l/channel/19%3A35d0b3389e39479590ba45a19a67a3ba%40thread.tacv2/SSOKeycloak-howto?groupId=a80418da-c27b-406e-89ab-7695b61924d8&tenantId=6fdb5200-3d0d-4a8a-b036-d3685e359adc)
+3. If you see the other alerts please know we are working to resolve this. We will post in [Our Microsoft teams Keycloak How-to Channel](https://teams.microsoft.com/l/channel/19%3A35d0b3389e39479590ba45a19a67a3ba%40thread.tacv2/SSOKeycloak-howto?groupId=a80418da-c27b-406e-89ab-7695b61924d8&tenantId=6fdb5200-3d0d-4a8a-b036-d3685e359adc) and update the history and incident section
+4. you can always reach a human via our [Our Microsoft teams Keycloak How-to Channel](https://teams.microsoft.com/l/channel/19%3A35d0b3389e39479590ba45a19a67a3ba%40thread.tacv2/SSOKeycloak-howto?groupId=a80418da-c27b-406e-89ab-7695b61924d8&tenantId=6fdb5200-3d0d-4a8a-b036-d3685e359adc) or by emailing us at bcgov.sso@gov.bc.ca
 
 <p style="text-align: center" markdown>
  ![History and Indents Image](img/History_Incidents.png){: style="width:600px;height:372px;"}
@@ -67,7 +67,7 @@ This is SLA is is based on the highest SLA for the services we rely on.
 #### Service Level Defined
 As of writing (April 2023) we define our service levels as:
 
-•	Our service is available 24/7, except during planned outages within the Kamloops and Calgary data centres. Planned outages are communicated through [RocketChat](https://chat.developer.gov.bc.ca/channel/sso)
+•	Our service is available 24/7, except during planned outages within the Kamloops and Calgary data centres. Planned outages are communicated through [Our Microsoft teams Keycloak How-to Channel](https://teams.microsoft.com/l/channel/19%3A35d0b3389e39479590ba45a19a67a3ba%40thread.tacv2/SSOKeycloak-howto?groupId=a80418da-c27b-406e-89ab-7695b61924d8&tenantId=6fdb5200-3d0d-4a8a-b036-d3685e359adc)
 
 •	Our regular business hours are weekdays from 9:00 am to 5:00 pm Pacific Time, excluding statutory holidays. Client provisioning questions and requests will be reviewed and handled during normal business hours.  After hours support is provided by the Pathfinder SSO team, and is only available for service outages and other incidents that impact the service
 
@@ -90,18 +90,18 @@ The Pathfinder SSO Team responds to 4 levels of incidents. The team responds to 
 
 As a very responsive team, you will see our metrics over the years and that we respond  very quickly [2024 and 2025 Recap of Alerts/Incidents](Alerts-and-Us.md#metrics)
 
-It should be noted that our current version of Redhat Build of Keycloak does not enable us to offer zero downtime aka [blue green deployments](https://docs.aws.amazon.com/whitepapers/latest/introduction-devops-aws/blue-green-deployments.html). As a result, when we need to upgrade our Redhat Build of Keycloak version or need to apply a patch, we advise our clients in advance via [RocketChat](https://chat.developer.gov.bc.ca/channel/sso) with a note that active sessions may be lost ie: end users may have to login again.
+It should be noted that our current version of Redhat Build of Keycloak does not enable us to offer zero downtime aka [blue green deployments](https://docs.aws.amazon.com/whitepapers/latest/introduction-devops-aws/blue-green-deployments.html). As a result, when we need to upgrade our Redhat Build of Keycloak version or need to apply a patch, we advise our clients in advance via [Our Microsoft teams Keycloak How-to Channel](https://teams.microsoft.com/l/channel/19%3A35d0b3389e39479590ba45a19a67a3ba%40thread.tacv2/SSOKeycloak-howto?groupId=a80418da-c27b-406e-89ab-7695b61924d8&tenantId=6fdb5200-3d0d-4a8a-b036-d3685e359adc) with a note that active sessions may be lost ie: end users may have to login again.
 
 
 **Change Communications**
 
 When a change occurs on our service, we will provide notification in advance in these ways:
 
-**Minor changes** are announced 24 hours in advance in the [Rocket.Chat #sso channel.](https://chat.developer.gov.bc.ca/channel/sso) An example of a minor change is tied to small bug fixes or other low-impact changes.
+**Minor changes** are announced 24 hours in advance in the [Our Microsoft teams Keycloak How-to Channel](https://teams.microsoft.com/l/channel/19%3A35d0b3389e39479590ba45a19a67a3ba%40thread.tacv2/SSOKeycloak-howto?groupId=a80418da-c27b-406e-89ab-7695b61924d8&tenantId=6fdb5200-3d0d-4a8a-b036-d3685e359adc). An example of a minor change is tied to small bug fixes or other low-impact changes.
 
-**Emergency changes** are announced as soon as possible in advance in the [Rocket.Chat #sso channel.](https://chat.developer.gov.bc.ca/channel/sso). An emergency change is performed to recover a failed service, prevent a failure or address a security vulnerability.
+**Emergency changes** are announced as soon as possible in advance in the [Our Microsoft teams Keycloak How-to Channel](https://teams.microsoft.com/l/channel/19%3A35d0b3389e39479590ba45a19a67a3ba%40thread.tacv2/SSOKeycloak-howto?groupId=a80418da-c27b-406e-89ab-7695b61924d8&tenantId=6fdb5200-3d0d-4a8a-b036-d3685e359adc). An emergency change is performed to recover a failed service, prevent a failure or address a security vulnerability.
 
-**Medium/Major changes** are announced five (5) business days in advance in the [Rocket.Chat #sso channel.](https://chat.developer.gov.bc.ca/channel/sso)  channel. An example of a medium change is an upgrade to the keycloak version number, with limited impacts.
+**Medium/Major changes** are announced five (5) business days in advance in the [Our Microsoft teams Keycloak How-to Channel](https://teams.microsoft.com/l/channel/19%3A35d0b3389e39479590ba45a19a67a3ba%40thread.tacv2/SSOKeycloak-howto?groupId=a80418da-c27b-406e-89ab-7695b61924d8&tenantId=6fdb5200-3d0d-4a8a-b036-d3685e359adc). An example of a medium change is an upgrade to the keycloak version number, with limited impacts.
 
 
 ##### Our Service Uptime
