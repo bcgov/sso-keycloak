@@ -21,5 +21,5 @@ Please visit [BCGov Cloud Services](https://digital.gov.bc.ca/technology/cloud/)
 Once you have your client details, you can configure your application to use the service for your application login. For helpful advice on integration see [Getting Started](https://bcgov.github.io/sso-docs/category/getting-started) or **if you are eager**, check out our [keycloak example apps](https://github.com/bcgov/keycloak-example-apps)
 
 #### *Have any questions? We would love to hear from you.* [![Chat Bubble](./img/chat-bubble.png)][2]   <a href="mailto:bcgov.sso@gov.bc.ca">![Email](./img/email.png)</a>
-[2]: https://chat.developer.gov.bc.ca/channel/sso
+[2]: https://teams.microsoft.com/l/channel/19%3A35d0b3389e39479590ba45a19a67a3ba%40thread.tacv2/SSOKeycloak-howto?groupId=a80418da-c27b-406e-89ab-7695b61924d8&tenantId=6fdb5200-3d0d-4a8a-b036-d3685e359adc
 [3]: https://[mail](mailto:bcgov.sso@gov.bc.ca)[email](mailto:bcgov.sso@gov.bc.ca)

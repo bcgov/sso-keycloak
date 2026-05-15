@@ -11,7 +11,7 @@ Keycloak is organized by _realms_ which manages discrete sets of users that are 
 
 [Clients of our Standard Service via the CSS App](https://sso-requests.apps.gold.devops.gov.bc.ca/) are configured to be part of a Standard Realm where certain realm parameters can be configured by clients and users can only authenticate to the realm in which they belong.
 
-TLDR - Try our Standard Service and if it doesn't meet your needs, pop us a message on rocketchat.
+TLDR - Try our Standard Service and if it doesn't meet your needs, pop us a message on Our Microsoft teams Keycloak How-to Channel.
 
 # Learn More
 
