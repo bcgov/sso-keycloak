@@ -38,7 +38,7 @@ container(async (adminClient?: KeycloakAdminClient) => {
 
     const composites = await adminClient.roles.getCompositeRoles({
       realm: realmName,
-      id: realm.defaultRole.id || '',
+      id: realm.defaultRole.id!,
     });
 
     const hasManageAccountInDefault = composites.find((role) => role.name === 'manage-account');
@@ -46,12 +46,12 @@ container(async (adminClient?: KeycloakAdminClient) => {
     if (hasManageAccountInDefault) {
       await adminClient.roles.delCompositeRoles(
         {
-          id: realm.defaultRole.id || '',
+          id: realm.defaultRole.id!,
           realm: realmName,
         },
         [
           {
-            id: hasManageAccountInDefault.id || '',
+            id: hasManageAccountInDefault.id!,
           },
         ],
       );

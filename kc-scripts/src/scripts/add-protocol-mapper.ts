@@ -48,7 +48,7 @@ container(async (adminClient?: KeycloakAdminClient) => {
           if (!preferredUsernameMapper) {
             await adminClient.clients.addProtocolMapper(
               {
-                id: client?.id || '',
+                id: client?.id!,
                 realm,
               },
               {
