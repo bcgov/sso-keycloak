@@ -4,7 +4,7 @@ import {
   BCEID_SERVICE_ID_DEV,
   BCEID_SERVICE_ID_TEST,
   BCEID_SERVICE_ID_PROD,
-} from 'config';
+} from '../config';
 
 export function getWebServiceInfo({ env = 'dev' }) {
   const requestHeaders = {

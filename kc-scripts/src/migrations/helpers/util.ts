@@ -1,4 +1,4 @@
-import { promises } from 'fs';
+import { promises } from 'node:fs';
 
 export const readTextFile = async (filePath: string) => {
   try {

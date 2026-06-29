@@ -1,17 +1,17 @@
-import { promisify } from 'util';
+import { promisify } from 'node:util';
 import _ from 'lodash';
 import { parseString } from 'xml2js';
-import puppeteer, { Browser } from 'puppeteer';
-import { getUserEnvFromLoginUrl } from 'helpers/realm';
-import { credentials } from 'config';
+import puppeteer from 'puppeteer';
+import { getUserEnvFromLoginUrl } from '../helpers/realm';
+import { credentials } from '../config';
 
 const parseStringSync = promisify(parseString);
 
 const parseFormData = (data: string) => {
   const vars = data.split('&');
   const map = Object.create(null);
-  for (let i = 0; i < vars.length; i++) {
-    let pair = vars[i].split('=');
+  for (const element of vars) {
+    let pair = element.split('=');
     if (pair.length === 2) {
       pair = pair.map(decodeURIComponent);
       map[pair[0]] = pair[1];
@@ -22,7 +22,7 @@ const parseFormData = (data: string) => {
 };
 
 const decodeBase64 = (data: string) => {
-  let buff = new Buffer(data, 'base64');
+  let buff = Buffer.from(data, 'base64');
   return buff.toString('ascii');
 };
 

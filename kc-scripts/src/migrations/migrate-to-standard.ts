@@ -1,12 +1,12 @@
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 import _ from 'lodash';
 import yargs from 'yargs/yargs';
-import { createContainer } from 'container';
+import { createContainer } from '../container';
 import KeycloakAdminClient from '@keycloak/keycloak-admin-client';
 import { migrateBceidUsers } from './helpers/migrate-bceid-users';
 import { readTextFile } from './helpers/util';
-import { assignUserToRealmRole, matchTargetUsers } from 'helpers/groups-roles-users';
+import { assignUserToRealmRole, matchTargetUsers } from '../helpers/groups-roles-users';
 import { migrateIdirUsers } from './helpers/migrate-idir-users';
 
 const basePath = path.join(__dirname, 'exports');

@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import prompts from 'prompts';
-import { Env, getAdminClient } from 'core';
+import { Env, getAdminClient } from './core';
 import KeycloakAdminClient from '@keycloak/keycloak-admin-client';
 
 export const handleError = (error: any) => {

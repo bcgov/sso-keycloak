@@ -1,5 +1,5 @@
 import KeycloakAdminClient from '@keycloak/keycloak-admin-client';
-import { createContainer } from 'container';
+import { createContainer } from '../container';
 import yargs from 'yargs/yargs';
 
 const argv = yargs(process.argv.slice(2))

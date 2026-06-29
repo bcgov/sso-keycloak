@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
     "target": "es2016",
-    "module": "commonjs",
-    "moduleResolution": "node",
+    "module": "node20",
+    "moduleResolution": "node16",
     "lib": ["es6"],
     "preserveConstEnums": true,
     "resolveJsonModule": true,
@@ -13,7 +13,6 @@
     "skipLibCheck": true,
     "allowJs": true,
     "rootDir": "src",
-    "outDir": "build",
-    "baseUrl": "src"
+    "outDir": "build"
   }
 }
