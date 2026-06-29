@@ -1,9 +1,9 @@
 import _ from 'lodash';
 import yargs from 'yargs/yargs';
 import KeycloakAdminClient from '@keycloak/keycloak-admin-client';
-import { createContainer } from 'container';
-import fs from 'fs';
-import path from 'path';
+import { createContainer } from '../../container';
+import fs from 'node:fs';
+import path from 'node:path';
 
 const argv = yargs(process.argv.slice(2))
   .options({

@@ -1,25 +1,34 @@
-import KcAdminClient from '@keycloak/keycloak-admin-client';
-import dotenv from 'dotenv';
-dotenv.config();
+import KeycloakAdminClient from '@keycloak/keycloak-admin-client';
+import { createContainer } from '../container';
+import yargs from 'yargs/yargs';
 
-const { KEYCLOAK_USERNAME, KEYCLOAK_PASSWORD, BASE_KC_URL } = process.env;
+const argv = yargs(process.argv.slice(2))
+  .options({
+    env: { type: 'string', default: '' },
+    realm: { type: 'string', default: 'standard' },
+    auto: { type: 'boolean', default: false },
+  })
+  .parseSync();
 
-async function main() {
+const { env, realm, auto } = argv;
+
+if (!env || !realm) {
+  console.info(`
+Adds the preferred_username protocol mapper to all clients in the specified realm.
+
+Usages:
+  yarn script scripts/add-protocol-mapper --env <env> --realm <realm> [--auto]
+`);
+
+  process.exit(1);
+}
+
+const container = createContainer({ env, auto, allowed: ['alpha', 'beta', 'gamma'] });
+container(async (adminClient?: KeycloakAdminClient) => {
+  if (!adminClient) return;
   try {
-    const kcAdminClient = new KcAdminClient({
-      baseUrl: BASE_KC_URL,
-      realmName: 'master',
-    });
-
-    await kcAdminClient.auth({
-      username: KEYCLOAK_USERNAME,
-      password: KEYCLOAK_PASSWORD,
-      grantType: 'password',
-      clientId: 'admin-cli',
-    });
-
-    const clients = await kcAdminClient.clients.find({
-      realm: 'standard',
+    const clients = await adminClient.clients.find({
+      realm,
     });
 
     if (clients.length > 0) {
@@ -37,10 +46,10 @@ async function main() {
           );
 
           if (!preferredUsernameMapper) {
-            await kcAdminClient.clients.addProtocolMapper(
+            await adminClient.clients.addProtocolMapper(
               {
-                id: client.id,
-                realm: 'standard',
+                id: client?.id!,
+                realm,
               },
               {
                 name: 'preferred_username',
@@ -63,6 +72,4 @@ async function main() {
   } catch (err) {
     console.error(err);
   }
-}
-
-main();
+});

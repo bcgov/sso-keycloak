@@ -1,8 +1,6 @@
-import _ from 'lodash';
 import axios from 'axios';
-import prompts from 'prompts';
 import KcAdminClient from '@keycloak/keycloak-admin-client';
-import { Octokit, App } from 'octokit';
+import { Octokit } from 'octokit';
 import {
   DEV_KEYCLOAK_URL,
   DEV_KEYCLOAK_CLIENT_ID,
@@ -35,7 +33,7 @@ import {
   GAMMA_KEYCLOAK_USERNAME,
   GAMMA_KEYCLOAK_PASSWORD,
   GITHUB_PAT,
-} from 'config';
+} from './config';
 
 const removeTrailingSlash = (url: string) => (url.endsWith('/') ? url.slice(0, -1) : url);
 

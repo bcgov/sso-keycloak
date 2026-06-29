@@ -1,6 +1,6 @@
 import yargs from 'yargs/yargs';
-import { createContainer } from 'container';
-import { fetchIdirUser } from 'helpers/webservice-idir';
+import { createContainer } from '../container';
+import { fetchIdirUser } from '../helpers/webservice-idir';
 
 const argv = yargs(process.argv.slice(2))
   .options({

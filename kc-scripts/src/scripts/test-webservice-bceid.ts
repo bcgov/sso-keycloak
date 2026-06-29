@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import yargs from 'yargs/yargs';
-import { createContainer } from 'container';
-import { fetchBceidUser } from 'helpers/webservice-bceid';
+import { createContainer } from '../container';
+import { fetchBceidUser } from '../helpers/webservice-bceid';
 
 const argv = yargs(process.argv.slice(2))
   .options({

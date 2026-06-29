@@ -13,7 +13,6 @@
     "skipLibCheck": true,
     "allowJs": true,
     "rootDir": "src",
-    "outDir": "build",
-    "baseUrl": "src"
+    "outDir": "build"
   }
 }

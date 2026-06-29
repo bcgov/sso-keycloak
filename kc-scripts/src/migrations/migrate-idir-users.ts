@@ -1,11 +1,11 @@
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 import _ from 'lodash';
 import * as csv from '@fast-csv/format';
 import yargs from 'yargs/yargs';
-import { createContainer } from 'container';
+import { createContainer } from '../container';
 import KeycloakAdminClient from '@keycloak/keycloak-admin-client';
-import { fetchIdirUser } from 'helpers/webservice-idir';
+import { fetchIdirUser } from '../helpers/webservice-idir';
 import UserRepresentation from '@keycloak/keycloak-admin-client/lib/defs/userRepresentation';
 
 const basePath = path.join(__dirname, 'exports');

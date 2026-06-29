@@ -6,11 +6,11 @@ export async function getIdpToUpstreamRealmMap(adminClient: KeycloakAdminClient,
 
   const result: { [key: string]: string } = {};
 
-  for (let x = 0; x < idps.length; x++) {
-    const authUrl = idps[x]?.config?.authorizationUrl || '';
+  for (const element of idps) {
+    const authUrl = element?.config?.authorizationUrl || '';
     const re = /https:\/\/.+\/auth\/realms\/(.+)\/protocol\/openid-connect\/auth.*/i;
     const found = authUrl.match(re);
-    const alias = idps[x]?.alias || '';
+    const alias = element?.alias || '';
 
     if (found && found.length > 0 && alias) {
       result[alias] = found[1];

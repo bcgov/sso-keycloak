@@ -3,7 +3,7 @@ import KeycloakAdminClient from '@keycloak/keycloak-admin-client';
 import ClientRepresentation from '@keycloak/keycloak-admin-client/lib/defs/clientRepresentation';
 import RoleRepresentation, { RoleMappingPayload } from '@keycloak/keycloak-admin-client/lib/defs/roleRepresentation';
 import UserRepresentation from '@keycloak/keycloak-admin-client/lib/defs/userRepresentation';
-import { getIdpToUpstreamRealmMap } from 'helpers/realm';
+import { getIdpToUpstreamRealmMap } from '../helpers/realm';
 
 interface RoleMapping {
   type: string;
