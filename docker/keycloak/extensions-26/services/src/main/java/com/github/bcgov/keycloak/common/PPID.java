@@ -13,7 +13,6 @@ import java.util.concurrent.ConcurrentMap;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.HttpStatus;
-import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;

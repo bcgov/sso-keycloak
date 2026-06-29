@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
     "target": "es2016",
-    "module": "node20",
-    "moduleResolution": "node16",
+    "module": "commonjs",
+    "moduleResolution": "node",
     "lib": ["es6"],
     "preserveConstEnums": true,
     "resolveJsonModule": true,

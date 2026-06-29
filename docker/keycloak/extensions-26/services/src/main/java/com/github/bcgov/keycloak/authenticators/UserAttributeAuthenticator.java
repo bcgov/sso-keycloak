@@ -26,24 +26,34 @@ public class UserAttributeAuthenticator implements Authenticator {
 
   @Override
   public void authenticate(AuthenticationFlowContext context) {
+
     AuthenticationSessionModel session = context.getAuthenticationSession();
     AuthenticatorConfigModel authConfig = context.getAuthenticatorConfig();
+
     if (authConfig == null) {
-      context.failure(AuthenticationFlowError.ACCESS_DENIED, redirectResponse(session, null));
+      denyAccess(context, session, null);
       return;
     }
 
     Map<String, String> config = authConfig.getConfig();
-    if (config == null) {
-      context.failure(AuthenticationFlowError.ACCESS_DENIED, redirectResponse(session, null));
-      return;
-    }
-
     String attributeKey = config.get(UserAttributeAuthenticatorFactory.ATTRIBUTE_KEY);
     String attributeValue = config.get(UserAttributeAuthenticatorFactory.ATTRIBUTE_VALUE);
     String errorUrl = config.get(UserAttributeAuthenticatorFactory.ERROR_URL);
 
+    if (authConfig == null) {
+      denyAccess(context, session, errorUrl);
+      return;
+    }
+
+    Map<String, String> config = authConfig.getConfig();
+
+    if (config == null) {
+      denyAccess(context, session, errorUrl);
+      return;
+    }
+
     UserModel user = session.getAuthenticatedUser();
+
     if (user == null || !isValidString(attributeKey) || !isValidString(attributeValue)) {
       denyAccess(context, session, errorUrl);
       return;
