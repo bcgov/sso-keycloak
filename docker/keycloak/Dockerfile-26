@@ -4,10 +4,10 @@ COPY ./extensions-26 /tmp/
 WORKDIR /tmp/
 RUN mvn -B clean package --file pom.xml
 
-FROM registry.redhat.io/rhbk/keycloak-rhel9:26.4-11 AS builder
+FROM registry.redhat.io/rhbk/keycloak-rhel9:26.6-8 AS builder
 
 # Update this when base image is updated
-ENV KEYCLOAK_VERSION=26.4.11
+ENV KEYCLOAK_VERSION=26.6-8
 
 # Enable health and metrics support
 ENV KC_HEALTH_ENABLED=true

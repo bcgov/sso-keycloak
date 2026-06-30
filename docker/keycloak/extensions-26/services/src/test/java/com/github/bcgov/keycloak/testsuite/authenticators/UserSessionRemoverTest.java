@@ -1,30 +1,29 @@
 package com.github.bcgov.keycloak.testsuite.authenticators;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
-import org.mockito.Mockito;
-import org.mockito.MockedStatic;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.BeforeEach;
-
-import com.github.bcgov.keycloak.authenticators.UserSessionRemover;
-import org.keycloak.authentication.AuthenticationFlowContext;
-import org.keycloak.models.KeycloakSession;
-import org.keycloak.models.AuthenticatedClientSessionModel;
-import org.keycloak.models.RealmModel;
-import org.keycloak.services.managers.AuthenticationManager;
-import org.keycloak.models.ClientModel;
-import org.keycloak.sessions.AuthenticationSessionModel;
-import org.keycloak.models.UserSessionProvider;
-import org.keycloak.models.AuthenticatedClientSessionModel;
-import org.keycloak.models.UserSessionModel;
-import org.keycloak.models.KeycloakContext;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.keycloak.authentication.AuthenticationFlowContext;
+import org.keycloak.models.AuthenticatedClientSessionModel;
+import org.keycloak.models.ClientModel;
+import org.keycloak.models.KeycloakContext;
+import org.keycloak.models.KeycloakSession;
+import org.keycloak.models.RealmModel;
+import org.keycloak.models.UserSessionModel;
+import org.keycloak.models.UserSessionProvider;
+import org.keycloak.services.managers.AuthenticationManager;
+import org.keycloak.sessions.AuthenticationSessionModel;
+import static org.mockito.ArgumentMatchers.any;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import com.github.bcgov.keycloak.authenticators.UserSessionRemover;
 
 public class UserSessionRemoverTest {
   private static final UserSessionRemover userSessionRemover = new UserSessionRemover();
@@ -63,7 +62,7 @@ public class UserSessionRemoverTest {
     when(context.getSession()).thenReturn(keycloakSession);
     when(keycloakSession.getContext()).thenReturn(keycloakContext);
     when(keycloakContext.getClient()).thenReturn(client);
-    when(authResult.getSession()).thenReturn(userSessionModel);
+    when(authResult.session()).thenReturn(userSessionModel);
   }
 
   @Test
