@@ -43,12 +43,12 @@ public class CookieStopAuthenticator implements Authenticator {
     UserSessionModel parentAuthUserSession = context.getSession().sessions().getUserSession(context.getRealm(),
         context.getAuthenticationSession().getParentSession().getId());
     String clientUUID = currentAuthSession.getClient().getId();
-    AuthenticatedClientSessionModel clientSessionModel = authResult.getSession()
+    AuthenticatedClientSessionModel clientSessionModel = authResult.session()
         .getAuthenticatedClientSessionByClient(clientUUID);
 
     UserSessionProvider userSessionProvider = context.getSession().sessions();
 
-    String existingSessionIdp = authResult.getSession().getNotes().get("identity_provider");
+    String existingSessionIdp = authResult.session().getNotes().get("identity_provider");
 
     Map<String, ClientScopeModel> clientScopes = context.getAuthenticationSession().getClient().getClientScopes(true);
 
@@ -59,11 +59,11 @@ public class CookieStopAuthenticator implements Authenticator {
     // authenticated IDP
     if (parentAuthUserSession != null && (clientSessionModel != null
         || (clientSessionModel == null && clientScopes.containsKey(existingSessionIdp)))) {
-      context.setUser(authResult.getUser());
+      context.setUser(authResult.user());
     }
 
     // 2. if re-authentication is required, proceed to login process
-    if (protocol.requireReauthentication(authResult.getSession(), currentAuthSession)) {
+    if (protocol.requireReauthentication(authResult.session(), currentAuthSession)) {
       currentAuthSession.setAuthNote(AuthenticationManager.FORCED_REAUTHENTICATION, "true");
       context.setForwardedInfoMessage(Messages.REAUTHENTICATE);
       context.attempted();
@@ -88,7 +88,7 @@ public class CookieStopAuthenticator implements Authenticator {
             && (clientScopes.containsKey(authIdp) || clientScopes.containsKey(authIdp + "-saml"))
             && !authIdp.equalsIgnoreCase(existingSessionIdp)) {
 
-          userSessionProvider.removeUserSession(context.getRealm(), authResult.getSession());
+          userSessionProvider.removeUserSession(context.getRealm(), authResult.session());
           context.attempted();
           return;
         }
@@ -101,10 +101,10 @@ public class CookieStopAuthenticator implements Authenticator {
         || (clientSessionModel == null && clientScopes.containsKey(existingSessionIdp)))) {
       context.getAuthenticationSession().setAuthNote(AuthenticationManager.SSO_AUTH,
           "true");
-      context.attachUserSession(authResult.getSession());
+      context.attachUserSession(authResult.session());
       context.success();
     } else {
-      userSessionProvider.removeUserSession(context.getRealm(), authResult.getSession());
+      userSessionProvider.removeUserSession(context.getRealm(), authResult.session());
       context.attempted();
       return;
     }
