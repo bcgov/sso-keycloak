@@ -15,10 +15,10 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
       - name: Build TechDocs
-        uses: bcgov/devhub-techdocs-publish@stable
+        uses: bcgov/devhub-techdocs-publish@80990c38c4d919f017f49721d857f99c052e6abb # v0.2.1
         id: build_and_publish
         with:
           publish: 'true'
