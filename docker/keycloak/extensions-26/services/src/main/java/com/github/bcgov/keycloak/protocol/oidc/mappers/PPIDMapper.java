@@ -50,15 +50,6 @@ public class PPIDMapper extends AbstractOIDCProtocolMapper
     property.setDefaultValue("sub");
     configProperties.add(property);
 
-    property = new ProviderConfigProperty();
-    property.setName(PRIVACY_ZONE);
-    property.setLabel("Privacy Zone");
-    property.setHelpText(
-        "Client privacy zone required to fetch ppid identifier of the authenticated subject.");
-    property.setType(ProviderConfigProperty.STRING_TYPE);
-    property.setDefaultValue("");
-    configProperties.add(property);
-
     OIDCAttributeMapperHelper.addIncludeInTokensConfig(configProperties, IDPUserinfoMapper.class);
   }
 
@@ -113,7 +104,7 @@ public class PPIDMapper extends AbstractOIDCProtocolMapper
           return;
         }
 
-        if (!StringUtil.isNullOrEmpty(mappingModel.getConfig().get(PRIVACY_ZONE))) {
+        if (!StringUtil.isNullOrEmpty(clientSessionCtx.getScopeString())) {
 
           if (idp.equalsIgnoreCase("otp")) {
             authIdp = "otp";
@@ -142,7 +133,8 @@ public class PPIDMapper extends AbstractOIDCProtocolMapper
             logger.error("Failed to fetch ppid for the user.");
           }
         } else
-          logger.error("Privacy zone is required to fetch ppid.");
+          logger.error(
+              "Scope string is empty. Ensure the PPID mapper is configured within a privacy zone scope.");
       }
     } catch (Exception e) {
       logger.errorf("Failed to add claim %s to the token", tokenClaim);
