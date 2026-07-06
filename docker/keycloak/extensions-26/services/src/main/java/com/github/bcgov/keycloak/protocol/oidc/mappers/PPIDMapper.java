@@ -104,7 +104,10 @@ public class PPIDMapper extends AbstractOIDCProtocolMapper
           return;
         }
 
-        if (!StringUtil.isNullOrEmpty(clientSessionCtx.getScopeString())) {
+        // The scope string represent the privacy zone URI and is required to fetch the
+        // PPID from the PPID service account.
+        if (!StringUtil.isNullOrEmpty(clientSessionCtx.getScopeString())
+            && clientSessionCtx.getScopeString().startsWith("urn:ca:bc")) {
 
           if (idp.equalsIgnoreCase("otp")) {
             authIdp = "otp";
@@ -121,7 +124,7 @@ public class PPIDMapper extends AbstractOIDCProtocolMapper
               identityProviderModel.getConfig().get("clientId"),
               identityProviderModel.getConfig().get("clientSecret"),
               sub,
-              mappingModel.getConfig().get(PRIVACY_ZONE));
+              clientSessionCtx.getScopeString());
 
           if (!StringUtil.isNullOrEmpty(ppid)) {
             otherClaims.put(tokenClaim, ppid);
@@ -134,7 +137,7 @@ public class PPIDMapper extends AbstractOIDCProtocolMapper
           }
         } else
           logger.error(
-              "Scope string is empty. Ensure the PPID mapper is configured within a privacy zone scope.");
+              "Invalid scope string. Ensure the PPID mapper is configured within a privacy zone scope.");
       }
     } catch (Exception e) {
       logger.errorf("Failed to add claim %s to the token", tokenClaim);
