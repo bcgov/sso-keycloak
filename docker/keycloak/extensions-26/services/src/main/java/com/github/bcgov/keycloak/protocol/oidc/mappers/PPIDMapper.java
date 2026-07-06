@@ -96,12 +96,10 @@ public class PPIDMapper extends AbstractOIDCProtocolMapper
     String tokenClaim = mappingModel.getConfig().get(CLAIM_NAME);
     try {
       String idp = userSession.getNotes().get("identity_provider");
-      IdentityProviderModel authIdpConfig = keycloakSession.identityProviders().getByAlias(idp);
-      if (idp.equalsIgnoreCase("otp") || authIdpConfig.getDisplayName().equalsIgnoreCase("bc services card")) {
+
+      if (idp.equalsIgnoreCase("otp")) {
 
         String authIdp = null;
-
-        String sub = null;
 
         Map<String, Object> otherClaims = token.getOtherClaims();
 
@@ -115,21 +113,10 @@ public class PPIDMapper extends AbstractOIDCProtocolMapper
 
         if (!StringUtil.isNullOrEmpty(mappingModel.getConfig().get(PRIVACY_ZONE))) {
 
-          if (idp.equalsIgnoreCase("otp")) {
-            authIdp = "otp";
-            sub = userSession.getUser().getEmail();
-          } else if (authIdpConfig.getDisplayName().equalsIgnoreCase("bc services card")) {
-            authIdp = "bcsc";
-            sub = userSession.getUser().getUsername().split("@")[0].toUpperCase();
-          } else {
-            logger.error("Unsupported identity provider: " + idp);
-            return;
-          }
-
           String ppid = PPID.getPpid(authIdp,
               identityProviderModel.getConfig().get("clientId"),
               identityProviderModel.getConfig().get("clientSecret"),
-              sub,
+              userSession.getUser().getEmail(),
               mappingModel.getConfig().get(PRIVACY_ZONE));
 
           if (!StringUtil.isNullOrEmpty(ppid)) {
