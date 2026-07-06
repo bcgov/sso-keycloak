@@ -99,8 +99,6 @@ public class PPIDMapper extends AbstractOIDCProtocolMapper
 
       if (idp.equalsIgnoreCase("otp")) {
 
-        String authIdp = null;
-
         Map<String, Object> otherClaims = token.getOtherClaims();
 
         IdentityProviderModel identityProviderModel = keycloakSession.identityProviders()
@@ -113,7 +111,7 @@ public class PPIDMapper extends AbstractOIDCProtocolMapper
 
         if (!StringUtil.isNullOrEmpty(mappingModel.getConfig().get(PRIVACY_ZONE))) {
 
-          String ppid = PPID.getPpid(authIdp,
+          String ppid = PPID.getPpid(idp,
               identityProviderModel.getConfig().get("clientId"),
               identityProviderModel.getConfig().get("clientSecret"),
               userSession.getUser().getEmail(),

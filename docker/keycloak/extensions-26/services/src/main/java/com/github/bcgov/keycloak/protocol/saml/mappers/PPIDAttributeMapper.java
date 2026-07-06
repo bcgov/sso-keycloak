@@ -92,8 +92,6 @@ public class PPIDAttributeMapper extends AbstractSAMLProtocolMapper implements S
 
       if (idp.equalsIgnoreCase("otp")) {
 
-        String authIdp = null;
-
         IdentityProviderModel identityProviderModel = keycloakSession.identityProviders()
             .getByAlias(PPID_SERVICE_ACCOUNT_IDP_ALIAS);
 
@@ -104,7 +102,7 @@ public class PPIDAttributeMapper extends AbstractSAMLProtocolMapper implements S
 
         if (!StringUtil.isNullOrEmpty(mappingModel.getConfig().get(PRIVACY_ZONE))) {
 
-          String ppid = PPID.getPpid(authIdp,
+          String ppid = PPID.getPpid(idp,
               identityProviderModel.getConfig().get("clientId"),
               identityProviderModel.getConfig().get("clientSecret"),
               userSession.getUser().getEmail(),
