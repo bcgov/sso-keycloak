@@ -1,6 +1,5 @@
 package com.github.bcgov.keycloak.protocol.saml.mappers;
 
-import org.keycloak.models.ClientScopeModel;
 import org.keycloak.models.ClientSessionContext;
 import org.keycloak.models.IdentityProviderModel;
 import org.keycloak.models.KeycloakSession;
@@ -16,7 +15,6 @@ import com.github.bcgov.keycloak.common.PPID;
 
 import org.keycloak.provider.ProviderConfigProperty;
 import org.keycloak.models.ProtocolMapperModel;
-import org.keycloak.models.RealmModel;
 import org.jboss.logging.Logger;
 import org.keycloak.dom.saml.v2.assertion.NameIDType;
 import org.keycloak.dom.saml.v2.assertion.SubjectConfirmationType;
@@ -53,6 +51,14 @@ public class PPIDAttributeMapperNameId extends AbstractSAMLProtocolMapper
     property.setDefaultValue(JBossSAMLURIConstants.NAMEID_FORMAT_PERSISTENT.get());
     property.setHelpText("The NameID format to use (e.g., persistent, email, transient).");
     configProperties.add(property);
+
+    property = new ProviderConfigProperty();
+    property.setName(PRIVACY_ZONE);
+    property.setLabel("Privacy Zone");
+    property.setType(ProviderConfigProperty.STRING_TYPE);
+    property.setDefaultValue("");
+    property.setHelpText("Client privacy zone required to fetch ppid identifier of the authenticated subject.");
+    configProperties.add(property);
   }
 
   @Override
@@ -60,12 +66,8 @@ public class PPIDAttributeMapperNameId extends AbstractSAMLProtocolMapper
       ProtocolMapperModel mappingModel, KeycloakSession keycloakSession,
       UserSessionModel userSession, ClientSessionContext clientSessionCtx) {
     String idp = userSession.getNotes().get("identity_provider");
-    IdentityProviderModel authIdpConfig = keycloakSession.identityProviders().getByAlias(idp);
-    if (idp.equalsIgnoreCase("otp") || authIdpConfig.getDisplayName().equalsIgnoreCase("bc services card")) {
 
-      String authIdp = null;
-
-      String sub = null;
+    if (idp.equalsIgnoreCase("otp")) {
 
       String nameIdFormat = mappingModel.getConfig().get(NAMEID_FORMAT);
 
@@ -77,33 +79,13 @@ public class PPIDAttributeMapperNameId extends AbstractSAMLProtocolMapper
         return response;
       }
 
-      RealmModel realm = keycloakSession.getContext().getRealm();
+      if (!StringUtil.isNullOrEmpty(mappingModel.getConfig().get(PRIVACY_ZONE))) {
 
-      // Fetch saml privacy zone scopes
-      ClientScopeModel scope = realm.getClientScopesStream()
-          .filter(cs -> cs.getName().startsWith("urn:ca:bc"))
-          .filter(cs -> cs.getName().endsWith("-saml"))
-          .filter(cs -> cs.getProtocolMappersStream().anyMatch(pm -> pm.getId().equals(mappingModel.getId())))
-          .findFirst().orElse(null);
-
-      if (scope != null && !StringUtil.isNullOrEmpty(scope.getName())) {
-
-        if (idp.equalsIgnoreCase("otp")) {
-          authIdp = "otp";
-          sub = userSession.getUser().getEmail();
-        } else if (authIdpConfig.getDisplayName().equalsIgnoreCase("bc services card")) {
-          authIdp = "bcsc";
-          sub = userSession.getUser().getUsername().split("@")[0].toUpperCase();
-        } else {
-          logger.error("Unsupported identity provider: " + idp);
-          return response;
-        }
-
-        String ppid = PPID.getPpid(authIdp,
+        String ppid = PPID.getPpid(idp,
             identityProviderModel.getConfig().get("clientId"),
             identityProviderModel.getConfig().get("clientSecret"),
-            sub,
-            scope.getName());
+            userSession.getUser().getEmail(),
+            mappingModel.getConfig().get(PRIVACY_ZONE));
 
         if (!StringUtil.isNullOrEmpty(ppid)) {
           if (StringUtil.isNullOrEmpty(nameIdFormat)) {
