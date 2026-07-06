@@ -2,11 +2,9 @@ package com.github.bcgov.keycloak.protocol.saml.mappers;
 
 import org.keycloak.dom.saml.v2.assertion.AttributeStatementType;
 import org.keycloak.models.AuthenticatedClientSessionModel;
-import org.keycloak.models.ClientScopeModel;
 import org.keycloak.models.IdentityProviderModel;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.ProtocolMapperModel;
-import org.keycloak.models.RealmModel;
 import org.keycloak.models.UserSessionModel;
 import org.keycloak.protocol.saml.mappers.AbstractSAMLProtocolMapper;
 import org.keycloak.protocol.saml.mappers.AttributeStatementHelper;
@@ -49,6 +47,14 @@ public class PPIDAttributeMapper extends AbstractSAMLProtocolMapper implements S
     property.setType(ProviderConfigProperty.STRING_TYPE);
     property.setDefaultValue("sub");
     property.setHelpText("Assertion attribute name containing the ppid identifier of the authenticated subject.");
+    configProperties.add(property);
+
+    property = new ProviderConfigProperty();
+    property.setName(PRIVACY_ZONE);
+    property.setLabel("Privacy Zone");
+    property.setType(ProviderConfigProperty.STRING_TYPE);
+    property.setDefaultValue("");
+    property.setHelpText("Client privacy zone required to fetch ppid identifier of the authenticated subject.");
     configProperties.add(property);
   }
 
@@ -98,16 +104,7 @@ public class PPIDAttributeMapper extends AbstractSAMLProtocolMapper implements S
           return;
         }
 
-        RealmModel realm = keycloakSession.getContext().getRealm();
-
-        // Fetch saml privacy zone scopes
-        ClientScopeModel scope = realm.getClientScopesStream()
-            .filter(cs -> cs.getName().startsWith("urn:ca:bc"))
-            .filter(cs -> cs.getName().endsWith("-saml"))
-            .filter(cs -> cs.getProtocolMappersStream().anyMatch(pm -> pm.getId().equals(mappingModel.getId())))
-            .findFirst().orElse(null);
-
-        if (scope != null && !StringUtil.isNullOrEmpty(scope.getName())) {
+        if (!StringUtil.isNullOrEmpty(mappingModel.getConfig().get(PRIVACY_ZONE))) {
 
           if (idp.equalsIgnoreCase("otp")) {
             authIdp = "otp";
@@ -124,7 +121,7 @@ public class PPIDAttributeMapper extends AbstractSAMLProtocolMapper implements S
               identityProviderModel.getConfig().get("clientId"),
               identityProviderModel.getConfig().get("clientSecret"),
               sub,
-              scope.getName());
+              mappingModel.getConfig().get(PRIVACY_ZONE));
 
           if (!StringUtil.isNullOrEmpty(ppid)) {
             addAttribute(attributeStatement, ppidKey.trim(), ppid);
