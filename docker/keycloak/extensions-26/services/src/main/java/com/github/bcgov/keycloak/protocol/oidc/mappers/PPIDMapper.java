@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import org.jboss.logging.Logger;
+import org.keycloak.models.ClientScopeModel;
 import org.keycloak.models.ClientSessionContext;
 import org.keycloak.models.IdentityProviderModel;
 import org.keycloak.models.KeycloakSession;
@@ -104,10 +106,17 @@ public class PPIDMapper extends AbstractOIDCProtocolMapper
           return;
         }
 
+        Stream<ClientScopeModel> clientScopes = clientSessionCtx.getClientScopesStream();
+
+        String privacyZone = clientScopes
+            .filter(scope -> scope.getName().startsWith("urn:ca:bc"))
+            .map(ClientScopeModel::getName)
+            .findFirst()
+            .orElse(null);
+
         // The scope string represent the privacy zone URI and is required to fetch the
         // PPID from the PPID service account.
-        if (!StringUtil.isNullOrEmpty(clientSessionCtx.getScopeString())
-            && clientSessionCtx.getScopeString().startsWith("urn:ca:bc")) {
+        if (!StringUtil.isNullOrEmpty(privacyZone)) {
 
           if (idp.equalsIgnoreCase("otp")) {
             authIdp = "otp";
@@ -124,7 +133,7 @@ public class PPIDMapper extends AbstractOIDCProtocolMapper
               identityProviderModel.getConfig().get("clientId"),
               identityProviderModel.getConfig().get("clientSecret"),
               sub,
-              clientSessionCtx.getScopeString());
+              privacyZone);
 
           if (!StringUtil.isNullOrEmpty(ppid)) {
             otherClaims.put(tokenClaim, ppid);
