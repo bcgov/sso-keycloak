@@ -79,23 +79,23 @@ public class PPIDAttributeMapperNameId extends AbstractSAMLProtocolMapper
 
       RealmModel realm = keycloakSession.getContext().getRealm();
 
+      logger.info("Mapping model ID: " + mappingModel.getId() + ", Name: " + mappingModel.getName());
+
       realm.getClientScopesStream().forEach(scope -> {
             logger.info("Scope: " + scope.getName());
             scope.getProtocolMappersStream().forEach(pm -> {
                 if (pm.getId().equals(mappingModel.getId())) {
                     logger.info(
-                        "Found id" + pm.getId() + " -> " + pm.getName() +
-                        "Found mapper '" + pm.getName() +
-                        "' in scope '" + scope.getName() +
-                        "' with id=" + pm.getId());
+                        "Found id: " + pm.getId() + " -> " + pm.getName() +
+                        " Found mapper: " + pm.getName() +
+                        " in scope: " + scope.getName() +
+                        " with id: " + pm.getId());
                 }
             });
         });
 
       // Fetch saml privacy zone scopes
       ClientScopeModel scope = realm.getClientScopesStream()
-          .filter(cs -> cs.getName().startsWith("urn:ca:bc"))
-          .filter(cs -> cs.getName().endsWith("-saml"))
           .filter(cs -> cs.getProtocolMappersStream().anyMatch(pm -> pm.getId().equals(mappingModel.getId())))
           .findFirst().orElse(null);
 
