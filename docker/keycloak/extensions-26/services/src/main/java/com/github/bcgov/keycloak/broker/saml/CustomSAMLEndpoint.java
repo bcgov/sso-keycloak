@@ -6,13 +6,13 @@ import java.util.Objects;
 import javax.xml.crypto.dsig.XMLSignature;
 
 import org.jboss.logging.Logger;
-import org.keycloak.broker.provider.IdentityProvider;
+import org.keycloak.broker.provider.UserAuthenticationIdentityProvider;
 import org.keycloak.broker.saml.SAMLEndpoint;
 import org.keycloak.broker.saml.SAMLIdentityProvider;
 import org.keycloak.broker.saml.SAMLIdentityProviderConfig;
-import org.keycloak.dom.saml.v2.protocol.ResponseType;
 import org.keycloak.common.ClientConnection;
 import org.keycloak.common.VerificationException;
+import org.keycloak.dom.saml.v2.protocol.ResponseType;
 import org.keycloak.dom.saml.v2.protocol.StatusResponseType;
 import org.keycloak.events.Details;
 import org.keycloak.events.Errors;
@@ -25,6 +25,7 @@ import org.keycloak.saml.SAMLRequestParser;
 import org.keycloak.saml.common.constants.GeneralConstants;
 import org.keycloak.saml.common.constants.JBossSAMLURIConstants;
 import org.keycloak.saml.processing.core.saml.v2.common.SAMLDocumentHolder;
+import org.keycloak.saml.processing.core.saml.v2.util.AssertionUtil;
 import org.keycloak.saml.processing.web.util.PostBindingUtil;
 import org.keycloak.saml.validators.DestinationValidator;
 import org.keycloak.services.ErrorPage;
@@ -49,7 +50,7 @@ public class CustomSAMLEndpoint extends SAMLEndpoint {
   private final ClientConnection clientConnection;
 
   public CustomSAMLEndpoint(KeycloakSession session, SAMLIdentityProvider provider, SAMLIdentityProviderConfig config,
-      IdentityProvider.AuthenticationCallback callback, DestinationValidator destinationValidator) {
+      UserAuthenticationIdentityProvider.AuthenticationCallback callback, DestinationValidator destinationValidator) {
     super(session, provider, config, callback, destinationValidator);
     this.session = session;
     this.destinationValidator = destinationValidator;
@@ -163,6 +164,11 @@ public class CustomSAMLEndpoint extends SAMLEndpoint {
     protected boolean containsUnencryptedSignature(SAMLDocumentHolder documentHolder) {
       NodeList nl = documentHolder.getSamlDocument().getElementsByTagNameNS(XMLSignature.XMLNS, "Signature");
       return (nl != null && nl.getLength() > 0);
+    }
+
+    @Override
+    protected boolean isMessageFullySigned(SAMLDocumentHolder documentHolder) {
+      return AssertionUtil.isSignedElement(documentHolder.getSamlDocument().getDocumentElement());
     }
 
     @Override

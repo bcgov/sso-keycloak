@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import KeycloakAdminClient from '@keycloak/keycloak-admin-client';
-import { fetchBceidUser } from 'helpers/webservice-bceid';
-import { handleError } from 'container';
+import { fetchBceidUser } from '../../helpers/webservice-bceid';
+import { handleError } from '../../container';
 
 const logPrefix = 'BCEID: ';
 const log = (msg: string) => console.log(`${logPrefix}${msg}`);

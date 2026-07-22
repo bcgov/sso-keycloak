@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import KeycloakAdminClient from '@keycloak/keycloak-admin-client';
-import { fetchIdirUser } from 'helpers/webservice-idir';
-import { handleError } from 'container';
+import { fetchIdirUser } from '../../helpers/webservice-idir';
+import { handleError } from '../../container';
 
 const logPrefix = 'IDIR: ';
 const log = (msg: string) => console.log(`${logPrefix}${msg}`);

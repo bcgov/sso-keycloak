@@ -29,11 +29,11 @@ These checks do not provide a full keycloak login flow check, however they do in
 
 ## Openshift Upgrade.
 
-We know in advance the week Gold work will happen. Will notify community members in Rocketchat on what to expect. If during this upgrade, there is a need to cut over to our Fail Over site, we will send an email communication blast
+We know in advance the week Gold work will happen. Will notify community members in Our Microsoft teams Keycloak How-to Channel on what to expect. If during this upgrade, there is a need to cut over to our Fail Over site, we will send an email communication blast
 
 ## Incident on Gold
 
-Going from our primary to fail over is something we are prepared for. You can expect us to send an email commuincation blast as well as updates in the appropriate rocketchat channels on our progress.
+Going from our primary to fail over is something we are prepared for. You can expect us to send an email commuincation blast as well as updates in Our Microsoft teams Keycloak How-to Channel on our progress.
 
 
 ## Example Messaging

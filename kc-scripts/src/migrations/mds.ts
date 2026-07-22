@@ -1,8 +1,8 @@
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 import _ from 'lodash';
 import yargs from 'yargs/yargs';
-import { createContainer } from 'container';
+import { createContainer } from '../container';
 import KeycloakAdminClient from '@keycloak/keycloak-admin-client';
 import { migrateIdirUsers } from './helpers/migrate-idir-users';
 import { migrateBceidUsers } from './helpers/migrate-bceid-users';
@@ -13,8 +13,7 @@ import {
   createClientRoles,
   createCompositeRoles,
   createTargetUserRoleBindings,
-} from 'helpers/groups-roles-users';
-import UserRepresentation from '@keycloak/keycloak-admin-client/lib/defs/userRepresentation';
+} from '../helpers/groups-roles-users';
 
 const basePath = path.join(__dirname, 'exports');
 

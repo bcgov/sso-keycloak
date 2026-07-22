@@ -1,9 +1,9 @@
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 import yargs from 'yargs/yargs';
-import { handleError } from 'container';
-import { getAdminClient, Env } from 'core';
-import { getRealmNameFromLoginUrl, getClientEnvFromLoginUrl } from 'helpers/realm';
+import { handleError } from '../container';
+import { getAdminClient, Env } from '../core';
+import { getRealmNameFromLoginUrl, getClientEnvFromLoginUrl } from '../helpers/realm';
 import { getSamlAttributes } from './get-saml-attributes';
 
 const argv = yargs(process.argv.slice(2))

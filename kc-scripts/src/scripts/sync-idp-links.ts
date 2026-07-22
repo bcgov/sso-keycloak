@@ -1,7 +1,7 @@
 import yargs from 'yargs/yargs';
 import KeycloakAdminClient from '@keycloak/keycloak-admin-client';
 import UserRepresentation from '@keycloak/keycloak-admin-client/lib/defs/userRepresentation';
-import { createContainer } from 'container';
+import { createContainer } from '../container';
 
 const argv = yargs(process.argv.slice(2))
   .options({

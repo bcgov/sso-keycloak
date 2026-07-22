@@ -34,7 +34,7 @@ public class UserSessionRemover implements Authenticator {
       return;
     }
 
-    userSessionModel = authResult.getSession();
+    userSessionModel = authResult.session();
 
     String authenticatingClientUUID = context.getSession().getContext().getClient().getId();
     UserSessionProvider userSessionProvider = context.getSession().sessions();

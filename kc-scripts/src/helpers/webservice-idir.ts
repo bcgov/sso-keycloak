@@ -1,4 +1,4 @@
-import { promisify } from 'util';
+import { promisify } from 'node:util';
 import _ from 'lodash';
 import soapRequest from 'easy-soap-request';
 import { parseString } from 'xml2js';

@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import org.jboss.logging.Logger;
+import org.keycloak.models.ClientScopeModel;
 import org.keycloak.models.ClientSessionContext;
 import org.keycloak.models.IdentityProviderModel;
 import org.keycloak.models.KeycloakSession;
@@ -50,15 +52,6 @@ public class PPIDMapper extends AbstractOIDCProtocolMapper
     property.setDefaultValue("sub");
     configProperties.add(property);
 
-    property = new ProviderConfigProperty();
-    property.setName(PRIVACY_ZONE);
-    property.setLabel("Privacy Zone");
-    property.setHelpText(
-        "Client privacy zone required to fetch ppid identifier of the authenticated subject.");
-    property.setType(ProviderConfigProperty.STRING_TYPE);
-    property.setDefaultValue("");
-    configProperties.add(property);
-
     OIDCAttributeMapperHelper.addIncludeInTokensConfig(configProperties, IDPUserinfoMapper.class);
   }
 
@@ -96,7 +89,12 @@ public class PPIDMapper extends AbstractOIDCProtocolMapper
     String tokenClaim = mappingModel.getConfig().get(CLAIM_NAME);
     try {
       String idp = userSession.getNotes().get("identity_provider");
-      if (idp.equalsIgnoreCase("otp")) {
+      IdentityProviderModel authIdpConfig = keycloakSession.identityProviders().getByAlias(idp);
+      if (idp.equalsIgnoreCase("otp") || authIdpConfig.getDisplayName().equalsIgnoreCase("bc services card")) {
+
+        String authIdp = null;
+
+        String sub = null;
 
         Map<String, Object> otherClaims = token.getOtherClaims();
 
@@ -108,14 +106,34 @@ public class PPIDMapper extends AbstractOIDCProtocolMapper
           return;
         }
 
-        if (!StringUtil.isNullOrEmpty(mappingModel.getConfig().get(PRIVACY_ZONE))) {
-          String ppid = PPID.getPpid(identityProviderModel.getConfig().get("tokenUrl"),
-              identityProviderModel.getConfig().get("authorizationUrl"),
+        Stream<ClientScopeModel> clientScopes = clientSessionCtx.getClientScopesStream();
+
+        String privacyZone = clientScopes
+            .filter(scope -> scope.getName().startsWith("urn:ca:bc"))
+            .map(ClientScopeModel::getName)
+            .findFirst()
+            .orElse(null);
+
+        // The scope string represent the privacy zone URI and is required to fetch the
+        // PPID from the PPID service account.
+        if (!StringUtil.isNullOrEmpty(privacyZone)) {
+
+          if (idp.equalsIgnoreCase("otp")) {
+            authIdp = "otp";
+            sub = userSession.getUser().getEmail();
+          } else if (authIdpConfig.getDisplayName().equalsIgnoreCase("bc services card")) {
+            authIdp = "bcsc";
+            sub = userSession.getUser().getUsername().split("@")[0].toUpperCase();
+          } else {
+            logger.error("Unsupported identity provider: " + idp);
+            return;
+          }
+
+          String ppid = PPID.getPpid(authIdp,
               identityProviderModel.getConfig().get("clientId"),
               identityProviderModel.getConfig().get("clientSecret"),
-              identityProviderModel.getConfig().get("issuer"),
-              userSession.getUser().getEmail(),
-              mappingModel.getConfig().get(PRIVACY_ZONE));
+              sub,
+              privacyZone);
 
           if (!StringUtil.isNullOrEmpty(ppid)) {
             otherClaims.put(tokenClaim, ppid);
@@ -127,7 +145,8 @@ public class PPIDMapper extends AbstractOIDCProtocolMapper
             logger.error("Failed to fetch ppid for the user.");
           }
         } else
-          logger.error("Privacy zone is required to fetch ppid.");
+          logger.error(
+              "Invalid scope string. Ensure the PPID mapper is configured within a privacy zone scope.");
       }
     } catch (Exception e) {
       logger.errorf("Failed to add claim %s to the token", tokenClaim);

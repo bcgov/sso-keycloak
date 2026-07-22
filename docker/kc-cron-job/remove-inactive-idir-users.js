@@ -144,6 +144,20 @@ export async function removeUserFromCssApp(userData, clientData, env) {
   }
 }
 
+export async function removeUserFromRealmRegistryApp(userId) {
+  try {
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: process.env.REALM_REGISTRY_AUTH_SECRET
+    };
+    const res = await axios.delete(`${process.env.REALM_REGISTRY_URL}/api/users/${userId}`, { headers });
+    return res.status === 200;
+  } catch (err) {
+    handleError(err);
+    return false;
+  }
+}
+
 async function userFetchWithRetry(env, username, first, max) {
   const retries = 3;
   const adminClient = await getAdminClient(env);
@@ -192,6 +206,9 @@ export async function removeStaleUsersByEnv(env = 'dev', pgClient, runnerName, s
             const { realmRoles, clientRoles } = await getUserRolesMappings(adminClient, id);
             await removeUserFromKc(adminClient, id);
             const userDeletedAtCss = await removeUserFromCssApp(users[x], clientRoles, env);
+            if (env === 'prod') {
+              await removeUserFromRealmRegistryApp(idirUserGuid);
+            }
             const values = [
               env,
               id,
