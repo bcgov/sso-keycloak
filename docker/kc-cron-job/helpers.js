@@ -20,14 +20,6 @@ const getKcConfig = (environment) => {
   };
 };
 
-export async function removeUserFromKc(adminClient, id) {
-  try {
-    await adminClient.users.del({ realm: 'standard', id });
-  } catch (err) {
-    console.error(err);
-  }
-}
-
 export async function getUserRolesMappings(adminClient, userId) {
   try {
     const clientRoles = [];
@@ -44,7 +36,7 @@ export async function getUserRolesMappings(adminClient, userId) {
     return { realmRoles, clientRoles };
   } catch (err) {
     console.error(err);
-    throw new Error(`cannot fetch roles of user ${userId}`);
+    throw new Error(`cannot fetch roles of user ${userId}`, { cause: err });
   }
 }
 
@@ -54,7 +46,7 @@ export async function getAdminClient(env) {
   try {
     const KcAdminClient = (await import('@keycloak/keycloak-admin-client')).default;
     const config = getKcConfig(env);
-    if (!config) throw Error(`invalid env ${env}`);
+    if (!config) throw new Error(`invalid env ${env}`);
 
     const kcAdminClient = new KcAdminClient({
       baseUrl: `${config.url}/auth`,
@@ -103,7 +95,7 @@ export function log(msg) {
 export function getPgClient() {
   return new Client({
     host: process.env.PGHOST || 'localhost',
-    port: parseInt(process.env.PGPORT || '5432'),
+    port: Number.parseInt(process.env.PGPORT || '5432'),
     user: process.env.PGUSER || 'postgres',
     password: process.env.PGPASSWORD || 'postgres',
     database: process.env.PGDATABASE || 'rhsso',
@@ -124,7 +116,7 @@ export async function sendRcNotification(cronName, message, err) {
 export function handleError(error) {
   console.error(error);
   if (error.isAxiosError) {
-    console.error((error.response && error.response.data) || error);
+    console.error(error.response?.data || error);
   } else {
     console.error(error);
   }
