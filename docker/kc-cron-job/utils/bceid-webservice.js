@@ -1,11 +1,10 @@
-import { promisify } from 'util';
+import { promisify } from 'node:util';
 import { parseString } from 'xml2js';
 import axios from 'axios';
-import lodash from 'lodash';
+import { get } from 'lodash';
 import { log } from '../helpers.js';
 
 const parseStringSync = promisify(parseString);
-const { get } = lodash;
 
 export function getWebServiceInfo({ env = 'dev' }) {
   const requestHeaders = {
@@ -105,7 +104,7 @@ export const checkUserExistsAtIDIM = async ({ property = 'userGuid', matchKey = 
 
     const result = await parseStringSync(body);
     const data = get(result, 'soap:Envelope.soap:Body.0.getAccountDetailResponse.0.getAccountDetailResult.0');
-    if (!data) throw Error('no data');
+    if (!data) throw new Error('no data');
 
     const status = get(data, 'code.0');
     const failureCode = get(data, 'failureCode.0');
@@ -119,6 +118,6 @@ export const checkUserExistsAtIDIM = async ({ property = 'userGuid', matchKey = 
     }
     return 'error';
   } catch (error) {
-    throw new Error(error);
+    throw new Error(error, { cause: error });
   }
 };

@@ -3,9 +3,16 @@ import { getPgClient, sendRcNotification, deleteLegacyData } from './helpers.js'
 import { checkUserExistsAtIDIM } from './utils/bceid-webservice.js';
 import { removeStaleUsersByEnv } from './utils/inactive-user-helpers.js';
 
-const INSERT_TEXT =
+/** @typedef {import('@keycloak/keycloak-admin-client/lib/defs/userRepresentation.js').default} UserRepresentation */
+/** @typedef {import('@keycloak/keycloak-admin-client/lib/client.js').KeycloakAdminClient} KeycloakAdminClient */
+
+const INSERT_SQL =
   'INSERT INTO kc_deleted_idir_users (environment, user_id, username, email, first_name, last_name, attributes, realm_roles, client_roles, css_app_deleted) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)';
 
+/**
+ * @param {UserRepresentation} user - Keycloak user object
+ * @returns {Promise<boolean>} - Returns true if the user should be skipped, false otherwise
+ */
 async function shouldSkipUser(user) {
   const idirUserGuid = String(user?.attributes?.idir_user_guid || '').toLowerCase();
   if (!idirUserGuid) return true;
@@ -14,6 +21,12 @@ async function shouldSkipUser(user) {
   return false;
 }
 
+/**
+ * @param {UserRepresentation} user - Keycloak user object
+ * @param {KeycloakAdminClient} adminClient - Keycloak admin client instance
+ * @param {string} env - Environment name (e.g. 'dev', 'test', 'prod')
+ * @returns {Promise<boolean>} - Returns true if the user should be deleted, false otherwise
+ */
 async function shouldDeleteUser(user, adminClient, env) {
   const idirUserGuid = String(user?.attributes?.idir_user_guid || '').toLowerCase();
   const userExists = await checkUserExistsAtIDIM({ matchKey: idirUserGuid, env });
@@ -25,7 +38,7 @@ async function shouldDeleteUser(user, adminClient, env) {
 }
 
 async function main() {
-  const opts = { realm: 'idir', insertText: INSERT_TEXT, shouldSkip: shouldSkipUser, shouldDelete: shouldDeleteUser };
+  const opts = { realm: 'idir', insertSql: INSERT_SQL, shouldSkip: shouldSkipUser, shouldDelete: shouldDeleteUser };
   parallel(
     reflectAll([
       function (cb) {

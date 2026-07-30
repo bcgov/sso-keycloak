@@ -7,10 +7,19 @@ dotenv.config();
 
 const { Client } = pg;
 
+/**
+ * @param {string} url - The URL to check for user existence
+ * @param {object} options - Axios request options
+ * @returns {Promise<string>} - Returns 'exists', 'notexists', or 'error' based on the response
+ */
 const removeTrailingSlash = (url) => {
   return url.endsWith('/') ? url.slice(0, -1) : url;
 };
 
+/**
+ * @param {string} env - Environment name (e.g. 'dev', 'test', 'prod')
+ * @returns {object} - Returns Keycloak configuration for the specified environment
+ */
 const getKcConfig = (environment) => {
   const env = environment.toUpperCase();
   return {
@@ -20,28 +29,13 @@ const getKcConfig = (environment) => {
   };
 };
 
-export async function getUserRolesMappings(adminClient, userId) {
-  try {
-    const clientRoles = [];
-    const roleMappings = await adminClient.users.listRoleMappings({ realm: 'standard', id: userId });
-    const realmRoles = roleMappings.realmMappings ? roleMappings.realmMappings.map((map) => map.name) : [];
-    if (roleMappings.clientMappings) {
-      for (const map in roleMappings.clientMappings) {
-        clientRoles.push({
-          client: roleMappings.clientMappings[map].client,
-          roles: roleMappings.clientMappings[map].mappings.map((role) => role.name)
-        });
-      }
-    }
-    return { realmRoles, clientRoles };
-  } catch (err) {
-    console.error(err);
-    throw new Error(`cannot fetch roles of user ${userId}`, { cause: err });
-  }
-}
-
 export const oneMin = 60 * 1000;
 
+/**
+ *
+ * @param {string} env - Environment name (e.g. 'dev', 'test', 'prod')
+ * @returns {Promise<object|null>} - Returns the Keycloak admin client instance or null if an error occurred
+ */
 export async function getAdminClient(env) {
   try {
     const KcAdminClient = (await import('@keycloak/keycloak-admin-client')).default;
@@ -88,10 +82,16 @@ export async function getAdminClient(env) {
   }
 }
 
+/**
+ * @param {string} msg - Message to log
+ */
 export function log(msg) {
   console.log(`[${new Date().toLocaleString()}] ${msg}`);
 }
 
+/**
+ * @returns {pg.Client} - Returns a new PostgreSQL client instance
+ */
 export function getPgClient() {
   return new Client({
     host: process.env.PGHOST || 'localhost',
@@ -103,6 +103,12 @@ export function getPgClient() {
   });
 }
 
+/**
+ * @param {string} cronName - Name of the cron job
+ * @param {string} message - Message to be sent in the notification
+ * @param {Error} [err] - Optional error object to include in the notification
+ * @returns {Promise<void>} - Returns a promise that resolves when the notification is sent
+ */
 export async function sendRcNotification(cronName, message, err) {
   try {
     const headers = { Accept: 'application/json' };
@@ -113,6 +119,10 @@ export async function sendRcNotification(cronName, message, err) {
   }
 }
 
+/**
+ *
+ * @param {*} error
+ */
 export function handleError(error) {
   console.error(error);
   if (error.isAxiosError) {
@@ -122,6 +132,11 @@ export function handleError(error) {
   }
 }
 
+/**
+ * @param {string} tableName - Name of the table to delete old logs from
+ * @param {number} retentionPeriodDays - Number of days to retain logs before deletion
+ * @returns {Promise<void>} - Returns a promise that resolves when the deletion is complete
+ */
 export async function deleteLegacyData(tableName, retentionPeriodDays) {
   console.info('Removing old logs from database...');
   let client;

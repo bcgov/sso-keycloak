@@ -1,14 +1,25 @@
 import axios from 'axios';
-import { getAdminClient, log, handleError, getUserRolesMappings } from '../helpers.js';
+import { getAdminClient, log, handleError } from '../helpers.js';
+
+/** @typedef {import('@keycloak/keycloak-admin-client/lib/defs/userRepresentation.js').default} UserRepresentation */
+/** @typedef {import('@keycloak/keycloak-admin-client/lib/client.js').KeycloakAdminClient} KeycloakAdminClient */
 
 // NOTE: this is per runner, e.g with 5 in prod 50 is the total user deletion limit
 export const MAX_DELETED_USERS_PER_RUNNER = 30;
 
+/**
+ * @param {string} realm - Keycloak realm to query (e.g. 'azureidir', 'idir')
+ * @param {string} env - Environment name (e.g. 'dev', 'test', 'prod')
+ * @param {number} first - Index of the first user to fetch
+ * @param {number} max - Maximum number of users to fetch in a single batch
+ * @returns {Promise<UserRepresentation[]>} - Returns an array of Keycloak user objects
+ */
 export async function fetchRealmUsers(realm, env, first, max) {
   const retries = 3;
   const adminClient = await getAdminClient(env);
   for (let i = 1; i <= retries; i++) {
     try {
+      log(`[${env}] fetching users from Keycloak realm ${realm} with first=${first} and max=${max}`);
       return await adminClient.users.find({ realm, first, max });
     } catch (err) {
       console.error(`Error fetching users from Keycloak for ${env} environment with retries ${i} of ${retries}`);
@@ -17,15 +28,21 @@ export async function fetchRealmUsers(realm, env, first, max) {
   }
 }
 
-export async function removeUserFromCssApp(userData, clientData, env) {
+/**
+ * @param {UserRepresentation} user - User data to be sent to the CSS app for deletion
+ * @param {object} clientData - Client data associated with the user
+ * @param {string} env - Environment name (e.g. 'dev', 'test', 'prod')
+ * @returns {Promise<boolean>} - Returns true if the user was successfully deleted from the CSS app, false otherwise
+ */
+export async function removeUserFromCssApp(user, clientData, env) {
   try {
     const headers = {
       'Content-Type': 'application/json',
       Authorization: process.env.CSS_API_AUTH_SECRET
     };
-    userData.clientData = clientData;
-    userData.env = env;
-    const res = await axios.post(`${process.env.CSS_API_URL}/delete-inactive-idir-users`, userData, { headers });
+    user.clientData = clientData;
+    user.env = env;
+    const res = await axios.post(`${process.env.CSS_API_URL}/delete-inactive-idir-users`, user, { headers });
     return res.status === 200;
   } catch (err) {
     handleError(err);
@@ -33,6 +50,11 @@ export async function removeUserFromCssApp(userData, clientData, env) {
   }
 }
 
+/**
+ *
+ * @param {string} userId - Keycloak user ID
+ * @returns {Promise<boolean>} - Returns true if the user was successfully deleted from the Realm Registry app, false otherwise
+ */
 export async function removeUserFromRealmRegistryApp(userId) {
   try {
     const headers = {
@@ -47,15 +69,35 @@ export async function removeUserFromRealmRegistryApp(userId) {
   }
 }
 
-export async function deleteUserAndRecordData(realm, user, adminClient, env, pgClient, insertText, runnerName) {
-  const { id, username } = user;
+/**
+ * @param {string} realm - Keycloak realm to query (e.g. 'azureidir', 'idir')
+ * @param {UserRepresentation} user - Keycloak user object
+ * @param {KeycloakAdminClient} adminClient - Keycloak admin client instance
+ * @param {string} env - Environment name (e.g. 'dev', 'test', 'prod')
+ * @param {import('pg').Client} pgClient - PostgreSQL client instance
+ * @param {string} insertSql - Parameterised SQL INSERT statement for recording deleted users
+ * @param {string} runnerName - Name of the runner (e.g. 'dev', 'test', 'prod-01')
+ */
+export async function deleteUserAndRecordData(realm, user, adminClient, env, pgClient, insertSql, runnerName) {
   const idirUserGuid = String(user?.attributes?.idir_user_guid || '').toLowerCase();
 
-  const { realmRoles, clientRoles } = await getUserRolesMappings(adminClient, id);
-  await removeRealmUserFromKc(adminClient, realm, id);
-  const deleted = await removeRealmUserFromKc(adminClient, 'standard', `${username}@${realm}`);
+  //await removeRealmUserFromKc(adminClient, realm, user.id);
+
+  const standardRealmUsers = await adminClient.users.find({ realm: 'standard', username: `${idirUserGuid}@${realm}` });
+
+  if (!standardRealmUsers || standardRealmUsers.length === 0) {
+    log(`[${runnerName}] ${idirUserGuid}@${realm} does not exist in standard realm`);
+    return;
+  }
+
+  const inactiveStdUser = standardRealmUsers[0];
+
+  const { realmRoles, clientRoles } = await getUserRolesMappings(adminClient, inactiveStdUser.id);
+
+  const deleted = await removeRealmUserFromKc(adminClient, 'standard', inactiveStdUser.id);
+
   if (deleted) {
-    const userDeletedAtCss = await removeUserFromCssApp(user, clientRoles, env);
+    const userDeletedAtCss = await removeUserFromCssApp(inactiveStdUser, clientRoles, env);
 
     if (env === 'prod') {
       await removeUserFromRealmRegistryApp(idirUserGuid);
@@ -63,33 +105,41 @@ export async function deleteUserAndRecordData(realm, user, adminClient, env, pgC
 
     const values = [
       env,
-      id,
-      username,
-      user.email || '',
-      user.firstName || '',
-      user.lastName || '',
-      JSON.stringify(user.attributes) || '',
+      inactiveStdUser.id,
+      inactiveStdUser.username,
+      inactiveStdUser.email || '',
+      inactiveStdUser.firstName || '',
+      inactiveStdUser.lastName || '',
+      JSON.stringify(inactiveStdUser.attributes) || '',
       realmRoles,
       clientRoles.map((r) => JSON.stringify(r)),
       userDeletedAtCss
     ];
 
-    await pgClient.query({ text: insertText, values });
-    log(`[${runnerName}] ${username} has been deleted from ${env} environment`);
-  } else log(`[${runnerName}] ${username} could not be deleted from ${env} environment`);
+    await pgClient.query({ text: insertSql, values });
+    log(`[${runnerName}] ${inactiveStdUser.username} has been deleted from ${env} environment`);
+  } else log(`[${runnerName}] ${inactiveStdUser.username} could not be deleted from ${env} environment`);
 }
 
 /**
- * @param {object} callbacks
- * @param {(user: object) => Promise<boolean>} callbacks.shouldSkip
- * @param {(user: object, adminClient: object, env: string) => Promise<boolean>} callbacks.shouldDelete
+ * @param {UserRepresentation[]} users - Array of Keycloak user objects
+ * @param {KeycloakAdminClient} adminClient - Keycloak admin client instance
+ * @param {string} env - Environment name (e.g. 'dev', 'test', 'prod')
+ * @param {import('pg').Client} pgClient - PostgreSQL client instance
+ * @param {string} insertSql - Parameterised SQL INSERT statement for recording deleted users
+ * @param {string} runnerName - Name of the runner (e.g. 'dev', 'test', 'prod-01')
+ * @param {object} options
+ * @param {string} options.realm - Keycloak realm to query (e.g. 'azureidir', 'idir')
+ * @param {(user: UserRepresentation) => Promise<boolean>} options.shouldSkip - Callback function to determine if a user should be skipped
+ * @param {(user: UserRepresentation, adminClient: KeycloakAdminClient, env: string) => Promise<boolean>} options.shouldDelete - Callback function to determine if a user should be deleted
+ * @returns {Promise<number>} - Returns the number of users deleted in the current batch
  */
 export async function processUserBatch(
   users,
   adminClient,
   env,
   pgClient,
-  insertText,
+  insertSql,
   runnerName,
   { realm, shouldSkip, shouldDelete }
 ) {
@@ -97,9 +147,9 @@ export async function processUserBatch(
   for (const user of users) {
     if (await shouldSkip(user)) continue;
 
-    log(`[${runnerName}] processing user ${user.username}`);
     if (await shouldDelete(user, adminClient, env)) {
-      await deleteUserAndRecordData(realm, user, adminClient, env, pgClient, insertText, runnerName);
+      await deleteUserAndRecordData(realm, user, adminClient, env, pgClient, insertSql, runnerName);
+      log(`[${runnerName}] ${user.username} has been deleted from ${env} environment`);
       count++;
       if (count >= MAX_DELETED_USERS_PER_RUNNER) break;
     }
@@ -107,17 +157,29 @@ export async function processUserBatch(
   return count;
 }
 
+/**
+ * @param {number} count - Number of users processed in the current batch
+ * @param {number} total - Total number of users processed so far
+ * @param {number} max - Maximum number of users to fetch in a single batch
+ * @param {number} deletedUserCount - Total number of users deleted so far
+ * @returns {boolean} - Returns true if processing should stop, false otherwise
+ */
 export function shouldStopProcessing(count, total, max, deletedUserCount) {
   if (count < max || total === 10000) return true;
   return deletedUserCount >= MAX_DELETED_USERS_PER_RUNNER;
 }
 
 /**
+ * @param {string} env - Environment name (e.g. 'dev', 'test', 'prod')
+ * @param {object} pgClient - PostgreSQL client instance
+ * @param {string} runnerName - Name of the runner (e.g. 'dev', 'test', 'prod-01')
+ * @param {number} startFrom - Index of the first user to fetch
+ * @param {function} callback - Callback function to be called after processing is complete
  * @param {object} options
  * @param {string} options.realm - Keycloak realm to query (e.g. 'azureidir', 'idir')
- * @param {string} options.insertText - Parameterised SQL INSERT statement for recording deleted users
- * @param {(user: object) => Promise<boolean>} options.shouldSkip
- * @param {(user: object, adminClient: object, env: string) => Promise<boolean>} options.shouldDelete
+ * @param {string} options.insertSql - Parameterised SQL INSERT statement for recording deleted users
+ * @param {(user: object) => Promise<boolean>} options.shouldSkip - Callback function to determine if a user should be skipped
+ * @param {(user: object, adminClient: object, env: string) => Promise<boolean>} options.shouldDelete - Callback function to determine if a user should be deleted
  */
 export async function removeStaleUsersByEnv(
   env,
@@ -125,7 +187,7 @@ export async function removeStaleUsersByEnv(
   runnerName,
   startFrom,
   callback,
-  { realm, insertText, shouldSkip, shouldDelete }
+  { realm, insertSql, shouldSkip, shouldDelete }
 ) {
   try {
     let deletedUserCount = 0;
@@ -142,7 +204,7 @@ export async function removeStaleUsersByEnv(
       const count = users.length;
       total += count;
 
-      const usersDeleted = await processUserBatch(users, adminClient, env, pgClient, insertText, runnerName, {
+      const usersDeleted = await processUserBatch(users, adminClient, env, pgClient, insertSql, runnerName, {
         realm,
         shouldSkip,
         shouldDelete
@@ -165,6 +227,12 @@ export async function removeStaleUsersByEnv(
   }
 }
 
+/**
+ * @param {string} realm - Keycloak realm to query (e.g. 'azureidir', 'idir')
+ * @param {string} id - Keycloak user ID
+ * @param {KeycloakAdminClient} adminClient - Keycloak admin client instance
+ * @returns {Promise<boolean>} - Returns true if the user was successfully deleted, false otherwise
+ */
 export async function removeRealmUserFromKc(adminClient, realm, id) {
   try {
     await adminClient.users.del({ realm, id });
@@ -172,5 +240,30 @@ export async function removeRealmUserFromKc(adminClient, realm, id) {
   } catch (err) {
     console.error(err);
     return false;
+  }
+}
+
+/**
+ * @param {KeycloakAdminClient} adminClient - Keycloak admin client instance
+ * @param {string} userId - Keycloak user ID
+ * @returns {Promise<{ realmRoles: string[], clientRoles: { client: string, roles: string[] }[] }>} - Returns an object containing the user's realm and client roles
+ */
+export async function getUserRolesMappings(adminClient, userId) {
+  try {
+    const clientRoles = [];
+    const roleMappings = await adminClient.users.listRoleMappings({ realm: 'standard', id: userId });
+    const realmRoles = roleMappings.realmMappings ? roleMappings.realmMappings.map((map) => map.name) : [];
+    if (roleMappings.clientMappings) {
+      for (const map in roleMappings.clientMappings) {
+        clientRoles.push({
+          client: roleMappings.clientMappings[map].client,
+          roles: roleMappings.clientMappings[map].mappings.map((role) => role.name)
+        });
+      }
+    }
+    return { realmRoles, clientRoles };
+  } catch (err) {
+    console.error(err);
+    throw new Error(`cannot fetch roles of user ${userId}`, { cause: err });
   }
 }

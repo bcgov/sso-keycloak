@@ -5,11 +5,13 @@ import { ConfidentialClientApplication } from '@azure/msal-node';
 import axios from 'axios';
 import { removeStaleUsersByEnv } from './utils/inactive-user-helpers.js';
 
+/** @typedef {import('@keycloak/keycloak-admin-client/lib/defs/userRepresentation.js').default} UserRepresentation */
+/** @typedef {import('@keycloak/keycloak-admin-client/lib/client.js').KeycloakAdminClient} KeycloakAdminClient */
+
 const MS_GRAPH_URL = 'https://graph.microsoft.com';
 const MS_GRAPH_IDIR_GUID_ATTRIBUTE = 'onPremisesExtensionAttributes/extensionAttribute12';
-const GUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-const INSERT_TEXT =
+const INSERT_SQL =
   'INSERT INTO kc_deleted_idir_mfa_users (environment, user_id, username, email, first_name, last_name, attributes, realm_roles, client_roles, css_app_deleted) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)';
 
 let devMsalInstance = new ConfidentialClientApplication({
@@ -42,7 +44,10 @@ let msTokenCache = {
   prod: { token: '', decoded: null }
 };
 
-// This function is no longer in use so we can remove the msal-node package from our dependencies
+/**
+ * @param {string} env - Environment name (e.g. 'dev', 'test', 'prod')
+ * @returns {Promise<string>} - Returns the access token for the specified environment
+ */
 async function getAzureAccessToken(env) {
   if (!msTokenCache[env]) {
     throw new Error(`Invalid environment: ${env}`);
@@ -73,10 +78,13 @@ async function getAzureAccessToken(env) {
   }
 }
 
+/**
+ * @param {string} property - The property to filter by in the MS Graph API (e.g. 'onPremisesExtensionAttributes/extensionAttribute12')
+ * @param {string} matchKey - The value to match against the specified property
+ * @param {string} env - Environment name (e.g. 'dev', 'test', 'prod')
+ * @returns {Promise<string>} - Returns 'exists' if the user exists, 'notexists' if the user does not exist, or 'error' if there was an error
+ */
 async function checkUserExistsAtEntra({ property = MS_GRAPH_IDIR_GUID_ATTRIBUTE, matchKey = '', env }) {
-  if (!GUID_REGEX.test(matchKey)) {
-    throw new Error(`Invalid GUID format for matchKey: ${matchKey}`);
-  }
   try {
     const accessToken = await getAzureAccessToken(env);
     const options = {
@@ -102,11 +110,21 @@ async function checkUserExistsAtEntra({ property = MS_GRAPH_IDIR_GUID_ATTRIBUTE,
   }
 }
 
+/**
+ * @param {UserRepresentation} user - Keycloak user object
+ * @returns {Promise<boolean>} - Returns true if the user should be skipped, false otherwise
+ */
 async function shouldSkipUser(user) {
   const idirUserGuid = String(user?.attributes?.idir_user_guid || '').toLowerCase();
   return !idirUserGuid;
 }
 
+/**
+ * @param {UserRepresentation} user - Keycloak user object
+ * @param {KeycloakAdminClient} adminClient - Keycloak admin client instance
+ * @param {string} env - Environment name (e.g. 'dev', 'test', 'prod')
+ * @returns {Promise<boolean>} - Returns true if the user should be deleted, false otherwise
+ */
 async function shouldDeleteUser(user, adminClient, env) {
   const idirUserGuid = String(user?.attributes?.idir_user_guid || '').toLowerCase();
   const userExists = await checkUserExistsAtEntra({ matchKey: idirUserGuid, env });
@@ -120,7 +138,7 @@ async function shouldDeleteUser(user, adminClient, env) {
 async function main() {
   const opts = {
     realm: 'azureidir',
-    insertText: INSERT_TEXT,
+    insertSql: INSERT_SQL,
     shouldSkip: shouldSkipUser,
     shouldDelete: shouldDeleteUser
   };
