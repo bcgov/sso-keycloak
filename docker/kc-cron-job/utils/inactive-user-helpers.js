@@ -81,7 +81,7 @@ export async function removeUserFromRealmRegistryApp(userId) {
 export async function deleteUserAndRecordData(realm, user, adminClient, env, pgClient, insertSql, runnerName) {
   const idirUserGuid = String(user?.attributes?.idir_user_guid || '').toLowerCase();
 
-  //await removeRealmUserFromKc(adminClient, realm, user.id);
+  await removeRealmUserFromKc(adminClient, realm, user.id);
 
   const standardRealmUsers = await adminClient.users.find({ realm: 'standard', username: `${idirUserGuid}@${realm}` });
 
