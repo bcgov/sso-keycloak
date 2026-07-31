@@ -3,7 +3,7 @@ import { getPgClient, sendRcNotification, deleteLegacyData } from './helpers.js'
 import { decode } from 'jsonwebtoken';
 import { ConfidentialClientApplication } from '@azure/msal-node';
 import axios from 'axios';
-import { removeStaleUsersByEnv } from './utils/inactive-user-helpers.js';
+import { removeStaleUsersByEnv, initializeUsersExportFile } from './utils/inactive-user-helpers.js';
 
 /** @typedef {import('@keycloak/keycloak-admin-client/lib/defs/userRepresentation.js').default} UserRepresentation */
 /** @typedef {import('@keycloak/keycloak-admin-client/lib/client.js').KeycloakAdminClient} KeycloakAdminClient */
@@ -136,6 +136,8 @@ async function shouldDeleteUser(user, adminClient, env) {
 }
 
 async function main() {
+  await initializeUsersExportFile();
+
   const opts = {
     realm: 'azureidir',
     insertSql: INSERT_SQL,
