@@ -3,7 +3,7 @@ import { getPgClient, sendRcNotification, deleteLegacyData } from './helpers.js'
 import { decode } from 'jsonwebtoken';
 import { ConfidentialClientApplication } from '@azure/msal-node';
 import axios from 'axios';
-import { removeStaleUsersByEnv, initializeUsersExportFile } from './utils/inactive-user-helpers.js';
+import { removeStaleUsersByEnv } from './utils/inactive-user-helpers.js';
 
 /** @typedef {import('@keycloak/keycloak-admin-client/lib/defs/userRepresentation.js').default} UserRepresentation */
 /** @typedef {import('@keycloak/keycloak-admin-client/lib/client.js').KeycloakAdminClient} KeycloakAdminClient */
@@ -12,7 +12,7 @@ const MS_GRAPH_URL = 'https://graph.microsoft.com';
 const MS_GRAPH_IDIR_GUID_ATTRIBUTE = 'onPremisesExtensionAttributes/extensionAttribute12';
 
 const INSERT_SQL =
-  'INSERT INTO kc_deleted_idir_mfa_users (environment, user_id, username, email, first_name, last_name, attributes, realm_roles, client_roles, css_app_deleted) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)';
+  'INSERT INTO kc_deleted_idir_mfa_users (realm, environment, user_data, realm_roles, client_roles, css_app_deleted) VALUES($1, $2, $3, $4, $5, $6)';
 
 let devMsalInstance = new ConfidentialClientApplication({
   auth: {
@@ -136,8 +136,6 @@ async function shouldDeleteUser(user, adminClient, env) {
 }
 
 async function main() {
-  await initializeUsersExportFile();
-
   const opts = {
     realm: 'azureidir',
     insertSql: INSERT_SQL,

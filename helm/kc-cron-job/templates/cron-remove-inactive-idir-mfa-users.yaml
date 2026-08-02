@@ -34,13 +34,9 @@ spec:
                     create table if not exists public.kc_deleted_idir_mfa_users (
                         id serial NOT NULL,
                         timestamp timestamp with time zone default current_timestamp,
+                        realm varchar(20),
                         environment varchar(50),
-                        user_id varchar(50),
-                        username varchar(255),
-                        email varchar(255),
-                        first_name varchar(255),
-                        last_name varchar(255),
-                        attributes varchar(1000),
+                        user_data jsonb,
                         realm_roles TEXT [],
                         client_roles TEXT [],
                         css_app_deleted BOOLEAN NOT NULL default false

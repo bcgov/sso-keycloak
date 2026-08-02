@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { getAdminClient, log, handleError } from '../helpers.js';
 
 /** @typedef {import('@keycloak/keycloak-admin-client/lib/defs/userRepresentation.js').default} UserRepresentation */
@@ -7,67 +6,6 @@ import { getAdminClient, log, handleError } from '../helpers.js';
 
 // NOTE: this is per runner, e.g with 5 in prod 50 is the total user deletion limit
 export const MAX_DELETED_USERS_PER_RUNNER = 30;
-const USERS_EXPORT_DIR = new URL('../exports/', import.meta.url);
-const USERS_JSON_FILE = new URL('users.json', USERS_EXPORT_DIR);
-let usersJsonWriteChain = Promise.resolve();
-
-/**
- * Initializes the users.json file in the exports directory.
- * If the file does not exist, it creates it with an empty array.
- * If the file exists but is empty, it writes an empty array to it.
- */
-export async function initializeUsersExportFile() {
-  try {
-    await mkdir(USERS_EXPORT_DIR, { recursive: true });
-
-    try {
-      const fileContent = await readFile(USERS_JSON_FILE, 'utf-8');
-      if (!fileContent.trim()) {
-        await writeFile(USERS_JSON_FILE, '[]\n');
-      }
-    } catch (err) {
-      if (err?.code === 'ENOENT') {
-        await writeFile(USERS_JSON_FILE, '[]\n');
-        return;
-      }
-      throw err;
-    }
-  } catch (err) {
-    handleError(err);
-  }
-}
-
-/**
- * Queues a task to write to the users.json file, ensuring that writes are serialized.
- * @param {() => Promise<void>} task - The task to be executed for writing to the file.
- * @returns {Promise<void>} - A promise that resolves when the task is complete.
- */
-function queueUsersJsonWrite(task) {
-  usersJsonWriteChain = usersJsonWriteChain.then(task, task);
-  return usersJsonWriteChain;
-}
-
-/**
- * @param {object} userRecord - User record to append to users.json
- */
-async function appendUserToUsersJson(userRecord) {
-  return queueUsersJsonWrite(async () => {
-    try {
-      await initializeUsersExportFile();
-      let users = [];
-
-      const fileContent = await readFile(USERS_JSON_FILE, 'utf-8');
-      if (fileContent.trim()) {
-        const parsed = JSON.parse(fileContent);
-        users = Array.isArray(parsed) ? parsed : [parsed];
-      }
-      users.push(userRecord);
-      await writeFile(USERS_JSON_FILE, `${JSON.stringify(users, null, 2)}\n`);
-    } catch (err) {
-      handleError(err);
-    }
-  });
-}
 
 /**
  * @param {string} realm - Keycloak realm to query (e.g. 'azureidir', 'idir')
@@ -145,56 +83,39 @@ export async function deleteUserAndRecordData(realm, user, adminClient, env, pgC
 
   await removeRealmUserFromKc(adminClient, realm, user.id);
 
-  await appendUserToUsersJson({
-    capturedAt: new Date().toISOString(),
-    env,
-    realm,
-    runnerName,
-    idirUserGuid,
-    id: user.id,
-    username: user.username || '',
-    email: user.email || '',
-    firstName: user.firstName || '',
-    lastName: user.lastName || '',
-    attributes: user.attributes || {}
-  });
+  const values = [realm, env, JSON.stringify(user) || '', [], [], false];
+
+  await pgClient.query({ text: insertSql, values });
 
   const standardRealmUsers = await adminClient.users.find({ realm: 'standard', username: `${idirUserGuid}@${realm}` });
 
-  if (!standardRealmUsers || standardRealmUsers.length === 0) {
-    log(`[${runnerName}] ${idirUserGuid}@${realm} does not exist in standard realm`);
-    return;
+  if (standardRealmUsers && standardRealmUsers.length > 0) {
+    const inactiveStdUser = standardRealmUsers[0];
+
+    const { realmRoles, clientRoles } = await getUserRolesMappings(adminClient, inactiveStdUser.id);
+
+    const deleted = await removeRealmUserFromKc(adminClient, 'standard', inactiveStdUser.id);
+
+    if (deleted) {
+      const userDeletedAtCss = await removeUserFromCssApp(inactiveStdUser, clientRoles, env);
+
+      if (env === 'prod') {
+        await removeUserFromRealmRegistryApp(idirUserGuid);
+      }
+
+      const values = [
+        'standard',
+        env,
+        JSON.stringify(inactiveStdUser) || '',
+        realmRoles,
+        clientRoles.map((r) => JSON.stringify(r)),
+        userDeletedAtCss
+      ];
+
+      await pgClient.query({ text: insertSql, values });
+      log(`[${runnerName}] ${inactiveStdUser.username} has been deleted from ${env} environment`);
+    } else log(`[${runnerName}] ${inactiveStdUser.username} could not be deleted from ${env} environment`);
   }
-
-  const inactiveStdUser = standardRealmUsers[0];
-
-  const { realmRoles, clientRoles } = await getUserRolesMappings(adminClient, inactiveStdUser.id);
-
-  const deleted = await removeRealmUserFromKc(adminClient, 'standard', inactiveStdUser.id);
-
-  if (deleted) {
-    const userDeletedAtCss = await removeUserFromCssApp(inactiveStdUser, clientRoles, env);
-
-    if (env === 'prod') {
-      await removeUserFromRealmRegistryApp(idirUserGuid);
-    }
-
-    const values = [
-      env,
-      inactiveStdUser.id,
-      inactiveStdUser.username,
-      inactiveStdUser.email || '',
-      inactiveStdUser.firstName || '',
-      inactiveStdUser.lastName || '',
-      JSON.stringify(inactiveStdUser.attributes) || '',
-      realmRoles,
-      clientRoles.map((r) => JSON.stringify(r)),
-      userDeletedAtCss
-    ];
-
-    await pgClient.query({ text: insertSql, values });
-    log(`[${runnerName}] ${inactiveStdUser.username} has been deleted from ${env} environment`);
-  } else log(`[${runnerName}] ${inactiveStdUser.username} could not be deleted from ${env} environment`);
 }
 
 /**
@@ -328,7 +249,9 @@ export async function getUserRolesMappings(adminClient, userId) {
   try {
     const clientRoles = [];
     const roleMappings = await adminClient.users.listRoleMappings({ realm: 'standard', id: userId });
-    const realmRoles = roleMappings.realmMappings ? roleMappings.realmMappings.map((map) => map.name) : [];
+    const realmRoles = roleMappings.realmMappings
+      ? roleMappings.realmMappings.map((map) => map.name).filter((val) => !val.startsWith('default-roles'))
+      : [];
     if (roleMappings.clientMappings) {
       for (const map in roleMappings.clientMappings) {
         clientRoles.push({

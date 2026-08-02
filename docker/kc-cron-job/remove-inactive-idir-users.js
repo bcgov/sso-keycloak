@@ -7,7 +7,7 @@ import { removeStaleUsersByEnv } from './utils/inactive-user-helpers.js';
 /** @typedef {import('@keycloak/keycloak-admin-client/lib/client.js').KeycloakAdminClient} KeycloakAdminClient */
 
 const INSERT_SQL =
-  'INSERT INTO kc_deleted_idir_users (environment, user_id, username, email, first_name, last_name, attributes, realm_roles, client_roles, css_app_deleted) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)';
+  'INSERT INTO kc_deleted_idir_users (realm, environment, user_data, realm_roles, client_roles, css_app_deleted) VALUES($1, $2, $3, $4, $5, $6)';
 
 /**
  * @param {UserRepresentation} user - Keycloak user object
