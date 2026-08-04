@@ -3,7 +3,7 @@ import { parallel, reflectAll } from 'async';
 
 const STANDARD_REALM = 'standard';
 
-async function removeDcUsers(runnerName, pgClient, env = 'dev', callback) {
+async function removeDcUsers(runnerName, pgClient, env, callback) {
   try {
     let deletedUserCount = 0;
     const adminClient = await getAdminClient(env);
@@ -20,8 +20,8 @@ async function removeDcUsers(runnerName, pgClient, env = 'dev', callback) {
       const count = users.length;
       total += count;
 
-      for (let x = 0; x < users.length; x++) {
-        const { id, username } = users[x];
+      for (const element of users) {
+        const { id, username } = element;
 
         const userSessions = await adminClient.users.listSessions({ realm: STANDARD_REALM, id });
 
@@ -29,7 +29,7 @@ async function removeDcUsers(runnerName, pgClient, env = 'dev', callback) {
           // delete user from standard realm
           await adminClient.users.del({ realm: STANDARD_REALM, id });
 
-          const values = [env, username, STANDARD_REALM, users[x].attributes || {}];
+          const values = [env, username, STANDARD_REALM, element.attributes || {}];
           await pgClient.query({ text, values });
           deletedUserCount++;
           log(`${username} has been deleted from ${env} environment`);
@@ -82,4 +82,4 @@ async function main() {
   await deleteLegacyData('kc_deleted_dc_users', process.env.DC_USERS_RETENTION_DAYS || 60);
 }
 
-main();
+await main();

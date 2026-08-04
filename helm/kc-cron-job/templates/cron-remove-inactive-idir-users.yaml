@@ -1,8 +1,8 @@
-{{- if .Values.enableRemoveInactiveUsersJob }}
+{{- if .Values.enableRemoveInactiveIdirUsersJob }}
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: {{ include "..fullname" . }}-rm-inactive-users
+  name: {{ include "..fullname" . }}-rm-inactive-idir-users
   namespace: {{ .Values.namespace.rmInactiveUsers }}
   labels:
     app.kubernetes.io/name: {{ include "..name" . }}
@@ -23,7 +23,7 @@ spec:
         spec:
           initContainers:
             - name: initdb
-              image: postgres:11.6-alpine
+              image: postgres:14.2-alpine
               command: ["bash", "-c"]
               args:
                 - |
@@ -31,16 +31,12 @@ spec:
                   set -euo pipefail;
                   echo "select 'create database $PGDATABASE' where NOT exists (select from pg_database where datname = '$PGDATABASE')\gexec" | psql -d postgres
                   psql -d $PGDATABASE -qtA --set ON_ERROR_STOP=1 <<EOF
-                    create table if not exists public.kc_deleted_users (
+                    create table if not exists public.kc_deleted_idir_users (
                         id serial NOT NULL,
                         timestamp timestamp with time zone default current_timestamp,
+                        realm varchar(20),
                         environment varchar(50),
-                        user_id varchar(50),
-                        username varchar(255),
-                        email varchar(255),
-                        first_name varchar(255),
-                        last_name varchar(255),
-                        attributes varchar(1000),
+                        user_data jsonb,
                         realm_roles TEXT [],
                         client_roles TEXT [],
                         css_app_deleted BOOLEAN NOT NULL default false
