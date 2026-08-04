@@ -117,7 +117,7 @@ describe('remove-inactive-idir-mfa-users script', () => {
   it('uses retention env override when provided', async () => {
     await importScript({ retentionDays: 45 });
 
-    expect(deleteLegacyDataMock).toHaveBeenCalledWith('kc_deleted_idir_mfa_users', '45');
+    expect(deleteLegacyDataMock).toHaveBeenCalledWith('kc_deleted_idir_mfa_users', 45);
   });
 
   it('defaults retention days to 60 when env value is missing', async () => {
