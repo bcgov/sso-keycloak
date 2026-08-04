@@ -8,9 +8,9 @@ dotenv.config();
 const { Client } = pg;
 
 /**
- * @param {string} url - The URL to check for user existence
- * @param {object} options - Axios request options
- * @returns {Promise<string>} - Returns 'exists', 'notexists', or 'error' based on the response
+ * Removes a single trailing slash from a URL string.
+ * @param {string} url - URL to normalize
+ * @returns {string} - Normalized URL without a trailing slash
  */
 const removeTrailingSlash = (url) => {
   return url.endsWith('/') ? url.slice(0, -1) : url;

@@ -118,6 +118,6 @@ export const checkUserExistsAtIDIM = async ({ property = 'userGuid', matchKey = 
     }
     return 'error';
   } catch (error) {
-    throw new Error(error, { cause: error });
+    throw new Error(error?.message || String(error), { cause: error });
   }
 };

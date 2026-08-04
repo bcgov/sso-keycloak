@@ -178,7 +178,10 @@ async function main() {
       );
     }
   );
-  await deleteLegacyData('kc_deleted_idir_mfa_users', process.env.INACTIVE_IDIR_USERS_RETENTION_DAYS || 60);
+  await deleteLegacyData(
+    'kc_deleted_idir_mfa_users',
+    Number.parseInt(process.env.INACTIVE_IDIR_USERS_RETENTION_DAYS ?? '', 10) || 60
+  );
 }
 
 await main();

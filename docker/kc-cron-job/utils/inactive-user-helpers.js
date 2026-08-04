@@ -81,7 +81,11 @@ export async function removeUserFromRealmRegistryApp(userId) {
 export async function deleteUserAndRecordData(realm, user, adminClient, env, pgClient, insertSql, runnerName) {
   const idirUserGuid = String(user?.attributes?.idir_user_guid || '').toLowerCase();
 
-  await removeRealmUserFromKc(adminClient, realm, user.id);
+  const deletedFromRealm = await removeRealmUserFromKc(adminClient, realm, user.id);
+  if (!deletedFromRealm) {
+    log(`[${runnerName}] ${user.username || user.id} could not be deleted from ${realm} realm`);
+    return;
+  }
 
   const values = [realm, env, JSON.stringify(user) || '', [], [], false];
 
@@ -114,7 +118,7 @@ export async function deleteUserAndRecordData(realm, user, adminClient, env, pgC
 
       await pgClient.query({ text: insertSql, values });
       log(`[${runnerName}] ${inactiveStdUser.username} has been deleted from ${env} environment`);
-    } else log(`[${runnerName}] ${inactiveStdUser.username} could not be deleted from ${env} environment`);
+    } else log(`[${runnerName}] ${inactiveStdUser.username} could not be deleted from standard realm`);
   }
 }
 
