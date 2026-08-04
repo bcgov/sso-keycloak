@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { getAdminClient, log, handleError } from '../helpers.js';
+import { pick } from 'lodash';
 
 /** @typedef {import('@keycloak/keycloak-admin-client/lib/defs/userRepresentation.js').default} UserRepresentation */
 /** @typedef {import('@keycloak/keycloak-admin-client/lib/client.js').KeycloakAdminClient} KeycloakAdminClient */
@@ -87,7 +88,16 @@ export async function deleteUserAndRecordData(realm, user, adminClient, env, pgC
     return;
   }
 
-  const values = [realm, env, JSON.stringify(user) || '', [], [], false];
+  const values = [
+    realm,
+    env,
+    JSON.stringify(
+      pick(user, ['id', 'username', 'email', 'firstName', 'lastName', 'enabled', 'attributes', 'emailVerified'])
+    ) || '',
+    [],
+    [],
+    false
+  ];
 
   await pgClient.query({ text: insertSql, values });
 
@@ -110,7 +120,18 @@ export async function deleteUserAndRecordData(realm, user, adminClient, env, pgC
       const values = [
         'standard',
         env,
-        JSON.stringify(inactiveStdUser) || '',
+        JSON.stringify(
+          pick(inactiveStdUser, [
+            'id',
+            'username',
+            'email',
+            'firstName',
+            'lastName',
+            'enabled',
+            'attributes',
+            'emailVerified'
+          ])
+        ) || '',
         realmRoles,
         clientRoles.map((r) => JSON.stringify(r)),
         userDeletedAtCss
