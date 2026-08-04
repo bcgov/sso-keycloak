@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { getAdminClient, log, handleError } from '../helpers.js';
-import { pick } from 'lodash';
+import _ from 'lodash';
 
 /** @typedef {import('@keycloak/keycloak-admin-client/lib/defs/userRepresentation.js').default} UserRepresentation */
 /** @typedef {import('@keycloak/keycloak-admin-client/lib/client.js').KeycloakAdminClient} KeycloakAdminClient */
@@ -92,7 +92,7 @@ export async function deleteUserAndRecordData(realm, user, adminClient, env, pgC
     realm,
     env,
     JSON.stringify(
-      pick(user, ['id', 'username', 'email', 'firstName', 'lastName', 'enabled', 'attributes', 'emailVerified'])
+      _.pick(user, ['id', 'username', 'email', 'firstName', 'lastName', 'enabled', 'attributes', 'emailVerified'])
     ) || '',
     [],
     [],
@@ -121,7 +121,7 @@ export async function deleteUserAndRecordData(realm, user, adminClient, env, pgC
         'standard',
         env,
         JSON.stringify(
-          pick(inactiveStdUser, [
+          _.pick(inactiveStdUser, [
             'id',
             'username',
             'email',
