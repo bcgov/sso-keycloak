@@ -1,7 +1,7 @@
 import { promisify } from 'node:util';
 import { parseString } from 'xml2js';
 import axios from 'axios';
-import { get } from 'lodash';
+import _ from 'lodash';
 import { log } from '../helpers.js';
 
 const parseStringSync = promisify(parseString);
@@ -103,12 +103,12 @@ export const checkUserExistsAtIDIM = async ({ property = 'userGuid', matchKey = 
     const { data: body } = response;
 
     const result = await parseStringSync(body);
-    const data = get(result, 'soap:Envelope.soap:Body.0.getAccountDetailResponse.0.getAccountDetailResult.0');
+    const data = _.get(result, 'soap:Envelope.soap:Body.0.getAccountDetailResponse.0.getAccountDetailResult.0');
     if (!data) throw new Error('no data');
 
-    const status = get(data, 'code.0');
-    const failureCode = get(data, 'failureCode.0');
-    const failMessage = get(data, 'message.0');
+    const status = _.get(data, 'code.0');
+    const failureCode = _.get(data, 'failureCode.0');
+    const failMessage = _.get(data, 'message.0');
     if (status === 'Success' && failureCode === 'Void') {
       return 'exists';
     } else if (status === 'Failed' && failureCode === 'NoResults') {
