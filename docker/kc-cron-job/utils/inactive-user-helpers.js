@@ -6,7 +6,7 @@ import _ from 'lodash';
 /** @typedef {import('@keycloak/keycloak-admin-client/lib/client.js').KeycloakAdminClient} KeycloakAdminClient */
 
 // NOTE: this is per runner, e.g with 5 in prod 50 is the total user deletion limit
-export const MAX_DELETED_USERS_PER_RUNNER = 30;
+export const MAX_DELETED_USERS_PER_RUNNER = Number.parseInt(process.env.MAX_DELETED_USERS_PER_RUNNER || '30', 10);
 
 /**
  * @param {string} realm - Keycloak realm to query (e.g. 'azureidir', 'idir')
