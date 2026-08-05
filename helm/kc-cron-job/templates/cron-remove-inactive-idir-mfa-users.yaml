@@ -233,6 +233,6 @@ spec:
                 - name: NAMESPACE
                   value: {{ .Values.namespace.rmInactiveUsers }}
                 - name: MAX_DELETED_USERS_PER_RUNNER
-                  value: 30
+                  value: '30'
           restartPolicy: Never
 {{- end }}
