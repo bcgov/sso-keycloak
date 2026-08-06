@@ -29,6 +29,8 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
+const dotenv = require('dotenv');
+dotenv.config();
 
 const KEYCLOAK_URLS = {
   dev: 'https://dev.loginproxy.gov.bc.ca/auth',
@@ -36,7 +38,11 @@ const KEYCLOAK_URLS = {
   prod: 'https://loginproxy.gov.bc.ca/auth',
 };
 
-const PRIVACY_ZONES_URL = 'https://id.gov.bc.ca/oauth2/privacy-zones';
+const PRIVACY_ZONES_URLS = {
+  dev: 'https://idtest.gov.bc.ca/oauth2/privacy-zones',
+  test: 'https://idtest.gov.bc.ca/oauth2/privacy-zones',
+  prod: 'https://id.gov.bc.ca/oauth2/privacy-zones',
+};
 const REALM = 'standard';
 
 const ADMIN_CREDENTIALS = {
@@ -152,9 +158,9 @@ async function assignDefaultScope(baseUrl, token, clientUuid, scopeId) {
 
 // ─── Privacy zones ────────────────────────────────────────────────────────────
 
-async function fetchPrivacyZoneMap() {
-  const res = await fetch(PRIVACY_ZONES_URL);
-  if (!res.ok) throw new Error(`Failed to fetch privacy zones: HTTP ${res.status} ${res.statusText}`);
+async function fetchPrivacyZoneMap(url) {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Failed to fetch privacy zones from ${url}: HTTP ${res.status} ${res.statusText}`);
   const zones = await res.json();
   // Normalise names to lowercase for case-insensitive matching
   return new Map(zones.map((z) => [z.privacy_zone_name.toLowerCase().trim(), z.privacy_zone_uri]));
@@ -170,20 +176,19 @@ function parseTableFile(filePath) {
     const line = rawLine.trim();
     if (!line || line.startsWith('#')) continue;
 
-    const parts = line.split('|').map((p) => p.trim());
-    if (parts.length < 3) {
+    // Format: <clientId>|{env1|env2,...}|<privacyZoneName>  (envs may be | or , separated)
+    const match = line.match(/^([^|]+)\|\{([^}]+)\}\|(.+)$/);
+    if (!match) {
       console.warn(`[WARN] Skipping malformed line: ${line}`);
       continue;
     }
 
-    const clientId = parts[0];
-    // Accept {dev}, {dev, test}, {dev,test,prod}, etc.
-    const environments = parts[1]
-      .replace(/[{}]/g, '')
-      .split(',')
+    const clientId = match[1].trim();
+    const environments = match[2]
+      .split(/[|,]/)
       .map((e) => e.trim())
       .filter(Boolean);
-    const privacyZoneName = parts[2];
+    const privacyZoneName = match[3].trim();
 
     if (!clientId || environments.length === 0 || !privacyZoneName) {
       console.warn(`[WARN] Skipping incomplete row: ${line}`);
@@ -198,19 +203,20 @@ function parseTableFile(filePath) {
 
 // ─── Row processor ────────────────────────────────────────────────────────────
 
-async function processRow(row, privacyZoneMap) {
+async function processRow(row, privacyZoneMaps) {
   const { clientId, environments, privacyZoneName } = row;
-
-  const privacyZoneUri = privacyZoneMap.get(privacyZoneName.toLowerCase().trim());
-  if (!privacyZoneUri) {
-    console.warn(`\n[WARN] Unknown privacy zone "${privacyZoneName}" for client "${clientId}" — skipping entire row`);
-    return;
-  }
 
   for (const env of environments) {
     const baseUrl = KEYCLOAK_URLS[env];
     if (!baseUrl) {
       console.warn(`  [WARN] Unknown environment "${env}" — skipping`);
+      continue;
+    }
+
+    const privacyZoneMap = privacyZoneMaps[env];
+    const privacyZoneUri = privacyZoneMap.get(privacyZoneName.toLowerCase().trim());
+    if (!privacyZoneUri) {
+      console.warn(`\n[WARN] Unknown privacy zone "${privacyZoneName}" for client "${clientId}" in ${env} — skipping`);
       continue;
     }
 
@@ -258,13 +264,16 @@ async function main() {
     return;
   }
 
-  console.log(`Fetching privacy zones from ${PRIVACY_ZONES_URL} ...`);
-  const privacyZoneMap = await fetchPrivacyZoneMap();
-  console.log(`Loaded ${privacyZoneMap.size} privacy zones.`);
-  console.log(`Processing ${rows.length} row(s) ...`);
+  const uniqueUrls = [...new Set(Object.values(PRIVACY_ZONES_URLS))];
+  console.log(`Fetching privacy zones from ${uniqueUrls.join(', ')} ...`);
+  const fetchedMaps = new Map(await Promise.all(uniqueUrls.map(async (url) => [url, await fetchPrivacyZoneMap(url)])));
+  const privacyZoneMaps = Object.fromEntries(
+    Object.entries(PRIVACY_ZONES_URLS).map(([env, url]) => [env, fetchedMaps.get(url)]),
+  );
+  console.log(`Loaded privacy zones. Processing ${rows.length} row(s) ...`);
 
   for (const row of rows) {
-    await processRow(row, privacyZoneMap);
+    await processRow(row, privacyZoneMaps);
   }
 
   console.log('\nAll rows processed.');
