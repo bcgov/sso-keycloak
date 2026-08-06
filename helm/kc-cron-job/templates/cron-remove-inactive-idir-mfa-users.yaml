@@ -24,6 +24,7 @@ spec:
           initContainers:
             - name: initdb
               image: postgres:14.2-alpine
+              imagePullPolicy: IfNotPresent
               command: ["bash", "-c"]
               args:
                 - |
