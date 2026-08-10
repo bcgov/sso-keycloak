@@ -61,6 +61,9 @@ async function main() {
       },
       function (cb) {
         removeStaleUsersByEnv('prod', getPgClient(), 'prod-05', 40000, cb, opts);
+      },
+      function (cb) {
+        removeStaleUsersByEnv('prod', getPgClient(), 'prod-06', 50000, cb, opts);
       }
     ]),
     async function (_, results) {
