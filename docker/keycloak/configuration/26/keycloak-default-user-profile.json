@@ -1,12 +1,12 @@
 {
-  "unmanagedAttributePolicy": "ENABLED",
+  "unmanagedAttributePolicy": "ADMIN_EDIT",
   "attributes": [
     {
       "name": "username",
       "displayName": "${username}",
       "permissions": {
-        "view": ["admin", "user"],
-        "edit": ["admin", "user"]
+        "view": ["admin"],
+        "edit": ["admin"]
       },
       "validations": {
         "length": { "min": 3, "max": 255 },
@@ -18,8 +18,8 @@
       "name": "email",
       "displayName": "${email}",
       "permissions": {
-        "view": ["admin", "user"],
-        "edit": ["admin", "user"]
+        "view": ["admin"],
+        "edit": ["admin"]
       },
       "validations": {
         "email": {},
@@ -30,8 +30,8 @@
       "name": "firstName",
       "displayName": "${firstName}",
       "permissions": {
-        "view": ["admin", "user"],
-        "edit": ["admin", "user"]
+        "view": ["admin"],
+        "edit": ["admin"]
       },
       "validations": {
         "length": { "max": 255 },
@@ -42,8 +42,8 @@
       "name": "lastName",
       "displayName": "${lastName}",
       "permissions": {
-        "view": ["admin", "user"],
-        "edit": ["admin", "user"]
+        "view": ["admin"],
+        "edit": ["admin"]
       },
       "validations": {
         "length": { "max": 255 },
