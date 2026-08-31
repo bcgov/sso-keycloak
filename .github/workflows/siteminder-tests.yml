@@ -75,7 +75,7 @@ jobs:
         if: failure()
         uses: fjogeleit/http-request-action@551353b829c3646756b2ec2b3694f819d7957495 # v2.0.0
         with:
-          url: ${{ secrets.SSO_ALERTS }}
+          url: ${{ secrets.MSTEAMS_OPS_WEBHOOK }}
           method: 'POST'
           customHeaders: '{"Content-Type": "application/json"}'
-          data: '{"text": "Siteminder Tests Failed! @jsharman  @jlanglois  @Marco @nithinshekar.kuruba", "attachments": [{"color": "#FF0000","author_name": "${{ github.actor }}", "title": "Failed test", "title_link": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}", "text": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}", "fields": [{"title": "Environment", "value": "${{ github.event.inputs.environment }}", "short": false}, {"title": "Cluster", "value": "${{ github.event.inputs.cluster }}", "short": false}]}]}'
+          data: '{"title": "[${{ github.event.inputs.cluster }}] Siteminder Tests Failed in ${{ github.event.inputs.environment }} environment", "severity": "critical", url: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" }'
