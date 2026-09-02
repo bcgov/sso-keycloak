@@ -78,4 +78,4 @@ jobs:
           url: ${{ secrets.MSTEAMS_OPS_WEBHOOK }}
           method: 'POST'
           customHeaders: '{"Content-Type": "application/json"}'
-          data: '{"title": "[${{ github.event.inputs.cluster }}] Siteminder Tests Failed in ${{ github.event.inputs.environment }} environment", "severity": "critical", url: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" }'
+          data: '{"projectName": "Siteminder Tests Failed", "severity": "critical", "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}", "message": "[${{ matrix.name }}] Siteminder tests failed in ${{ github.event.inputs.environment }} environment." }'
