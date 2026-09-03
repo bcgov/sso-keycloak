@@ -80,6 +80,11 @@ public class CookieStopAuthenticator implements Authenticator {
     if (queryParams.containsKey(AdapterConstants.KC_IDP_HINT)) {
       String authIdp = queryParams.getFirst(AdapterConstants.KC_IDP_HINT);
 
+      // to be removed after excluded-idir is removed
+      if (authIdp.equalsIgnoreCase("idir") && clientScopes.containsKey("excluded-idir")) {
+        authIdp = "excluded-idir";
+      }
+
       if (authIdp != null && !authIdp.trim().isEmpty()) {
         IdentityProviderModel idp = context.getSession().identityProviders().getByAlias(authIdp);
 
