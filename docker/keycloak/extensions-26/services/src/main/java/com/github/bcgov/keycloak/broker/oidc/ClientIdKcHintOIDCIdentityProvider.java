@@ -12,7 +12,8 @@ import jakarta.ws.rs.core.UriBuilder;
 
 /** OIDC Identity Provider that replaces the {@code kc_idp_hint} query parameter with the
  *  initiating Keycloak client's client ID before sending the authorization request upstream,
- *  but only when the incoming request was originally hinted for {@link #BCGOVIDIR_HINT}.
+ *  but only when the incoming request was originally hinted for {@link #BCGOVIDIR_HINT} and
+ *  the client has {@link #BCGOVIDIR_HINT} assigned as a default scope.
  */
 public class ClientIdKcHintOIDCIdentityProvider extends OIDCIdentityProvider {
 
@@ -37,8 +38,11 @@ public class ClientIdKcHintOIDCIdentityProvider extends OIDCIdentityProvider {
     ClientModel client = request.getAuthenticationSession() != null
         ? request.getAuthenticationSession().getClient()
         : null;
-    String clientId = client != null ? client.getClientId() : null;
+    if (client == null || !client.getClientScopes(true).containsKey(BCGOVIDIR_HINT)) {
+      return ub;
+    }
 
+    String clientId = client.getClientId();
     if (clientId != null && !clientId.isBlank()) {
       ub.replaceQueryParam(KC_IDP_HINT_PARAM, clientId);
     }
