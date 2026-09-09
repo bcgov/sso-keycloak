@@ -9,6 +9,7 @@ import org.jboss.logging.Logger;
 import org.keycloak.broker.oidc.KeycloakOIDCIdentityProviderFactory;
 import org.keycloak.broker.oidc.OIDCIdentityProvider;
 import org.keycloak.broker.oidc.OIDCIdentityProviderConfig;
+import org.keycloak.broker.oidc.OIDCIdentityProviderFactory;
 import org.keycloak.broker.provider.AuthenticationRequest;
 import org.keycloak.constants.AdapterConstants;
 import org.keycloak.models.ClientModel;
@@ -63,10 +64,15 @@ public class ClientIdKcHintOIDCIdentityProvider extends OIDCIdentityProvider {
     return ub;
   }
 
+  @Override
   public boolean isMapperSupported(IdentityProviderMapper mapper) {
-    List<String> compatibleIdps = Arrays.asList(mapper.getCompatibleProviders());
+    // Retrieve what providers this mapper claims to support
+    List<String> compatibleProviders = Arrays.asList(mapper.getCompatibleProviders());
 
-    // provide the same mappers as are available for the parent provider
-    return compatibleIdps.contains(IdentityProviderMapper.ANY_PROVIDER);
+    // Allow the mapper if it works with ANY provider,
+    // or if it explicitly targets standard "oidc" mappers.
+    return compatibleProviders.contains(IdentityProviderMapper.ANY_PROVIDER)
+        || compatibleProviders.contains(OIDCIdentityProviderFactory.PROVIDER_ID)
+        || compatibleProviders.contains(this.getConfig().getProviderId());
   }
 }
