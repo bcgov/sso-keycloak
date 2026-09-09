@@ -44,7 +44,13 @@ public class ClientIdKcHintOIDCIdentityProvider extends OIDCIdentityProvider {
   public UriBuilder createAuthorizationUrl(AuthenticationRequest request) {
     UriBuilder ub = super.createAuthorizationUrl(request);
 
-    String originalHint = request.getUriInfo().getQueryParameters().getFirst(AdapterConstants.KC_IDP_HINT);
+    // kc_idp_hint is no longer present as a query param once Keycloak redirects to
+    // the
+    // broker's /login endpoint; it's preserved as a client note on the auth session
+    // instead.
+    String originalHint = request.getAuthenticationSession() != null
+        ? request.getAuthenticationSession().getClientNote(AdapterConstants.KC_IDP_HINT)
+        : null;
     if (!STANDARD_REALM.equals(request.getRealm().getName()) || !BCGOVIDIR_HINT.equals(originalHint)) {
       return ub;
     }
