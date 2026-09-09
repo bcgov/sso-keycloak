@@ -11,22 +11,16 @@ import org.keycloak.broker.oidc.OIDCIdentityProvider;
 import org.keycloak.broker.oidc.OIDCIdentityProviderConfig;
 import org.keycloak.broker.oidc.OIDCIdentityProviderFactory;
 import org.keycloak.broker.provider.AuthenticationRequest;
-import org.keycloak.constants.AdapterConstants;
 import org.keycloak.models.ClientModel;
 import org.keycloak.models.KeycloakSession;
 
 import jakarta.ws.rs.core.UriBuilder;
 
 /**
- * OIDC Identity Provider that replaces the {@code kc_idp_hint} query parameter
- * with the
- * initiating Keycloak client's client ID before sending the authorization
- * request upstream,
- * but only when the realm is {@link #STANDARD_REALM}, the incoming request was
- * originally
- * hinted for {@link #BCGOVIDIR_HINT}, and the client has
- * {@link #BCGOVIDIR_HINT} assigned
- * as a default scope.
+ * OIDC Identity Provider that sets the {@code kc_idp_hint} query parameter to
+ * the initiating Keycloak client's client ID before sending the authorization
+ * request upstream, but only when the realm is {@link #STANDARD_REALM} and the
+ * client has {@link #BCGOVIDIR_HINT} assigned as a default scope.
  */
 public class ClientIdKcHintOIDCIdentityProvider extends OIDCIdentityProvider {
 
@@ -44,14 +38,7 @@ public class ClientIdKcHintOIDCIdentityProvider extends OIDCIdentityProvider {
   public UriBuilder createAuthorizationUrl(AuthenticationRequest request) {
     UriBuilder ub = super.createAuthorizationUrl(request);
 
-    // kc_idp_hint is no longer present as a query param once Keycloak redirects to
-    // the
-    // broker's /login endpoint; it's preserved as a client note on the auth session
-    // instead.
-    String originalHint = request.getAuthenticationSession() != null
-        ? request.getAuthenticationSession().getClientNote(AdapterConstants.KC_IDP_HINT)
-        : null;
-    if (!STANDARD_REALM.equals(request.getRealm().getName()) || !BCGOVIDIR_HINT.equals(originalHint)) {
+    if (!STANDARD_REALM.equals(request.getRealm().getName())) {
       return ub;
     }
 
