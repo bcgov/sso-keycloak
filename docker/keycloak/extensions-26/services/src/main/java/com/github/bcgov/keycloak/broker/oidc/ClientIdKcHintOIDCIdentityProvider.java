@@ -1,6 +1,12 @@
 package com.github.bcgov.keycloak.broker.oidc;
 
+import org.keycloak.broker.provider.IdentityProviderMapper;
+
+import java.util.Arrays;
+import java.util.List;
+
 import org.jboss.logging.Logger;
+import org.keycloak.broker.oidc.KeycloakOIDCIdentityProviderFactory;
 import org.keycloak.broker.oidc.OIDCIdentityProvider;
 import org.keycloak.broker.oidc.OIDCIdentityProviderConfig;
 import org.keycloak.broker.provider.AuthenticationRequest;
@@ -10,11 +16,16 @@ import org.keycloak.models.KeycloakSession;
 
 import jakarta.ws.rs.core.UriBuilder;
 
-/** OIDC Identity Provider that replaces the {@code kc_idp_hint} query parameter with the
- *  initiating Keycloak client's client ID before sending the authorization request upstream,
- *  but only when the realm is {@link #STANDARD_REALM}, the incoming request was originally
- *  hinted for {@link #BCGOVIDIR_HINT}, and the client has {@link #BCGOVIDIR_HINT} assigned
- *  as a default scope.
+/**
+ * OIDC Identity Provider that replaces the {@code kc_idp_hint} query parameter
+ * with the
+ * initiating Keycloak client's client ID before sending the authorization
+ * request upstream,
+ * but only when the realm is {@link #STANDARD_REALM}, the incoming request was
+ * originally
+ * hinted for {@link #BCGOVIDIR_HINT}, and the client has
+ * {@link #BCGOVIDIR_HINT} assigned
+ * as a default scope.
  */
 public class ClientIdKcHintOIDCIdentityProvider extends OIDCIdentityProvider {
 
@@ -50,5 +61,12 @@ public class ClientIdKcHintOIDCIdentityProvider extends OIDCIdentityProvider {
     }
 
     return ub;
+  }
+
+  public boolean isMapperSupported(IdentityProviderMapper mapper) {
+    List<String> compatibleIdps = Arrays.asList(mapper.getCompatibleProviders());
+
+    // provide the same mappers as are available for the parent provider
+    return compatibleIdps.contains(IdentityProviderMapper.ANY_PROVIDER);
   }
 }
