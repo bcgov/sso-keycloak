@@ -117,8 +117,15 @@ public class IDPUserinfoMapper extends AbstractOIDCProtocolMapper
       ClientSessionContext clientSessionCtx) {
 
     String idp = userSession.getNotes().get("identity_provider");
+    if (idp == null) {
+      return;
+    }
     RealmModel realm = userSession.getRealm();
     IdentityProviderModel identityProviderConfig = keycloakSession.identityProviders().getByAlias(idp);
+    if (identityProviderConfig == null) {
+      logger.warnf("Identity provider configuration not found for alias: %s", idp);
+      return;
+    }
     JsonNode userInfo;
     JWSInput jws;
 

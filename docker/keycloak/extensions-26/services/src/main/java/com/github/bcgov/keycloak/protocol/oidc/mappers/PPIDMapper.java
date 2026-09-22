@@ -89,7 +89,15 @@ public class PPIDMapper extends AbstractOIDCProtocolMapper
     String tokenClaim = mappingModel.getConfig().get(CLAIM_NAME);
     try {
       String idp = userSession.getNotes().get("identity_provider");
+      if (idp == null) {
+        return;
+      }
       IdentityProviderModel authIdpConfig = keycloakSession.identityProviders().getByAlias(idp);
+      if (authIdpConfig == null) {
+        logger.warnf("Identity provider configuration not found for alias: %s", idp);
+        return;
+      }
+
       if (idp.equalsIgnoreCase("otp") || authIdpConfig.getDisplayName().equalsIgnoreCase("bc services card")) {
 
         String authIdp = null;
