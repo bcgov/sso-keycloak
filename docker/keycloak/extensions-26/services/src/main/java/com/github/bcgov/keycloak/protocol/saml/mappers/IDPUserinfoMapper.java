@@ -138,8 +138,15 @@ public class IDPUserinfoMapper extends AbstractSAMLProtocolMapper implements SAM
   public void transformAttributeStatement(AttributeStatementType attributeStatement, ProtocolMapperModel mappingModel,
       KeycloakSession keycloakSession, UserSessionModel userSession, AuthenticatedClientSessionModel clientSession) {
     String idp = userSession.getNotes().get("identity_provider");
+    if (idp == null) {
+      return;
+    }
     RealmModel realm = userSession.getRealm();
     IdentityProviderModel identityProviderConfig = keycloakSession.identityProviders().getByAlias(idp);
+    if (identityProviderConfig == null) {
+      logger.warnf("Identity provider configuration not found for alias: %s", idp);
+      return;
+    }
     JsonNode userInfo;
     JWSInput jws;
 
