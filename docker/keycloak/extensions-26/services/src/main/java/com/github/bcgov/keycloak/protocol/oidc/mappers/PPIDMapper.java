@@ -144,7 +144,7 @@ public class PPIDMapper extends AbstractOIDCProtocolMapper
               privacyZone);
 
           if (!StringUtil.isNullOrEmpty(ppid)) {
-            otherClaims.put(tokenClaim, ppid);
+            setTokenClaim(token, tokenClaim, ppid);
 
             if (otherClaims.containsKey(PREFERRED_USERNAME)) {
               otherClaims.replace(PREFERRED_USERNAME, ppid);
@@ -159,6 +159,16 @@ public class PPIDMapper extends AbstractOIDCProtocolMapper
     } catch (Exception e) {
       logger.errorf("Failed to add claim %s to the token", tokenClaim);
     }
+  }
+
+  static void setTokenClaim(IDToken token, String tokenClaim, String value) {
+    if (IDToken.SUBJECT.equals(tokenClaim)) {
+      token.getOtherClaims().remove(IDToken.SUBJECT);
+      token.setSubject(value);
+      return;
+    }
+
+    token.getOtherClaims().put(tokenClaim, value);
   }
 
   public static ProtocolMapperModel create(
