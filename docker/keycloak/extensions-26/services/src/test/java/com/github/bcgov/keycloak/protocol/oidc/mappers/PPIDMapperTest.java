@@ -50,6 +50,7 @@ public class PPIDMapperTest {
         "clientSecret", "client-secret")));
 
     IdentityProviderStorageProvider identityProviders = mock(IdentityProviderStorageProvider.class);
+    when(identityProviders.getByAlias("otp")).thenReturn(new IdentityProviderModel());
     when(identityProviders.getByAlias(PPIDMapper.PPID_SERVICE_ACCOUNT_IDP_ALIAS)).thenReturn(ppidIdentityProvider);
 
     KeycloakSession keycloakSession = mock(KeycloakSession.class);
