@@ -145,9 +145,19 @@ public class PPIDAttributeMapper extends AbstractSAMLProtocolMapper implements S
   }
 
   private void addAttribute(AttributeStatementType attributeStatement, String attributeName, Object attributeValue) {
+    List<AttributeStatementType.ASTChoiceType> existingAttributes = attributeStatement.getAttributes().stream()
+        .filter(choice -> choice.getAttribute() != null && attributeName.equals(choice.getAttribute().getName()))
+        .toList();
+    existingAttributes.forEach(attributeStatement::removeAttribute);
+
     AttributeType attribute = new AttributeType(attributeName.trim());
     attribute.setNameFormat(JBossSAMLURIConstants.ATTRIBUTE_FORMAT_BASIC.get());
     attribute.addAttributeValue(attributeValue);
     attributeStatement.addAttribute(new AttributeStatementType.ASTChoiceType(attribute));
+  }
+
+  @Override
+  public int getPriority() {
+    return 100;
   }
 }
