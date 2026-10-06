@@ -1,32 +1,36 @@
 package com.github.bcgov.keycloak.broker.oidc;
 
+import org.keycloak.broker.provider.IdentityProviderMapper;
+
 import java.util.Arrays;
 import java.util.List;
 
 import org.jboss.logging.Logger;
+import org.keycloak.broker.oidc.KeycloakOIDCIdentityProviderFactory;
 import org.keycloak.broker.oidc.OIDCIdentityProvider;
 import org.keycloak.broker.oidc.OIDCIdentityProviderConfig;
 import org.keycloak.broker.oidc.OIDCIdentityProviderFactory;
 import org.keycloak.broker.provider.AuthenticationRequest;
-import org.keycloak.broker.provider.IdentityProviderMapper;
 import org.keycloak.models.ClientModel;
 import org.keycloak.models.KeycloakSession;
 
 import jakarta.ws.rs.core.UriBuilder;
 
 /**
- * OIDC Identity Provider that appends the initiating Keycloak client's Home URL
- * as a {@code client_home_url} query parameter on every upstream authorization
- * request.
- * The parameter is omitted when the client has no Home URL configured.
+ * OIDC Identity Provider that sets the {@code kc_idp_hint} query parameter to
+ * the initiating Keycloak client's client ID before sending the authorization
+ * request upstream, but only when the realm is {@link #STANDARD_REALM} and the
+ * client has {@link #BCGOVIDIR_HINT} assigned as a default scope.
  */
-public class ClientHomeUrlOIDCIdentityProvider extends OIDCIdentityProvider {
+public class ClientIdKcHintOIDCIdentityProvider extends OIDCIdentityProvider {
 
-  private static final Logger logger = Logger.getLogger(ClientHomeUrlOIDCIdentityProvider.class);
+  private static final Logger logger = Logger.getLogger(ClientIdKcHintOIDCIdentityProvider.class);
 
-  static final String CLIENT_HOME_URL_PARAM = "client_home_url";
+  static final String KC_IDP_HINT_PARAM = "kc_idp_hint";
+  static final String BCGOVIDIR_HINT = "bcgovidir";
+  static final String STANDARD_REALM = "standard";
 
-  public ClientHomeUrlOIDCIdentityProvider(KeycloakSession session, OIDCIdentityProviderConfig config) {
+  public ClientIdKcHintOIDCIdentityProvider(KeycloakSession session, OIDCIdentityProviderConfig config) {
     super(session, config);
   }
 
@@ -34,13 +38,20 @@ public class ClientHomeUrlOIDCIdentityProvider extends OIDCIdentityProvider {
   public UriBuilder createAuthorizationUrl(AuthenticationRequest request) {
     UriBuilder ub = super.createAuthorizationUrl(request);
 
+    if (!STANDARD_REALM.equals(request.getRealm().getName())) {
+      return ub;
+    }
+
     ClientModel client = request.getAuthenticationSession() != null
         ? request.getAuthenticationSession().getClient()
         : null;
-    String homeUrl = client != null ? client.getBaseUrl() : null;
+    if (client == null || !client.getClientScopes(true).containsKey(BCGOVIDIR_HINT)) {
+      return ub;
+    }
 
-    if (homeUrl != null && !homeUrl.isBlank()) {
-      ub.queryParam(CLIENT_HOME_URL_PARAM, homeUrl);
+    String clientId = client.getClientId();
+    if (clientId != null && !clientId.isBlank()) {
+      ub.replaceQueryParam(KC_IDP_HINT_PARAM, clientId);
     }
 
     return ub;

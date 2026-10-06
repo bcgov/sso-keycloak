@@ -3,7 +3,7 @@ import {
   removeUserFromCssApp,
   MAX_DELETED_USERS_PER_RUNNER,
   removeStaleUsersByEnv
-} from '../remove-inactive-idir-users.js';
+} from '../utils/inactive-user-helpers.js';
 import axios from 'axios';
 
 const pgMock = {
@@ -20,6 +20,8 @@ const mockUser = {
   lastName: 'doe',
   attributes: { idir_user_guid: 1, display_name: 'testuser' }
 };
+
+const makeMockUser = () => structuredClone(mockUser);
 
 const realmRoles = ['realmRole'];
 const clientRoles = [
@@ -55,8 +57,11 @@ vi.mock('../helpers.js', async () => {
     getAdminClient: vi.fn(() =>
       Promise.resolve({
         users: {
-          find: vi.fn(() => {
-            const users = Array(100).fill(mockUser);
+          find: vi.fn((query) => {
+            if (query.realm === 'standard') {
+              return Promise.resolve([makeMockUser()]);
+            }
+            const users = Array.from({ length: 100 }, () => makeMockUser());
             return Promise.resolve(users);
           }),
           listRoleMappings: vi.fn(() =>
@@ -98,66 +103,88 @@ describe('removeUserFromCssApp', () => {
 });
 
 describe('removeStaleUsersByEnv', () => {
+  const opts = {
+    realm: 'idir',
+    insertSql:
+      'INSERT INTO kc_deleted_idir_users (realm, environment, user_data, realm_roles, client_roles, css_app_deleted) VALUES($1, $2, $3, $4, $5, $6)',
+    shouldSkip: vi.fn(async () => false),
+    shouldDelete: vi.fn(async () => true)
+  };
+
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
   it('Stops deleting once maximum is reached', async () => {
     axios.post = vi.fn().mockResolvedValue({ status: 200 });
-    const { removeUserFromKc } = await import('../helpers.js');
-    await removeStaleUsersByEnv('dev', pgMock, 'runnername', 0, () => {});
-    expect(removeUserFromKc).toHaveBeenCalledTimes(MAX_DELETED_USERS_PER_RUNNER);
+    await removeStaleUsersByEnv('dev', pgMock, 'runnername', 0, () => {}, opts);
+
+    // Each deleted user removes one user from idir and one from standard.
+    expect(opts.shouldDelete).toHaveBeenCalledTimes(MAX_DELETED_USERS_PER_RUNNER);
     expect(axios.post).toHaveBeenCalledTimes(MAX_DELETED_USERS_PER_RUNNER);
   });
 
   it('Saves deletion record to the database', async () => {
     axios.post = vi.fn().mockResolvedValue({ status: 200 });
-    await removeStaleUsersByEnv('dev', pgMock, 'runnername', 0, () => {});
+    await removeStaleUsersByEnv('dev', pgMock, 'runnername', 0, () => {}, opts);
     expect(pgMock.connect).toHaveBeenCalledTimes(1);
 
-    expect(pgMock.query).toHaveBeenCalledTimes(MAX_DELETED_USERS_PER_RUNNER);
-    pgMock.query.mock.calls.forEach((args) => {
-      // pg query arguments are Objects with keys text, values. Checking expected values match input data
+    // Each deletion inserts one record for idir and one for standard.
+    expect(pgMock.query).toHaveBeenCalledTimes(MAX_DELETED_USERS_PER_RUNNER * 2);
+    pgMock.query.mock.calls.forEach((args, i) => {
       const pgValues = args[0].values;
-      expect(pgValues).toEqual([
-        'dev',
-        mockUser.id,
-        mockUser.username,
-        mockUser.email,
-        mockUser.firstName,
-        mockUser.lastName,
-        JSON.stringify(mockUser.attributes),
-        realmRoles,
-        clientRoles.map((r) => JSON.stringify(r)),
-        // True indicates successful CSS response
-        true
-      ]);
+      const isIdirInsert = i % 2 === 0;
+      const savedUser = JSON.parse(pgValues[2]);
+
+      if (isIdirInsert) {
+        expect(pgValues[0]).toBe('idir');
+        expect(pgValues[1]).toBe('dev');
+        expect(savedUser.id).toBe(mockUser.id);
+        expect(savedUser.username).toBe(mockUser.username);
+        expect(pgValues[3]).toEqual([]);
+        expect(pgValues[4]).toEqual([]);
+        expect(pgValues[5]).toBe(false);
+      } else {
+        expect(pgValues[0]).toBe('standard');
+        expect(pgValues[1]).toBe('dev');
+        expect(savedUser.id).toBe(mockUser.id);
+        expect(savedUser.username).toBe(mockUser.username);
+        expect(pgValues[3]).toEqual([]);
+        expect(pgValues[4]).toEqual([]);
+        expect(pgValues[5]).toBe(true);
+      }
     });
   });
 
   it('Records whether CSS App callout was successful to the database', async () => {
-    const { removeStaleUsersByEnv } = await import('../remove-inactive-idir-users.js');
     // Fail axios calls with not found
     axios.post = vi.fn().mockResolvedValue({ status: 404 });
-    await removeStaleUsersByEnv('test', pgMock, 'runnername', 0, () => {});
+    await removeStaleUsersByEnv('test', pgMock, 'runnername', 0, () => {}, opts);
 
-    expect(pgMock.query).toHaveBeenCalledTimes(MAX_DELETED_USERS_PER_RUNNER);
-    pgMock.query.mock.calls.forEach((args) => {
-      // pg query arguments are Objects with keys text, values. Checking expected values match input data
+    expect(pgMock.query).toHaveBeenCalledTimes(MAX_DELETED_USERS_PER_RUNNER * 2);
+    pgMock.query.mock.calls.forEach((args, i) => {
       const pgValues = args[0].values;
-      expect(pgValues).toEqual([
-        'test',
-        mockUser.id,
-        mockUser.username,
-        mockUser.email,
-        mockUser.firstName,
-        mockUser.lastName,
-        JSON.stringify(mockUser.attributes),
-        realmRoles,
-        clientRoles.map((r) => JSON.stringify(r)),
+      const isIdirInsert = i % 2 === 0;
+      const savedUser = JSON.parse(pgValues[2]);
+
+      if (isIdirInsert) {
+        expect(pgValues[0]).toBe('idir');
+        expect(pgValues[1]).toBe('test');
+        expect(savedUser.id).toBe(mockUser.id);
+        expect(savedUser.username).toBe(mockUser.username);
+        expect(pgValues[3]).toEqual([]);
+        expect(pgValues[4]).toEqual([]);
+        expect(pgValues[5]).toBe(false);
+      } else {
+        expect(pgValues[0]).toBe('standard');
+        expect(pgValues[1]).toBe('test');
+        expect(savedUser.id).toBe(mockUser.id);
+        expect(savedUser.username).toBe(mockUser.username);
+        expect(pgValues[3]).toEqual([]);
+        expect(pgValues[4]).toEqual([]);
         // Records the CSS Failure
-        false
-      ]);
+        expect(pgValues[5]).toBe(false);
+      }
     });
   });
 
@@ -165,11 +192,11 @@ describe('removeStaleUsersByEnv', () => {
     axios.delete = vi.fn().mockResolvedValue({ status: 200 });
 
     // When deleted from lower env no need to call realm registry
-    await removeStaleUsersByEnv('test', pgMock, 'runnername', 0, () => {});
+    await removeStaleUsersByEnv('test', pgMock, 'runnername', 0, () => {}, opts);
     expect(axios.delete).not.toHaveBeenCalled();
 
     // Should call when deleted from production
-    await removeStaleUsersByEnv('prod', pgMock, 'runnername', 0, () => {});
+    await removeStaleUsersByEnv('prod', pgMock, 'runnername', 0, () => {}, opts);
     expect(axios.delete).toHaveBeenCalled();
     const firstCallURL = axios.delete.mock.calls[0][0];
     expect(firstCallURL).toContain(`/users/${mockUser.attributes.idir_user_guid}`);

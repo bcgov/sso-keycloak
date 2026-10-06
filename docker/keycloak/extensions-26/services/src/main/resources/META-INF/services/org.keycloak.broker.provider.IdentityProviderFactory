@@ -1,4 +1,5 @@
 com.github.bcgov.keycloak.broker.oidc.CustomOIDCIdentityProviderFactory
 com.github.bcgov.keycloak.broker.oidc.OverrideOIDCIdentityProviderFactory
 com.github.bcgov.keycloak.broker.oidc.ClientHomeUrlOIDCIdentityProviderFactory
+com.github.bcgov.keycloak.broker.oidc.ClientIdKcHintOIDCIdentityProviderFactory
 com.github.bcgov.keycloak.broker.saml.OverrideSAMLIdentityProviderFactory

@@ -7,10 +7,19 @@ dotenv.config();
 
 const { Client } = pg;
 
+/**
+ * Removes a single trailing slash from a URL string.
+ * @param {string} url - URL to normalize
+ * @returns {string} - Normalized URL without a trailing slash
+ */
 const removeTrailingSlash = (url) => {
   return url.endsWith('/') ? url.slice(0, -1) : url;
 };
 
+/**
+ * @param {string} env - Environment name (e.g. 'dev', 'test', 'prod')
+ * @returns {object} - Returns Keycloak configuration for the specified environment
+ */
 const getKcConfig = (environment) => {
   const env = environment.toUpperCase();
   return {
@@ -20,41 +29,18 @@ const getKcConfig = (environment) => {
   };
 };
 
-export async function removeUserFromKc(adminClient, id) {
-  try {
-    await adminClient.users.del({ realm: 'standard', id });
-  } catch (err) {
-    console.error(err);
-  }
-}
-
-export async function getUserRolesMappings(adminClient, userId) {
-  try {
-    const clientRoles = [];
-    const roleMappings = await adminClient.users.listRoleMappings({ realm: 'standard', id: userId });
-    const realmRoles = roleMappings.realmMappings ? roleMappings.realmMappings.map((map) => map.name) : [];
-    if (roleMappings.clientMappings) {
-      for (const map in roleMappings.clientMappings) {
-        clientRoles.push({
-          client: roleMappings.clientMappings[map].client,
-          roles: roleMappings.clientMappings[map].mappings.map((role) => role.name)
-        });
-      }
-    }
-    return { realmRoles, clientRoles };
-  } catch (err) {
-    console.error(err);
-    throw new Error(`cannot fetch roles of user ${userId}`);
-  }
-}
-
 export const oneMin = 60 * 1000;
 
+/**
+ *
+ * @param {string} env - Environment name (e.g. 'dev', 'test', 'prod')
+ * @returns {Promise<object|null>} - Returns the Keycloak admin client instance or null if an error occurred
+ */
 export async function getAdminClient(env) {
   try {
     const KcAdminClient = (await import('@keycloak/keycloak-admin-client')).default;
     const config = getKcConfig(env);
-    if (!config) throw Error(`invalid env ${env}`);
+    if (!config) throw new Error(`invalid env ${env}`);
 
     const kcAdminClient = new KcAdminClient({
       baseUrl: `${config.url}/auth`,
@@ -96,14 +82,20 @@ export async function getAdminClient(env) {
   }
 }
 
+/**
+ * @param {string} msg - Message to log
+ */
 export function log(msg) {
   console.log(`[${new Date().toLocaleString()}] ${msg}`);
 }
 
+/**
+ * @returns {pg.Client} - Returns a new PostgreSQL client instance
+ */
 export function getPgClient() {
   return new Client({
     host: process.env.PGHOST || 'localhost',
-    port: parseInt(process.env.PGPORT || '5432'),
+    port: Number.parseInt(process.env.PGPORT || '5432'),
     user: process.env.PGUSER || 'postgres',
     password: process.env.PGPASSWORD || 'postgres',
     database: process.env.PGDATABASE || 'rhsso',
@@ -111,6 +103,12 @@ export function getPgClient() {
   });
 }
 
+/**
+ * @param {string} cronName - Name of the cron job
+ * @param {string} message - Message to be sent in the notification
+ * @param {Error} [err] - Optional error object to include in the notification
+ * @returns {Promise<void>} - Returns a promise that resolves when the notification is sent
+ */
 export async function sendRcNotification(cronName, message, err) {
   try {
     const headers = { Accept: 'application/json' };
@@ -121,15 +119,24 @@ export async function sendRcNotification(cronName, message, err) {
   }
 }
 
+/**
+ *
+ * @param {*} error
+ */
 export function handleError(error) {
   console.error(error);
   if (error.isAxiosError) {
-    console.error((error.response && error.response.data) || error);
+    console.error(error.response?.data || error);
   } else {
     console.error(error);
   }
 }
 
+/**
+ * @param {string} tableName - Name of the table to delete old logs from
+ * @param {number} retentionPeriodDays - Number of days to retain logs before deletion
+ * @returns {Promise<void>} - Returns a promise that resolves when the deletion is complete
+ */
 export async function deleteLegacyData(tableName, retentionPeriodDays) {
   console.info('Removing old logs from database...');
   let client;

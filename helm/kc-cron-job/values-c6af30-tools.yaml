@@ -13,7 +13,9 @@ enableEventLogsJob: true
 
 enableActiveSessionsJob: true
 
-enableRemoveInactiveUsersJob: true
+enableRemoveInactiveIdirUsersJob: true
+
+enableRemoveInactiveIdirMfaUsersJob: true
 
 enableRemoveVcUsersJob: true
 

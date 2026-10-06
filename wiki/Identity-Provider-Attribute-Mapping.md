@@ -114,4 +114,4 @@ See above for claims depending on BCeID type selected by end user.
 
 ## Playground
 
-[Try our playground to see what comes in the payload with your client integration](https://bcgov.github.io/keycloak-example-apps/)
+[Try our playground to see what comes in the payload with your client integration](https://sso-playground.apps.gold.devops.gov.bc.ca/)
