@@ -51,6 +51,7 @@ public class PPIDAttributeMapperTest {
         "clientSecret", "client-secret")));
 
     IdentityProviderStorageProvider identityProviders = mock(IdentityProviderStorageProvider.class);
+    when(identityProviders.getByAlias("otp")).thenReturn(new IdentityProviderModel());
     when(identityProviders.getByAlias(PPIDAttributeMapper.PPID_SERVICE_ACCOUNT_IDP_ALIAS))
         .thenReturn(ppidIdentityProvider);
 

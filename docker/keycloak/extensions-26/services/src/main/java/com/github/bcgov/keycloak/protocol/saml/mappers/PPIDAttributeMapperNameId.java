@@ -60,7 +60,14 @@ public class PPIDAttributeMapperNameId extends AbstractSAMLProtocolMapper
       ProtocolMapperModel mappingModel, KeycloakSession keycloakSession,
       UserSessionModel userSession, ClientSessionContext clientSessionCtx) {
     String idp = userSession.getNotes().get("identity_provider");
+    if (idp == null) {
+      return response;
+    }
     IdentityProviderModel authIdpConfig = keycloakSession.identityProviders().getByAlias(idp);
+    if (authIdpConfig == null) {
+      logger.warnf("Identity provider configuration not found for alias: %s", idp);
+      return response;
+    }
     if (idp.equalsIgnoreCase("otp") || authIdpConfig.getDisplayName().equalsIgnoreCase("bc services card")) {
 
       String authIdp = null;
