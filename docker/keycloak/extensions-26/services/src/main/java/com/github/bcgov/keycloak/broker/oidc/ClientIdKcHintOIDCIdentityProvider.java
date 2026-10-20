@@ -28,6 +28,7 @@ public class ClientIdKcHintOIDCIdentityProvider extends OIDCIdentityProvider {
 
   static final String KC_IDP_HINT_PARAM = "kc_idp_hint";
   static final String BCGOVIDIR_HINT = "bcgovidir";
+  static final String BCGOVIDIR_SAML_HINT = "bcgovidir-saml";
   static final String STANDARD_REALM = "standard";
 
   public ClientIdKcHintOIDCIdentityProvider(KeycloakSession session, OIDCIdentityProviderConfig config) {
@@ -45,7 +46,7 @@ public class ClientIdKcHintOIDCIdentityProvider extends OIDCIdentityProvider {
     ClientModel client = request.getAuthenticationSession() != null
         ? request.getAuthenticationSession().getClient()
         : null;
-    if (client == null || !client.getClientScopes(true).containsKey(BCGOVIDIR_HINT)) {
+    if (client == null || (!client.getClientScopes(true).containsKey(BCGOVIDIR_HINT) && !client.getClientScopes(true).containsKey(BCGOVIDIR_SAML_HINT))) {
       return ub;
     }
 
