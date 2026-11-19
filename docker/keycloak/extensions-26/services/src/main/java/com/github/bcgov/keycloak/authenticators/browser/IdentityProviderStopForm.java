@@ -59,6 +59,12 @@ public class IdentityProviderStopForm implements Authenticator {
     // if kc_idp_hint is set and matches one of the enabled idps then skip the form
     if (context.getUriInfo().getQueryParameters().containsKey(AdapterConstants.KC_IDP_HINT)) {
       String hintIdp = context.getUriInfo().getQueryParameters().getFirst(AdapterConstants.KC_IDP_HINT);
+
+      // to be removed after excluded-idir is removed
+      if (hintIdp.equalsIgnoreCase("idir") && scopes.containsKey("excluded-idir")) {
+        hintIdp = "excluded-idir";
+      }
+
       if (hintIdp != null && !hintIdp.equals("") && idpContext.containsKey(hintIdp)) {
         context.attempted();
         return;
