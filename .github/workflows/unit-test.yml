@@ -10,6 +10,8 @@ on:
 jobs:
   unit_test:
     runs-on: ubuntu-24.04
+    permissions:
+      contents: read
     defaults:
       run:
         working-directory: ./docker/kc-cron-job
