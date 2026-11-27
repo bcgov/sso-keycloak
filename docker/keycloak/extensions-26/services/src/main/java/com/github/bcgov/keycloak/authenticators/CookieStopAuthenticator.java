@@ -99,8 +99,7 @@ public class CookieStopAuthenticator implements Authenticator {
     // current client session does not exist but contains authenticated IDP
     if (parentAuthUserSession != null && (clientSessionModel != null
         || (clientSessionModel == null && clientScopes.containsKey(existingSessionIdp)))) {
-      context.getAuthenticationSession().setAuthNote(AuthenticationManager.SSO_AUTH,
-          "true");
+      context.getAuthenticationSession().setAuthNote(AuthenticationManager.SSO_AUTH, authResult.user().getId());
       context.attachUserSession(authResult.session());
       context.success();
     } else {
